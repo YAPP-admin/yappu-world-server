@@ -1,0 +1,20 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+max_line_length = 120
+tab_width = 4
+
+[*.{kt,kts}]
+ktlint_standard_comment-spacing = disabled
+ktlint_standard_import-ordering = disabled
+ktlint_standard_string-template-indent = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+# 클래스 바디 첫 줄 공백 허용
+ktlint_standard_no-empty-first-line-in-class-body = disabled
+# 클래스 바디 마지막 줄 공백 허용
+ktlint_standard_no-blank-line-before-rbrace = disabled
