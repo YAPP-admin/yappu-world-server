@@ -3,3 +3,7 @@ spring:
         name: yappu-world
     profiles:
         active: local
+        group:
+          local: console-logging
+          dev: file-logging
+          prod: file-logging
