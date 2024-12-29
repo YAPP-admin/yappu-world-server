@@ -2,6 +2,7 @@ package co.yappuworld.global.config
 
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
@@ -21,9 +22,17 @@ class SwaggerConfig {
     }
 
     private fun getInfo(): Info {
-        return Info().title("Yappu World API")
-            .description("YAPP 공식 APP 서버 스웨거")
+        return Info()
+            .title("Yappu World API")
+            .description("YAPP 공식 APP 서버 스웨거\n ")
+            .contact(getContact())
             .version("0.0.1")
+    }
+
+    private fun getContact(): Contact {
+        return Contact()
+            .name("Github Repository")
+            .url("https://github.com/YAPP-admin/yappu-world-server")
     }
 
     private fun getSecurityRequirement(): SecurityRequirement {
@@ -31,7 +40,8 @@ class SwaggerConfig {
     }
 
     private fun getSecurityScheme(): SecurityScheme {
-        return SecurityScheme().name(securitySchemeName)
+        return SecurityScheme()
+            .name(securitySchemeName)
             .type(SecurityScheme.Type.HTTP)
             .`in`(SecurityScheme.In.HEADER)
             .scheme("Bearer")
