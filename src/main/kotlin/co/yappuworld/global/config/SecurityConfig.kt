@@ -44,6 +44,6 @@ class SecurityConfig {
         antMatcher("/health"),
         // swagger
         antMatcher("/swagger-ui/**"),
-        antMatcher("/v3/api-docs/**"),
+        antMatcher("/v3/api-docs/**")
     )
 }
