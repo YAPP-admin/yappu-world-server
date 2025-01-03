@@ -6,9 +6,11 @@ package co.yappuworld.global.vo
  * @property GRADUATE 수료회원
  * @property ACTIVE 활동회원
  */
-enum class UserRole {
-    ADMIN,
-    ALUMNI,
-    GRADUATE,
-    ACTIVE
+enum class UserRole(
+    val authority: String
+) {
+    ADMIN("ROLE_ADMIN"),
+    ALUMNI("ROLE_ALUMNI"),
+    GRADUATE("ROLE_GRADUATE"),
+    ACTIVE("ROLE_ACTIVE")
 }
