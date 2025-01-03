@@ -1,6 +1,6 @@
 ---
 name: 기능 템플릿
-about: 
+about: 기능 개발
 title: ''
 labels: '기능'
 assignees: ''
