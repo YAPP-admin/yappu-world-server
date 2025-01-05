@@ -1,6 +1,6 @@
 package co.yappuworld.global.filter
 
-import co.yappuworld.global.dto.ApiResponse
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.security.JwtHandler
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.error.TokenError
@@ -68,11 +68,9 @@ class JwtFilter(
         response.characterEncoding = "UTF-8"
         response.status = HttpStatus.UNAUTHORIZED.value()
 
-        ApiResponse(
-            isSuccess = false,
+        ErrorResponse.of(
             message = error.message,
-            errorCode = error.code,
-            body = null
+            errorCode = error.code
         ).let {
             response.writer.write(it.toString())
         }
