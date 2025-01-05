@@ -1,5 +1,6 @@
 package co.yappuworld.global.config
 
+import co.yappuworld.global.security.SecurityPathMatchersManager.anyoneMatchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod.DELETE
@@ -10,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher
-import org.springframework.security.web.util.matcher.RequestMatchers
 import org.springframework.web.cors.CorsConfiguration
 
 @Configuration
@@ -26,6 +25,7 @@ class SecurityConfig {
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
             .authorizeHttpRequests { it.requestMatchers(anyoneMatchers).permitAll() }
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
             .build()
     }
 
@@ -39,11 +39,4 @@ class SecurityConfig {
             addAllowedOriginPattern("*")
         }
     }
-
-    private val anyoneMatchers = RequestMatchers.anyOf(
-        antMatcher("/health"),
-        // swagger
-        antMatcher("/swagger-ui/**"),
-        antMatcher("/v3/api-docs/**")
-    )
 }
