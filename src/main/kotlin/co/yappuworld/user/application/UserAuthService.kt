@@ -6,6 +6,7 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.global.vo.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
+import co.yappuworld.user.domain.UserSignUpApplicationStatus
 import co.yappuworld.user.domain.UserSignUpApplications
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
@@ -29,6 +30,8 @@ class UserAuthService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
+        validateExistApplication(request.email)
+
         UserSignUpApplications(request.toSignUpApplication()).let {
             userSignUpApplicationRepository.save(it)
         }
@@ -44,6 +47,27 @@ class UserAuthService(
         return userRepository.save(request.toUser(role)).let { user ->
             val securityUser = SecurityUser.fromUser(user)
             jwtGenerator.generateToken(securityUser, now)
+        }
+    }
+
+    private fun validateExistApplication(email: String) {
+        val applications = userSignUpApplicationRepository.findByApplicantEmailAndStatusIn(
+            email,
+            listOf(UserSignUpApplicationStatus.PENDING, UserSignUpApplicationStatus.APPROVED)
+        )
+
+        if (applications.isEmpty()) {
+            return
+        }
+
+        if (applications.any { it.status == UserSignUpApplicationStatus.APPROVED }) {
+            logger.error { "${email}의 기존 요청이 이미 승인되었습니다." }
+            throw IllegalStateException("${email}의 기존 요청이 이미 승인되었습니다.")
+        }
+
+        if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
+            logger.error { "${email}의 처리되지 않은 기존 신청이 존재합니다." }
+            throw IllegalStateException("${email}의 처리되지 않은 기존 신청이 존재합니다.")
         }
     }
 

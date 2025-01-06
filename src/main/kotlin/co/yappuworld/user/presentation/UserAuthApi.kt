@@ -32,7 +32,7 @@ interface UserAuthApi {
                         schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "인증에 성공하여 회원가입까지 완료",
+                                name = "가입 코드를 통해 별도 신청 절차 없이 가입 처리",
                                 value = """
                                     {
                                         "isSuccess": "true",
@@ -42,25 +42,33 @@ interface UserAuthApi {
                                         }
                                     }
                                 """
+                            ),
+                            ExampleObject(
+                                name = "가입 코드 미입력 시, 가입 신청 처리",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": null
+                                    }
+                                """
                             )
                         ]
                     )
                 ]
             ),
             ApiResponse(
-                description = "가입 인증코드 오류(USR-0001)",
                 responseCode = "400",
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "인증 번호 오류",
+                                name = "가입코드 오류(USR-0001)",
                                 value = """
                                     {
                                         "isSuccess": "false",
                                         "errorCode": "USR-0001",
-                                        "message": "매칭되는 인증번호가 존재하지 않습니다."
+                                        "message": "매칭되는 가입코드가 존재하지 않습니다."
                                     }
                                 """
                             )
