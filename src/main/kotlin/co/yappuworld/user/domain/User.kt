@@ -20,6 +20,7 @@ class User(
     @Id
     @JvmField
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
+
     override fun getId(): UUID {
         return this.id
     }
