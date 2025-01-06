@@ -6,7 +6,9 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.global.vo.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
+import co.yappuworld.user.domain.UserSignUpApplications
 import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +19,7 @@ private val logger = KotlinLogging.logger { }
 @Service
 class UserAuthService(
     private val userRepository: UserRepository,
+    private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
     private val jwtGenerator: JwtGenerator,
     private val configInquiryComponent: ConfigInquiryComponent
 ) {
@@ -26,7 +29,9 @@ class UserAuthService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
-        TODO("Not yet implemented")
+        UserSignUpApplications(request.toSignUpApplication()).let {
+            userSignUpApplicationRepository.save(it)
+        }
     }
 
     @Transactional
