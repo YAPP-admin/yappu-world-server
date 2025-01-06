@@ -6,6 +6,7 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.user.presentation.dto.request.UserSignUpRequestDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -28,7 +29,21 @@ interface UserAuthApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class)
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "인증에 성공하여 회원가입까지 완료",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": {
+                                            "accessToken": "accessToken...",
+                                            "refreshToken": "refreshToken..."
+                                        }
+                                    }
+                                """
+                            )
+                        ]
                     )
                 ]
             ),
@@ -37,7 +52,19 @@ interface UserAuthApi {
                 responseCode = "400",
                 content = [
                     Content(
-                        schema = Schema(implementation = ErrorResponse::class)
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "인증 번호 오류",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "errorCode": "USR-0001",
+                                        "message": "매칭되는 인증번호가 존재하지 않습니다."
+                                    }
+                                """
+                            )
+                        ]
                     )
                 ]
             )

@@ -12,7 +12,7 @@ spring:
                 command: down
                 timeout: 1m
     datasource:
-        url: jdbc:mysql://localhost:3306/yappu-world
+        url: jdbc:mysql://localhost:3306/yappu_world
         username: yapp
         password: yapp
     sql:
