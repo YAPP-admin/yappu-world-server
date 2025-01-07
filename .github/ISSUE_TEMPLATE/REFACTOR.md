@@ -1,6 +1,6 @@
 ---
 name: 리팩토링
-about: 
+about: 코드 개선 
 title: ''
 labels: '리팩토링'
 assignees: ''
