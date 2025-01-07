@@ -5,8 +5,8 @@ import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.vo.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.presentation.dto.request.UserSignUpRequestDto
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +23,7 @@ class UserAuthService(
 
     @Transactional
     fun submitSignUpRequest(
-        request: UserSignUpRequestDto,
+        request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
         TODO("Not yet implemented")
@@ -31,7 +31,7 @@ class UserAuthService(
 
     @Transactional
     fun signUpWithCode(
-        request: UserSignUpRequestDto,
+        request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ): Token {
         val role = getUserRoleWithSignUpCode(request.signUpCode)

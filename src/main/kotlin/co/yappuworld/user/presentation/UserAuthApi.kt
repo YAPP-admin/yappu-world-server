@@ -3,7 +3,7 @@ package co.yappuworld.user.presentation
 import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
-import co.yappuworld.user.presentation.dto.request.UserSignUpRequestDto
+import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -72,6 +72,6 @@ interface UserAuthApi {
     )
     @PostMapping("/v1/auth/sign-up")
     fun signUp(
-        @RequestBody request: UserSignUpRequestDto
+        @RequestBody request: UserSignUpApiRequestDto
     ): ResponseEntity<SuccessResponse<Token>>
 }

@@ -18,6 +18,6 @@ class ConfigInquiryComponent(
     }
 
     fun findConfigsByKey(keys: List<String>): List<Config> {
-        return configRepository.findAllByIdIn(keys).toList()
+        return configRepository.findAllByIdIn(keys)
     }
 }
