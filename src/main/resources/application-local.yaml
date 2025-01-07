@@ -30,3 +30,8 @@ spring:
         sql:
             init:
                 mode: always
+
+jwt:
+    secret_key: thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocalenvironment
+    access_token_expiration_times: 3600000 # 1hour = 1000(=1s) * 60 * 60
+    refresh_token_expiration_times: 1209600000 # 2weeks = 1000(=1s) * 60 * 60 * 24 * 14
