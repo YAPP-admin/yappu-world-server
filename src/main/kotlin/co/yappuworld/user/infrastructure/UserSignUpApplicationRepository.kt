@@ -9,8 +9,8 @@ import java.util.UUID
 @Repository
 interface UserSignUpApplicationRepository : CrudRepository<UserSignUpApplications, UUID> {
 
-    fun findByApplicantEmailAndStatusIn(
+    fun findByApplicantEmailAndStatus(
         applicantEmail: String,
-        status: List<UserSignUpApplicationStatus>
+        status: UserSignUpApplicationStatus
     ): List<UserSignUpApplications>
 }

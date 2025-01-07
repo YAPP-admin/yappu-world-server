@@ -1,5 +1,6 @@
 package co.yappuworld.user.application
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
@@ -42,7 +43,8 @@ class UserAuthServiceTest {
     @Test
     @DisplayName("기존에 처리되지 않은 신청이 있다면 예외가 발생한다.")
     fun validateExistsPendingApplication() {
-        every { authApplicationRepository.findByApplicantEmailAndStatusIn(email, any()) } returns listOf(
+        every { userRepository.existsUserByEmail(any()) } returns false
+        every { authApplicationRepository.findByApplicantEmailAndStatus(email, any()) } returns listOf(
             UserSignUpApplications(
                 UUID.randomUUID(),
                 request.email,
@@ -53,25 +55,17 @@ class UserAuthServiceTest {
         )
 
         assertThatThrownBy { userAuthService.submitSignUpRequest(request, LocalDateTime.now()) }
-            .isInstanceOf(IllegalStateException::class.java)
-            .message().isEqualTo("${email}의 처리되지 않은 기존 신청이 존재합니다.")
+            .isInstanceOf(BusinessException::class.java)
+            .message().isEqualTo(UserError.UNPROCESSED_APPLICATION_EXISTS.message)
     }
 
     @Test
-    @DisplayName("기존 신청 중 승인된 게 있다면 예외가 발생한다.")
+    @DisplayName("이미 가입된 이메일이면 예외가 발생한다.")
     fun validateExistsApprovedApplication() {
-        every { authApplicationRepository.findByApplicantEmailAndStatusIn(email, any()) } returns listOf(
-            UserSignUpApplications(
-                UUID.randomUUID(),
-                request.email,
-                request.toSignUpApplication(),
-                UserSignUpApplicationStatus.APPROVED,
-                null
-            )
-        )
+        every { userRepository.existsUserByEmail(any()) } returns true
 
         assertThatThrownBy { userAuthService.submitSignUpRequest(request, LocalDateTime.now()) }
-            .isInstanceOf(IllegalStateException::class.java)
-            .message().isEqualTo("${email}의 기존 요청이 이미 승인되었습니다.")
+            .isInstanceOf(BusinessException::class.java)
+            .message().isEqualTo(UserError.ALREADY_SIGNED_UP_EMAIL.message)
     }
 }
