@@ -30,7 +30,7 @@ class UserAuthService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
-        validateExistApplication(request.email)
+        validateApplication(request.email)
 
         UserSignUpApplications(request.toSignUpApplication()).let {
             userSignUpApplicationRepository.save(it)
@@ -50,7 +50,12 @@ class UserAuthService(
         }
     }
 
-    private fun validateExistApplication(email: String) {
+    private fun validateApplication(email: String) {
+        if (userRepository.existsUserByEmail(email)) {
+            logger.error { "${email}은 이미 가입된 이메일입니다." }
+            throw IllegalStateException("${email}은 이미 가입된 이메일입니다.")
+        }
+
         val applications = userSignUpApplicationRepository.findByApplicantEmailAndStatusIn(
             email,
             listOf(UserSignUpApplicationStatus.PENDING, UserSignUpApplicationStatus.APPROVED)
@@ -58,11 +63,6 @@ class UserAuthService(
 
         if (applications.isEmpty()) {
             return
-        }
-
-        if (applications.any { it.status == UserSignUpApplicationStatus.APPROVED }) {
-            logger.error { "${email}의 기존 요청이 이미 승인되었습니다." }
-            throw IllegalStateException("${email}의 기존 요청이 이미 승인되었습니다.")
         }
 
         if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
