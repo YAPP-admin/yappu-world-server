@@ -1,6 +1,6 @@
 package co.yappuworld.global.filter
 
-import co.yappuworld.global.dto.GlobalResponse
+import co.yappuworld.global.dto.ApiResponse
 import co.yappuworld.global.security.JwtHandler
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.error.TokenError
@@ -68,7 +68,7 @@ class JwtFilter(
         response.characterEncoding = "UTF-8"
         response.status = HttpStatus.UNAUTHORIZED.value()
 
-        GlobalResponse(
+        ApiResponse(
             isSuccess = false,
             message = error.message,
             errorCode = error.code,
