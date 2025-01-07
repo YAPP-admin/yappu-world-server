@@ -71,6 +71,26 @@ interface UserAuthApi {
                                         "message": "매칭되는 가입코드가 존재하지 않습니다."
                                     }
                                 """
+                            ),
+                            ExampleObject(
+                                name = "이미 가입된 유저(USR-0002)",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "errorCode": "USR-0002",
+                                        "message": "{email}은 이미 가입된 이메일입니다."
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "처리되지 않은 기존 신청이 존재하는 경우(USR-0003)",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "errorCode": "USR-0003",
+                                        "message": "{email}의 처리되지 않은 기존 신청이 존재합니다."
+                                    }
+                                """
                             )
                         ]
                     )
