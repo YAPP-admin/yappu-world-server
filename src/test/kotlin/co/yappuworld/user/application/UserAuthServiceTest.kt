@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
-import co.yappuworld.user.domain.UserSignUpApplications
+import co.yappuworld.user.domain.SignUpApplication
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.presentation.dto.request.ActivityUnitRequestDto
@@ -45,7 +45,7 @@ class UserAuthServiceTest {
     fun validateExistsPendingApplication() {
         every { userRepository.existsUserByEmail(any()) } returns false
         every { authApplicationRepository.findByApplicantEmailAndStatus(email, any()) } returns listOf(
-            UserSignUpApplications(
+            SignUpApplication(
                 UUID.randomUUID(),
                 request.email,
                 request.toSignUpApplication(),

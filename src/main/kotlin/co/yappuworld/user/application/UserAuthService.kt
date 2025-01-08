@@ -8,7 +8,7 @@ import co.yappuworld.global.vo.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
-import co.yappuworld.user.domain.UserSignUpApplications
+import co.yappuworld.user.domain.SignUpApplication
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -33,7 +33,7 @@ class UserAuthService(
     ) {
         validateApplication(request.email)
 
-        UserSignUpApplications(request.toSignUpApplication()).let {
+        SignUpApplication(request.toSignUpApplication()).let {
             userSignUpApplicationRepository.save(it)
         }
     }
@@ -73,7 +73,7 @@ class UserAuthService(
     }
 
     private fun getUserRoleWithSignUpCode(signUpCode: String): UserRole {
-        val configs = configInquiryComponent.findConfigsByKey(
+        val configs = configInquiryComponent.findConfigsBy(
             listOf("authenticationCodeAdmin", "authenticationCodeAlumni", "authenticationCodeActive")
         )
 

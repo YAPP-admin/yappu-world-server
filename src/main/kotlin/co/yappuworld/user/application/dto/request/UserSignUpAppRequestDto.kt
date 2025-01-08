@@ -2,7 +2,7 @@ package co.yappuworld.user.application.dto.request
 
 import co.yappuworld.global.vo.UserRole
 import co.yappuworld.user.domain.User
-import co.yappuworld.user.domain.UserSignUpApplication
+import co.yappuworld.user.domain.SignUpApplicantDetails
 
 data class UserSignUpAppRequestDto(
     val email: String,
@@ -20,8 +20,8 @@ data class UserSignUpAppRequestDto(
         )
     }
 
-    fun toSignUpApplication(): UserSignUpApplication {
-        return UserSignUpApplication(
+    fun toSignUpApplication(): SignUpApplicantDetails {
+        return SignUpApplicantDetails(
             this.email,
             this.password,
             this.name,

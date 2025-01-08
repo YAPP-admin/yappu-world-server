@@ -18,5 +18,10 @@ enum class UserError : Error {
         override val message: String = "처리되지 않은 가입 신청이 존재하여, 추가 가입 신청이 불가합니다."
         override val code: String = "USR-0003"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    NOT_FOUND_SIGN_UP_APPLICATION {
+        override val message: String = "회원가입 신청 내역을 찾을 수 없습니다."
+        override val code: String = "USR-2001"
+        override val type: ErrorType = ErrorType.NOT_FOUND
     }
 }
