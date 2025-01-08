@@ -45,6 +45,7 @@ interface UserAuthAdminApi {
             ApiResponse(
                 description = "리소스를 찾을 수 없음",
                 responseCode = "404",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -53,7 +54,7 @@ interface UserAuthAdminApi {
                                 name = "요청 ID로 신청서를 찾을 수 없음",
                                 value = """
                                     {
-                                        "message": "회원가입 신청 내역을 찾을 수 없습니다."
+                                        "message": "회원가입 신청 내역을 찾을 수 없습니다.",
                                         "errorCode": "USR-2001"
                                     }
                                 """
@@ -95,6 +96,7 @@ interface UserAuthAdminApi {
             ApiResponse(
                 description = "리소스를 찾을 수 없음",
                 responseCode = "404",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -103,7 +105,7 @@ interface UserAuthAdminApi {
                                 name = "요청 ID로 신청서를 찾을 수 없음",
                                 value = """
                                     {
-                                        "message": "회원가입 신청 내역을 찾을 수 없습니다."
+                                        "message": "회원가입 신청 내역을 찾을 수 없습니다.",
                                         "errorCode": "USR-2001"
                                     }
                                 """

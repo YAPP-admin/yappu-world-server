@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.global.vo.UserRole
+import co.yappuworld.user.domain.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
@@ -80,7 +80,7 @@ class UserAuthService(
         val config = configs.singleOrNull { it.value == signUpCode }
             ?: throw BusinessException(UserError.INVALID_SIGN_UP_CODE)
 
-        return when (config.value) {
+        return when (config.id) {
             "authenticationCodeAdmin" -> UserRole.ADMIN
             "authenticationCodeAlumni" -> UserRole.ALUMNI
             else -> UserRole.ACTIVE

@@ -1,7 +1,5 @@
 package co.yappuworld.user.domain
 
-import co.yappuworld.global.vo.UserRole
-
 data class SignUpApplicantDetails(
     val email: String,
     val password: String,

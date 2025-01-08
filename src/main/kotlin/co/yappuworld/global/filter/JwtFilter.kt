@@ -4,6 +4,7 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.security.JwtHandler
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.error.TokenError
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.jsonwebtoken.ExpiredJwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -36,7 +37,7 @@ class JwtFilter(
     }
 
     private fun extractToken(request: HttpServletRequest) {
-        if (request.getHeader("Authorization") != null) {
+        if (request.getHeader("Authorization") == null) {
             return
         }
 
@@ -72,7 +73,9 @@ class JwtFilter(
             message = error.message,
             errorCode = error.code
         ).let {
-            response.writer.write(it.toString())
+            response.writer.write(
+                jacksonObjectMapper().writeValueAsString(it)
+            )
         }
     }
 }

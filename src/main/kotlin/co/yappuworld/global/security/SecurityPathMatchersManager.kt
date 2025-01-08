@@ -10,7 +10,11 @@ object SecurityPathMatchersManager {
         // swagger
         antMatcher("/swagger-ui/**"),
         antMatcher("/v3/api-docs/**"),
-        antMatcher(POST, "/v1/auth/sign-up"),
-        antMatcher(POST, "/v1/admin/auth/application/approve")
+        antMatcher(POST, "/v1/auth/sign-up")
+    )
+
+    val adminMatchers = RequestMatchers.anyOf(
+        antMatcher(POST, "/v1/admin/**"),
+        antMatcher(POST, "/v1/admin/auth/application/reject")
     )
 }
