@@ -1,0 +1,20 @@
+spring:
+    mvc:
+        hidden-method:
+            filter:
+                enabled: true
+    docker:
+        compose:
+            enabled: false
+    datasource:
+        url: ${DB_HOST}
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+    sql:
+        init:
+            mode: always
+
+jwt:
+    secret_key: ${JWT_SECRET_KEY}
+    access_token_expiration_times: 3600000 # 1hour = 1000(=1s) * 60 * 60
+    refresh_token_expiration_times: 1209600000 # 2weeks = 1000(=1s) * 60 * 60 * 24 * 14

@@ -1,6 +1,7 @@
 package co.yappuworld.global.security
 
 import co.yappuworld.global.vo.UserRole
+import co.yappuworld.user.domain.User
 import java.util.UUID
 
 class SecurityUser(
@@ -20,6 +21,10 @@ class SecurityUser(
                 UUID.fromString(claims["userId"]) ?: return null,
                 UserRole.valueOf(roleValue)
             )
+        }
+
+        fun fromUser(user: User): SecurityUser {
+            return SecurityUser(user.id, user.role)
         }
     }
 }
