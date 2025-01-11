@@ -1,5 +1,6 @@
 package co.yappuworld.user.application
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
@@ -53,12 +54,12 @@ class UserAuthService(
     private fun validateApplication(email: String) {
         if (userRepository.existsUserByEmail(email)) {
             logger.error { "${email}은 이미 가입된 이메일입니다." }
-            throw IllegalStateException("${email}은 이미 가입된 이메일입니다.")
+            throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }
 
-        val applications = userSignUpApplicationRepository.findByApplicantEmailAndStatusIn(
+        val applications = userSignUpApplicationRepository.findByApplicantEmailAndStatus(
             email,
-            listOf(UserSignUpApplicationStatus.PENDING, UserSignUpApplicationStatus.APPROVED)
+            UserSignUpApplicationStatus.PENDING
         )
 
         if (applications.isEmpty()) {
@@ -67,7 +68,7 @@ class UserAuthService(
 
         if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
             logger.error { "${email}의 처리되지 않은 기존 신청이 존재합니다." }
-            throw IllegalStateException("${email}의 처리되지 않은 기존 신청이 존재합니다.")
+            throw BusinessException(UserError.UNPROCESSED_APPLICATION_EXISTS)
         }
     }
 
@@ -77,7 +78,7 @@ class UserAuthService(
         )
 
         val config = configs.singleOrNull { it.value == signUpCode }
-            ?: throw NoSuchElementException("요청한 가입코드에 매칭되는 권한이 없습니다.")
+            ?: throw BusinessException(UserError.INVALID_SIGN_UP_CODE)
 
         return when (config.value) {
             "authenticationCodeAdmin" -> UserRole.ADMIN

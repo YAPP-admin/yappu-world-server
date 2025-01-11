@@ -1,11 +1,12 @@
 package co.yappuworld.global.response
 
+import co.yappuworld.global.exception.Error
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "실패응답")
 data class ErrorResponse(
     @Schema(description = "메세지")
-    val message: String?,
+    val message: String,
     @Schema(description = "에러코드")
     val errorCode: String?
 ) : Response() {
@@ -16,11 +17,18 @@ data class ErrorResponse(
     companion object {
         fun of(
             message: String,
-            errorCode: String
+            errorCode: String?
         ): ErrorResponse {
             return ErrorResponse(
                 message,
                 errorCode
+            )
+        }
+
+        fun of(error: Error): ErrorResponse {
+            return ErrorResponse(
+                error.message,
+                error.code
             )
         }
     }
