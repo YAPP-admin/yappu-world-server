@@ -1,6 +1,6 @@
 package co.yappuworld.global.security
 
-import co.yappuworld.global.vo.UserRole
+import co.yappuworld.user.domain.UserRole
 import co.yappuworld.user.domain.User
 import java.util.UUID
 

@@ -17,20 +17,28 @@ class JwtGenerator(
         now: LocalDateTime
     ): Token {
         val date = Date.from(now.atZone(ZoneId.of("Asia/Seoul")).toInstant())
-        return Token(generateAccessToken(date), generateRefreshToken(date))
+        return Token(generateAccessToken(securityUser, date), generateRefreshToken(securityUser, date))
     }
 
-    private fun generateAccessToken(now: Date): String {
+    private fun generateAccessToken(
+        securityUser: SecurityUser,
+        now: Date
+    ): String {
         return Jwts.builder()
             .subject("AccessToken")
+            .claims(securityUser.claim)
             .expiration(Date(now.time + jwtProperty.accessTokenExpirationTimes))
             .signWith(jwtProperty.base64UrlSecretKey)
             .compact()
     }
 
-    private fun generateRefreshToken(now: Date): String {
+    private fun generateRefreshToken(
+        securityUser: SecurityUser,
+        now: Date
+    ): String {
         return Jwts.builder()
             .subject("RefreshToken")
+            .claims(securityUser.claim)
             .expiration(Date(now.time + jwtProperty.refreshTokenExpirationTimes))
             .signWith(jwtProperty.base64UrlSecretKey)
             .compact()

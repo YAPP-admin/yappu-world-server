@@ -16,7 +16,8 @@ class JwtHandler(
 
     fun extractSecurityUserOrNull(request: HttpServletRequest): SecurityUser? {
         return extractAccessTokenOrNull(request)?.let {
-            SecurityUser.fromValidToken(parseToken(it) as Map<String, String>)
+            val payload = parseToken(it).payload
+            SecurityUser.fromValidToken(payload as Map<String, String>)
         }
     }
 

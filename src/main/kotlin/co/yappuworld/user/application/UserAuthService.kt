@@ -4,11 +4,11 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.global.vo.UserRole
+import co.yappuworld.user.domain.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
-import co.yappuworld.user.domain.UserSignUpApplications
+import co.yappuworld.user.domain.SignUpApplication
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -33,7 +33,7 @@ class UserAuthService(
     ) {
         validateApplication(request.email)
 
-        UserSignUpApplications(request.toSignUpApplication()).let {
+        SignUpApplication(request.toSignUpApplication()).let {
             userSignUpApplicationRepository.save(it)
         }
     }
@@ -73,14 +73,14 @@ class UserAuthService(
     }
 
     private fun getUserRoleWithSignUpCode(signUpCode: String): UserRole {
-        val configs = configInquiryComponent.findConfigsByKey(
+        val configs = configInquiryComponent.findConfigsBy(
             listOf("authenticationCodeAdmin", "authenticationCodeAlumni", "authenticationCodeActive")
         )
 
         val config = configs.singleOrNull { it.value == signUpCode }
             ?: throw BusinessException(UserError.INVALID_SIGN_UP_CODE)
 
-        return when (config.value) {
+        return when (config.id) {
             "authenticationCodeAdmin" -> UserRole.ADMIN
             "authenticationCodeAlumni" -> UserRole.ALUMNI
             else -> UserRole.ACTIVE
