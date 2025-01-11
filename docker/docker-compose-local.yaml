@@ -3,10 +3,15 @@ services:
         container_name: yappu_world_mysql
         image: mysql:8.1
         environment:
-            MYSQL_DATABASE: yappu-world
+            MYSQL_DATABASE: yappu_world
             MYSQL_USER: yapp
             MYSQL_PASSWORD: yapp
             MYSQL_ROOT_PASSWORD: yapp
         ports:
             - '3306:3306'
         restart: always
+        command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --skip-character-set-client-handshake
+

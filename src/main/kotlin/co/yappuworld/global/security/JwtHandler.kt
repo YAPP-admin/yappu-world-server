@@ -22,7 +22,7 @@ class JwtHandler(
 
     fun extractAccessTokenOrNull(request: HttpServletRequest): String? {
         return request.getHeader("Authorization")
-            .takeIf { it.startsWith("Bearer") }
+            ?.takeIf { it.startsWith("Bearer") }
             ?.replace("Bearer ", "")
     }
 
