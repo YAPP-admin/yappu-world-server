@@ -2,8 +2,8 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.user.domain.ActivityUnit
 import co.yappuworld.user.domain.Position
-import co.yappuworld.user.domain.UserSignUpApplication
-import co.yappuworld.user.domain.UserSignUpApplications
+import co.yappuworld.user.domain.SignUpApplicantDetails
+import co.yappuworld.user.domain.SignUpApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -14,7 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserSignUpApplicationRepositoryConverterTest {
+class SignUpApplicantDetailsRepositoryConverterTest {
 
     @Autowired
     lateinit var userSignUpApplicationRepository: UserSignUpApplicationRepository
@@ -22,14 +22,14 @@ class UserSignUpApplicationRepositoryConverterTest {
     @Test
     @DisplayName("UserSignUpApplication Custom Converter 정상 동작 확인")
     fun test() {
-        val application = UserSignUpApplication(
+        val application = SignUpApplicantDetails(
             "abc@abc.com",
             "abc",
             "abc",
             listOf(ActivityUnit(0, Position.PM))
-        ).let { userSignUpApplicationRepository.save(UserSignUpApplications(it)) }
+        ).let { userSignUpApplicationRepository.save(SignUpApplication(it)) }
 
         assertThat(checkNotNull(userSignUpApplicationRepository.findByIdOrNull(application.id)))
-            .isInstanceOf(UserSignUpApplications::class.java)
+            .isInstanceOf(SignUpApplication::class.java)
     }
 }

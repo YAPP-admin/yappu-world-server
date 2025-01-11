@@ -12,12 +12,12 @@ class ConfigInquiryComponent(
     private val configRepository: ConfigRepository
 ) {
 
-    fun findConfigsByKey(key: String): Config {
+    fun findConfigBy(key: String): Config {
         return configRepository.findById(key).getOrNull()
             ?: throw NoSuchElementException("해당하는 값을 찾을 수 없습니다.")
     }
 
-    fun findConfigsByKey(keys: List<String>): List<Config> {
+    fun findConfigsBy(keys: List<String>): List<Config> {
         return configRepository.findAllByIdIn(keys)
     }
 }
