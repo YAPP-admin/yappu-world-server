@@ -6,7 +6,10 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.global.vo.UserRole
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
+import co.yappuworld.user.domain.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.UserSignUpApplications
 import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +20,7 @@ private val logger = KotlinLogging.logger { }
 @Service
 class UserAuthService(
     private val userRepository: UserRepository,
+    private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
     private val jwtGenerator: JwtGenerator,
     private val configInquiryComponent: ConfigInquiryComponent
 ) {
@@ -26,7 +30,11 @@ class UserAuthService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
-        TODO("Not yet implemented")
+        validateApplication(request.email)
+
+        UserSignUpApplications(request.toSignUpApplication()).let {
+            userSignUpApplicationRepository.save(it)
+        }
     }
 
     @Transactional
@@ -39,6 +47,27 @@ class UserAuthService(
         return userRepository.save(request.toUser(role)).let { user ->
             val securityUser = SecurityUser.fromUser(user)
             jwtGenerator.generateToken(securityUser, now)
+        }
+    }
+
+    private fun validateApplication(email: String) {
+        if (userRepository.existsUserByEmail(email)) {
+            logger.error { "${email}은 이미 가입된 이메일입니다." }
+            throw IllegalStateException("${email}은 이미 가입된 이메일입니다.")
+        }
+
+        val applications = userSignUpApplicationRepository.findByApplicantEmailAndStatusIn(
+            email,
+            listOf(UserSignUpApplicationStatus.PENDING, UserSignUpApplicationStatus.APPROVED)
+        )
+
+        if (applications.isEmpty()) {
+            return
+        }
+
+        if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
+            logger.error { "${email}의 처리되지 않은 기존 신청이 존재합니다." }
+            throw IllegalStateException("${email}의 처리되지 않은 기존 신청이 존재합니다.")
         }
     }
 

@@ -11,6 +11,8 @@ spring:
             stop:
                 command: down
                 timeout: 1m
+            skip:
+                in-tests: false
     datasource:
         url: jdbc:mysql://localhost:3306/yappu_world
         username: yapp
@@ -18,10 +20,6 @@ spring:
     sql:
         init:
             mode: always
-#
-#springdoc:
-#    default-produces-media-type: application/json
-#    default-consumes-media-type: application/json
 
 jwt:
     secret_key: thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocalenvironment
