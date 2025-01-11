@@ -68,17 +68,27 @@ interface UserAuthApi {
                                     {
                                         "isSuccess": "false",
                                         "errorCode": "USR-0001",
-                                        "message": "매칭되는 가입코드가 존재하지 않습니다."
+                                        "message": "잘못된 가입코드입니다."
                                     }
                                 """
-                            ),
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
                             ExampleObject(
                                 name = "이미 가입된 유저(USR-0002)",
                                 value = """
                                     {
                                         "isSuccess": "false",
                                         "errorCode": "USR-0002",
-                                        "message": "{email}은 이미 가입된 이메일입니다."
+                                        "message": "이미 가입된 이메일입니다."
                                     }
                                 """
                             ),
@@ -88,7 +98,7 @@ interface UserAuthApi {
                                     {
                                         "isSuccess": "false",
                                         "errorCode": "USR-0003",
-                                        "message": "{email}의 처리되지 않은 기존 신청이 존재합니다."
+                                        "message": "처리되지 않은 가입 신청이 존재하여, 추가 가입 신청이 불가합니다."
                                     }
                                 """
                             )
