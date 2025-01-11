@@ -1,7 +1,9 @@
 package co.yappuworld.global.config
 
-import co.yappuworld.global.persistence.StringToUuidConverter
-import co.yappuworld.global.persistence.UuidToStringConverter
+import co.yappuworld.global.persistence.UserApplicationReadingConverter
+import co.yappuworld.global.persistence.UserApplicationWritingConverter
+import co.yappuworld.global.persistence.UuidIdentifierReadingConverter
+import co.yappuworld.global.persistence.UuidIdentifierWritingConverter
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.core.convert.JdbcCustomConversions
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
@@ -16,8 +18,10 @@ class JdbcConfig : AbstractJdbcConfiguration() {
     override fun jdbcCustomConversions(): JdbcCustomConversions {
         return JdbcCustomConversions(
             listOf(
-                UuidToStringConverter(),
-                StringToUuidConverter()
+                UuidIdentifierWritingConverter(),
+                UuidIdentifierReadingConverter(),
+                UserApplicationWritingConverter(),
+                UserApplicationReadingConverter()
             )
         )
     }
