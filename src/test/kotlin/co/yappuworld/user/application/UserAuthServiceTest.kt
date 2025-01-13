@@ -3,19 +3,17 @@ package co.yappuworld.user.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.operation.application.ConfigInquiryComponent
-import co.yappuworld.user.domain.UserSignUpApplicationStatus
+import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
+import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.SignUpApplication
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
-import co.yappuworld.user.presentation.dto.request.ActivityUnitRequestDto
-import co.yappuworld.user.presentation.dto.request.UserSignUpRequestDto
 import co.yappuworld.user.presentation.vo.PositionApiType
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import java.time.LocalDateTime
-import java.util.UUID
 import kotlin.test.Test
 
 class UserAuthServiceTest {
@@ -32,11 +30,11 @@ class UserAuthServiceTest {
     )
 
     val email = "abc@abc.com"
-    val request = UserSignUpRequestDto(
+    val request = UserSignUpAppRequestDto(
         email,
         "password",
         "name",
-        listOf(ActivityUnitRequestDto(1, PositionApiType.PM)),
+        listOf(ActivityUnitAppRequestDto(1, PositionApiType.PM)),
         ""
     )
 
@@ -44,15 +42,9 @@ class UserAuthServiceTest {
     @DisplayName("기존에 처리되지 않은 신청이 있다면 예외가 발생한다.")
     fun validateExistsPendingApplication() {
         every { userRepository.existsUserByEmail(any()) } returns false
-        every { authApplicationRepository.findByApplicantEmailAndStatus(email, any()) } returns listOf(
-            SignUpApplication(
-                UUID.randomUUID(),
-                request.email,
-                request.toSignUpApplication(),
-                UserSignUpApplicationStatus.PENDING,
-                null
-            )
-        )
+        every {
+            authApplicationRepository.findByApplicantEmailAndStatus(email, any())
+        } returns listOf(SignUpApplication(request.toSignUpApplication()))
 
         assertThatThrownBy { userAuthService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)

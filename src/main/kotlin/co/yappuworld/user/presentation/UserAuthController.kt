@@ -3,6 +3,7 @@ package co.yappuworld.user.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.UserAuthService
+import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -24,5 +25,11 @@ class UserAuthController(
         return ResponseEntity.ok(
             SuccessResponse.of(userAuthService.signUpWithCode(request.toAppRequest(), now))
         )
+    }
+
+    override fun login(request: LoginApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
+        val now = LocalDateTime.now()
+        userAuthService.login(request.toAppRequest(), now)
+        TODO("Not yet implemented")
     }
 }
