@@ -20,6 +20,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 private val logger = KotlinLogging.logger { }
 
@@ -69,17 +70,12 @@ class UserAuthService(
 
     @Transactional
     fun reissueToken(request: ReissueTokenAppRequestDto): Token {
-        val userId = jwtResolver.extractUserIdFrom(request.accessToken)
-        val userOrNull = userRepository.findByIdOrNull(userId)
-
-        if (userOrNull == null) {
-            logger.error { "$userId 유저를 찾을 수 없습니다." }
-            throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
-        }
+        val userId = UUID.fromString(jwtResolver.getClaimsFrom(request.accessToken)["userId"].toString())
+        val user = userRepository.findByIdOrNull(userId) ?: throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
 
         // TODO - AT와 RT의 화이트리스트 또는 블랙리스트 전략 필요
 
-        return jwtGenerator.generateToken(SecurityUser.from(userOrNull), request.now)
+        return jwtGenerator.generateToken(SecurityUser.from(user), request.now)
     }
 
     private fun validateApplication(email: String) {
