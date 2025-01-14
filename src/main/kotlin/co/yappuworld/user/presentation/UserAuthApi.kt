@@ -214,6 +214,79 @@ interface UserAuthApi {
         @RequestBody request: LoginApiRequestDto
     ): ResponseEntity<SuccessResponse<Token>>
 
+    @Operation(summary = "토큰 재발급")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                description = "성공",
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰 재발급 성공",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": {
+                                            "accessToken": "accessToken...",
+                                            "refreshToken": "refreshToken..."
+                                        }
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                description = "로그인 실패",
+                responseCode = "404",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰 정보와 매칭되는 유저를 찾을 수 없습니다.",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "message": "계정 정보를 찾을 수 없습니다.",
+                                        "errorCode": "USR-2101"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                description = "토큰 오류",
+                responseCode = "409",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "비정상 토큰",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "message": "비정상 토큰입니다.",
+                                        "errorCode": "TKN-0002"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @PostMapping("/v1/auth/reissue-token")
     fun reissueToken(
         @RequestBody request: ReissueTokenApiRequestDto
