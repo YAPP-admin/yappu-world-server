@@ -23,7 +23,7 @@ class SecurityUser(
             )
         }
 
-        fun fromUser(user: User): SecurityUser {
+        fun from(user: User): SecurityUser {
             return SecurityUser(user.id, user.role)
         }
     }
