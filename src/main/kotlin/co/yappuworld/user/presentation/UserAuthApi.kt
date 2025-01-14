@@ -4,6 +4,7 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
+import co.yappuworld.user.presentation.dto.request.ReissueTokenApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -211,5 +212,10 @@ interface UserAuthApi {
     @PostMapping("/v1/auth/login")
     fun login(
         @RequestBody request: LoginApiRequestDto
+    ): ResponseEntity<SuccessResponse<Token>>
+
+    @PostMapping("/v1/auth/reissue-token")
+    fun reissueToken(
+        @RequestBody request: ReissueTokenApiRequestDto
     ): ResponseEntity<SuccessResponse<Token>>
 }

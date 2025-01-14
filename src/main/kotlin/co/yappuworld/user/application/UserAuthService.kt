@@ -2,10 +2,12 @@ package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
+import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.LoginAppRequestDto
+import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.SignUpApplication
 import co.yappuworld.user.domain.UserRole
@@ -14,9 +16,11 @@ import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Limit
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 private val logger = KotlinLogging.logger { }
 
@@ -25,6 +29,7 @@ class UserAuthService(
     private val userRepository: UserRepository,
     private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
     private val jwtGenerator: JwtGenerator,
+    private val jwtResolver: JwtResolver,
     private val configInquiryComponent: ConfigInquiryComponent
 ) {
 
@@ -48,7 +53,7 @@ class UserAuthService(
         val role = getUserRoleWithSignUpCode(request.signUpCode)
 
         return userRepository.save(request.toUser(role)).let { user ->
-            val securityUser = SecurityUser.fromUser(user)
+            val securityUser = SecurityUser.from(user)
             jwtGenerator.generateToken(securityUser, now)
         }
     }
@@ -59,8 +64,18 @@ class UserAuthService(
         now: LocalDateTime
     ): Token {
         return userRepository.findUserOrNullByEmail(request.email)?.let {
-            jwtGenerator.generateToken(SecurityUser.fromUser(it), now)
+            jwtGenerator.generateToken(SecurityUser.from(it), now)
         } ?: processLoginException(request.email)
+    }
+
+    @Transactional
+    fun reissueToken(request: ReissueTokenAppRequestDto): Token {
+        val userId = UUID.fromString(jwtResolver.getClaimsFrom(request.accessToken)["userId"].toString())
+        val user = userRepository.findByIdOrNull(userId) ?: throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
+
+        // TODO - AT와 RT의 화이트리스트 또는 블랙리스트 전략 필요
+
+        return jwtGenerator.generateToken(SecurityUser.from(user), request.now)
     }
 
     private fun validateApplication(email: String) {

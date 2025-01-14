@@ -1,7 +1,7 @@
 package co.yappuworld.global.filter
 
 import co.yappuworld.global.response.ErrorResponse
-import co.yappuworld.global.security.JwtHandler
+import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.error.TokenError
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -18,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtFilter(
-    private val jwtHandler: JwtHandler
+    private val jwtResolver: JwtResolver
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -41,9 +41,17 @@ class JwtFilter(
             return
         }
 
-        jwtHandler.extractSecurityUserOrNull(request)?.let {
-            saveSecurityUserOnContextHolder(it)
+        extractAccessTokenOrNull(request)?.let { accessToken ->
+            jwtResolver.extractSecurityUserOrNull(accessToken)?.let { securityUser ->
+                saveSecurityUserOnContextHolder(securityUser)
+            }
         }
+    }
+
+    private fun extractAccessTokenOrNull(request: HttpServletRequest): String? {
+        return request.getHeader("Authorization")
+            ?.takeIf { it.startsWith("Bearer") }
+            ?.replace("Bearer ", "")
     }
 
     private fun saveSecurityUserOnContextHolder(securityUser: SecurityUser) {
