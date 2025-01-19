@@ -85,8 +85,7 @@ class UserAuthService(
 
     @Transactional(readOnly = true)
     fun checkEmailAvailability(request: CheckingEmailAvailabilityAppRequestDto) {
-        val findUserOrNullByEmail = userRepository.findUserOrNullByEmail(request.email)
-        if (findUserOrNullByEmail?.isActive == true) {
+        if (userRepository.existsUserByEmail(request.email)) {
             throw BusinessException(UserError.DUPLICATE_EMAIL)
         }
     }
