@@ -28,7 +28,12 @@ class GlobalExceptionHandler {
         return e.bindingResult.fieldErrors[0].defaultMessage?.let {
             ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(message = it))
+                .body(
+                    ErrorResponse.of(
+                        message = it,
+                        errorCode = GlobalError.INVALID_REQUEST_ARGUMENT.code
+                    )
+                )
         } ?: getInternalServerErrorResponse()
     }
 
@@ -44,12 +49,13 @@ class GlobalExceptionHandler {
             ErrorType.UNAUTHORIZED -> HttpStatus.UNAUTHORIZED
             ErrorType.NOT_FOUND -> HttpStatus.NOT_FOUND
             ErrorType.WRONG_STATE -> HttpStatus.CONFLICT
+            ErrorType.UNEXPECTED_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR
         }
     }
 
     private fun getInternalServerErrorResponse(): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .internalServerError()
-            .body(ErrorResponse.internalServerError())
+            .body(ErrorResponse.of(GlobalError.INTERNAL_SERVER_ERROR))
     }
 }

@@ -31,12 +31,5 @@ data class ErrorResponse(
                 error.code
             )
         }
-
-        fun internalServerError(): ErrorResponse {
-            return ErrorResponse(
-                "서버 관리자에게 문의해주세요.",
-                null
-            )
-        }
     }
 }
