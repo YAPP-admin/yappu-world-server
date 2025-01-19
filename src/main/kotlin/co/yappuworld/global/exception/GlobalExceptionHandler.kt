@@ -4,6 +4,7 @@ import co.yappuworld.global.response.ErrorResponse
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -20,12 +21,21 @@ class GlobalExceptionHandler {
             .body(ErrorResponse.of(e.error))
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        logger.error { e.message }
+
+        return e.bindingResult.fieldErrors[0].defaultMessage?.let {
+            ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(message = it))
+        } ?: getInternalServerErrorResponse()
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
         logger.error { e.message }
-        return ResponseEntity
-            .internalServerError()
-            .body(ErrorResponse.of("서버 관리자에게 문의해주세요.", null))
+        return getInternalServerErrorResponse()
     }
 
     private fun getHttpStatusBy(errorType: ErrorType): HttpStatus {
@@ -35,5 +45,11 @@ class GlobalExceptionHandler {
             ErrorType.NOT_FOUND -> HttpStatus.NOT_FOUND
             ErrorType.WRONG_STATE -> HttpStatus.CONFLICT
         }
+    }
+
+    private fun getInternalServerErrorResponse(): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .internalServerError()
+            .body(ErrorResponse.internalServerError())
     }
 }

@@ -17,7 +17,7 @@ data class ErrorResponse(
     companion object {
         fun of(
             message: String,
-            errorCode: String?
+            errorCode: String? = null
         ): ErrorResponse {
             return ErrorResponse(
                 message,
@@ -29,6 +29,13 @@ data class ErrorResponse(
             return ErrorResponse(
                 error.message,
                 error.code
+            )
+        }
+
+        fun internalServerError(): ErrorResponse {
+            return ErrorResponse(
+                "서버 관리자에게 문의해주세요.",
+                null
             )
         }
     }

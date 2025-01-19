@@ -55,7 +55,7 @@ interface UserAuthAdminApi {
                                 value = """
                                     {
                                         "message": "회원가입 신청 내역을 찾을 수 없습니다.",
-                                        "errorCode": "USR-2001"
+                                        "errorCode": "USR_1099"
                                     }
                                 """
                             )
@@ -106,7 +106,7 @@ interface UserAuthAdminApi {
                                 value = """
                                     {
                                         "message": "회원가입 신청 내역을 찾을 수 없습니다.",
-                                        "errorCode": "USR-2001"
+                                        "errorCode": "USR_1099"
                                     }
                                 """
                             )

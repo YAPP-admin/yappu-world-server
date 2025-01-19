@@ -6,11 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotEmpty
 
 data class ActivityUnitApiRequestDto(
-    @NotEmpty
     @Schema(description = "기수")
+    @field:NotEmpty(message = "기수는 필수로 입력해야 합니다.")
     val generation: Int,
-    @NotEmpty
     @Schema(description = "직군")
+    @field:NotEmpty(message = "직군은 필수로 입력해야 합니다.")
     val position: PositionApiType
 ) {
     fun toAppRequest(): ActivityUnitAppRequestDto {
