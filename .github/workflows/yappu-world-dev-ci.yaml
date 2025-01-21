@@ -34,7 +34,7 @@ jobs:
                 with:
                     title: ✅ 개발 환경 CI 성공 ✅
                     webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-                    color: 0x0000ff
+                    color: 0x00FF00
                     username: 페페훅
 
             -   name: Backend CI Discord Notification
@@ -43,4 +43,5 @@ jobs:
                 with:
                     title: ❗️개발 환경 CI 실패 ❗️
                     webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                    color: 0xFF0000
                     username: 페페훅
