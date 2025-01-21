@@ -40,7 +40,7 @@ jobs:
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build --info
                 env:
-                    SPRING_PROFILES_ACTIVE: dev
+                    SPRING_PROFILES_ACTIVE: test
 
             -   name: Backend CI Discord Notification
                 uses: sarisia/actions-status-discord@v1
