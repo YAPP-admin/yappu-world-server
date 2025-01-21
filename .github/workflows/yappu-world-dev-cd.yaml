@@ -72,7 +72,7 @@ jobs:
                 with:
                     host: ${{ secrets.AWS_DEV_EC2_HOST }}
                     username: ec2-user
-                    key: ${{ secrets.AWS_DEV_EC2_SSH_PEM_KEY }}
+                    key: ${{ secrets.AWS_DEV_EC2_SSH_PRIVATE_KEY }}
                     source: "deployment/*"
                     target: "/home/ec2-user/"
 
