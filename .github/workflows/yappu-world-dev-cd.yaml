@@ -83,7 +83,7 @@ jobs:
                     username: ec2-user
                     key: ${{ secrets.AWS_DEV_EC2_SSH_PRIVATE_KEY }}
                     script: |
-                        cd /home/ec2-user
+                        cd /home/ec2-user/deployment
                         docker-compose -f docker-compose-dev.yaml down
                         docker system prune -f
                         docker-compose -f docker-compose-dev.yaml up -d --build
