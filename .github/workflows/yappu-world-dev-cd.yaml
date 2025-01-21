@@ -1,4 +1,4 @@
-name: yappu-world-dev-ci
+name: yappu-world-dev-cd
 
 on:
     #    push:
@@ -46,7 +46,7 @@ jobs:
             -   name: Prepare File for Deployment
                 run: |
                     mkdir -p deployment/app/build/libs
-                    cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yml deployment/
+                    cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/
                     cp -r ./app/build/libs/*.jar deployment/app/build
 
             # Github Action 실행 서버 IP 추출
@@ -84,9 +84,9 @@ jobs:
                     key: ${{ secrets.AWS_DEV_EC2_SSH_PEM_KEY }}
                     script: |
                         cd /home/ec2-user
-                        docker-compose -f docker-compose-dev.yml down
+                        docker-compose -f docker-compose-dev.yaml down
                         docker system prune -f
-                        docker-compose -f docker-compose-dev.yml up -d --build
+                        docker-compose -f docker-compose-dev.yaml up -d --build
 
             -   name: Remove Github Actions IP from Security Group
                 if: always()
