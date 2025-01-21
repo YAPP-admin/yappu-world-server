@@ -86,7 +86,7 @@ jobs:
                         cd /home/ec2-user/deployment
                         docker-compose -f docker-compose-dev.yaml down
                         docker system prune -f
-                        docker-compose -f docker-compose-dev.yaml up -d --build
+                        docker-compose -f docker-compose-dev.yaml up -d --build --no-cache
 
             -   name: Remove Github Actions IP from Security Group
                 if: always()
