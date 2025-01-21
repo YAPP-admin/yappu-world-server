@@ -14,6 +14,7 @@ import co.yappuworld.user.domain.SignUpApplication
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.presentation.vo.PositionApiType
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
 import io.mockk.mockk
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.DisplayName
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import kotlin.test.Test
+
+private val logger = KotlinLogging.logger { }
 
 class UserAuthServiceTest {
 
@@ -89,6 +92,8 @@ class UserAuthServiceTest {
                 )
             }
 
+        logger.info { "현재시간: ${LocalDateTime.now()}" }
+
         assertThat(
             checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken)).userId
         ).isEqualTo(user.id)
@@ -113,6 +118,8 @@ class UserAuthServiceTest {
         val reissuedToken = userAuthService.reissueToken(
             ReissueTokenAppRequestDto(token.accessToken, token.refreshToken!!, LocalDateTime.now())
         )
+
+        logger.info { "현재시간: ${LocalDateTime.now()}" }
 
         assertThat(
             checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken)).userId
