@@ -45,9 +45,9 @@ jobs:
 
             -   name: Prepare File for Deployment
                 run: |
-                    mkdir -p deployment/app/build/libs
+                    mkdir -p deployment/build/libs
                     cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/
-                    cp -r ./build/libs/yappu-world.jar deployment/app/build
+                    cp -r ./build/libs/yappu-world.jar deployment/build
 
             # Github Action 실행 서버 IP 추출
             -   name: Get Github Actions IP
@@ -94,20 +94,20 @@ jobs:
                     aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_DEV_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32    
 
             # Discord Notification
-            -   name: CD Success Notification
-                uses: sarisia/actions-status-discord@v1
-                if: success()
-                with:
-                    title: ✅ 개발 환경 배포 성공 ✅
-                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-                    color: 0x00FF00
-                    username: 페페훅
-
-            -   name: CD Failure Notification
-                uses: sarisia/actions-status-discord@v1
-                if: failure()
-                with:
-                    title: ❗️개발 환경 배포 실패 ❗️
-                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-                    color: 0xFF0000
-                    username: 페페훅
+#            -   name: CD Success Notification
+#                uses: sarisia/actions-status-discord@v1
+#                if: success()
+#                with:
+#                    title: ✅ 개발 환경 배포 성공 ✅
+#                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#                    color: 0x00FF00
+#                    username: 페페훅
+#
+#            -   name: CD Failure Notification
+#                uses: sarisia/actions-status-discord@v1
+#                if: failure()
+#                with:
+#                    title: ❗️개발 환경 배포 실패 ❗️
+#                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#                    color: 0xFF0000
+#                    username: 페페훅
