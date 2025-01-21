@@ -1,6 +1,5 @@
 server:
     forward-headers-strategy: framework
-    port: ${DEV_SERVER_PORT}
 
 spring:
     mvc:
