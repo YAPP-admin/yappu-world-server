@@ -4,7 +4,7 @@ FROM bellsoft/liberica-openjdk-alpine:21
 WORKDIR /app
 
 # 빌드된 JAR 파일 복사
-COPY deployment/build/libs/yappu-world.jar app.jar
+COPY build/libs/yappu-world.jar app.jar
 
 # dev 프로파일로 애플리케이션 실행
 ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "app.jar"]
