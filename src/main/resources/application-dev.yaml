@@ -1,6 +1,6 @@
 server:
     forward-headers-strategy: framework
-    port: ${DEV_PORT}
+    port: ${DEV_SERVER_PORT}
 
 spring:
     mvc:
@@ -11,14 +11,14 @@ spring:
         compose:
             enabled: false
     datasource:
-        url: ${DB_URL}
-        username: ${DB_USERNAME}
-        password: ${DB_PASSWORD}
+        url: ${DEV_DB_URL}
+        username: ${DEV_DB_USERNAME}
+        password: ${DEV_DB_PASSWORD}
     sql:
         init:
             mode: always
 
 jwt:
-    secret_key: ${JWT_SECRET_KEY}
-    access_token_expiration_times: ${ACCESS_TOKEN_EXPIRATION_TIMES} # 1hour = 1000(=1s) * 60 * 60
-    refresh_token_expiration_times: ${REFRESH_TOKEN_EXPIRATION_TIMES} # 2weeks = 1000(=1s) * 60 * 60 * 24 * 14
+    secret_key: ${DEV_JWT_SECRET_KEY}
+    access_token_expiration_times: ${DEV_ACCESS_TOKEN_EXPIRATION_TIMES}
+    refresh_token_expiration_times: ${DEV_REFRESH_TOKEN_EXPIRATION_TIMES}
