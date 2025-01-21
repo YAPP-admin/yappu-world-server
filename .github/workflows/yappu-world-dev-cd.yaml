@@ -47,7 +47,7 @@ jobs:
                 run: |
                     mkdir -p deployment/build/libs
                     cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/
-                    cp -r ./build/libs/yappu-world.jar deployment/build
+                    cp -r ./build/libs/yappu-world.jar deployment/build/libs
 
             # Github Action 실행 서버 IP 추출
             -   name: Get Github Actions IP
