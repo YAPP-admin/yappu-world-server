@@ -28,20 +28,21 @@ jobs:
                 env:
                     SPRING_PROFILES_ACTIVE: test
 
-#            -   name: CI Success Notification
-#                uses: sarisia/actions-status-discord@v1
-#                if: success()
-#                with:
-#                    title: ✅ 개발 환경 CI 성공 ✅
-#                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-#                    color: 0x00FF00
-#                    username: 페페훅
-#
-#            -   name: CI Failure Notification
-#                uses: sarisia/actions-status-discord@v1
-#                if: failure()
-#                with:
-#                    title: ❗️개발 환경 CI 실패 ❗️
-#                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-#                    color: 0xFF0000
-#                    username: 페페훅
+            # Discord Notification
+            -   name: CI Success Notification
+                uses: sarisia/actions-status-discord@v1
+                if: success()
+                with:
+                    title: ✅ 개발 환경 CI 성공 ✅
+                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                    color: 0x00FF00
+                    username: 페페훅
+
+            -   name: CI Failure Notification
+                uses: sarisia/actions-status-discord@v1
+                if: failure()
+                with:
+                    title: ❗️개발 환경 CI 실패 ❗️
+                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                    color: 0xFF0000
+                    username: 페페훅
