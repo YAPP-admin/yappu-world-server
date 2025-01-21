@@ -58,8 +58,8 @@ jobs:
             -   name: Configure AWS Credentials
                 uses: aws-actions/configure-aws-credentials@v4
                 with:
-                    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-                    aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+                    aws-access-key-id: ${{ secrets.AWS_BOT_ACCESS_KEY }}
+                    aws-secret-access-key: ${{ secrets.AWS_BOT_SECRET_KEY }}
                     aws-region: ap-northeast-2
 
             # Security Group에 Github Action 서버를 등록
