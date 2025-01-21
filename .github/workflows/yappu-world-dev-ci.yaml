@@ -4,9 +4,6 @@ on:
     pull_request:
         branches:
             - develop
-    push:
-        branches:
-            - chore/dev-ci-cd
 
 jobs:
     build:
@@ -41,7 +38,9 @@ jobs:
                     jwt.refresh_token_expiration_times: ${{ secrets.DEV_REFRESH_TOKEN_EXPIRATION_TIMES }}
 
             -   name: Build with Gradle Wrapper
-                run: ./gradlew clean build -Dspring.profiles.active=dev --info
+                run: ./gradlew clean build --info
+                env:
+                    SPRING_PROFILES_ACTIVE: dev
 
             -   name: Backend CI Discord Notification
                 uses: sarisia/actions-status-discord@v1
