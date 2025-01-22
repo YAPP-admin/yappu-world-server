@@ -7,10 +7,13 @@ import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.CheckingEmailAvailabilityAppRequestDto
+import co.yappuworld.user.application.dto.request.LatestSignUpApplicationAppRequestDto
 import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
+import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
 import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.UserError
 import co.yappuworld.user.domain.UserRole
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.UserRepository
@@ -88,6 +91,19 @@ class UserAuthService(
         if (userRepository.existsUserByEmail(request.email)) {
             throw BusinessException(UserError.DUPLICATE_EMAIL)
         }
+    }
+
+    @Transactional(readOnly = true)
+    fun findLatestSignUpApplication(
+        request: LatestSignUpApplicationAppRequestDto
+    ): LatestSignUpApplicationAppResponseDto {
+        val signUpApplication = userSignUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
+            request.email,
+            Limit.of(1)
+        )?.apply { checkPassword(request.password) }
+            ?: throw BusinessException(UserError.NO_SIGN_UP_APPLICATION)
+
+        return LatestSignUpApplicationAppResponseDto.of(signUpApplication)
     }
 
     private fun validateApplication(email: String) {
