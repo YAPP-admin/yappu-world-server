@@ -65,7 +65,7 @@ interface UserAuthAdminApi {
             )
         ]
     )
-    @PostMapping("/v1/admin/auth/application/approve")
+    @PostMapping("/v1/admin/auth/applications/approve")
     fun approveSignUpApplication(
         @RequestBody request: SignUpApplicationApproveApiRequestDto
     ): ResponseEntity<SuccessResponse<Unit>>
@@ -116,7 +116,7 @@ interface UserAuthAdminApi {
             )
         ]
     )
-    @PostMapping("/v1/admin/auth/application/reject")
+    @PostMapping("/v1/admin/auth/applications/reject")
     fun rejectSignUpApplication(
         @RequestBody request: SignUpApplicationRejectApiRequestDto
     ): ResponseEntity<SuccessResponse<Unit>>
