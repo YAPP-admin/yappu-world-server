@@ -1,7 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.user.domain.model.ActivityUnit
-import co.yappuworld.user.domain.Position
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.model.SignUpApplicantDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import org.assertj.core.api.Assertions.assertThat

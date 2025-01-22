@@ -1,4 +1,4 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.vo
 
 /**
  * @property ADMIN 관리자

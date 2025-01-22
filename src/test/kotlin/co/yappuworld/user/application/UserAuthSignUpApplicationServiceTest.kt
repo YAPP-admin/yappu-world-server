@@ -8,9 +8,9 @@ import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.dto.getLatestSignUpApplicationAppRequestDtoFixture
 import co.yappuworld.support.fixture.user.getSignUpApplication
 import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.UserError
-import co.yappuworld.user.domain.UserRole
-import co.yappuworld.user.domain.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.mockk.every

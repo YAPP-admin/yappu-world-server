@@ -2,9 +2,9 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.user.domain.UserError
-import co.yappuworld.user.domain.UserRole
-import co.yappuworld.user.domain.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import com.github.f4b6a3.ulid.UlidCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
@@ -35,7 +35,7 @@ class SignUpApplication private constructor(
         null
     )
 
-    fun approve(role: UserRole) {
+    fun approve() {
         this.status = UserSignUpApplicationStatus.APPROVED
     }
 
@@ -60,5 +60,11 @@ class SignUpApplication private constructor(
 
     override fun isNew(): Boolean {
         return !isCreatedAtInitialized()
+    }
+
+    fun toActivityUnits(user: User): List<ActivityUnit> {
+        return this.applicantDetails.activityUnits.map {
+            it.toActivityUnit(user.id)
+        }
     }
 }

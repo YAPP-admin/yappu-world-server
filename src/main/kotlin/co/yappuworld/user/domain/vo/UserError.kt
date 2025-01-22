@@ -1,4 +1,4 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.vo
 
 import co.yappuworld.global.exception.Error
 import co.yappuworld.global.exception.ErrorType

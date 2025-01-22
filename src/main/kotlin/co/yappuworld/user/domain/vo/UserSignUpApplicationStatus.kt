@@ -1,4 +1,4 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.vo
 
 /**
  * @property PENDING 신청상태

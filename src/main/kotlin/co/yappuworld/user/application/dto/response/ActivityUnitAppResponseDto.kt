@@ -1,6 +1,6 @@
 package co.yappuworld.user.application.dto.response
 
-import co.yappuworld.user.domain.Position
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.model.ActivityUnit
 
 data class ActivityUnitAppResponseDto(
