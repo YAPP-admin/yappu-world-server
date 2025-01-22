@@ -6,6 +6,7 @@ import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.user.application.dto.request.CheckingEmailAvailabilityAppRequestDto
 import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
@@ -80,6 +81,13 @@ class UserAuthService(
         // TODO - AT와 RT의 화이트리스트 또는 블랙리스트 전략 필요
 
         return jwtGenerator.generateToken(SecurityUser.from(userOrNull), request.now)
+    }
+
+    @Transactional(readOnly = true)
+    fun checkEmailAvailability(request: CheckingEmailAvailabilityAppRequestDto) {
+        if (userRepository.existsUserByEmail(request.email)) {
+            throw BusinessException(UserError.DUPLICATE_EMAIL)
+        }
     }
 
     private fun validateApplication(email: String) {

@@ -17,7 +17,7 @@ data class ErrorResponse(
     companion object {
         fun of(
             message: String,
-            errorCode: String?
+            errorCode: String? = null
         ): ErrorResponse {
             return ErrorResponse(
                 message,

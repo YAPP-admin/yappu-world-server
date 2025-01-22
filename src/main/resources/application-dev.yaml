@@ -1,3 +1,7 @@
+server:
+    forward-headers-strategy: framework
+    port: ${DEV_PORT}
+
 spring:
     mvc:
         hidden-method:
@@ -7,7 +11,7 @@ spring:
         compose:
             enabled: false
     datasource:
-        url: ${DB_HOST}
+        url: ${DB_URL}
         username: ${DB_USERNAME}
         password: ${DB_PASSWORD}
     sql:
@@ -16,5 +20,5 @@ spring:
 
 jwt:
     secret_key: ${JWT_SECRET_KEY}
-    access_token_expiration_times: 3600000 # 1hour = 1000(=1s) * 60 * 60
-    refresh_token_expiration_times: 1209600000 # 2weeks = 1000(=1s) * 60 * 60 * 24 * 14
+    access_token_expiration_times: ${ACCESS_TOKEN_EXPIRATION_TIMES} # 1hour = 1000(=1s) * 60 * 60
+    refresh_token_expiration_times: ${REFRESH_TOKEN_EXPIRATION_TIMES} # 2weeks = 1000(=1s) * 60 * 60 * 24 * 14

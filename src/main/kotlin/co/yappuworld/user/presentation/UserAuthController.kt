@@ -3,6 +3,7 @@ package co.yappuworld.user.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.UserAuthService
+import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
 import co.yappuworld.user.presentation.dto.request.ReissueTokenApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
@@ -39,5 +40,12 @@ class UserAuthController(
         return ResponseEntity.ok(
             SuccessResponse.of(token)
         )
+    }
+
+    override fun checkEmailAvailability(
+        request: CheckingEmailAvailabilityApiRequestDto
+    ): ResponseEntity<SuccessResponse<Unit>> {
+        userAuthService.checkEmailAvailability(request.toAppRequest())
+        return ResponseEntity.ok(SuccessResponse())
     }
 }
