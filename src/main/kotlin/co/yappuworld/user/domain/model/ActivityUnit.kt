@@ -1,4 +1,6 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.model
+
+import co.yappuworld.user.domain.Position
 
 /**
  * @property generation 기수

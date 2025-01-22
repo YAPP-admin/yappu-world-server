@@ -1,8 +1,8 @@
 package co.yappuworld.user.application.dto.request
 
 import co.yappuworld.user.domain.UserRole
-import co.yappuworld.user.domain.User
-import co.yappuworld.user.domain.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.SignUpApplicantDetails
 
 data class UserSignUpAppRequestDto(
     val email: String,

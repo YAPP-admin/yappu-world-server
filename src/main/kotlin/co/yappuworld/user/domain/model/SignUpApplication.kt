@@ -1,7 +1,10 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.user.domain.UserError
+import co.yappuworld.user.domain.UserRole
+import co.yappuworld.user.domain.UserSignUpApplicationStatus
 import com.github.f4b6a3.ulid.UlidCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable

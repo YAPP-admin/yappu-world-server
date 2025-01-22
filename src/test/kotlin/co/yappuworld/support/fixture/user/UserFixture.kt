@@ -1,10 +1,10 @@
 package co.yappuworld.support.fixture.user
 
-import co.yappuworld.user.domain.ActivityUnit
+import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.Position
-import co.yappuworld.user.domain.SignUpApplicantDetails
-import co.yappuworld.user.domain.SignUpApplication
-import co.yappuworld.user.domain.User
+import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.UserRole
 
 fun getUserFixture(

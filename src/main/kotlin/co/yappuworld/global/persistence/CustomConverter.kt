@@ -1,6 +1,6 @@
 package co.yappuworld.global.persistence
 
-import co.yappuworld.user.domain.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.SignUpApplicantDetails
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.core.convert.converter.Converter

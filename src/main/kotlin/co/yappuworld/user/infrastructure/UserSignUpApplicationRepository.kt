@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
 import org.springframework.data.domain.Limit
 import org.springframework.data.repository.CrudRepository

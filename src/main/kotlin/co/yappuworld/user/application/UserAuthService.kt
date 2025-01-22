@@ -12,7 +12,7 @@ import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
-import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.UserError
 import co.yappuworld.user.domain.UserRole
 import co.yappuworld.user.domain.UserSignUpApplicationStatus

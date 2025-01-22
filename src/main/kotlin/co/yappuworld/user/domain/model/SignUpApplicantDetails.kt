@@ -1,4 +1,6 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.model
+
+import co.yappuworld.user.domain.UserRole
 
 data class SignUpApplicantDetails(
     val email: String,

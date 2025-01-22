@@ -7,10 +7,11 @@ package co.yappuworld.user.domain
  * @property ACTIVE 활동회원
  */
 enum class UserRole(
-    val authority: String
+    val authority: String,
+    val label: String
 ) {
-    ADMIN("ROLE_ADMIN"),
-    ALUMNI("ROLE_ALUMNI"),
-    GRADUATE("ROLE_GRADUATE"),
-    ACTIVE("ROLE_ACTIVE")
+    ADMIN("ROLE_ADMIN", "관리자"),
+    ALUMNI("ROLE_ALUMNI", "정회원"),
+    GRADUATE("ROLE_GRADUATE", "수료회원"),
+    ACTIVE("ROLE_ACTIVE", "활동회원")
 }

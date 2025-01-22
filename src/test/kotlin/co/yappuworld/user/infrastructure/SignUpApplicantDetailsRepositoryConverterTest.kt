@@ -1,9 +1,9 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.ActivityUnit
+import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.Position
-import co.yappuworld.user.domain.SignUpApplicantDetails
-import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.SignUpApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
