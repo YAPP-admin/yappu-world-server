@@ -8,17 +8,28 @@ import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
 @Table("users")
-class User(
+class User private constructor(
     val email: String,
     val password: String,
     val name: String,
     val role: UserRole,
-    val isActive: Boolean = true
-) : BaseEntity(), Persistable<UUID> {
-
+    val isActive: Boolean = true,
     @Id
     @JvmField
-    val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
+    val id: UUID
+) : BaseEntity(), Persistable<UUID> {
+
+    constructor(
+        email: String,
+        password: String,
+        name: String,
+        role: UserRole,
+        isActive: Boolean = true
+    ) : this(email, password, name, role, isActive, UlidCreator.getMonotonicUlid().toUuid())
+
+    fun withId(id: UUID): User {
+        return User(this.email, this.password, this.name, this.role, this.isActive, id)
+    }
 
     override fun getId(): UUID {
         return this.id
