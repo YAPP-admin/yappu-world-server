@@ -10,7 +10,7 @@ import co.yappuworld.support.fixture.user.getUserFixture
 import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
-import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.UserError
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository

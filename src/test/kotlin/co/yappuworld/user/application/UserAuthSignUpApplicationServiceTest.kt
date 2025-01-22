@@ -7,7 +7,7 @@ import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.dto.getLatestSignUpApplicationAppRequestDtoFixture
 import co.yappuworld.support.fixture.user.getSignUpApplication
-import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.UserError
 import co.yappuworld.user.domain.UserRole
 import co.yappuworld.user.domain.UserSignUpApplicationStatus
