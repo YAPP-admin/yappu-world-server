@@ -1,0 +1,9 @@
+services:
+    app:
+        image: yappu-world-dev
+        container_name: yappu-world-dev
+        build:
+            context: .
+            dockerfile: dockerfile-dev
+        ports:
+            - '9090:8080'
