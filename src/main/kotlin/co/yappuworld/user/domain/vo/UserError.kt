@@ -1,9 +1,16 @@
-package co.yappuworld.user.application
+package co.yappuworld.user.domain.vo
 
 import co.yappuworld.global.exception.Error
 import co.yappuworld.global.exception.ErrorType
 
 enum class UserError : Error {
+
+    // 회원 일반 에러
+    USER_NOT_FOUND {
+        override val message: String = "유저가 존재하지 않습니다."
+        override val code: String = "USR_0001"
+        override val type: ErrorType = ErrorType.NOT_FOUND
+    },
 
     // 1000번대 - 회원가입 에러
     INVALID_SIGN_UP_CODE {
@@ -57,5 +64,15 @@ enum class UserError : Error {
         override val message: String = "로그인이 불가능한 회원 상태입니다."
         override val code: String = "USR_1104"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION {
+        override val message: String = "가입 시 입력한 계정 정보와 일치하지 않습니다."
+        override val code: String = "USR_1121"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    NO_SIGN_UP_APPLICATION {
+        override val message: String = "회원가입 신청을 한 내역이 없습니다."
+        override val code: String = "USR_1122"
+        override val type: ErrorType = ErrorType.NOT_FOUND
     }
 }

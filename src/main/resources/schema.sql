@@ -30,4 +30,15 @@ CREATE TABLE sign_up_application
     applicant_details json        NOT NULL,
     status            varchar(16) NOT NULL,
     reject_reason     varchar(128)
-)
+);
+
+DROP TABLE IF EXISTS activity_units;
+CREATE TABLE activity_units
+(
+    id         varchar(36) PRIMARY KEY,
+    created_at datetime,
+    updated_at datetime,
+    generation int         NOT NULL,
+    position   varchar(16) NOT NULL,
+    user_id    varchar(36) NOT NULL
+);

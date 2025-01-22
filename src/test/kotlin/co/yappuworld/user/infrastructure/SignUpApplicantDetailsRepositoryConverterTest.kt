@@ -1,9 +1,9 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.ActivityUnit
-import co.yappuworld.user.domain.Position
-import co.yappuworld.user.domain.SignUpApplicantDetails
-import co.yappuworld.user.domain.SignUpApplication
+import co.yappuworld.user.domain.model.ActivityUnitParam
+import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.vo.Position
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -29,7 +29,7 @@ class SignUpApplicantDetailsRepositoryConverterTest {
             "abc@abc.com",
             "abc",
             "abc",
-            listOf(ActivityUnit(0, Position.PM))
+            listOf(ActivityUnitParam(0, Position.PM))
         ).let { userSignUpApplicationRepository.save(SignUpApplication(it)) }
 
         assertThat(checkNotNull(userSignUpApplicationRepository.findByIdOrNull(application.id)))
@@ -43,7 +43,7 @@ class SignUpApplicantDetailsRepositoryConverterTest {
             "abc@abc.com",
             "abc",
             "abc",
-            listOf(ActivityUnit(0, Position.PM))
+            listOf(ActivityUnitParam(0, Position.PM))
         )
         val firstApplication = SignUpApplication(firstDetails).also { it.reject("거절") }
         val secondApplication = SignUpApplication(firstDetails)

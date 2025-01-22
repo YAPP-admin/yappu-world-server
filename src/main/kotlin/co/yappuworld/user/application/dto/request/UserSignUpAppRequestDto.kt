@@ -1,8 +1,9 @@
 package co.yappuworld.user.application.dto.request
 
-import co.yappuworld.user.domain.UserRole
-import co.yappuworld.user.domain.User
-import co.yappuworld.user.domain.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.vo.UserRole
 
 data class UserSignUpAppRequestDto(
     val email: String,
@@ -25,7 +26,17 @@ data class UserSignUpAppRequestDto(
             this.email,
             this.password,
             this.name,
-            this.activityUnits.map { it.toDomain() }
+            this.activityUnits.map { it.toActivityUnitParam() }
         )
+    }
+
+    fun toActivityUnits(user: User): List<ActivityUnit> {
+        return this.activityUnits.map {
+            ActivityUnit(
+                it.generation,
+                it.position.toDomainType(),
+                user.id
+            )
+        }
     }
 }
