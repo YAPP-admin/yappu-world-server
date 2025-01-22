@@ -1,11 +1,11 @@
 package co.yappuworld.support.fixture.user
 
 import co.yappuworld.user.domain.model.ActivityUnit
-import co.yappuworld.user.domain.Position
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.model.SignUpApplicantDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.model.User
-import co.yappuworld.user.domain.UserRole
+import co.yappuworld.user.domain.vo.UserRole
 
 fun getUserFixture(
     email: String = "email@email.com",

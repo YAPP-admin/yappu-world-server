@@ -1,6 +1,6 @@
 package co.yappuworld.user.presentation.vo
 
-import co.yappuworld.user.domain.Position
+import co.yappuworld.user.domain.vo.Position
 
 enum class PositionApiType {
     PM,

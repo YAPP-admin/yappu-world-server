@@ -1,7 +1,7 @@
 package co.yappuworld.user.presentation.dto.response
 
 import co.yappuworld.user.application.dto.response.ActivityUnitAppResponseDto
-import co.yappuworld.user.domain.Position
+import co.yappuworld.user.domain.vo.Position
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ActivityUnitApiResponseDto(

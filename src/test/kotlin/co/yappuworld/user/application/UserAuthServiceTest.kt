@@ -11,7 +11,7 @@ import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.UserError
+import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.presentation.vo.PositionApiType

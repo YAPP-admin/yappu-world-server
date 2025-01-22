@@ -1,7 +1,7 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.user.domain.UserRole
+import co.yappuworld.user.domain.vo.UserRole
 import com.github.f4b6a3.ulid.UlidCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
