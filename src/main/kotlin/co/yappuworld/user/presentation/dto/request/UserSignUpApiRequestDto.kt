@@ -1,6 +1,6 @@
 package co.yappuworld.user.presentation.dto.request
 
-import co.yappuworld.global.util.EncrytUtils
+import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
@@ -30,7 +30,7 @@ data class UserSignUpApiRequestDto(
     fun toAppRequest(): UserSignUpAppRequestDto {
         return UserSignUpAppRequestDto(
             this.email,
-            EncrytUtils.encrypt(this.password),
+            EncryptUtils.encrypt(this.password),
             this.name,
             this.activityUnits.map { it.toAppRequest() },
             this.signUpCode

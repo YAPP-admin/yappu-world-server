@@ -2,7 +2,7 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.global.util.EncrytUtils
+import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import com.github.f4b6a3.ulid.UlidCreator
@@ -44,7 +44,7 @@ class User private constructor(
     }
 
     fun checkPassword(plainPassword: String) {
-        if (EncrytUtils.isMatch(plainPassword, this.password)) {
+        if (!EncryptUtils.isMatch(plainPassword, this.password)) {
             throw BusinessException(UserError.WRONG_LOGIN_USER_INFORMATION)
         }
     }
