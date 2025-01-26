@@ -65,6 +65,11 @@ enum class UserError : Error {
         override val code: String = "USR_1104"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
+    WRONG_LOGIN_USER_INFORMATION {
+        override val message: String = "로그인에 실패했습니다. 계정 정보를 다시 확인하세요."
+        override val code: String = "USR_1105"
+        override val type: ErrorType = ErrorType.UNAUTHORIZED
+    },
     MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION {
         override val message: String = "가입 시 입력한 계정 정보와 일치하지 않습니다."
         override val code: String = "USR_1121"
