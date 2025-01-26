@@ -1,9 +1,16 @@
-package co.yappuworld.user.domain
+package co.yappuworld.user.domain.vo
 
 import co.yappuworld.global.exception.Error
 import co.yappuworld.global.exception.ErrorType
 
 enum class UserError : Error {
+
+    // 회원 일반 에러
+    USER_NOT_FOUND {
+        override val message: String = "유저가 존재하지 않습니다."
+        override val code: String = "USR_0001"
+        override val type: ErrorType = ErrorType.NOT_FOUND
+    },
 
     // 1000번대 - 회원가입 에러
     INVALID_SIGN_UP_CODE {

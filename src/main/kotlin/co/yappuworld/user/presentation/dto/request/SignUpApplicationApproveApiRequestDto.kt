@@ -1,6 +1,6 @@
 package co.yappuworld.user.presentation.dto.request
 
-import co.yappuworld.user.domain.UserRole
+import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.application.dto.request.SignUpApplicationApproveAppRequestDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID

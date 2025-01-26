@@ -7,10 +7,10 @@ import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.dto.getLatestSignUpApplicationAppRequestDtoFixture
 import co.yappuworld.support.fixture.user.getSignUpApplication
-import co.yappuworld.user.domain.SignUpApplication
-import co.yappuworld.user.domain.UserError
-import co.yappuworld.user.domain.UserRole
-import co.yappuworld.user.domain.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.mockk.every
@@ -32,12 +32,14 @@ class UserAuthSignUpApplicationServiceTest {
     )
     private val userRepository = mockk<UserRepository>()
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
     private val userAuthService = UserAuthService(
         userRepository,
         authApplicationRepository,
+        activityUnitRepository,
         jwtGenerator,
         jwtResolver,
         configInquiryComponent
@@ -49,7 +51,7 @@ class UserAuthSignUpApplicationServiceTest {
             return listOf(
                 getSignUpApplication(),
                 getSignUpApplication().apply { reject("거절") },
-                getSignUpApplication().apply { approve(UserRole.ADMIN) }
+                getSignUpApplication().apply { approve() }
             )
         }
     }

@@ -10,8 +10,9 @@ import co.yappuworld.support.fixture.user.getUserFixture
 import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
-import co.yappuworld.user.domain.SignUpApplication
-import co.yappuworld.user.domain.UserError
+import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.presentation.vo.PositionApiType
@@ -34,12 +35,14 @@ class UserAuthServiceTest {
     )
     private val userRepository = mockk<UserRepository>()
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
     private val userAuthService = UserAuthService(
         userRepository,
         authApplicationRepository,
+        activityUnitRepository,
         jwtGenerator,
         jwtResolver,
         configInquiryComponent

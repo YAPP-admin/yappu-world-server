@@ -12,10 +12,11 @@ import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
-import co.yappuworld.user.domain.SignUpApplication
-import co.yappuworld.user.domain.UserError
-import co.yappuworld.user.domain.UserRole
-import co.yappuworld.user.domain.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -31,6 +32,7 @@ private val logger = KotlinLogging.logger { }
 class UserAuthService(
     private val userRepository: UserRepository,
     private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
+    private val activityUnitRepository: ActivityUnitRepository,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
     private val configInquiryComponent: ConfigInquiryComponent
@@ -54,9 +56,13 @@ class UserAuthService(
         now: LocalDateTime
     ): Token {
         val role = getUserRoleWithSignUpCode(request.signUpCode)
+        val user = request.toUser(role).also {
+            activityUnitRepository.saveAll(request.toActivityUnits(it))
+            userRepository.save(it)
+        }
 
-        return userRepository.save(request.toUser(role)).let { user ->
-            val securityUser = SecurityUser.from(user)
+        return user.let {
+            val securityUser = SecurityUser.from(it)
             jwtGenerator.generateToken(securityUser, now)
         }
     }
