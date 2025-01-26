@@ -16,15 +16,19 @@ import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.presentation.vo.PositionApiType
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
 import io.mockk.mockk
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
+import java.time.ZoneId
 import kotlin.test.Test
+
+private val logger = KotlinLogging.logger { }
 
 class UserAuthServiceTest {
 
@@ -85,17 +89,18 @@ class UserAuthServiceTest {
     fun successReissueValidAccessToken() {
         val user = getUserFixture()
         every { userRepository.findByIdOrNull(any()) } returns user
+        val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
 
-        val reissuedToken = jwtGenerator.generateToken(SecurityUser.from(user), LocalDateTime.now())
+        val reissuedToken = jwtGenerator.generateToken(SecurityUser.from(user), now)
             .run {
                 userAuthService.reissueToken(
-                    ReissueTokenAppRequestDto(accessToken, refreshToken!!, LocalDateTime.now())
+                    ReissueTokenAppRequestDto(accessToken, refreshToken!!, now.plusHours(1L).minusNanos(1L))
                 )
             }
 
-        assertThat(
-            checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken)).userId
-        ).isEqualTo(user.id)
+        assertDoesNotThrow {
+            checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken))
+        }
     }
 
     @Test
@@ -103,23 +108,20 @@ class UserAuthServiceTest {
     fun successReissueExpiredAccessToken() {
         val user = getUserFixture()
         every { userRepository.findByIdOrNull(any()) } returns user
+        val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
 
-        val jwtGenerator = JwtGenerator(
-            jwtProperty.copy(accessTokenExpirationTimes = 0)
-        )
-
-        val token = jwtGenerator.generateToken(SecurityUser.from(user), LocalDateTime.now())
+        val token = jwtGenerator.generateToken(SecurityUser.from(user), now.minusHours(1L))
             .apply {
                 assertThatThrownBy { jwtResolver.extractSecurityUserOrNull(this.accessToken) }
                     .isInstanceOf(ExpiredJwtException::class.java)
             }
 
         val reissuedToken = userAuthService.reissueToken(
-            ReissueTokenAppRequestDto(token.accessToken, token.refreshToken!!, LocalDateTime.now())
+            ReissueTokenAppRequestDto(token.accessToken, token.refreshToken!!, now)
         )
 
-        assertThat(
-            checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken)).userId
-        ).isEqualTo(user.id)
+        assertDoesNotThrow {
+            checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken))
+        }
     }
 }

@@ -63,4 +63,8 @@ tasks {
     test {
         useJUnitPlatform()
     }
+    bootJar {
+        archiveBaseName = "yappu-world"
+        archiveFileName = "yappu-world.jar"
+    }
 }
