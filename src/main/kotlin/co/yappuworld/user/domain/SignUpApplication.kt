@@ -1,5 +1,6 @@
 package co.yappuworld.user.domain
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
 import com.github.f4b6a3.ulid.UlidCreator
 import org.springframework.data.annotation.Id
@@ -14,9 +15,14 @@ class SignUpApplication private constructor(
     val id: UUID,
     val applicantEmail: String,
     val applicantDetails: SignUpApplicantDetails,
-    var status: UserSignUpApplicationStatus,
-    var rejectReason: String?
+    status: UserSignUpApplicationStatus,
+    rejectReason: String?
 ) : BaseEntity(), Persistable<UUID> {
+
+    var status: UserSignUpApplicationStatus = status
+        private set
+    var rejectReason: String? = rejectReason
+        private set
 
     constructor(application: SignUpApplicantDetails) : this(
         UlidCreator.getMonotonicUlid().toUuid(),
@@ -37,6 +43,12 @@ class SignUpApplication private constructor(
 
     fun toUser(role: UserRole): User {
         return this.applicantDetails.toUser(role)
+    }
+
+    fun checkPassword(password: String) {
+        if (applicantDetails.password != password) {
+            throw BusinessException(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION)
+        }
     }
 
     override fun getId(): UUID {

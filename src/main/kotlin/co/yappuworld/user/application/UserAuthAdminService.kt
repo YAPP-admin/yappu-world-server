@@ -3,6 +3,7 @@ package co.yappuworld.user.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.application.dto.request.SignUpApplicationApproveAppRequestDto
 import co.yappuworld.user.application.dto.request.SignUpApplicationRejectAppRequestDto
+import co.yappuworld.user.domain.UserError
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import org.springframework.data.repository.findByIdOrNull

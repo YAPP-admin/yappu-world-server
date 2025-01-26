@@ -4,9 +4,11 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
+import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
 import co.yappuworld.user.presentation.dto.request.ReissueTokenApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
+import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
@@ -344,4 +347,106 @@ interface UserAuthApi {
     fun checkEmailAvailability(
         @Valid @RequestBody request: CheckingEmailAvailabilityApiRequestDto
     ): ResponseEntity<SuccessResponse<Unit>>
+
+    @Operation(summary = "가장 최근의 회원가입 신청 조회")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                description = "성공",
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "최근의 가입 신청이 보류",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": {
+                                            "status": "PENDING",
+                                            "reason": null
+                                        }
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "최근의 가입 신청이 거절",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": {
+                                            "status": "REJECTED",
+                                            "reason": "회원 여부를 증명할 수 없습니다."
+                                        }
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "최근의 가입 신청이 승인",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": {
+                                            "status": "APPROVED",
+                                            "reason": null
+                                        }
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                description = "가입 시 입력한 계정 정보와 일치하지 않습니다. (비밀번호 불일치)",
+                responseCode = "403",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "가입 시 입력한 계정 정보와 일치하지 않습니다.",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "message": "가입 시 입력한 계정 정보와 일치하지 않습니다.",
+                                        "errorCode": "USR_1121"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                description = "회원가입 신청을 한 내역이 없습니다.",
+                responseCode = "404",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "회원가입 신청을 한 내역이 없습니다.",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "message": "회원가입 신청을 한 내역이 없습니다.",
+                                        "errorCode": "USR_1122"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v1/auth/applications/latest")
+    fun findLatestSignUpApplication(
+        @Valid @RequestBody request: LatestSignUpApplicationApiRequestDto
+    ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>>
 }

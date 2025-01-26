@@ -4,9 +4,11 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.UserAuthService
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
+import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
 import co.yappuworld.user.presentation.dto.request.ReissueTokenApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
+import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
@@ -47,5 +49,17 @@ class UserAuthController(
     ): ResponseEntity<SuccessResponse<Unit>> {
         userAuthService.checkEmailAvailability(request.toAppRequest())
         return ResponseEntity.ok(SuccessResponse())
+    }
+
+    override fun findLatestSignUpApplication(
+        request: LatestSignUpApplicationApiRequestDto
+    ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>> {
+        return ResponseEntity.ok(
+            SuccessResponse.of(
+                LatestSignUpApplicationApiResponseDto.of(
+                    userAuthService.findLatestSignUpApplication(request.toAppRequest())
+                )
+            )
+        )
     }
 }
