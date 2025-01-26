@@ -6,16 +6,16 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.operation.application.ConfigInquiryComponent
-import co.yappuworld.support.fixture.user.getUserFixture
+import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
-import co.yappuworld.user.presentation.vo.PositionApiType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
@@ -57,7 +57,7 @@ class UserAuthServiceTest {
         email,
         "password",
         "name",
-        listOf(ActivityUnitAppRequestDto(1, PositionApiType.PM)),
+        listOf(ActivityUnitAppRequestDto(1, Position.PM)),
         ""
     )
 
