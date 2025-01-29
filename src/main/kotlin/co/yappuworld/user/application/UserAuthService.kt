@@ -72,9 +72,11 @@ class UserAuthService(
         request: LoginAppRequestDto,
         now: LocalDateTime
     ): Token {
-        return userRepository.findUserOrNullByEmail(request.email)?.let {
-            jwtGenerator.generateToken(SecurityUser.from(it), now)
-        } ?: processLoginException(request.email)
+        return userRepository.findUserOrNullByEmail(request.email)
+            ?.let {
+                it.checkPassword(request.password)
+                jwtGenerator.generateToken(SecurityUser.from(it), now)
+            } ?: processLoginException(request.email)
     }
 
     @Transactional
