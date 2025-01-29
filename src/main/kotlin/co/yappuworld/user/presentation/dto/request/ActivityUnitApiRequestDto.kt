@@ -1,7 +1,7 @@
 package co.yappuworld.user.presentation.dto.request
 
 import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
-import co.yappuworld.user.presentation.vo.PositionApiType
+import co.yappuworld.user.domain.vo.Position
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotEmpty
@@ -13,7 +13,7 @@ data class ActivityUnitApiRequestDto(
     val generation: Int,
     @Schema(description = "직군")
     @field:NotEmpty(message = "직군은 필수로 입력해야 합니다.")
-    val position: PositionApiType
+    val position: Position
 ) {
     fun toAppRequest(): ActivityUnitAppRequestDto {
         return ActivityUnitAppRequestDto(generation, position)

@@ -34,7 +34,7 @@ data class UserSignUpAppRequestDto(
         return this.activityUnits.map {
             ActivityUnit(
                 it.generation,
-                it.position.toDomainType(),
+                it.position,
                 user.id
             )
         }
