@@ -58,4 +58,8 @@ class User private constructor(
 
         this.isActive = false
     }
+
+    fun isWithdrawn(): Boolean {
+        return !this.isActive
+    }
 }

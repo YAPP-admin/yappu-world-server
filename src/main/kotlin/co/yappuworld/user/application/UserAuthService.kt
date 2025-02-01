@@ -12,6 +12,8 @@ import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
+import co.yappuworld.user.domain.checkLoginAvailability
+import co.yappuworld.user.domain.checkNewApplications
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
@@ -44,8 +46,7 @@ class UserAuthService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
-        validateApplication(request.email)
-
+        checkNewApplication(request.email)
         SignUpApplication(request.toSignUpApplication()).let {
             userSignUpApplicationRepository.save(it)
         }
@@ -73,24 +74,24 @@ class UserAuthService(
         request: LoginAppRequestDto,
         now: LocalDateTime
     ): Token {
-        return userRepository.findUserOrNullByEmail(request.email)
-            ?.let {
-                it.checkPassword(request.password)
-                jwtGenerator.generateToken(SecurityUser.from(it), now)
-            } ?: processLoginException(request.email)
+        val user = userRepository.findUserOrNullByEmail(request.email)
+            ?.apply { this.checkLoginAvailability(request.password) }
+            ?: processLoginException(request.email)
+
+        return jwtGenerator.generateToken(SecurityUser.from(user), now)
     }
 
     @Transactional
     fun reissueToken(request: ReissueTokenAppRequestDto): Token {
         val userId = jwtResolver.extractUserIdFrom(request.accessToken)
-        val userOrNull = userRepository.findByIdOrNull(userId)
+        val user = userRepository.findByIdOrNull(userId)
+            ?: throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
 
-        if (userOrNull == null) {
-            logger.error { "$userId 유저를 찾을 수 없습니다." }
-            throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
+        if (!user.isActive) {
+            throw BusinessException(UserError.WITHDRAWN_USER)
         }
 
-        return jwtGenerator.generateToken(SecurityUser.from(userOrNull), request.now)
+        return jwtGenerator.generateToken(SecurityUser.from(user), request.now)
     }
 
     @Transactional(readOnly = true)
@@ -121,25 +122,16 @@ class UserAuthService(
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
     }
 
-    private fun validateApplication(email: String) {
+    private fun checkNewApplication(email: String) {
         if (userRepository.existsUserByEmail(email)) {
             logger.error { "${email}은 이미 가입된 이메일입니다." }
             throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }
 
-        val applications = userSignUpApplicationRepository.findByApplicantEmailAndStatus(
+        userSignUpApplicationRepository.findByApplicantEmailAndStatus(
             email,
             UserSignUpApplicationStatus.PENDING
-        )
-
-        if (applications.isEmpty()) {
-            return
-        }
-
-        if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
-            logger.error { "${email}의 처리되지 않은 기존 신청이 존재합니다." }
-            throw BusinessException(UserError.UNPROCESSED_APPLICATION_EXISTS)
-        }
+        ).apply { checkNewApplications(email) }
     }
 
     private fun getUserRoleWithSignUpCode(signUpCode: String): UserRole {

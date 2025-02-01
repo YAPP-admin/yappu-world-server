@@ -11,6 +11,11 @@ enum class UserError : Error {
         override val code: String = "USR_0001"
         override val type: ErrorType = ErrorType.NOT_FOUND
     },
+    WITHDRAWN_USER {
+        override val message: String = "탈퇴한 유저입니다."
+        override val code: String = "USR_0002"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
 
     // 1000번대 - 회원가입 에러
     INVALID_SIGN_UP_CODE {
