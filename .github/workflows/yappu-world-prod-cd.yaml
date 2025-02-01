@@ -38,9 +38,7 @@ jobs:
                     jwt.refresh_token_expiration_times: ${{ secrets.PROD_REFRESH_TOKEN_EXPIRATION_TIMES }}
 
             -   name: Build with Gradle Wrapper
-                run: ./gradlew clean build -x test
-                env:
-                    SPRING_PROFILES_ACTIVE: prod
+                run: ./gradlew clean build -x test -Dspring.profiles.active=prod
 
             -   name: Prepare File for Deployment
                 run: |

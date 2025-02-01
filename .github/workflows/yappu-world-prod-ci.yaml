@@ -56,18 +56,16 @@ jobs:
             # Security Group에 Github Action 서버를 등록
             -   name: Add Github Actions IP on Security Group
                 run: |
-                    aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_DEV_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+                    aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_DEV_RDS_SECURITY_GROUP_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
             -   name: Build with Gradle Wrapper
-                run: ./gradlew clean build
-                env:
-                    SPRING_PROFILES_ACTIVE: dev
+                run: ./gradlew clean build -Dspring.profiles.active=dev
 
             # Security Group에서 Github Action 서버 제외
             -   name: Remove Github Actions IP from Security Group
                 if: always()
                 run: |
-                    aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_DEV_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+                    aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_DEV_RDS_SECURITY_GROUP_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
             # Discord Notification
             -   name: CI Success Notification
