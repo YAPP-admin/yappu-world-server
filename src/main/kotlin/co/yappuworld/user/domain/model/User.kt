@@ -17,19 +17,21 @@ class User private constructor(
     val password: String,
     val name: String,
     val role: UserRole,
-    val isActive: Boolean = true,
+    isActive: Boolean = true,
     @Id
     @JvmField
     val id: UUID
 ) : BaseEntity(), Persistable<UUID> {
 
+    var isActive: Boolean = isActive
+        private set
+
     constructor(
         email: String,
         password: String,
         name: String,
-        role: UserRole,
-        isActive: Boolean = true
-    ) : this(email, password, name, role, isActive, UlidCreator.getMonotonicUlid().toUuid())
+        role: UserRole
+    ) : this(email, password, name, role, true, UlidCreator.getMonotonicUlid().toUuid())
 
     fun withId(id: UUID): User {
         return User(this.email, this.password, this.name, this.role, this.isActive, id)
@@ -47,5 +49,13 @@ class User private constructor(
         if (!EncryptUtils.isMatch(plainPassword, this.password)) {
             throw BusinessException(UserError.WRONG_LOGIN_USER_INFORMATION)
         }
+    }
+
+    fun withdraw() {
+        if (!this.isActive) {
+            throw BusinessException(UserError.ALREADY_WITHDRAWN_USER)
+        }
+
+        this.isActive = false
     }
 }

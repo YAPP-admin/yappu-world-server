@@ -2,6 +2,7 @@ package co.yappuworld.user.presentation
 
 import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
@@ -18,6 +19,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -449,4 +452,41 @@ interface UserAuthApi {
     fun findLatestSignUpApplication(
         @Valid @RequestBody request: LatestSignUpApplicationApiRequestDto
     ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>>
+
+    @Operation(summary = "회원탈퇴")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                description = "회원탈퇴 성공",
+                responseCode = "204",
+                content = [Content(examples = emptyArray())]
+            ),
+            ApiResponse(
+                description = "이미 탈퇴한 계정입니다.",
+                responseCode = "409",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "이미 탈퇴한 계정입니다.",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "message": "이미 탈퇴한 계정입니다.",
+                                        "errorCode": "USR_1201"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @DeleteMapping("/v1/auth/user")
+    fun withdrawUser(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<Unit>
 }

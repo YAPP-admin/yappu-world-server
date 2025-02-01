@@ -1,6 +1,7 @@
 package co.yappuworld.user.presentation
 
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.UserAuthService
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
@@ -64,5 +65,10 @@ class UserAuthController(
                 )
             )
         )
+    }
+
+    override fun withdrawUser(securityUser: SecurityUser): ResponseEntity<Unit> {
+        userAuthService.withdrawUser(securityUser.userId)
+        return ResponseEntity.noContent().build()
     }
 }

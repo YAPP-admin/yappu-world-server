@@ -25,6 +25,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 private val logger = KotlinLogging.logger { }
 
@@ -89,8 +90,6 @@ class UserAuthService(
             throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
         }
 
-        // TODO - AT와 RT의 화이트리스트 또는 블랙리스트 전략 필요
-
         return jwtGenerator.generateToken(SecurityUser.from(userOrNull), request.now)
     }
 
@@ -112,6 +111,14 @@ class UserAuthService(
             ?: throw BusinessException(UserError.NO_SIGN_UP_APPLICATION)
 
         return LatestSignUpApplicationAppResponseDto.of(signUpApplication)
+    }
+
+    @Transactional
+    fun withdrawUser(userId: UUID) {
+        userRepository.findByIdOrNull(userId)
+            ?.apply { withdraw() }
+            ?.let(userRepository::save)
+            ?: throw BusinessException(UserError.USER_NOT_FOUND)
     }
 
     private fun validateApplication(email: String) {

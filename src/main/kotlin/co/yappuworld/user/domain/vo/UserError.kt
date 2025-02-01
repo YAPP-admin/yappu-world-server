@@ -79,5 +79,12 @@ enum class UserError : Error {
         override val message: String = "회원가입 신청을 한 내역이 없습니다."
         override val code: String = "USR_1122"
         override val type: ErrorType = ErrorType.NOT_FOUND
+    },
+
+    // 1200번대 - 회원탈퇴 에러
+    ALREADY_WITHDRAWN_USER {
+        override val message: String = "이미 탈퇴한 계정입니다."
+        override val code: String = "USR_1201"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }
