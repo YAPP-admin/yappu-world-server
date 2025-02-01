@@ -4,8 +4,6 @@ on:
     push:
         branches:
             - main
-    push:
-        branches:
             - chore/prod-ci-cd
 
 jobs:
