@@ -51,6 +51,10 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
+
+    // fcm
+    implementation("com.google.firebase:firebase-admin:9.4.3")
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
 }
 
 kotlin {
