@@ -3,8 +3,10 @@ package co.yappuworld.user.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.application.dto.request.SignUpApplicationApproveAppRequestDto
 import co.yappuworld.user.application.dto.request.SignUpApplicationRejectAppRequestDto
+import co.yappuworld.user.domain.model.UserDevice
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -15,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 class UserAuthAdminService(
     private val userRepository: UserRepository,
     private val signUpApplicationRepository: UserSignUpApplicationRepository,
-    private val activityUnitRepository: ActivityUnitRepository
+    private val activityUnitRepository: ActivityUnitRepository,
+    private val userDeviceRepository: UserDeviceRepository
 ) {
 
     @Transactional
@@ -27,6 +30,7 @@ class UserAuthAdminService(
         signUpApplicationRepository.save(application)
         val user = userRepository.save(application.toUser(request.role))
         activityUnitRepository.saveAll(application.toActivityUnits(user))
+        userDeviceRepository.save(UserDevice(user.id, application.getFcmToken()))
     }
 
     @Transactional

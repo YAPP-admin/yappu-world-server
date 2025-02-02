@@ -24,7 +24,10 @@ data class UserSignUpApiRequestDto(
     @field:NotEmpty
     val activityUnits: List<ActivityUnitApiRequestDto>,
     @Schema(description = "가입코드, 6자리 숫자", example = "000000")
-    val signUpCode: String
+    val signUpCode: String,
+    @Schema(description = "FCM 토큰")
+    @field:NotEmpty(message = "FCM 토큰은 필수로 전달되어야 합니다.")
+    val fcmToken: String
 ) {
 
     fun toAppRequest(): UserSignUpAppRequestDto {
@@ -33,7 +36,8 @@ data class UserSignUpApiRequestDto(
             EncryptUtils.encrypt(this.password),
             this.name,
             this.activityUnits.map { it.toAppRequest() },
-            this.signUpCode
+            this.signUpCode,
+            this.fcmToken
         )
     }
 }

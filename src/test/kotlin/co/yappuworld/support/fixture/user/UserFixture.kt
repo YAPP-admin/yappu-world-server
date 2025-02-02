@@ -33,13 +33,15 @@ object UserFixture {
         email: String = "email@email.com",
         password: String = "abcabC!!",
         name: String = "name",
-        activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams()
+        activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams(),
+        fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1"
     ): SignUpApplicantDetails {
         return SignUpApplicantDetails(
             email,
             password,
             name,
-            activityUnitParams
+            activityUnitParams,
+            fcmToken
         )
     }
 

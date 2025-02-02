@@ -14,6 +14,7 @@ import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -40,6 +41,7 @@ class UserAuthServiceTest {
     private val userRepository = mockk<UserRepository>()
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
+    private val userDeviceRepository = mockk<UserDeviceRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
@@ -47,6 +49,7 @@ class UserAuthServiceTest {
         userRepository,
         authApplicationRepository,
         activityUnitRepository,
+        userDeviceRepository,
         jwtGenerator,
         jwtResolver,
         configInquiryComponent
@@ -58,7 +61,8 @@ class UserAuthServiceTest {
         "password",
         "name",
         listOf(ActivityUnitAppRequestDto(1, Position.PM)),
-        ""
+        "",
+        "fcmToken"
     )
 
     @Test

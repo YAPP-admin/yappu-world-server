@@ -6,7 +6,8 @@ data class SignUpApplicantDetails(
     val email: String,
     val password: String,
     val name: String,
-    val activityUnits: List<ActivityUnitParam>
+    val activityUnits: List<ActivityUnitParam>,
+    val fcmToken: String
 ) {
     fun toUser(role: UserRole): User {
         return User(

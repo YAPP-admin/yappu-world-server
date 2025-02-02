@@ -31,7 +31,8 @@ class SignUpApplicantDetailsRepositoryConverterTest {
             "abc@abc.com",
             "abc",
             "abc",
-            listOf(ActivityUnitParam(0, Position.PM))
+            listOf(ActivityUnitParam(0, Position.PM)),
+            "fcmToken"
         ).let { userSignUpApplicationRepository.save(SignUpApplication(it)) }
 
         assertThat(checkNotNull(userSignUpApplicationRepository.findByIdOrNull(application.id)))
@@ -45,7 +46,8 @@ class SignUpApplicantDetailsRepositoryConverterTest {
             "abc@abc.com",
             "abc",
             "abc",
-            listOf(ActivityUnitParam(0, Position.PM))
+            listOf(ActivityUnitParam(0, Position.PM)),
+            "fcmToken"
         )
         val firstApplication = SignUpApplication(firstDetails).also { it.reject("거절") }
         val secondApplication = SignUpApplication(firstDetails)

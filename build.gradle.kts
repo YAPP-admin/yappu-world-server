@@ -54,7 +54,6 @@ dependencies {
 
     // fcm
     implementation("com.google.firebase:firebase-admin:9.4.3")
-    implementation("com.google.firebase:firebase-messaging:24.1.0")
 }
 
 kotlin {

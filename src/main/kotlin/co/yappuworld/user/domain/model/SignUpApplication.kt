@@ -67,4 +67,8 @@ class SignUpApplication private constructor(
             it.toActivityUnit(user.id)
         }
     }
+
+    fun getFcmToken(): String {
+        return applicantDetails.fcmToken
+    }
 }

@@ -10,6 +10,7 @@ import co.yappuworld.support.fixture.user.UserDtoFixture.getLoginApiRequestDto
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.mockk.every
@@ -24,6 +25,7 @@ class UserLoginServiceTest {
     private val userRepository = mockk<UserRepository>()
     private val userSignUpApplicationRepository = mockk<UserSignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
+    private val userDeviceRepository = mockk<UserDeviceRepository>()
     private val jwtGenerator = JwtGenerator(getJwtProperty())
     private val jwtResolver = mockk<JwtResolver>()
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
@@ -31,6 +33,7 @@ class UserLoginServiceTest {
         userRepository,
         userSignUpApplicationRepository,
         activityUnitRepository,
+        userDeviceRepository,
         jwtGenerator,
         jwtResolver,
         configInquiryComponent
