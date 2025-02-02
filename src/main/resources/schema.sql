@@ -23,13 +23,13 @@ CREATE TABLE users
 DROP TABLE IF EXISTS sign_up_application;
 CREATE TABLE sign_up_application
 (
-    id                varchar(36) PRIMARY KEY,
-    created_at        datetime,
-    updated_at        datetime,
-    applicant_email   varchar(64) NOT NULL,
-    applicant_details json        NOT NULL,
-    status            varchar(16) NOT NULL,
-    reject_reason     varchar(128)
+    id              varchar(36) PRIMARY KEY,
+    created_at      datetime,
+    updated_at      datetime,
+    applicant_email varchar(64) NOT NULL,
+    details         json        NOT NULL,
+    status          varchar(16) NOT NULL,
+    reject_reason   varchar(128)
 );
 
 DROP TABLE IF EXISTS activity_units;

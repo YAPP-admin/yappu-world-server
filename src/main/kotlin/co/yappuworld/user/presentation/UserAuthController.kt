@@ -4,6 +4,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.UserAuthService
+import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
@@ -16,19 +17,20 @@ import java.time.LocalDateTime
 
 @RestController
 class UserAuthController(
-    private val userAuthService: UserAuthService
+    private val userAuthService: UserAuthService,
+    private val signUpService: SignUpService
 ) : UserAuthApi {
 
     override fun signUp(request: UserSignUpApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val now = LocalDateTime.now()
 
         if (request.signUpCode.isBlank()) {
-            userAuthService.submitSignUpRequest(request.toAppRequest(), now)
+            signUpService.submitSignUpRequest(request.toAppRequest(), now)
             return ResponseEntity.ok(SuccessResponse.of(null))
         }
 
         return ResponseEntity.ok(
-            SuccessResponse.of(userAuthService.signUpWithCode(request.toAppRequest(), now))
+            SuccessResponse.of(signUpService.signUpWithCode(request.toAppRequest(), now))
         )
     }
 
@@ -51,7 +53,7 @@ class UserAuthController(
     override fun checkEmailAvailability(
         request: CheckingEmailAvailabilityApiRequestDto
     ): ResponseEntity<SuccessResponse<Unit>> {
-        userAuthService.checkEmailAvailability(request.toAppRequest())
+        signUpService.checkEmailAvailability(request.toAppRequest())
         return ResponseEntity.ok(SuccessResponse())
     }
 
@@ -61,7 +63,7 @@ class UserAuthController(
         return ResponseEntity.ok(
             SuccessResponse.of(
                 LatestSignUpApplicationApiResponseDto.of(
-                    userAuthService.findLatestSignUpApplication(request.toAppRequest())
+                    signUpService.findLatestSignUpApplication(request.toAppRequest())
                 )
             )
         )

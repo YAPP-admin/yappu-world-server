@@ -10,11 +10,10 @@ import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
-import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
-import co.yappuworld.user.infrastructure.UserDeviceRepository
+import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -24,7 +23,6 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.assertDoesNotThrow
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -42,20 +40,23 @@ class UserAuthServiceTest {
     private val userRepository = mockk<UserRepository>()
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
-    private val userDeviceRepository = mockk<UserDeviceRepository>()
+    private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
-    private val applicationEventPublisher = mockk<ApplicationEventPublisher>()
     private val userAuthService = UserAuthService(
         userRepository,
         authApplicationRepository,
-        activityUnitRepository,
-        userDeviceRepository,
         jwtGenerator,
-        jwtResolver,
-        configInquiryComponent,
-        applicationEventPublisher
+        jwtResolver
+    )
+    private val signUpService = SignUpService(
+        userRepository,
+        authApplicationRepository,
+        activityUnitRepository,
+        userAlarmSettingRepository,
+        jwtGenerator,
+        configInquiryComponent
     )
 
     val email = "abc@abc.com"
@@ -74,9 +75,9 @@ class UserAuthServiceTest {
         every { userRepository.existsUserByEmail(any()) } returns false
         every {
             authApplicationRepository.findByApplicantEmailAndStatus(email, any())
-        } returns listOf(SignUpApplication(request.toSignUpApplication()))
+        } returns listOf(request.toApplication())
 
-        assertThatThrownBy { userAuthService.submitSignUpRequest(request, LocalDateTime.now()) }
+        assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)
             .message().isEqualTo(UserError.UNPROCESSED_APPLICATION_EXISTS.message)
     }
@@ -86,7 +87,7 @@ class UserAuthServiceTest {
     fun validateExistsApprovedApplication() {
         every { userRepository.existsUserByEmail(any()) } returns true
 
-        assertThatThrownBy { userAuthService.submitSignUpRequest(request, LocalDateTime.now()) }
+        assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)
             .message().isEqualTo(UserError.ALREADY_SIGNED_UP_EMAIL.message)
     }

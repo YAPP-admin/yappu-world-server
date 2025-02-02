@@ -2,13 +2,14 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.user.domain.vo.UserRole
 
-data class SignUpApplicantDetails(
+data class ApplicationDetails(
     val email: String,
     val password: String,
     val name: String,
     val activityUnits: List<ActivityUnitParam>,
     val fcmToken: String
 ) {
+
     fun toUser(role: UserRole): User {
         return User(
             this.email,

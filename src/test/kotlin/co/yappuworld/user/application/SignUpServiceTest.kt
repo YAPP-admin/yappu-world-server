@@ -3,7 +3,6 @@ package co.yappuworld.user.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.property.JwtProperty
 import co.yappuworld.global.security.JwtGenerator
-import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationAppRequestDtoFixture
 import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplication
@@ -11,6 +10,7 @@ import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
@@ -21,11 +21,10 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.context.ApplicationEventPublisher
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class UserAuthSignUpApplicationServiceTest {
+class SignUpServiceTest {
 
     private val jwtProperty = JwtProperty(
         "thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocalenvironment",
@@ -36,19 +35,16 @@ class UserAuthSignUpApplicationServiceTest {
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val userDeviceRepository = mockk<UserDeviceRepository>()
+    private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
-    private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
-    private val applicationEventPublisher = mockk<ApplicationEventPublisher>()
-    private val userAuthService = UserAuthService(
+    private val signUpService = SignUpService(
         userRepository,
         authApplicationRepository,
         activityUnitRepository,
-        userDeviceRepository,
+        userAlarmSettingRepository,
         jwtGenerator,
-        jwtResolver,
-        configInquiryComponent,
-        applicationEventPublisher
+        configInquiryComponent
     )
 
     companion object {
@@ -67,7 +63,7 @@ class UserAuthSignUpApplicationServiceTest {
         every { authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(any(), any()) } returns null
 
         val request = getLatestSignUpApplicationAppRequestDtoFixture()
-        assertThatThrownBy { userAuthService.findLatestSignUpApplication(request) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.NO_SIGN_UP_APPLICATION.message)
     }
@@ -84,10 +80,10 @@ class UserAuthSignUpApplicationServiceTest {
 
         val request = getLatestSignUpApplicationAppRequestDtoFixture(
             email = application.applicantEmail,
-            password = application.applicantDetails.password + "a"
+            password = application.details.password + "a"
         )
 
-        assertThatThrownBy { userAuthService.findLatestSignUpApplication(request) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION.message)
     }
@@ -104,10 +100,10 @@ class UserAuthSignUpApplicationServiceTest {
 
         val request = getLatestSignUpApplicationAppRequestDtoFixture(
             email = application.applicantEmail,
-            password = application.applicantDetails.password
+            password = application.details.password
         )
 
-        userAuthService.findLatestSignUpApplication(request).also {
+        signUpService.findLatestSignUpApplication(request).also {
             assertThat(it.status).isEqualTo(application.status)
             when (it.status) {
                 UserSignUpApplicationStatus.REJECTED -> assertNotNull(it.rejectReason)

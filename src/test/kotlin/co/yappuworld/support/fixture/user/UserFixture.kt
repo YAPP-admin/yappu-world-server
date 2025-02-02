@@ -2,7 +2,7 @@ package co.yappuworld.support.fixture.user
 
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.ActivityUnitParam
-import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.vo.Position
@@ -23,7 +23,7 @@ object UserFixture {
         role = role
     )
 
-    fun getSignUpApplication(details: SignUpApplicantDetails = getSignUpApplicationDetails()): SignUpApplication {
+    fun getSignUpApplication(details: ApplicationDetails = getSignUpApplicationDetails()): SignUpApplication {
         return SignUpApplication(details)
     }
 
@@ -33,8 +33,8 @@ object UserFixture {
         name: String = "name",
         activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams(),
         fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1"
-    ): SignUpApplicantDetails {
-        return SignUpApplicantDetails(
+    ): ApplicationDetails {
+        return ApplicationDetails(
             email,
             password,
             name,

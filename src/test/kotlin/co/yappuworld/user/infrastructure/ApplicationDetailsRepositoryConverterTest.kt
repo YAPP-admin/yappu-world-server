@@ -1,11 +1,10 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.user.domain.model.ActivityUnitParam
-import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.Position
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
@@ -19,15 +18,14 @@ import kotlin.test.assertNull
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles(profiles = ["test"])
-class SignUpApplicantDetailsRepositoryConverterTest {
+class ApplicationDetailsRepositoryConverterTest {
 
     @Autowired
     lateinit var userSignUpApplicationRepository: UserSignUpApplicationRepository
 
     @Test
-    @DisplayName("UserSignUpApplication Custom Converter 정상 동작 확인")
-    fun testCustomConverter() {
-        val application = SignUpApplicantDetails(
+    fun `UserSignUpApplication Custom Converter 정상 동작 확인`() {
+        val application = ApplicationDetails(
             "abc@abc.com",
             "abc",
             "abc",
@@ -40,9 +38,8 @@ class SignUpApplicantDetailsRepositoryConverterTest {
     }
 
     @Test
-    @DisplayName("가장 최근에 신청된 신청서를 조회한다.")
-    fun testFindingApplicationByApplicantEmailLimit1() {
-        val firstDetails = SignUpApplicantDetails(
+    fun `가장 최근에 신청된 신청서를 조회한다`() {
+        val firstDetails = ApplicationDetails(
             "abc@abc.com",
             "abc",
             "abc",
@@ -64,8 +61,7 @@ class SignUpApplicantDetailsRepositoryConverterTest {
     }
 
     @Test
-    @DisplayName("회원가입 신청을 한 적이 없다면 Null을 반환한다.")
-    fun testCannotFindingApplicationByApplicantEmailLimit1() {
+    fun `회원가입 신청을 한 적이 없다면 Null을 반환한다`() {
         val findApplication = userSignUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
             "abc@abc.com",
             Limit.of(1)
