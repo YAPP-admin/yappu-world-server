@@ -42,3 +42,13 @@ CREATE TABLE activity_units
     position   varchar(16) NOT NULL,
     user_id    varchar(36) NOT NULL
 );
+
+DROP TABLE IF EXISTS user_alarm_settings;
+CREATE TABLE user_alarm_settings
+(
+    id         varchar(36) PRIMARY KEY,
+    created_at datetime,
+    updated_at datetime,
+    user_id    varchar(36) NOT NULL,
+    master     tinyint(1) NOT NULL
+);

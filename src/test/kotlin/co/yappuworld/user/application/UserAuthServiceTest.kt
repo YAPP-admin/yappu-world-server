@@ -24,6 +24,7 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -45,6 +46,7 @@ class UserAuthServiceTest {
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
+    private val applicationEventPublisher = mockk<ApplicationEventPublisher>()
     private val userAuthService = UserAuthService(
         userRepository,
         authApplicationRepository,
@@ -52,7 +54,8 @@ class UserAuthServiceTest {
         userDeviceRepository,
         jwtGenerator,
         jwtResolver,
-        configInquiryComponent
+        configInquiryComponent,
+        applicationEventPublisher
     )
 
     val email = "abc@abc.com"

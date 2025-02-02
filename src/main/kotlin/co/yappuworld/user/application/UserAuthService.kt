@@ -10,16 +10,21 @@ import co.yappuworld.user.application.dto.request.CheckingEmailAvailabilityAppRe
 import co.yappuworld.user.application.dto.request.LatestSignUpApplicationAppRequestDto
 import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationApproveAppRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationRejectAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
 import co.yappuworld.user.domain.checkLoginAvailability
 import co.yappuworld.user.domain.checkNewApplications
+import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.model.UserDevice
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
@@ -36,9 +41,10 @@ private val logger = KotlinLogging.logger { }
 @Service
 class UserAuthService(
     private val userRepository: UserRepository,
-    private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
+    private val signUpApplicationRepository: UserSignUpApplicationRepository,
     private val activityUnitRepository: ActivityUnitRepository,
     private val userDeviceRepository: UserDeviceRepository,
+    private val userAlarmSettingRepository: UserAlarmSettingRepository,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
     private val configInquiryComponent: ConfigInquiryComponent
@@ -49,9 +55,10 @@ class UserAuthService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ) {
-        checkNewApplication(request.email)
+        checkApplication(request.email)
+
         SignUpApplication(request.toSignUpApplication()).let {
-            userSignUpApplicationRepository.save(it)
+            signUpApplicationRepository.save(it)
         }
     }
 
@@ -109,7 +116,7 @@ class UserAuthService(
     fun findLatestSignUpApplication(
         request: LatestSignUpApplicationAppRequestDto
     ): LatestSignUpApplicationAppResponseDto {
-        val signUpApplication = userSignUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
+        val signUpApplication = signUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
             request.email,
             Limit.of(1)
         )?.apply { checkPassword(request.password) }
@@ -126,13 +133,41 @@ class UserAuthService(
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
     }
 
-    private fun checkNewApplication(email: String) {
+    @Transactional
+    fun approveSignUpApplication(request: SignUpApplicationApproveAppRequestDto) {
+        val application = signUpApplicationRepository.findByIdOrNull(request.applicationId)
+            ?.apply { approve() }
+            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+
+        signUpApplicationRepository.save(application)
+        val user = userRepository.save(application.toUser(request.role))
+        activityUnitRepository.saveAll(application.toActivityUnits(user))
+    }
+
+    @Transactional
+    fun rejectSignUpApplication(request: SignUpApplicationRejectAppRequestDto) {
+        val application = signUpApplicationRepository.findByIdOrNull(request.applicationId)
+            ?.apply { reject(request.reason) }
+            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+
+        signUpApplicationRepository.save(application)
+    }
+
+    private fun persistSignUpData(
+        user: User,
+        activityUnits: List<ActivityUnit>
+    ) {
+        userRepository.save(user)
+        activityUnitRepository.saveAll(activityUnits)
+    }
+
+    private fun checkApplication(email: String) {
         if (userRepository.existsUserByEmail(email)) {
             logger.error { "${email}은 이미 가입된 이메일입니다." }
             throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }
 
-        userSignUpApplicationRepository.findByApplicantEmailAndStatus(
+        signUpApplicationRepository.findByApplicantEmailAndStatus(
             email,
             UserSignUpApplicationStatus.PENDING
         ).apply { checkNewApplications(email) }
@@ -154,7 +189,7 @@ class UserAuthService(
     }
 
     private fun processLoginException(email: String): Nothing {
-        val recentApplication = userSignUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
+        val recentApplication = signUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
             email,
             Limit.of(1)
         )

@@ -18,6 +18,7 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDateTime
 
 class UserLoginServiceTest {
@@ -29,6 +30,7 @@ class UserLoginServiceTest {
     private val jwtGenerator = JwtGenerator(getJwtProperty())
     private val jwtResolver = mockk<JwtResolver>()
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
+    private val applicationEventPublisher = mockk<ApplicationEventPublisher>()
     private val userAuthService = UserAuthService(
         userRepository,
         userSignUpApplicationRepository,
@@ -36,7 +38,8 @@ class UserLoginServiceTest {
         userDeviceRepository,
         jwtGenerator,
         jwtResolver,
-        configInquiryComponent
+        configInquiryComponent,
+        applicationEventPublisher
     )
 
     @Test
