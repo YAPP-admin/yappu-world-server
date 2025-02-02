@@ -17,7 +17,7 @@ class SignUpApplication private constructor(
     @JvmField
     val id: UUID,
     val applicantEmail: String,
-    val details: ApplicationDetails,
+    private val details: ApplicationDetails,
     status: UserSignUpApplicationStatus,
     rejectReason: String?
 ) : BaseEntity(), Persistable<UUID> {
@@ -70,5 +70,9 @@ class SignUpApplication private constructor(
 
     fun getFcmToken(): String {
         return details.fcmToken
+    }
+
+    fun getMasterAlarmToggle(): Boolean {
+        return this.details.masterAlarmToggle
     }
 }

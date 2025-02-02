@@ -27,7 +27,9 @@ data class UserSignUpApiRequestDto(
     val signUpCode: String,
     @Schema(description = "FCM 토큰")
     @field:NotEmpty(message = "FCM 토큰은 필수로 전달되어야 합니다.")
-    val fcmToken: String
+    val fcmToken: String,
+    @Schema(description = "기기에서 알림 설정을 켰는지 여부")
+    val masterAlarmToggle: Boolean
 ) {
 
     fun toAppRequest(): UserSignUpAppRequestDto {
@@ -37,7 +39,8 @@ data class UserSignUpApiRequestDto(
             this.name,
             this.activityUnits.map { it.toAppRequest() },
             this.signUpCode,
-            this.fcmToken
+            this.fcmToken,
+            this.masterAlarmToggle
         )
     }
 }

@@ -1,9 +1,8 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.model.ActivityUnitParam
-import co.yappuworld.user.domain.model.ApplicationDetails
+import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
+import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
 import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.vo.Position
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,13 +24,7 @@ class ApplicationDetailsRepositoryConverterTest {
 
     @Test
     fun `UserSignUpApplication Custom Converter 정상 동작 확인`() {
-        val application = ApplicationDetails(
-            "abc@abc.com",
-            "abc",
-            "abc",
-            listOf(ActivityUnitParam(0, Position.PM)),
-            "fcmToken"
-        ).let { userSignUpApplicationRepository.save(SignUpApplication(it)) }
+        val application = userSignUpApplicationRepository.save(getSignUpApplicationFixture())
 
         assertThat(checkNotNull(userSignUpApplicationRepository.findByIdOrNull(application.id)))
             .isInstanceOf(SignUpApplication::class.java)
@@ -39,13 +32,7 @@ class ApplicationDetailsRepositoryConverterTest {
 
     @Test
     fun `가장 최근에 신청된 신청서를 조회한다`() {
-        val firstDetails = ApplicationDetails(
-            "abc@abc.com",
-            "abc",
-            "abc",
-            listOf(ActivityUnitParam(0, Position.PM)),
-            "fcmToken"
-        )
+        val firstDetails = getApplicationDetailsFixture()
         val firstApplication = SignUpApplication(firstDetails).also { it.reject("거절") }
         val secondApplication = SignUpApplication(firstDetails)
 

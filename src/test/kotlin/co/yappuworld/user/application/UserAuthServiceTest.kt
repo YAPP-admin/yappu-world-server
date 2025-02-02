@@ -66,7 +66,8 @@ class UserAuthServiceTest {
         "name",
         listOf(ActivityUnitAppRequestDto(1, Position.PM)),
         "",
-        "fcmToken"
+        "fcmToken",
+        true
     )
 
     @Test

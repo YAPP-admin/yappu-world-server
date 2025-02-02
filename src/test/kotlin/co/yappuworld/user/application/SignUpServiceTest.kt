@@ -5,7 +5,9 @@ import co.yappuworld.global.property.JwtProperty
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationAppRequestDtoFixture
-import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplication
+import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
+import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
+import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
@@ -49,11 +51,12 @@ class SignUpServiceTest {
 
     companion object {
         @JvmStatic
-        private fun provideSignUpApplications(): List<SignUpApplication> {
+        private fun provideSignUpApplicationAndDetails(): List<Pair<SignUpApplication, ApplicationDetails>> {
+            val details = getApplicationDetailsFixture()
             return listOf(
-                getSignUpApplication(),
-                getSignUpApplication().apply { reject("거절") },
-                getSignUpApplication().apply { approve() }
+                Pair(getSignUpApplicationFixture(details), details),
+                Pair(getSignUpApplicationFixture(details).apply { reject("거절") }, details),
+                Pair(getSignUpApplicationFixture(details).apply { approve() }, details)
             )
         }
     }
@@ -70,7 +73,8 @@ class SignUpServiceTest {
 
     @Test
     fun `회원가입 신청 시 입력한 비밀번호와 로그인 시도 시 입력한 비밀번호가 다르면 예외가 발생한다`() {
-        val application = getSignUpApplication()
+        val details = getApplicationDetailsFixture()
+        val application = SignUpApplication(details)
         every {
             authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
                 any(),
@@ -80,7 +84,7 @@ class SignUpServiceTest {
 
         val request = getLatestSignUpApplicationAppRequestDtoFixture(
             email = application.applicantEmail,
-            password = application.details.password + "a"
+            password = details.password + "a"
         )
 
         assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
@@ -89,8 +93,11 @@ class SignUpServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideSignUpApplications")
-    fun `어플리케이션의 상태에 맞게 응답이 반환된다`(application: SignUpApplication) {
+    @MethodSource("provideSignUpApplicationAndDetails")
+    fun `어플리케이션의 상태에 맞게 응답이 반환된다`(applicationAndDetails: Pair<SignUpApplication, ApplicationDetails>) {
+        val application = applicationAndDetails.first
+        val details = applicationAndDetails.second
+
         every {
             authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
                 application.applicantEmail,
@@ -100,7 +107,7 @@ class SignUpServiceTest {
 
         val request = getLatestSignUpApplicationAppRequestDtoFixture(
             email = application.applicantEmail,
-            password = application.details.password
+            password = details.password
         )
 
         signUpService.findLatestSignUpApplication(request).also {

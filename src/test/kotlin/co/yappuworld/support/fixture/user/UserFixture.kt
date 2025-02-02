@@ -23,23 +23,25 @@ object UserFixture {
         role = role
     )
 
-    fun getSignUpApplication(details: ApplicationDetails = getSignUpApplicationDetails()): SignUpApplication {
+    fun getSignUpApplicationFixture(details: ApplicationDetails = getApplicationDetailsFixture()): SignUpApplication {
         return SignUpApplication(details)
     }
 
-    fun getSignUpApplicationDetails(
+    fun getApplicationDetailsFixture(
         email: String = "email@email.com",
         password: String = "abcabC!!",
         name: String = "name",
         activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams(),
-        fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1"
+        fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1",
+        masterAlarmToggle: Boolean = true
     ): ApplicationDetails {
         return ApplicationDetails(
             email,
             password,
             name,
             activityUnitParams,
-            fcmToken
+            fcmToken,
+            masterAlarmToggle
         )
     }
 

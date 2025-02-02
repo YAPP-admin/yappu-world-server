@@ -10,13 +10,17 @@ import java.util.UUID
 @Table("user_alarm_settings")
 class UserAlarmSetting private constructor(
     val userId: UUID,
-    val master: Boolean = true,
+    val master: Boolean,
     @Id
     @JvmField
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
 ) : BaseEntity(), Persistable<UUID> {
 
-    constructor(userId: UUID) : this(userId, true, UlidCreator.getMonotonicUlid().toUuid())
+    constructor(userId: UUID, masterToggle: Boolean) : this(
+        userId,
+        masterToggle,
+        UlidCreator.getMonotonicUlid().toUuid()
+    )
 
     fun withId(id: UUID): UserAlarmSetting {
         return UserAlarmSetting(this.userId, this.master, id)
@@ -27,6 +31,6 @@ class UserAlarmSetting private constructor(
     }
 
     override fun isNew(): Boolean {
-        TODO("Not yet implemented")
+        return !this.isCreatedAtInitialized()
     }
 }
