@@ -4,6 +4,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.user.application.UserAlarmService
 import co.yappuworld.user.presentation.dto.response.MasterAlarmToggleApiResponse
+import co.yappuworld.user.presentation.dto.response.UserAlarmStatusApiResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -11,6 +12,18 @@ import org.springframework.web.bind.annotation.RestController
 class UserAlarmController(
     private val userAlarmService: UserAlarmService
 ) : UserAlarmApi {
+
+    override fun getAlarmStatus(
+        securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<UserAlarmStatusApiResponse>> {
+        return ResponseEntity.ok(
+            SuccessResponse.of(
+                UserAlarmStatusApiResponse.of(
+                    userAlarmService.getAlarmStatus(securityUser.userId)
+                )
+            )
+        )
+    }
 
     override fun toggleMasterAlarm(
         securityUser: SecurityUser
