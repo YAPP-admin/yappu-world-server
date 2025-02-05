@@ -10,11 +10,14 @@ import java.util.UUID
 @Table("user_alarm_settings")
 class UserAlarmSetting private constructor(
     val userId: UUID,
-    val master: Boolean,
+    master: Boolean,
     @Id
     @JvmField
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
 ) : BaseEntity(), Persistable<UUID> {
+
+    var master: Boolean = master
+        private set
 
     constructor(userId: UUID, masterToggle: Boolean) : this(
         userId,
@@ -32,5 +35,9 @@ class UserAlarmSetting private constructor(
 
     override fun isNew(): Boolean {
         return !this.isCreatedAtInitialized()
+    }
+
+    fun toggleMaster() {
+        this.master = !this.master
     }
 }

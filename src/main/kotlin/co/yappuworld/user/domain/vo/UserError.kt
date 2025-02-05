@@ -16,6 +16,11 @@ enum class UserError : Error {
         override val code: String = "USR_0002"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
+    USER_RELATED_DATA_NOT_FOUND {
+        override val message: String = "유저 데이터를 확인해주세요."
+        override val code: String = "USR_0003"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
 
     // 1000번대 - 회원가입 에러
     INVALID_SIGN_UP_CODE {
