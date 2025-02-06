@@ -1,6 +1,11 @@
 package co.yappuworld.user.infrastructure
 
+import java.util.UUID
+
 interface UserSystemNotifier {
 
-    fun notify(content: String)
+    fun notifySignUpRequestReceived(
+        applicationId: UUID,
+        applicantName: String
+    )
 }
