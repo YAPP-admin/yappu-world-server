@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component
 
 @Component
 @Primary
-class DiscordUserSystemNotificator(
+class DiscordUserSystemNotifier(
     private val discordClient: DiscordClient
-) : UserSystemNotificator {
+) : UserSystemNotifier {
 
     override fun notify(content: String) {
         discordClient.send(content)

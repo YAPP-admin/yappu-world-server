@@ -20,6 +20,19 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
+<<<<<<< HEAD
+=======
+import co.yappuworld.user.infrastructure.UserSystemNotifier
+
+>>>>>>> 59ceca7 (fix: class 이름 변경)
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.data.domain.Limit
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.util.UUID
+
 private val logger = KotlinLogging.logger { }
 
 @Service

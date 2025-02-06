@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-interface UserSystemNotificator {
+interface UserSystemNotifier {
 
     fun notify(content: String)
 }
