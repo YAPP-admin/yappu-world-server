@@ -1,6 +1,6 @@
 package co.yappuworld.global.config
 
-import co.yappuworld.global.property.FcmProperty
+import co.yappuworld.external.fcm.FcmProperty
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions

@@ -1,4 +1,4 @@
-package co.yappuworld.global.property
+package co.yappuworld.external.fcm
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

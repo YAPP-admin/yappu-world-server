@@ -1,4 +1,4 @@
-package co.yappuworld.global.property
+package co.yappuworld.global.security
 
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys

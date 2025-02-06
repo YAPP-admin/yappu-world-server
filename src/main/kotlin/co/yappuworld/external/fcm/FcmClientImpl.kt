@@ -1,4 +1,4 @@
-package co.yappuworld.global.client.fcm
+package co.yappuworld.external.fcm
 
 import com.google.firebase.messaging.BatchResponse
 import com.google.firebase.messaging.FirebaseMessaging

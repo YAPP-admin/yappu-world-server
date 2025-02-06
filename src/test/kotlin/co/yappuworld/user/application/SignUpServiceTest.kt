@@ -1,7 +1,7 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.property.JwtProperty
+import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationAppRequestDtoFixture

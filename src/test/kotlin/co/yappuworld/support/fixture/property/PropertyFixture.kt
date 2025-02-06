@@ -1,6 +1,6 @@
 package co.yappuworld.support.fixture.property
 
-import co.yappuworld.global.property.JwtProperty
+import co.yappuworld.global.security.JwtProperty
 
 object PropertyFixture {
 
