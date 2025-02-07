@@ -1,6 +1,6 @@
 package co.yappuworld.global.persistence
 
-import co.yappuworld.user.domain.model.SignUpApplicantDetails
+import co.yappuworld.user.domain.model.ApplicationDetails
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.core.convert.converter.Converter
@@ -23,17 +23,17 @@ class UuidIdentifierReadingConverter : Converter<String, UUID> {
 }
 
 @WritingConverter
-class UserApplicationWritingConverter : Converter<SignUpApplicantDetails, String> {
-    override fun convert(source: SignUpApplicantDetails): String {
+class UserApplicationWritingConverter : Converter<ApplicationDetails, String> {
+    override fun convert(source: ApplicationDetails): String {
         return ObjectMapper().writeValueAsString(source)
     }
 }
 
 @ReadingConverter
-class UserApplicationReadingConverter : Converter<String, SignUpApplicantDetails> {
-    override fun convert(source: String): SignUpApplicantDetails {
+class UserApplicationReadingConverter : Converter<String, ApplicationDetails> {
+    override fun convert(source: String): ApplicationDetails {
         val om = jacksonObjectMapper()
-        val result = om.readValue(source, SignUpApplicantDetails::class.java)
+        val result = om.readValue(source, ApplicationDetails::class.java)
         return result
     }
 }

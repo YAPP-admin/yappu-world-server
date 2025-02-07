@@ -17,7 +17,7 @@ class SignUpApplication private constructor(
     @JvmField
     val id: UUID,
     val applicantEmail: String,
-    val applicantDetails: SignUpApplicantDetails,
+    private val details: ApplicationDetails,
     status: UserSignUpApplicationStatus,
     rejectReason: String?
 ) : BaseEntity(), Persistable<UUID> {
@@ -27,7 +27,7 @@ class SignUpApplication private constructor(
     var rejectReason: String? = rejectReason
         private set
 
-    constructor(application: SignUpApplicantDetails) : this(
+    constructor(application: ApplicationDetails) : this(
         UlidCreator.getMonotonicUlid().toUuid(),
         application.email,
         application,
@@ -45,11 +45,11 @@ class SignUpApplication private constructor(
     }
 
     fun toUser(role: UserRole): User {
-        return this.applicantDetails.toUser(role)
+        return this.details.toUser(role)
     }
 
     fun checkPassword(password: String) {
-        if (applicantDetails.password != password) {
+        if (details.password != password) {
             throw BusinessException(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION)
         }
     }
@@ -62,13 +62,17 @@ class SignUpApplication private constructor(
         return !isCreatedAtInitialized()
     }
 
-    fun toActivityUnits(user: User): List<ActivityUnit> {
-        return this.applicantDetails.activityUnits.map {
-            it.toActivityUnit(user.id)
+    fun toActivityUnits(userId: UUID): List<ActivityUnit> {
+        return this.details.activityUnits.map {
+            it.toActivityUnit(userId)
         }
     }
 
     fun getFcmToken(): String {
-        return applicantDetails.fcmToken
+        return details.fcmToken
+    }
+
+    fun getDeviceAlarmToggle(): Boolean {
+        return this.details.deviceAlarmToggle
     }
 }
