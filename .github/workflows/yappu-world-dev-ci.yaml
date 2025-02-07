@@ -37,7 +37,7 @@ jobs:
                     fcm.client_email: ${{secrets.FCM_CLIENT_EMAIL}}
                     fcm.client_id: ${{secrets.FCM_CLIENT_ID}}
                     fcm.client_x509_cert_url: ${{secrets.FCM_X509_CERT_URL}}
-#                    discord.webhook: ${{secrets.DISCORD_WEBHOOK_URL_IN_DEV}}
+                    discord.webhook: ${{secrets.DISCORD_WEBHOOK_URL_IN_DEV}}
 
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build -Dspring.profiles.active=test
