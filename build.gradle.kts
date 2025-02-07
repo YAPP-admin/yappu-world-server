@@ -65,6 +65,8 @@ tasks {
     }
     bootJar {
         archiveBaseName = "yappu-world"
-        archiveFileName = "yappu-world.jar"
+
+        val profile = System.getProperty("spring.profiles.active")
+        archiveFileName = "yappu-world-$profile.jar"
     }
 }

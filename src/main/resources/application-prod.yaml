@@ -1,0 +1,23 @@
+server:
+    forward-headers-strategy: framework
+
+spring:
+    mvc:
+        hidden-method:
+            filter:
+                enabled: true
+    docker:
+        compose:
+            enabled: false
+    datasource:
+        url: ${PROD_DB_URL}
+        username: ${PROD_DB_USERNAME}
+        password: ${PROD_DB_PASSWORD}
+    sql:
+        init:
+            mode: always
+
+jwt:
+    secret_key: ${PROD_JWT_SECRET_KEY}
+    access_token_expiration_times: ${PROD_ACCESS_TOKEN_EXPIRATION_TIMES}
+    refresh_token_expiration_times: ${PROD_REFRESH_TOKEN_EXPIRATION_TIMES}
