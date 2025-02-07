@@ -44,7 +44,9 @@ jobs:
 
             -   name: Debug application-test.yaml
                 if: always()
-                run: cat ./src/main/resources/application-test.yaml
+                run: |
+                    cat ./src/main/resources/application-test.yaml
+                    echo "DISCORD_WEBHOOK_URL_IN_DEV=${DISCORD_WEBHOOK_URL_IN_DEV}"
 
             # Discord Notification
 #            -   name: CI Success Notification

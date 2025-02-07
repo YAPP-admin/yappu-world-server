@@ -17,6 +17,10 @@ class DiscordClient(
     private val discordProperty: DiscordProperty
 ) {
 
+    init {
+        println("Discord Webhook: ${discordProperty.webhook}")
+    }
+
     fun send(content: String) {
         val message = jacksonObjectMapper().writeValueAsString(DiscordMessage(content))
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
