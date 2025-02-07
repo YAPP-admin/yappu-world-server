@@ -8,6 +8,6 @@ enum class Position(
     WEB("Web"),
     ANDROID("Android"),
     IOS("iOS"),
-    SERVER("Server"),
-    FLUTTER("Flutter")
+    FLUTTER("Flutter"),
+    SERVER("Server")
 }
