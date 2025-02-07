@@ -15,14 +15,12 @@ object UserFixture {
         email: String = "email@email.com",
         password: String = "password",
         name: String = "name",
-        role: UserRole = UserRole.ACTIVE,
-        isActive: Boolean = true
+        role: UserRole = UserRole.ACTIVE
     ) = User(
         email = email,
         password = password,
         name = name,
-        role = role,
-        isActive = isActive
+        role = role
     )
 
     fun getSignUpApplication(details: SignUpApplicantDetails = getSignUpApplicationDetails()): SignUpApplication {

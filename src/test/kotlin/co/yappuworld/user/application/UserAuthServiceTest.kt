@@ -124,4 +124,23 @@ class UserAuthServiceTest {
             checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken))
         }
     }
+
+    @Test
+    fun `이미 회원탈퇴 된 유저는 탈퇴 시 예외가 발생한다`() {
+        val user = getUserFixture().apply { withdraw() }
+        every { userRepository.findByIdOrNull(any()) } returns user
+
+        assertThatThrownBy { userAuthService.withdrawUser(user.id) }
+            .isInstanceOf(BusinessException::class.java)
+            .hasMessage(UserError.ALREADY_WITHDRAWN_USER.message)
+    }
+
+    @Test
+    fun `탈퇴한 적 없는 유저는 정상적으로 탈퇴된다`() {
+        val user = getUserFixture()
+        every { userRepository.findByIdOrNull(any()) } returns user
+        every { userRepository.save(any()) } returns user
+
+        assertDoesNotThrow { userAuthService.withdrawUser(user.id) }
+    }
 }
