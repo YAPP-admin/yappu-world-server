@@ -44,4 +44,8 @@ class UserAlarmSetting private constructor(
     fun toggleMaster() {
         this.master = !this.master
     }
+
+    fun updateDeviceAlarm(deviceToggle: Boolean) {
+        this.device = deviceToggle
+    }
 }

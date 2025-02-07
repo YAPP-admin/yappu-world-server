@@ -3,6 +3,7 @@ package co.yappuworld.user.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.user.application.UserAlarmService
+import co.yappuworld.user.presentation.dto.request.UpdateDeviceAlarmApiRequestDto
 import co.yappuworld.user.presentation.dto.response.MasterAlarmToggleApiResponse
 import co.yappuworld.user.presentation.dto.response.UserAlarmStatusApiResponse
 import org.springframework.http.ResponseEntity
@@ -22,6 +23,16 @@ class UserAlarmController(
                     userAlarmService.getAlarmStatus(securityUser.userId)
                 )
             )
+        )
+    }
+
+    override fun updateDeviceAlarm(
+        securityUser: SecurityUser,
+        request: UpdateDeviceAlarmApiRequestDto
+    ): ResponseEntity<SuccessResponse<Unit>> {
+        userAlarmService.updateDeviceAlarm(securityUser.userId, request.toAppRequest())
+        return ResponseEntity.ok(
+            SuccessResponse.noBody()
         )
     }
 

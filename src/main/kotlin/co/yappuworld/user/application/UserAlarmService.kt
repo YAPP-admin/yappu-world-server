@@ -1,6 +1,7 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.user.application.dto.request.UpdateDeviceAlarmAppRequestDto
 import co.yappuworld.user.application.dto.response.MasterAlarmToggleAppResponse
 import co.yappuworld.user.application.dto.response.UserAlarmStatusAppResponse
 import co.yappuworld.user.domain.model.UserAlarmSetting
@@ -21,6 +22,15 @@ class UserAlarmService(
     @Transactional(readOnly = true)
     fun getAlarmStatus(userId: UUID): UserAlarmStatusAppResponse {
         return UserAlarmStatusAppResponse.of(getUserAlarmSetting(userId))
+    }
+
+    @Transactional
+    fun updateDeviceAlarm(
+        userId: UUID,
+        request: UpdateDeviceAlarmAppRequestDto
+    ) {
+        val setting = getUserAlarmSetting(userId).apply { updateDeviceAlarm(request.deviceToggle) }
+        userAlarmSettingRepository.save(setting)
     }
 
     @Transactional
