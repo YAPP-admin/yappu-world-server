@@ -38,3 +38,6 @@ fcm:
     auth_provider_x509_cert_url: test
     client_x509_cert_url: test
     universe_domain: test
+
+discord:
+    webhook: test
