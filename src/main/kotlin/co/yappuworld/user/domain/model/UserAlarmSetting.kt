@@ -10,23 +10,27 @@ import java.util.UUID
 @Table("user_alarm_settings")
 class UserAlarmSetting private constructor(
     val userId: UUID,
+    device: Boolean,
     master: Boolean,
     @Id
     @JvmField
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
 ) : BaseEntity(), Persistable<UUID> {
 
+    var device: Boolean = device
+        private set
     var master: Boolean = master
         private set
 
-    constructor(userId: UUID, masterToggle: Boolean) : this(
-        userId,
-        masterToggle,
-        UlidCreator.getMonotonicUlid().toUuid()
+    constructor(userId: UUID, deviceToggle: Boolean) : this(
+        userId = userId,
+        device = deviceToggle,
+        master = true,
+        id = UlidCreator.getMonotonicUlid().toUuid()
     )
 
     fun withId(id: UUID): UserAlarmSetting {
-        return UserAlarmSetting(this.userId, this.master, id)
+        return UserAlarmSetting(this.userId, this.device, this.master, id)
     }
 
     override fun getId(): UUID {

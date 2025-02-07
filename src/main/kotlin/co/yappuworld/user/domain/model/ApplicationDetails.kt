@@ -8,7 +8,7 @@ data class ApplicationDetails(
     val name: String,
     val activityUnits: List<ActivityUnitParam>,
     val fcmToken: String,
-    val masterAlarmToggle: Boolean
+    val deviceAlarmToggle: Boolean
 ) {
 
     fun toUser(role: UserRole): User {

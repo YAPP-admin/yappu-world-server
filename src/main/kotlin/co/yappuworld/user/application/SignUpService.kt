@@ -111,7 +111,7 @@ class SignUpService(
         val user = application.toUser(role)
         return userRepository.save(user).also {
             activityUnitRepository.saveAll(application.toActivityUnits(it.id))
-            userAlarmSettingRepository.save(UserAlarmSetting(it.id, application.getMasterAlarmToggle()))
+            userAlarmSettingRepository.save(UserAlarmSetting(it.id, application.getDeviceAlarmToggle()))
         }
     }
 

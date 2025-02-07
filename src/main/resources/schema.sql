@@ -50,5 +50,6 @@ CREATE TABLE user_alarm_settings
     created_at datetime,
     updated_at datetime,
     user_id    varchar(36) NOT NULL,
+    device     tinyint(1) NOT NULL,
     master     tinyint(1) NOT NULL
 );

@@ -10,7 +10,7 @@ data class UserSignUpAppRequestDto(
     val activityUnits: List<ActivityUnitAppRequestDto>,
     val signUpCode: String,
     val fcmToken: String,
-    val masterAlarmToggle: Boolean
+    val deviceAlarmToggle: Boolean
 ) {
 
     fun toApplication(): SignUpApplication {
@@ -21,7 +21,7 @@ data class UserSignUpAppRequestDto(
                 this.name,
                 this.activityUnits.map { it.toActivityUnitParam() },
                 this.fcmToken,
-                this.masterAlarmToggle
+                this.deviceAlarmToggle
             )
         )
     }

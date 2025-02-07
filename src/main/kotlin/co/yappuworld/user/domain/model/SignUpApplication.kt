@@ -72,7 +72,7 @@ class SignUpApplication private constructor(
         return details.fcmToken
     }
 
-    fun getMasterAlarmToggle(): Boolean {
-        return this.details.masterAlarmToggle
+    fun getDeviceAlarmToggle(): Boolean {
+        return this.details.deviceAlarmToggle
     }
 }
