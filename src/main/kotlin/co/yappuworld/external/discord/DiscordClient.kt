@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate
  */
 @Component
 class DiscordClient(
-    private val discordProperty: DiscordProperty
+    val discordProperty: DiscordProperty
 ) {
 
     fun send(content: String) {
