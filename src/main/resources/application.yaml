@@ -4,7 +4,7 @@ spring:
     profiles:
         active: local
         group:
-            local: console-logging, fcm-local
+            local: console-logging, secret-local
             test: console-logging
-            dev: console-logging, file-logging, fcm
-            prod: file-logging, fcm
+            dev: console-logging, file-logging
+            prod: file-logging
