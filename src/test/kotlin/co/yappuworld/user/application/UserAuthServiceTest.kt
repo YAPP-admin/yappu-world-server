@@ -18,7 +18,6 @@ import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserSystemNotifier
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
 import io.mockk.mockk
@@ -29,8 +28,6 @@ import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.test.Test
-
-private val logger = KotlinLogging.logger { }
 
 class UserAuthServiceTest {
 
