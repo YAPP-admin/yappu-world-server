@@ -10,7 +10,8 @@ data class UserSignUpAppRequestDto(
     val password: String,
     val name: String,
     val activityUnits: List<ActivityUnitAppRequestDto>,
-    val signUpCode: String
+    val signUpCode: String,
+    val fcmToken: String
 ) {
     fun toUser(role: UserRole): User {
         return User(
@@ -26,7 +27,8 @@ data class UserSignUpAppRequestDto(
             this.email,
             this.password,
             this.name,
-            this.activityUnits.map { it.toActivityUnitParam() }
+            this.activityUnits.map { it.toActivityUnitParam() },
+            this.fcmToken
         )
     }
 

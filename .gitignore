@@ -468,3 +468,5 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,intellij+iml,intellij+all,eclipse,linux,windows,macos,java,kotlin,gradle,maven,git
+
+application-fcm-local.yaml

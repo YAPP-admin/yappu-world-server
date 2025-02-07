@@ -15,10 +15,12 @@ import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppRes
 import co.yappuworld.user.domain.checkLoginAvailability
 import co.yappuworld.user.domain.checkNewApplications
 import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.UserDevice
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -36,6 +38,7 @@ class UserAuthService(
     private val userRepository: UserRepository,
     private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
     private val activityUnitRepository: ActivityUnitRepository,
+    private val userDeviceRepository: UserDeviceRepository,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
     private val configInquiryComponent: ConfigInquiryComponent
@@ -61,6 +64,7 @@ class UserAuthService(
         val user = request.toUser(role).also {
             activityUnitRepository.saveAll(request.toActivityUnits(it))
             userRepository.save(it)
+            userDeviceRepository.save(UserDevice(it.id, request.fcmToken))
         }
 
         return user.let {

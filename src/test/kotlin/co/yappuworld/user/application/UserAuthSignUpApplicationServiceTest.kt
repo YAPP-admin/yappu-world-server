@@ -11,6 +11,7 @@ import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.mockk.every
@@ -33,6 +34,7 @@ class UserAuthSignUpApplicationServiceTest {
     private val userRepository = mockk<UserRepository>()
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
+    private val userDeviceRepository = mockk<UserDeviceRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
@@ -40,6 +42,7 @@ class UserAuthSignUpApplicationServiceTest {
         userRepository,
         authApplicationRepository,
         activityUnitRepository,
+        userDeviceRepository,
         jwtGenerator,
         jwtResolver,
         configInquiryComponent
