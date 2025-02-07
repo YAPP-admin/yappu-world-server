@@ -1,12 +1,12 @@
 package co.yappuworld.external.discord
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIf
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.IfProfileValue
 
 @SpringBootTest
-@IfProfileValue(name = "spring.profiles.active", value = "local")
+@EnabledIf(value = "test")
 class DiscordClientTest {
 
     @Autowired
