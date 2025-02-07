@@ -1,8 +1,8 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtGenerator
+import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.operation.application.ConfigInquiryComponent
@@ -14,8 +14,10 @@ import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
@@ -41,9 +43,11 @@ class UserAuthServiceTest {
     private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
+    private val userDeviceRepository = mockk<UserDeviceRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
+    private val userSystemNotifier = mockk<UserSystemNotifier>()
     private val userAuthService = UserAuthService(
         userRepository,
         authApplicationRepository,
@@ -55,8 +59,10 @@ class UserAuthServiceTest {
         authApplicationRepository,
         activityUnitRepository,
         userAlarmSettingRepository,
+        userDeviceRepository,
         jwtGenerator,
-        configInquiryComponent
+        configInquiryComponent,
+        userSystemNotifier
     )
 
     val email = "abc@abc.com"

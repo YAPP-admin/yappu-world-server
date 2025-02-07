@@ -1,8 +1,8 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtGenerator
+import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationAppRequestDtoFixture
 import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
@@ -16,6 +16,7 @@ import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
@@ -40,13 +41,16 @@ class SignUpServiceTest {
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
+    private val userSystemNotifier = mockk<UserSystemNotifier>()
     private val signUpService = SignUpService(
         userRepository,
         authApplicationRepository,
         activityUnitRepository,
         userAlarmSettingRepository,
+        userDeviceRepository,
         jwtGenerator,
-        configInquiryComponent
+        configInquiryComponent,
+        userSystemNotifier
     )
 
     companion object {
