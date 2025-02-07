@@ -47,6 +47,7 @@ jobs:
                 run: |
                     cat ./src/main/resources/application-test.yaml
                     echo "DISCORD_WEBHOOK_URL_IN_DEV=${DISCORD_WEBHOOK_URL_IN_DEV}"
+                    echo "FCM_X509_CERT_URL=${DISCORD_WEBHOOK_URL_IN_DEV}"
 
             # Discord Notification
 #            -   name: CI Success Notification
