@@ -21,6 +21,7 @@ import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Limit
 import org.springframework.data.repository.findByIdOrNull
@@ -37,7 +38,8 @@ class SignUpService(
     private val activityUnitRepository: ActivityUnitRepository,
     private val userAlarmSettingRepository: UserAlarmSettingRepository,
     private val jwtGenerator: JwtGenerator,
-    private val configInquiryComponent: ConfigInquiryComponent
+    private val configInquiryComponent: ConfigInquiryComponent,
+    private val userSystemNotifier: UserSystemNotifier
 ) {
 
     @Transactional
@@ -46,7 +48,9 @@ class SignUpService(
         now: LocalDateTime
     ) {
         checkApplication(request.email)
-        signUpApplicationRepository.save(request.toApplication())
+        signUpApplicationRepository.save(request.toApplication()).also {
+            userSystemNotifier.notifySignUpRequestReceived(it.id, request.name)
+        }
     }
 
     @Transactional
