@@ -40,4 +40,5 @@ fcm:
     universe_domain: googleapis.com
 
 discord:
-    webhook: ${DISCORD_WEBHOOK_URL_IN_DEV}
+    webhook: https://discord.com/api/webhooks/1336917450968530985/FfDY9fNi8Wa04HPsCXy-0bcRObUPufynTMbQVY4dMP1PxCQedTj-8_ggYeDTC6sjnz6k
+#    webhook: ${DISCORD_WEBHOOK_URL_IN_DEV}
