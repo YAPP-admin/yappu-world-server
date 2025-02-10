@@ -10,11 +10,14 @@ import java.util.UUID
 @Table("user_devices")
 class UserDevice private constructor(
     val userId: UUID,
-    val fcmToken: String,
+    fcmToken: String?,
     @Id
     @JvmField
     val id: UUID
 ) : BaseEntity(), Persistable<UUID> {
+
+    var fcmToken: String? = fcmToken
+        private set
 
     constructor(userId: UUID, fcmToken: String) : this(userId, fcmToken, UlidCreator.getMonotonicUlid().toUuid())
 
@@ -28,5 +31,9 @@ class UserDevice private constructor(
 
     override fun isNew(): Boolean {
         return !isCreatedAtInitialized()
+    }
+
+    fun updateFcmToken(fcmToken: String) {
+        this.fcmToken = fcmToken
     }
 }
