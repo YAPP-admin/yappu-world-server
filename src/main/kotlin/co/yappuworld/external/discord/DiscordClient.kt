@@ -22,7 +22,7 @@ class DiscordClient(
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
 
         RestTemplate().postForObject(
-            discordProperty.webhook,
+            discordProperty.webhookUri,
             HttpEntity(message, headers),
             Unit::class.java
         )
@@ -33,7 +33,7 @@ class DiscordClient(
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
 
         RestTemplate().postForObject(
-            discordProperty.webhook,
+            discordProperty.webhookUri,
             HttpEntity(message, headers),
             Unit::class.java
         )
