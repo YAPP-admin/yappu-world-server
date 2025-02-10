@@ -40,7 +40,9 @@ jobs:
                     discord.webhook: ${{ secrets.DISCORD_WEBHOOK_URL_IN_DEV }}
 
             -   name: Build with Gradle Wrapper
-                run: ./gradlew clean build -Dspring.profiles.active=test
+                run: ./gradlew clean build
+                env:
+                    SPRING_PROFILES_ACTIVE: test
 
             # Discord Notification
 #            -   name: CI Success Notification
