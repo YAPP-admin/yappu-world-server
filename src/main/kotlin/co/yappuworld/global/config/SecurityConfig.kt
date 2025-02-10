@@ -3,6 +3,7 @@ package co.yappuworld.global.config
 import co.yappuworld.global.filter.JwtFilter
 import co.yappuworld.global.security.SecurityPathMatchersManager.adminMatchers
 import co.yappuworld.global.security.SecurityPathMatchersManager.anyoneMatchers
+import co.yappuworld.global.security.SecurityPathMatchersManager.userMatchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod.DELETE
@@ -31,6 +32,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(adminMatchers).hasAnyRole("ADMIN")
+                    .requestMatchers(userMatchers).hasAnyRole("ADMIN", "ALUMNI", "GRADUATE", "ACTIVE")
                     .requestMatchers(anyoneMatchers).permitAll()
             }
             .authorizeHttpRequests { it.anyRequest().permitAll() }

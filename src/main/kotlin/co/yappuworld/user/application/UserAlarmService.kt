@@ -46,7 +46,7 @@ class UserAlarmService(
 
     @Transactional
     fun updateFcmToken(
-        serId: UUID,
+        userId: UUID,
         fcmToken: String
     ) {
         userDeviceRepository.findUserDeviceOrNullByUserId(userId)
