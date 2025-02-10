@@ -1,12 +1,4 @@
 services:
-    app:
-        image: yappu-world-test
-        container_name: yappu-world-test
-        build:
-            context: .
-            dockerfile: dockerfile-test
-        ports:
-            - '8080:8080'
     mysql:
         container_name: yappu_world_mysql
         image: mysql:8.1

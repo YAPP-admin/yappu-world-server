@@ -14,7 +14,7 @@ spring:
             skip:
                 in-tests: false
     datasource:
-        url: jdbc:mysql://localhost:3306/yappu_world
+        url: jdbc:mysql://mysql:3306/yappu_world
         username: yapp
         password: yapp
     sql:
