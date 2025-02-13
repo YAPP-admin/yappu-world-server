@@ -13,6 +13,15 @@ jobs:
         steps:
             -   uses: actions/checkout@v4
 
+            -   name: Set up Docker
+                run: |
+                    sudo apt-get update
+                    sudo apt-get install docker-compose
+
+            -   name: Start MySQL with Docker Compose
+                run: |
+                    docker-compose -f docker/docker-compose-test.yaml up -d
+
             -   name: Set up JDK 21
                 uses: actions/setup-java@v4
                 with:
@@ -22,6 +31,22 @@ jobs:
 
             -   name: Setup Gradle
                 uses: gradle/actions/setup-gradle@v3
+
+            -   name: Copy Secrets
+                uses: microsoft/variable-substitution@v1
+                with:
+                    files:
+                        ./src/main/resources/application-test.yaml
+                env:
+                    jwt.secret_key: ${{ secrets.DEV_JWT_SECRET_KEY }}
+                    jwt.access_token_expiration_times: ${{ secrets.DEV_ACCESS_TOKEN_EXPIRATION_TIMES }}
+                    jwt.refresh_token_expiration_times: ${{ secrets.DEV_REFRESH_TOKEN_EXPIRATION_TIMES }}
+                    fcm.private_key_id: ${{ secrets.FCM_PRIVATE_KEY_ID }}
+                    fcm.private_key: ${{ secrets.FCM_PRIVATE_KEY }}
+                    fcm.client_email: ${{ secrets.FCM_CLIENT_EMAIL }}
+                    fcm.client_id: ${{ secrets.FCM_CLIENT_ID }}
+                    fcm.client_x509_cert_url: ${{ secrets.FCM_X509_CERT_URL }}
+                    discord.webhook: ${{ secrets.DISCORD_WEBHOOK_URL_IN_DEV }}
 
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build

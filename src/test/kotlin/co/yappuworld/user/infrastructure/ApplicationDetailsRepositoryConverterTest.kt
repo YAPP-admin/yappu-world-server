@@ -10,13 +10,11 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.data.domain.Limit
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.test.context.ActiveProfiles
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles(profiles = ["test"])
 class ApplicationDetailsRepositoryConverterTest {
 
     @Autowired
@@ -33,11 +31,13 @@ class ApplicationDetailsRepositoryConverterTest {
     @Test
     fun `가장 최근에 신청된 신청서를 조회한다`() {
         val firstDetails = getApplicationDetailsFixture()
-        val firstApplication = SignUpApplication(firstDetails).also { it.reject("거절") }
-        val secondApplication = SignUpApplication(firstDetails)
-
-        userSignUpApplicationRepository.save(firstApplication)
-        userSignUpApplicationRepository.save(secondApplication)
+        val firstApplication = SignUpApplication(firstDetails).also {
+            it.reject("거절")
+            userSignUpApplicationRepository.save(it)
+        }
+        val secondApplication = SignUpApplication(firstDetails).also {
+            userSignUpApplicationRepository.save(it)
+        }
 
         val findApplication = userSignUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
             firstDetails.email,

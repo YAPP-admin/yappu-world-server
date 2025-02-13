@@ -1,6 +1,5 @@
 package co.yappuworld.global.security
 
-import co.yappuworld.global.property.JwtProperty
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

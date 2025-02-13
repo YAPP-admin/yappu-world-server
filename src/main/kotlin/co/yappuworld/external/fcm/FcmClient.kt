@@ -1,4 +1,4 @@
-package co.yappuworld.global.client.fcm
+package co.yappuworld.external.fcm
 
 import com.google.firebase.messaging.BatchResponse
 import com.google.firebase.messaging.FirebaseMessaging
@@ -7,20 +7,16 @@ import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.MulticastMessage
 import com.google.firebase.messaging.Notification
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.context.annotation.Primary
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger { }
 
 @Component
-@Primary
-@Profile("!test")
-class FcmClientImpl(
+class FcmClient(
     private val firebaseMessaging: FirebaseMessaging
-) : FcmClient {
+) {
 
-    override fun sendNotification(
+    fun sendNotification(
         token: String,
         notification: Notification
     ) {
@@ -42,7 +38,7 @@ class FcmClientImpl(
         }
     }
 
-    override fun sendNotification(
+    fun sendNotification(
         tokens: List<String>,
         notification: Notification
     ) {

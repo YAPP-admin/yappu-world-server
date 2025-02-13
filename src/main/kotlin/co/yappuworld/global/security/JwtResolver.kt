@@ -1,7 +1,6 @@
 package co.yappuworld.global.security
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.property.JwtProperty
 import co.yappuworld.global.security.error.TokenError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.ExpiredJwtException

@@ -14,13 +14,16 @@ import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppRes
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.model.UserAlarmSetting
+import co.yappuworld.user.domain.model.UserDevice
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.UserDeviceRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Limit
 import org.springframework.data.repository.findByIdOrNull
@@ -36,8 +39,10 @@ class SignUpService(
     private val signUpApplicationRepository: UserSignUpApplicationRepository,
     private val activityUnitRepository: ActivityUnitRepository,
     private val userAlarmSettingRepository: UserAlarmSettingRepository,
+    private val userDeviceRepository: UserDeviceRepository,
     private val jwtGenerator: JwtGenerator,
-    private val configInquiryComponent: ConfigInquiryComponent
+    private val configInquiryComponent: ConfigInquiryComponent,
+    private val userSystemNotifier: UserSystemNotifier
 ) {
 
     @Transactional
@@ -46,7 +51,9 @@ class SignUpService(
         now: LocalDateTime
     ) {
         checkApplication(request.email)
-        signUpApplicationRepository.save(request.toApplication())
+        signUpApplicationRepository.save(request.toApplication()).also {
+            userSystemNotifier.notifySignUpRequestReceived(it.id, request.name)
+        }
     }
 
     @Transactional
@@ -112,6 +119,7 @@ class SignUpService(
         return userRepository.save(user).also {
             activityUnitRepository.saveAll(application.toActivityUnits(it.id))
             userAlarmSettingRepository.save(UserAlarmSetting(it.id, application.getDeviceAlarmToggle()))
+            userDeviceRepository.save(UserDevice(it.id, application.getFcmToken()))
         }
     }
 
