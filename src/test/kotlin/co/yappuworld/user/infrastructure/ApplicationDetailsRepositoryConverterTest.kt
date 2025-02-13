@@ -35,6 +35,7 @@ class ApplicationDetailsRepositoryConverterTest {
             it.reject("거절")
             userSignUpApplicationRepository.save(it)
         }
+
         val secondApplication = SignUpApplication(firstDetails).also {
             userSignUpApplicationRepository.save(it)
         }

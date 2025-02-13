@@ -53,3 +53,13 @@ CREATE TABLE user_alarm_settings
     device     tinyint(1) NOT NULL,
     master     tinyint(1) NOT NULL
 );
+
+DROP TABLE IF EXISTS user_devices;
+CREATE TABLE user_devices
+(
+    id         varchar(36) PRIMARY KEY,
+    created_at datetime,
+    updated_at datetime,
+    user_id    varchar(36) NOT NULL,
+    fcm_token  varchar(128) NOT NULL
+);
