@@ -20,8 +20,10 @@ data class UserProfileApiResponseDto(
             return UserProfileApiResponseDto(
                 response.id,
                 response.name,
-                response.role,
-                response.activityUnits.map { ActivityUnitApiResponseDto.of(it) }
+                response.role.label,
+                response.activityUnits
+                    .map { ActivityUnitApiResponseDto.of(it) }
+                    .sortedByDescending { it.generation }
             )
         }
     }

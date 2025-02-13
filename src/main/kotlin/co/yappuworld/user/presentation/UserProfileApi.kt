@@ -33,7 +33,7 @@ interface UserProfileApi {
                                         "data": {
                                             "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21a",
                                             "name": "홍길동",
-                                            "email": "abc@abc.com",
+                                            "role": "관리자",
                                             "activityUnits": [
                                                 {
                                                     "generation": "1",
