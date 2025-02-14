@@ -1,1 +1,1 @@
-rootProject.name = "yappu-world"
+rootProject.name = "yappu-world-server"
