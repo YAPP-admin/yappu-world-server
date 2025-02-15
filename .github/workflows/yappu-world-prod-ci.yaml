@@ -38,12 +38,6 @@ jobs:
                     jwt.refresh_token_expiration_times: ${{ secrets.DEV_REFRESH_TOKEN_EXPIRATION_TIMES }}
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
 
-            -   name: Setup Sentry Auth Token
-                env:
-                    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-                run: |
-                    export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-
             # Github Action 실행 서버 IP 추출
             -   name: Get Github Actions IP
                 id: ip

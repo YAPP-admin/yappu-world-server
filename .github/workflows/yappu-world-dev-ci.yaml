@@ -49,12 +49,6 @@ jobs:
                     discord.webhook: ${{ secrets.DISCORD_WEBHOOK_URL_IN_DEV }}
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
 
-            -   name: Setup Sentry Auth Token
-                env:
-                    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-                run: |
-                    export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build
                 env:

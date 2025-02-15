@@ -6,7 +6,7 @@ plugins {
     // ktlint
     id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
     // sentry
-    id("io.sentry.jvm.gradle") version "5.1.0"
+    id("io.sentry.jvm.gradle") version "5.2.0"
 }
 
 group = "co"
@@ -75,9 +75,12 @@ tasks {
         archiveFileName = "yappu-world-$profile.jar"
     }
     sentry {
+        debug = true
+        autoInstallation.enabled = true
+        includeDependenciesReport = true
+
         includeSourceContext = true
         org = "yapp-co"
         projectName = "yappu-world-server"
-        authToken = System.getenv("SENTRY_AUTH_TOKEN")
     }
 }
