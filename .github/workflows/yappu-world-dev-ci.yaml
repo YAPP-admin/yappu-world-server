@@ -48,6 +48,10 @@ jobs:
                     fcm.client_x509_cert_url: ${{ secrets.FCM_X509_CERT_URL }}
                     discord.webhook: ${{ secrets.DISCORD_WEBHOOK_URL_IN_DEV }}
 
+            -  name: Setup Sentry Auth Token
+               run: |
+                   sudo export SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build
                 env:

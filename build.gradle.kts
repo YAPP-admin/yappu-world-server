@@ -78,5 +78,6 @@ tasks {
         includeSourceContext = true
         org = "yapp-co"
         projectName = "yappu-world-server"
+//        authToken = System.getenv("SENTRY_AUTH_TOKEN")
     }
 }
