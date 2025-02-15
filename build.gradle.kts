@@ -76,10 +76,6 @@ tasks {
     }
     sentry {
         debug = true
-        autoInstallation.enabled = true
-        includeDependenciesReport = true
-
-        includeSourceContext = true
         org = "yapp-co"
         projectName = "yappu-world-server"
     }
