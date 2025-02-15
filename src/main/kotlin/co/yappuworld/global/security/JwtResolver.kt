@@ -19,20 +19,21 @@ class JwtResolver(
     fun extractSecurityUserOrNull(accessToken: String): SecurityUser? {
         return accessToken.let {
             val payload = parseToken(it).payload
-            SecurityUser.fromValidToken(payload as Map<String, String>)
+            SecurityUser.fromValidToken(payload as Map<*, *>)
         }
     }
 
     fun extractUserIdFrom(accessToken: String): UUID {
-        return UUID.fromString(getClaimsFrom(accessToken)["userId"].toString())
+        val userId = getClaimsFrom(accessToken)["userId"]
             ?: throw BusinessException(TokenError.INVALID_TOKEN)
+        return UUID.fromString(userId.toString())
     }
 
-    fun getClaimsFrom(accessToken: String): Map<String, Any> {
+    fun getClaimsFrom(accessToken: String): Map<*, *> {
         return try {
-            parseToken(accessToken).payload as Map<String, Any>
+            parseToken(accessToken).payload as Map<*, *>
         } catch (e: ExpiredJwtException) {
-            e.claims as Map<String, Any>
+            e.claims as Map<*, *>
         }
     }
 

@@ -1,7 +1,7 @@
 package co.yappuworld.global.security
 
-import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.vo.UserRole
 import java.util.UUID
 
 class SecurityUser(
@@ -15,11 +15,14 @@ class SecurityUser(
     )
 
     companion object {
-        fun fromValidToken(claims: Map<String, String>): SecurityUser? {
-            val roleValue = claims["role"] ?: return null
+        fun fromValidToken(claims: Map<*, *>): SecurityUser? {
+            if (claims["userId"] == null || claims["role"] == null) {
+                return null
+            }
+
             return SecurityUser(
-                UUID.fromString(claims["userId"]) ?: return null,
-                UserRole.valueOf(roleValue)
+                UUID.fromString(claims["userId"] as String),
+                UserRole.valueOf(claims["role"].toString())
             )
         }
 
