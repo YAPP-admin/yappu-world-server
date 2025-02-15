@@ -41,3 +41,11 @@ fcm:
 
 discord:
     webhook: ${DISCORD_WEBHOOK_URL_IN_DEV}
+
+sentry:
+    dsn: ${SENTRY_DSN}
+    environment: test
+    traces-sample-rate: 1.0
+    logging:
+        minimum-event-level: warn
+        minimum-breadcrumb-level: info

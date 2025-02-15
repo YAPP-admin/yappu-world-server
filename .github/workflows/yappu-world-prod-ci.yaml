@@ -36,6 +36,7 @@ jobs:
                     jwt.secret_key: ${{ secrets.DEV_JWT_SECRET_KEY }}
                     jwt.access_token_expiration_times: ${{ secrets.DEV_ACCESS_TOKEN_EXPIRATION_TIMES }}
                     jwt.refresh_token_expiration_times: ${{ secrets.DEV_REFRESH_TOKEN_EXPIRATION_TIMES }}
+                    sentry.dsn: ${{secrets.SENTRY_DSN}}
 
             -   name: Setup Sentry Auth Token
                 env:
