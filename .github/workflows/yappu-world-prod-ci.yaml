@@ -36,6 +36,7 @@ jobs:
                     jwt.secret_key: ${{ secrets.DEV_JWT_SECRET_KEY }}
                     jwt.access_token_expiration_times: ${{ secrets.DEV_ACCESS_TOKEN_EXPIRATION_TIMES }}
                     jwt.refresh_token_expiration_times: ${{ secrets.DEV_REFRESH_TOKEN_EXPIRATION_TIMES }}
+                    sentry.dsn: ${{secrets.SENTRY_DSN}}
 
             # Github Action 실행 서버 IP 추출
             -   name: Get Github Actions IP

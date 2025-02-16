@@ -17,7 +17,8 @@ object SecurityPathMatchersManager {
     )
 
     val userMatchers = RequestMatchers.anyOf(
-        antMatcher("/v1/users/fcm")
+        antMatcher("/v1/users/fcm"),
+        antMatcher("/v1/users/profile")
     )
 
     val adminMatchers = RequestMatchers.anyOf(

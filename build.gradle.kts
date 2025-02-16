@@ -5,6 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     // ktlint
     id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
+    // sentry
+    id("io.sentry.jvm.gradle") version "5.2.0"
 }
 
 group = "co"
@@ -71,5 +73,10 @@ tasks {
 
         val profile = System.getProperty("spring.profiles.active")
         archiveFileName = "yappu-world-$profile.jar"
+    }
+    sentry {
+        debug = true
+        org = "yapp-co"
+        projectName = "yappu-world-server"
     }
 }
