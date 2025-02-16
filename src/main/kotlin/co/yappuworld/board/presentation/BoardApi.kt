@@ -171,5 +171,7 @@ interface BoardApi {
         ]
     )
     @GetMapping("/v1/boards/{boardId}")
-    fun getBoardDetail(@PathVariable("boardId") boardId: String)
+    fun getBoardDetail(
+        @PathVariable("boardId") boardId: String
+    )
 }
