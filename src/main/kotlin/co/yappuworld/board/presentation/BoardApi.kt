@@ -61,7 +61,7 @@ interface BoardApi {
                                                     "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21a",
                                                     "boardType": "세션",
                                                     "title": "1차 정규세션 안내",
-                                                    "content": "1차 정규세션는 필수참여입니다.",
+                                                    "content": "###1차 정규세션는 필수참여입니다.",
                                                     "displayTarget": "활동회원,
                                                     "writer": "홍길동 10기",
                                                     "createdAt": "2024-09-09T00:00:00"
@@ -70,7 +70,7 @@ interface BoardApi {
                                                     "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21b",
                                                     "boardType": "세션",
                                                     "title": "2차 정규세션 안내",
-                                                    "content": "2차 정규세션는 필수참여입니다.",
+                                                    "content": "##2차 정규세션는 필수참여입니다.",
                                                     "displayTarget": "활동회원",
                                                     "writer": "홍길동 10기",
                                                     "createdAt": "2024-09-09T00:00:00"
@@ -79,7 +79,7 @@ interface BoardApi {
                                                     "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21c",
                                                     "boardType": "운영",
                                                     "title": "디스코드 운영 안내",
-                                                    "content": "디스코드 코드는 FG345GAD 입니다",
+                                                    "content": "#디스코드 코드는 FG345GAD 입니다",
                                                     "displayTarget": "정회원",
                                                     "writer": "홍길동 10기",
                                                     "createdAt": "2024-09-09T00:00:00"

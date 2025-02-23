@@ -83,3 +83,18 @@ CREATE TABLE schedules
     generation  int,
     type        varchar(32) NOT NULL
 );
+
+DROP TABLE IF EXISTS board;
+CREATE TABLE board
+(
+    id         varchar(36) PRIMARY KEY,
+    created_at datetime,
+    updated_at datetime,
+    board_type varchar(255),
+    notice_type varchar(255),
+    title varchar(255),
+    content varchar(4000),
+    display_target varchar(255),
+    writer_id varchar(36) NOT NULL,
+    is_active tinyint(1) NOT NULL
+);
