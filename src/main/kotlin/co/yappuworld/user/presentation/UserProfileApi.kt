@@ -36,11 +36,11 @@ interface UserProfileApi {
                                             "role": "관리자",
                                             "activityUnits": [
                                                 {
-                                                    "generation": "1",
+                                                    "generation": 1,
                                                     "position": "PM"
                                                 },
                                                 {
-                                                    "generation": "2",
+                                                    "generation": 2,
                                                     "position": "ANDROID"
                                                 }
                                             ]
