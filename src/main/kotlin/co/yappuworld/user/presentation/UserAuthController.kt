@@ -3,8 +3,9 @@ package co.yappuworld.user.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.user.application.UserAuthService
+import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.user.application.SignUpService
+import co.yappuworld.user.application.UserAuthService
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
@@ -13,7 +14,6 @@ import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
 class UserAuthController(
@@ -22,7 +22,7 @@ class UserAuthController(
 ) : UserAuthApi {
 
     override fun signUp(request: UserSignUpApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
-        val now = LocalDateTime.now()
+        val now = getCurrentDateTimeInKST()
 
         if (request.signUpCode.isBlank()) {
             signUpService.submitSignUpRequest(request.toAppRequest(), now)
@@ -35,7 +35,7 @@ class UserAuthController(
     }
 
     override fun login(request: LoginApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
-        val now = LocalDateTime.now()
+        val now = getCurrentDateTimeInKST()
         return ResponseEntity.ok(
             SuccessResponse.of(
                 userAuthService.login(request.toAppRequest(), now)
@@ -44,7 +44,7 @@ class UserAuthController(
     }
 
     override fun reissueToken(request: ReissueTokenApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
-        val token = userAuthService.reissueToken(request.toAppRequest(LocalDateTime.now()))
+        val token = userAuthService.reissueToken(request.toAppRequest(getCurrentDateTimeInKST()))
         return ResponseEntity.ok(
             SuccessResponse.of(token)
         )
