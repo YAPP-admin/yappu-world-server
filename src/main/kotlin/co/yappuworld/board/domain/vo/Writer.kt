@@ -1,4 +1,4 @@
-package co.yappuworld.board.domain
+package co.yappuworld.board.domain.vo
 
 import java.util.*
 

@@ -1,6 +1,6 @@
 package co.yappuworld.board.infrastructure
 
-import co.yappuworld.board.domain.Board
+import co.yappuworld.board.domain.model.Board
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository

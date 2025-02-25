@@ -1,5 +1,6 @@
-package co.yappuworld.board.domain
+package co.yappuworld.board.domain.model
 
+import co.yappuworld.board.domain.vo.Writer
 import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.user.domain.vo.UserRole
 import org.springframework.data.annotation.Id
@@ -27,7 +28,7 @@ data class Board(
 
     override fun isNew() = !isCreatedAtInitialized()
 
-    fun filterInfo(userRole: UserRole): Board {
+    fun filterInfoByRole(userRole: UserRole): Board {
         return if (userRole != UserRole.ADMIN) {
             this.copy(displayTarget = null)
         } else {
