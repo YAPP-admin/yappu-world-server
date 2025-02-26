@@ -331,12 +331,12 @@ interface UserAuthApi {
                         schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "중복된 이메일입니다.",
+                                name = "이미 가입된 이메일",
                                 value = """
                                     {
                                         "isSuccess": "false",
-                                        "message": "중복된 이메일입니다.",
-                                        "errorCode": "USR_1005"
+                                        "message": "이미 가입된 이메일입니다.",
+                                        "errorCode": "USR_1002"
                                     }
                                 """
                             )
