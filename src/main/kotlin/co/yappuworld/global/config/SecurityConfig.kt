@@ -31,8 +31,8 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers(adminMatchers).hasAnyRole("ADMIN")
-                    .requestMatchers(userMatchers).hasAnyRole("ADMIN", "ALUMNI", "GRADUATE", "ACTIVE")
+                it.requestMatchers(adminMatchers).hasAnyRole("ADMIN", "STAFF")
+                    .requestMatchers(userMatchers).hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
                     .requestMatchers(anyoneMatchers).permitAll()
             }
             .authorizeHttpRequests { it.anyRequest().permitAll() }
