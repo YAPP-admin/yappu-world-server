@@ -152,7 +152,12 @@ class SignUpService(
 
     private fun getUserRoleWithSignUpCode(signUpCode: String): UserRole {
         val configs = configInquiryComponent.findConfigsBy(
-            listOf("authenticationCodeAdmin", "authenticationCodeAlumni", "authenticationCodeActive")
+            listOf(
+                "authenticationCodeAdmin",
+                "authenticationCodeStaff",
+                "authenticationCodeAlumni",
+                "authenticationCodeActive"
+            )
         )
 
         val config = configs.singleOrNull { it.value == signUpCode }
@@ -160,6 +165,7 @@ class SignUpService(
 
         return when (config.id) {
             "authenticationCodeAdmin" -> UserRole.ADMIN
+            "authenticationCodeStaff" -> UserRole.STAFF
             "authenticationCodeAlumni" -> UserRole.ALUMNI
             else -> UserRole.ACTIVE
         }

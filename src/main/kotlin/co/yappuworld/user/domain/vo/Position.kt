@@ -9,5 +9,6 @@ enum class Position(
     ANDROID("Android"),
     IOS("iOS"),
     FLUTTER("Flutter"),
-    SERVER("Server")
+    SERVER("Server"),
+    STAFF("운영진")
 }

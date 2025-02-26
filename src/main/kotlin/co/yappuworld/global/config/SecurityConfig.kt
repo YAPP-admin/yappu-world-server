@@ -1,7 +1,7 @@
 package co.yappuworld.global.config
 
 import co.yappuworld.global.filter.JwtFilter
-import co.yappuworld.global.security.SecurityPathMatchersManager.adminMatchers
+import co.yappuworld.global.security.SecurityPathMatchersManager.staffOrAdminMatchers
 import co.yappuworld.global.security.SecurityPathMatchersManager.anyoneMatchers
 import co.yappuworld.global.security.SecurityPathMatchersManager.userMatchers
 import org.springframework.context.annotation.Bean
@@ -31,8 +31,8 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers(adminMatchers).hasAnyRole("ADMIN")
-                    .requestMatchers(userMatchers).hasAnyRole("ADMIN", "ALUMNI", "GRADUATE", "ACTIVE")
+                it.requestMatchers(staffOrAdminMatchers).hasAnyRole("ADMIN", "STAFF")
+                    .requestMatchers(userMatchers).hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
                     .requestMatchers(anyoneMatchers).permitAll()
             }
             .authorizeHttpRequests { it.anyRequest().permitAll() }
