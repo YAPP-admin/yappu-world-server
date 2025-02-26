@@ -61,6 +61,8 @@ class SignUpService(
         request: UserSignUpAppRequestDto,
         now: LocalDateTime
     ): Token {
+        checkEmailDuplication(request.email)
+
         val user = initializeUser(
             request.toApplication(),
             getUserRoleWithSignUpCode(request.signUpCode)
@@ -74,9 +76,7 @@ class SignUpService(
 
     @Transactional(readOnly = true)
     fun checkEmailAvailability(request: CheckingEmailAvailabilityAppRequestDto) {
-        if (userRepository.existsUserByEmail(request.email)) {
-            throw BusinessException(UserError.DUPLICATE_EMAIL)
-        }
+        checkEmailDuplication(request.email)
     }
 
     @Transactional(readOnly = true)
@@ -95,8 +95,10 @@ class SignUpService(
     @Transactional
     fun approveSignUpApplication(request: SignUpApplicationApproveAppRequestDto) {
         val application = signUpApplicationRepository.findByIdOrNull(request.applicationId)
-            ?.apply { approve() }
             ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+
+        checkEmailDuplication(application.applicantEmail)
+        application.approve()
 
         signUpApplicationRepository.save(application)
         initializeUser(application, request.role)
@@ -124,10 +126,7 @@ class SignUpService(
     }
 
     private fun checkApplication(email: String) {
-        if (userRepository.existsUserByEmail(email)) {
-            logger.error { "${email}은 이미 가입된 이메일입니다." }
-            throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
-        }
+        checkEmailDuplication(email)
 
         val applications = signUpApplicationRepository.findByApplicantEmailAndStatus(
             email,
@@ -141,6 +140,13 @@ class SignUpService(
         if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
             logger.error { "${email}의 처리되지 않은 기존 신청이 존재합니다." }
             throw BusinessException(UserError.UNPROCESSED_APPLICATION_EXISTS)
+        }
+    }
+
+    private fun checkEmailDuplication(email: String) {
+        if (userRepository.existsUserByEmail(email)) {
+            logger.error { "${email}은 이미 가입된 이메일입니다." }
+            throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }
     }
 
