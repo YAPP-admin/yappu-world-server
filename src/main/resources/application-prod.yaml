@@ -45,3 +45,9 @@ sentry:
     logging:
         minimum-event-level: warn
         minimum-breadcrumb-level: info
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: prometheus
