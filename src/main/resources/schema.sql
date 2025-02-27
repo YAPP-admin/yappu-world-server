@@ -4,6 +4,8 @@ CREATE TABLE config
     id         varchar(36) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
+    label      varchar(32),
+    category   varchar(32),
     value      varchar(64)
 );
 
@@ -60,6 +62,6 @@ CREATE TABLE user_devices
     id         varchar(36) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
-    user_id    varchar(36) NOT NULL,
+    user_id    varchar(36)  NOT NULL,
     fcm_token  varchar(128) NOT NULL
 );

@@ -7,5 +7,7 @@ import org.springframework.data.relational.core.mapping.Table
 class Config(
     @Id
     val id: String,
+    val label: String,
+    val category: ConfigCategory,
     val value: String?
 )
