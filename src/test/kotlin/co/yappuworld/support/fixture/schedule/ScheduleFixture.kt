@@ -13,7 +13,8 @@ object ScheduleFixture {
         date: LocalDate = LocalDate.of(2025, 2, 15),
         endDate: LocalDate? = null,
         time: LocalTime = LocalTime.of(14, 0, 0),
-        endTime: LocalTime? = null
+        endTime: LocalTime? = null,
+        generation: Int = 25
     ) = Session(
         name = name,
         description = description,
@@ -21,6 +22,7 @@ object ScheduleFixture {
         date = date,
         endDate = endDate,
         time = time,
-        endTime = endTime
+        endTime = endTime,
+        generation = generation
     )
 }
