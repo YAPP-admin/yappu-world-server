@@ -13,9 +13,6 @@ spring:
         url: ${DEV_DB_URL}
         username: ${DEV_DB_USERNAME}
         password: ${DEV_DB_PASSWORD}
-    sql:
-        init:
-            mode: always
 
 jwt:
     secret_key: ${DEV_JWT_SECRET_KEY}
