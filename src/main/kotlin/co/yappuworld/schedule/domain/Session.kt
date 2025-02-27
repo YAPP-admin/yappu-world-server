@@ -11,7 +11,7 @@ class Session private constructor(
     override var place: String?,
     override var date: LocalDate,
     override var endDate: LocalDate?,
-    override var time: LocalTime,
+    override var time: LocalTime?,
     override var endTime: LocalTime?,
     override var type: ScheduleType
 ) : Schedule(), Persistable<UUID> {

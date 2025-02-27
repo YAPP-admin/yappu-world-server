@@ -23,7 +23,7 @@ abstract class Schedule : BaseEntity(), Persistable<UUID> {
 
     protected abstract var date: LocalDate
     protected abstract var endDate: LocalDate?
-    protected abstract var time: LocalTime
+    protected abstract var time: LocalTime?
     protected abstract var endTime: LocalTime?
 
     protected abstract var type: ScheduleType

@@ -78,7 +78,7 @@ CREATE TABLE schedules
     place       varchar(32) NOT NULL,
     date        date        NOT NULL,
     end_date    date,
-    time        time        NOT NULL,
+    time        time,
     end_time    time,
     type        varchar(32) NOT NULL
 );
