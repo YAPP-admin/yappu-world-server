@@ -6,7 +6,7 @@ CREATE TABLE config
     updated_at datetime,
     label      varchar(32),
     category   varchar(32),
-    value      varchar(64)
+    value      varchar(128)
 );
 
 DROP TABLE IF EXISTS users;

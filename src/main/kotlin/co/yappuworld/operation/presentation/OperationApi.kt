@@ -3,6 +3,7 @@ package co.yappuworld.operation.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.presentation.dto.response.ActiveGenerationApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.ForceUpdateApiResponseDto
+import co.yappuworld.operation.presentation.dto.response.OperationLinkApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.PositionsApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -108,4 +109,16 @@ interface OperationApi {
     )
     @GetMapping("/v1/operations/active-generation")
     fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationApiResponseDto>>
+
+    @Operation(summary = "이용 문의 링크")
+    @GetMapping("/v1/operations/links/usage-inquiry")
+    fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>>
+
+    @Operation(summary = "이용 약관 링크")
+    @GetMapping("/v1/operations/links/terms-of-service")
+    fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>>
+
+    @Operation(summary = "개인정보 처리방침 링크")
+    @GetMapping("/v1/operations/links/privacy-policy")
+    fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>>
 }
