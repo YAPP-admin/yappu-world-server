@@ -1,0 +1,10 @@
+global:
+    scrape_interval: 15s
+    external_labels:
+        monitor: 'yappu-world'
+
+scrape_configs:
+    -   job_name: 'yappu-world'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+            -   targets: [ 'host.docker.internal:8080' ]
