@@ -27,4 +27,12 @@ abstract class Schedule : BaseEntity(), Persistable<UUID> {
     protected abstract var endTime: LocalTime?
 
     protected abstract var type: ScheduleType
+
+    override fun getId(): UUID {
+        return this.id
+    }
+
+    override fun isNew(): Boolean {
+        return !isCreatedAtInitialized()
+    }
 }

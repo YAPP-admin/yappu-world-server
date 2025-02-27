@@ -22,7 +22,7 @@ class Session private constructor(
         place: String?,
         date: LocalDate,
         endDate: LocalDate?,
-        time: LocalTime,
+        time: LocalTime?,
         endTime: LocalTime?
     ) : this(
         name,
@@ -39,13 +39,5 @@ class Session private constructor(
         return Session(name, description, place, date, endDate, time, endTime, type).apply {
             this.id = id
         }
-    }
-
-    override fun getId(): UUID {
-        return this.id
-    }
-
-    override fun isNew(): Boolean {
-        return !isCreatedAtInitialized()
     }
 }
