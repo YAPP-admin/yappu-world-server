@@ -1,6 +1,8 @@
 package co.yappuworld.schedule.application.dto.request
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.Schedule
+import co.yappuworld.schedule.domain.ScheduleError
 import co.yappuworld.schedule.domain.ScheduleType
 import co.yappuworld.schedule.domain.Session
 import java.time.LocalDate
@@ -11,10 +13,11 @@ data class ScheduleCreateAppRequestDto(
     val description: String?,
     val place: String?,
     val date: LocalDate,
-    var endDate: LocalDate?,
-    var time: LocalTime?,
-    var endTime: LocalTime?,
-    var type: ScheduleType
+    val endDate: LocalDate?,
+    val time: LocalTime?,
+    val endTime: LocalTime?,
+    val generation: Int?,
+    val type: ScheduleType
 ) {
 
     fun toDomain(): Schedule {
@@ -33,7 +36,8 @@ data class ScheduleCreateAppRequestDto(
             date = date,
             endDate = endDate,
             time = time,
-            endTime = endTime
+            endTime = endTime,
+            generation = generation ?: throw BusinessException(ScheduleError.SESSION_NEED_GENERATION)
         )
     }
 }

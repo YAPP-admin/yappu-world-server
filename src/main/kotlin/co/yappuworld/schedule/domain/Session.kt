@@ -13,8 +13,12 @@ class Session private constructor(
     override var endDate: LocalDate?,
     override var time: LocalTime?,
     override var endTime: LocalTime?,
+    generation: Int,
     override var type: ScheduleType
 ) : Schedule(), Persistable<UUID> {
+
+    var generation: Int = generation
+        private set
 
     constructor(
         name: String,
@@ -23,7 +27,8 @@ class Session private constructor(
         date: LocalDate,
         endDate: LocalDate?,
         time: LocalTime?,
-        endTime: LocalTime?
+        endTime: LocalTime?,
+        generation: Int
     ) : this(
         name,
         description,
@@ -32,11 +37,12 @@ class Session private constructor(
         endDate,
         time,
         endTime,
+        generation,
         ScheduleType.SESSION
     )
 
     fun withId(id: UUID): Session {
-        return Session(name, description, place, date, endDate, time, endTime, type).apply {
+        return Session(name, description, place, date, endDate, time, endTime, generation, type).apply {
             this.id = id
         }
     }

@@ -80,5 +80,6 @@ CREATE TABLE schedules
     end_date    date,
     time        time,
     end_time    time,
+    generation  int,
     type        varchar(32) NOT NULL
 );

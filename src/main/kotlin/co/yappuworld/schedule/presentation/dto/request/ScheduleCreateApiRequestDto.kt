@@ -24,6 +24,8 @@ data class ScheduleCreateApiRequestDto(
     var time: LocalTime?,
     @Schema(description = "종료 시간", nullable = true, example = "18:00:00")
     var endTime: LocalTime?,
+    @Schema(description = "기수(세션, 태스크의 경우 필수)", nullable = true, example = "25")
+    var generation: Int?,
     @Schema(description = "스케줄 종류", nullable = false, example = "SESSION")
     @field:NotNull
     var type: ScheduleType
@@ -38,6 +40,7 @@ data class ScheduleCreateApiRequestDto(
             endDate = this.endDate,
             time = this.time,
             endTime = this.endTime,
+            generation = this.generation,
             type = this.type
         )
     }
