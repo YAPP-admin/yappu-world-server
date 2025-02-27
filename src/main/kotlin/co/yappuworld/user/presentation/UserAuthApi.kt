@@ -459,7 +459,7 @@ interface UserAuthApi {
             ApiResponse(
                 description = "회원탈퇴 성공",
                 responseCode = "204",
-                content = [Content(examples = emptyArray())]
+                content = [Content()]
             ),
             ApiResponse(
                 description = "이미 탈퇴한 계정입니다.",

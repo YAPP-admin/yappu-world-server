@@ -12,10 +12,6 @@ class SuccessResponse<T : Any?>(
     override val isSuccess: Boolean = true
 
     companion object {
-        fun noBody(): SuccessResponse<Unit> {
-            return SuccessResponse(null)
-        }
-
         fun <T> of(body: T?): SuccessResponse<T> {
             return SuccessResponse(body)
         }

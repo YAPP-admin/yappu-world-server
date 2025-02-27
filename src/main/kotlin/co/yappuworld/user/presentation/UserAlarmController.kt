@@ -29,11 +29,9 @@ class UserAlarmController(
     override fun updateDeviceAlarm(
         securityUser: SecurityUser,
         request: UpdateDeviceAlarmApiRequestDto
-    ): ResponseEntity<SuccessResponse<Unit>> {
+    ): ResponseEntity<Unit> {
         userAlarmService.updateDeviceAlarm(securityUser.userId, request.toAppRequest())
-        return ResponseEntity.ok(
-            SuccessResponse.noBody()
-        )
+        return ResponseEntity.noContent().build()
     }
 
     override fun toggleMasterAlarm(

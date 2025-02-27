@@ -60,24 +60,8 @@ interface UserAlarmApi {
         value = [
             ApiResponse(
                 description = "성공",
-                responseCode = "200",
-                useReturnTypeSchema = true,
-                content = [
-                    Content(
-                        schema = Schema(implementation = SuccessResponse::class),
-                        examples = [
-                            ExampleObject(
-                                name = "성공",
-                                value = """
-                                    {
-                                        "isSuccess": "true",
-                                        "data": null
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
+                responseCode = "204",
+                content = [Content()]
             )
         ]
     )
@@ -85,7 +69,7 @@ interface UserAlarmApi {
     fun updateDeviceAlarm(
         @AuthenticationPrincipal securityUser: SecurityUser,
         @RequestBody request: UpdateDeviceAlarmApiRequestDto
-    ): ResponseEntity<SuccessResponse<Unit>>
+    ): ResponseEntity<Unit>
 
     @Operation(summary = "마스터 알람 토글")
     @ApiResponses(

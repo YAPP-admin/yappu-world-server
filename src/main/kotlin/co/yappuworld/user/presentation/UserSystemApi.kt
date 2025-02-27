@@ -22,7 +22,7 @@ interface UserSystemApi {
             ApiResponse(
                 description = "FCM 토큰 수정 성공",
                 responseCode = "204",
-                content = [Content(examples = emptyArray())]
+                content = [Content()]
             )
         ]
     )
