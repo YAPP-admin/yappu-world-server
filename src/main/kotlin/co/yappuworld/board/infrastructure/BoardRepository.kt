@@ -10,8 +10,7 @@ import java.util.*
 
 @Repository
 interface BoardRepository : CrudRepository<Board, UUID>, PagingAndSortingRepository<Board, UUID> {
-    fun findBoardByIdAndIsActive(id: UUID, isActive: Boolean): Board?
-
-    fun findAllByIsActiveOrderByCreatedAtDesc(isActive: Boolean, pageable: Pageable): Page<Board>
-
+    fun findBoardByIdAndIsActiveTrue(id: UUID): Board?
+    fun findAllByIsActiveTrueOrderByCreatedAtDesc(pageable: Pageable): Page<Board>
+    fun findAllByIsActiveTrueAndNoticeTypeOrderByCreatedAtDesc(noticeType: String, pageable: Pageable): Page<Board>
 }

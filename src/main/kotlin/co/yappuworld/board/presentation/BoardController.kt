@@ -11,17 +11,18 @@ import java.util.*
 class BoardController(
     private val boardService: BoardService
 ) : BoardApi {
-    override fun getBoards(securityUser: SecurityUser, page: Int, size: Int) =
+    override fun getBoards(securityUser: SecurityUser, page: Int, size: Int, noticeType: String?) =
         ResponseEntity.ok(
             SuccessResponse.of(
                 boardService.readBoardPage(
                     userId = securityUser.userId,
                     pageNumber = page,
-                    size = size
+                    size = size,
+                    noticeType = noticeType
                 )
             )
         )
-    
+
     override fun getBoardDetail(securityUser: SecurityUser, boardId: String) =
         ResponseEntity.ok(
             SuccessResponse.of(

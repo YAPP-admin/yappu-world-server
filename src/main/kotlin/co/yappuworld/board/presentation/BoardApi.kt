@@ -37,12 +37,12 @@ interface BoardApi {
                 required = true,
                 schema = Schema(type = "Int")
             ),
-//            Parameter(
-//                `in` = ParameterIn.QUERY,
-//                name = "displayTarget",
-//                required = false,
-//                schema = Schema(type = "string")
-//            )
+            Parameter(
+                `in` = ParameterIn.QUERY,
+                name = "noticeType",
+                required = false,
+                schema = Schema(type = "string", description = "(운영, 세션)")
+            )
         ]
     )
     @ApiResponses(
@@ -65,30 +65,30 @@ interface BoardApi {
                                             "content": [
                                                 {
                                                     "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21a",
-                                                    "boardType": "세션",
+                                                    "boardType": "NOTICE",
+                                                    "noticeType": "세션",
                                                     "title": "1차 정규세션 안내",
                                                     "content": "###1차 정규세션는 필수참여입니다.",
-                                                    "displayTarget": "활동회원,
-                                                    "writer": "홍길동 10기",
+                                                    "writer": "25기 홍길동",
                                                     "createdAt": "2024-09-09T00:00:00"
                                                  },
                                                  {
                                                     "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21b",
-                                                    "boardType": "세션",
+                                                    "boardType": "NOTICE",
+                                                    "noticeType": "세션",
                                                     "title": "2차 정규세션 안내",
                                                     "content": "##2차 정규세션는 필수참여입니다.",
-                                                    "displayTarget": "활동회원",
-                                                    "writer": "홍길동 10기",
-                                                    "createdAt": "2024-09-09T00:00:00"
+                                                    "writer": "25기 홍길동",
+                                                    "createdAt": "2024-09-09T00:00:01"
                                                  },
                                                  {
                                                     "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21c",
-                                                    "boardType": "운영",
+                                                    "boardType": "NOTICE",
+                                                    "noticeType": "운영",
                                                     "title": "디스코드 운영 안내",
                                                     "content": "#디스코드 코드는 FG345GAD 입니다",
-                                                    "displayTarget": "정회원",
-                                                    "writer": "홍길동 10기",
-                                                    "createdAt": "2024-09-09T00:00:00"
+                                                    "writer": "25기 홍길동",
+                                                    "createdAt": "2024-09-09T00:00:02"
                                                  }
                                             ],
                                              "pageable": {
@@ -99,14 +99,14 @@ interface BoardApi {
                                                 },
                                                 "offset": 0,
                                                 "pageNumber": 0,
-                                                "pageSize": 10,
+                                                "pageSize": 1,
                                                 "paged": true,
                                                 "unpaged": false
                                               },
-                                              "totalPages": 7,
-                                              "totalElements": 20,
+                                              "totalPages": 1,
+                                              "totalElements": 3,
                                               "last": false,
-                                              "size": 10,
+                                              "size": 1,
                                               "number": 0,
                                               "sort": {
                                                 "sorted": false,
@@ -130,7 +130,8 @@ interface BoardApi {
     fun getBoards(
         @AuthenticationPrincipal securityUser: SecurityUser,
         @RequestParam(value = "page", defaultValue = "0") page: Int,
-        @RequestParam(value = "size", defaultValue = "10") size: Int
+        @RequestParam(value = "size", defaultValue = "10") size: Int,
+        @RequestParam(value = "noticeType", required = false) noticeType: String?
     ): ResponseEntity<SuccessResponse<Page<BoardResponse>>>
 
     @Operation(
@@ -162,13 +163,11 @@ interface BoardApi {
                                         "isSuccess": "true",
                                         "data": {
                                             "id": "79d52d77-6123-40f1-9f70-64bcbd6ca21a",
-                                            "boardType": "세션",
+                                            "boardType": "NOTICE",
+                                            "noticeType": "세션",
                                             "title": "1차 정규세션 안내",
                                             "content": "1차 정규세션는 필수참여입니다.",
-                                            "displayTarget": "활동회원,
-                                            "writer": "홍길동 10기",
-                                            "totalMembers": 100,
-                                            "readCount": 38,
+                                            "writer": "25기 홍길동",
                                             "createdAt": "2024-09-09T00:00:00" 
                                         }
                                     }
