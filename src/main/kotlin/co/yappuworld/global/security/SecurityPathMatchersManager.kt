@@ -6,10 +6,11 @@ import org.springframework.http.HttpMethod.PATCH
 import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher
+import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatchers
 
 object SecurityPathMatchersManager {
-    val anyoneMatchers = RequestMatchers.anyOf(
+    val anyoneMatchers: RequestMatcher = RequestMatchers.anyOf(
         antMatcher("/health"),
         // swagger
         antMatcher("/swagger-ui/**"),
@@ -24,7 +25,7 @@ object SecurityPathMatchersManager {
         antMatcher(GET, "/v1/operations/**")
     )
 
-    val userMatchers = RequestMatchers.anyOf(
+    val userMatchers: RequestMatcher = RequestMatchers.anyOf(
         antMatcher(DELETE, "/v1/auth/user"),
         antMatcher("/v1/users/fcm"),
         antMatcher("/v1/users/profile"),
@@ -34,7 +35,7 @@ object SecurityPathMatchersManager {
         antMatcher(PATCH, "/v1/alarms/master")
     )
 
-    val staffOrAdminMatchers = RequestMatchers.anyOf(
+    val staffOrAdminMatchers: RequestMatcher = RequestMatchers.anyOf(
         antMatcher(POST, "/v1/admin/**")
     )
 }

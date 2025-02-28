@@ -65,3 +65,21 @@ CREATE TABLE user_devices
     user_id    varchar(36)  NOT NULL,
     fcm_token  varchar(128) NOT NULL
 );
+
+DROP TABLE IF EXISTS schedules;
+CREATE TABLE schedules
+(
+    id          varchar(36) PRIMARY KEY,
+    created_at  datetime,
+    updated_at  datetime,
+    is_deleted  tinyint(1) NOT NULL,
+    name        varchar(32) NOT NULL,
+    description varchar(256),
+    place       varchar(32) NOT NULL,
+    date        date        NOT NULL,
+    end_date    date,
+    time        time,
+    end_time    time,
+    generation  int,
+    type        varchar(32) NOT NULL
+);
