@@ -38,6 +38,7 @@ class UserAdminService(
         return UserDetailsAppResponseDto(user, activityUnits)
     }
 
+    @Transactional(readOnly = true)
     fun getUserOverviews(request: AdminUserPageAppRequestDto): UserOverviewBundleAppResponseDto {
         val userWithActivityUnit = userRepository.findUsersWithActivityUnit(
             limit = request.limit,

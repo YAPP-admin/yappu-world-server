@@ -14,6 +14,7 @@ import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RestController
 class UserAuthController(
@@ -24,9 +25,9 @@ class UserAuthController(
     override fun signUp(request: UserSignUpApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val now = getCurrentDateTimeInKST()
 
-        if (request.signUpCode.isBlank()) {
+        if (request.signUpCode.isNullOrBlank()) {
             signUpService.submitSignUpRequest(request.toAppRequest(), now)
-            return ResponseEntity.ok(SuccessResponse(null))
+            return ResponseEntity.created(URI.create("")).build()
         }
 
         return ResponseEntity.ok(

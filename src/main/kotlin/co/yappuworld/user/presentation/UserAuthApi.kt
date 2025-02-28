@@ -32,7 +32,7 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
+                description = "가입 코드를 통해 별도 신청 절차 없이 가입 처리",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -40,7 +40,6 @@ interface UserAuthApi {
                         schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "가입 코드를 통해 별도 신청 절차 없이 가입 처리",
                                 value = """
                                     {
                                         "isSuccess": "true",
@@ -50,19 +49,16 @@ interface UserAuthApi {
                                         }
                                     }
                                 """
-                            ),
-                            ExampleObject(
-                                name = "가입 코드 미입력 시, 가입 신청 처리",
-                                value = """
-                                    {
-                                        "isSuccess": "true",
-                                        "data": null
-                                    }
-                                """
                             )
                         ]
                     )
                 ]
+            ),
+            ApiResponse(
+                description = "가입 코드를 입력하지 않는 경우, 가입 신청 처리",
+                responseCode = "201",
+                useReturnTypeSchema = true,
+                content = [Content()]
             ),
             ApiResponse(
                 responseCode = "400",
@@ -224,7 +220,7 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
+                description = "토큰 재발급 성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -232,7 +228,6 @@ interface UserAuthApi {
                         schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "토큰 재발급 성공",
                                 value = """
                                     {
                                         "isSuccess": "true",
@@ -302,25 +297,10 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
-                responseCode = "200",
+                description = "이메일 사용 가능",
+                responseCode = "204",
                 useReturnTypeSchema = true,
-                content = [
-                    Content(
-                        schema = Schema(implementation = SuccessResponse::class),
-                        examples = [
-                            ExampleObject(
-                                name = "토큰 재발급 성공",
-                                value = """
-                                    {
-                                        "isSuccess": "true",
-                                        "data": null
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
+                content = [Content()]
             ),
             ApiResponse(
                 description = "중복된 이메일입니다.",
