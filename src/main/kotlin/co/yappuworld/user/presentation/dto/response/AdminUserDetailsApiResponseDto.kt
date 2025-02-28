@@ -1,14 +1,21 @@
 package co.yappuworld.user.presentation.dto.response
 
 import co.yappuworld.user.application.dto.response.UserDetailsAppResponseDto
+import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
 data class AdminUserDetailsApiResponseDto(
+    @Schema(description = "ID")
     val userId: UUID,
+    @Schema(description = "이름")
     val name: String,
+    @Schema(description = "이메일")
     val email: String,
+    @Schema(description = "역할")
     val role: UserRoleApiResponseDto,
+    @Schema(description = "계정 살아있는 여부(F = 탈퇴)")
     val isActive: Boolean,
+    @Schema(description = "활동 내역")
     val activityUnits: List<ActivityUnitApiResponseDto>
 ) {
 

@@ -26,18 +26,18 @@ class UserAuthController(
 
         if (request.signUpCode.isBlank()) {
             signUpService.submitSignUpRequest(request.toAppRequest(), now)
-            return ResponseEntity.ok(SuccessResponse.of(null))
+            return ResponseEntity.ok(SuccessResponse(null))
         }
 
         return ResponseEntity.ok(
-            SuccessResponse.of(signUpService.signUpWithCode(request.toAppRequest(), now))
+            SuccessResponse(signUpService.signUpWithCode(request.toAppRequest(), now))
         )
     }
 
     override fun login(request: LoginApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val now = getCurrentDateTimeInKST()
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 userAuthService.login(request.toAppRequest(), now)
             )
         )
@@ -46,7 +46,7 @@ class UserAuthController(
     override fun reissueToken(request: ReissueTokenApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val token = userAuthService.reissueToken(request.toAppRequest(getCurrentDateTimeInKST()))
         return ResponseEntity.ok(
-            SuccessResponse.of(token)
+            SuccessResponse(token)
         )
     }
 
@@ -61,7 +61,7 @@ class UserAuthController(
         request: LatestSignUpApplicationApiRequestDto
     ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 LatestSignUpApplicationApiResponseDto.of(
                     signUpService.findLatestSignUpApplication(request.toAppRequest())
                 )

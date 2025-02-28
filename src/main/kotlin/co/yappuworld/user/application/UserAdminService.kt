@@ -1,8 +1,11 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
 import co.yappuworld.user.application.dto.response.UserDetailsAppResponseDto
+import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
+import co.yappuworld.user.application.dto.response.UserOverviewBundleAppResponseDto
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
@@ -33,5 +36,18 @@ class UserAdminService(
         val activityUnits = activityUnitRepository.findAllByUserId(userId)
 
         return UserDetailsAppResponseDto(user, activityUnits)
+    }
+
+    fun getUserOverviews(request: AdminUserPageAppRequestDto): UserOverviewBundleAppResponseDto {
+        val userWithActivityUnit = userRepository.findUsersWithActivityUnit(
+            limit = request.limit,
+            offset = request.offset
+        )
+        val totalCount = userRepository.count()
+
+        return UserOverviewBundleAppResponseDto(
+            data = userWithActivityUnit.map { UserOverviewAppResponseDto(it) },
+            totalCount = totalCount
+        )
     }
 }

@@ -14,7 +14,7 @@ class UserProfileController(
 
     override fun getProfile(securityUser: SecurityUser): ResponseEntity<SuccessResponse<UserProfileApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 UserProfileApiResponseDto.of(
                     userProfileService.findUserProfile(securityUser.userId)
                 )

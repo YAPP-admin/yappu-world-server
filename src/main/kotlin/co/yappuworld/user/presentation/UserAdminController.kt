@@ -1,8 +1,11 @@
 package co.yappuworld.user.presentation
 
+import co.yappuworld.global.response.PageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.application.UserAdminService
+import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminUserDetailsApiResponseDto
+import co.yappuworld.user.presentation.dto.response.AdminUserOverviewApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -17,6 +20,23 @@ class UserAdminController(
             SuccessResponse(
                 AdminUserDetailsApiResponseDto(userAdminService.getUserDetails(userId))
             )
+        )
+    }
+
+    override fun getUsers(
+        request: AdminUserPageApiRequestDto
+    ): ResponseEntity<SuccessResponse<PageResponse<AdminUserOverviewApiResponseDto>>> {
+        val response = userAdminService.getUserOverviews(request.toAppRequest()).let { response ->
+            PageResponse(
+                data = response.data.map { AdminUserOverviewApiResponseDto(it) },
+                totalCount = response.totalCount,
+                page = request.page,
+                size = request.size
+            )
+        }
+
+        return ResponseEntity.ok(
+            SuccessResponse(response)
         )
     }
 }

@@ -18,7 +18,7 @@ class OperationController(
 
     override fun getPositions(): ResponseEntity<SuccessResponse<PositionsApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 PositionsApiResponseDto(
                     Position.entries.map { PositionApiResponseDto.of(it) }
                 )
@@ -29,7 +29,7 @@ class OperationController(
     override fun getForceUpdateInfo(): ResponseEntity<SuccessResponse<ForceUpdateApiResponseDto>> {
         val configs = configInquiryComponent.findConfigsBy(listOf("needForceUpdate", "forceUpdateReason"))
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 ForceUpdateApiResponseDto.of(configs)
             )
         )
@@ -44,13 +44,13 @@ class OperationController(
         }
 
         return ResponseEntity.ok(
-            SuccessResponse.of(activeGenerationResponse)
+            SuccessResponse(activeGenerationResponse)
         )
     }
 
     override fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 OperationLinkApiResponseDto(
                     configInquiryComponent.findConfigBy("usageInquiryLink").value
                 )
@@ -60,7 +60,7 @@ class OperationController(
 
     override fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 OperationLinkApiResponseDto(
                     configInquiryComponent.findConfigBy("termsOfServiceLink").value
                 )
@@ -70,7 +70,7 @@ class OperationController(
 
     override fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 OperationLinkApiResponseDto(
                     configInquiryComponent.findConfigBy("privacyPolicyLink").value
                 )

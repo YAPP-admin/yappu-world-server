@@ -8,6 +8,7 @@ import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import com.github.f4b6a3.ulid.UlidCreator
+import java.util.UUID
 
 object UserFixture {
 
@@ -51,6 +52,18 @@ object UserFixture {
         )
     ): List<ActivityUnitParam> {
         return activityUnitParams.toList()
+    }
+
+    fun getActivityUnit(
+        generation: Int = 25,
+        position: Position = Position.SERVER,
+        userId: UUID = UUID.randomUUID()
+    ): ActivityUnit {
+        return ActivityUnit(
+            generation = generation,
+            position = position,
+            userId = userId
+        )
     }
 
     fun getActivityUnits(

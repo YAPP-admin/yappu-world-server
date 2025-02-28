@@ -33,6 +33,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
 
     // ulid
     implementation("com.github.f4b6a3:ulid-creator:5.2.3")

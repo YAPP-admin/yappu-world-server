@@ -18,7 +18,7 @@ class UserAlarmController(
         securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<UserAlarmStatusApiResponse>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 UserAlarmStatusApiResponse.of(
                     userAlarmService.getAlarmStatus(securityUser.userId)
                 )
@@ -38,7 +38,7 @@ class UserAlarmController(
         securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<MasterAlarmToggleApiResponse>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 MasterAlarmToggleApiResponse.of(
                     userAlarmService.toggleMasterAlarm(securityUser.userId)
                 )

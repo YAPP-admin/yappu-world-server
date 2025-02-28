@@ -20,6 +20,6 @@ data class UserDetailsAppResponseDto(
         name = user.name,
         role = user.role,
         isActive = user.isActive,
-        activityUnits = activityUnits.map { ActivityUnitAppResponseDto.of(it) }
+        activityUnits = activityUnits.map { ActivityUnitAppResponseDto(it) }
     )
 }

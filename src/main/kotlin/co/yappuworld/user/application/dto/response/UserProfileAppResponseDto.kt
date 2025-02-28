@@ -21,7 +21,7 @@ data class UserProfileAppResponseDto(
                 user.id,
                 user.name,
                 user.role,
-                activityUnits.map { ActivityUnitAppResponseDto.of(it) }
+                activityUnits.map { ActivityUnitAppResponseDto(it) }
             )
         }
     }

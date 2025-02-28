@@ -1,7 +1,10 @@
 package co.yappuworld.user.presentation
 
+import co.yappuworld.global.response.PageResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminUserDetailsApiResponseDto
+import co.yappuworld.user.presentation.dto.response.AdminUserOverviewApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -9,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -84,4 +89,10 @@ interface UserAdminApi {
     fun getUserDetails(
         @PathVariable("userId") userId: UUID
     ): ResponseEntity<SuccessResponse<AdminUserDetailsApiResponseDto>>
+
+    @Operation(summary = "유저 목록 조회")
+    @GetMapping("/admin/v1/users")
+    fun getUsers(
+        @Valid @ParameterObject request: AdminUserPageApiRequestDto
+    ): ResponseEntity<SuccessResponse<PageResponse<AdminUserOverviewApiResponseDto>>>
 }
