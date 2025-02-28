@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "회원관리 API", description = "회원가입 신청 승인, 거절 등..")
+@Tag(name = "회원 인증/인가 API", description = "회원가입 신청 승인, 거절 등..")
 interface UserAuthAdminApi {
 
     @Operation(summary = "유저 역할 변경")
@@ -31,7 +31,7 @@ interface UserAuthAdminApi {
             )
         ]
     )
-    @PatchMapping("/v1/admin/users/role")
+    @PatchMapping("/admin/v1/users/role")
     fun updateUserRole(
         @Valid @RequestBody request: UserRoleUpdateApiRequestDto
     ): ResponseEntity<Unit>
@@ -57,6 +57,7 @@ interface UserAuthAdminApi {
                                 name = "요청 ID로 신청서를 찾을 수 없음",
                                 value = """
                                     {
+                                        "isSuccess": false,
                                         "message": "회원가입 신청 내역을 찾을 수 없습니다.",
                                         "errorCode": "USR_1099"
                                     }
@@ -68,7 +69,7 @@ interface UserAuthAdminApi {
             )
         ]
     )
-    @PostMapping("/v1/admin/auth/applications/approve")
+    @PostMapping("/admin/v1/auth/applications/approve")
     fun approveSignUpApplication(
         @RequestBody request: SignUpApplicationApproveApiRequestDto
     ): ResponseEntity<Unit>
@@ -93,6 +94,7 @@ interface UserAuthAdminApi {
                                 name = "요청 ID로 신청서를 찾을 수 없음",
                                 value = """
                                     {
+                                        "isSuccess": false,
                                         "message": "회원가입 신청 내역을 찾을 수 없습니다.",
                                         "errorCode": "USR_1099"
                                     }
@@ -104,7 +106,7 @@ interface UserAuthAdminApi {
             )
         ]
     )
-    @PostMapping("/v1/admin/auth/applications/reject")
+    @PostMapping("/admin/v1/auth/applications/reject")
     fun rejectSignUpApplication(
         @RequestBody request: SignUpApplicationRejectApiRequestDto
     ): ResponseEntity<Unit>

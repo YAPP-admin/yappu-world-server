@@ -11,12 +11,8 @@ data class ActivityUnitApiResponseDto(
     val position: Position
 ) {
 
-    companion object {
-        fun of(response: ActivityUnitAppResponseDto): ActivityUnitApiResponseDto {
-            return ActivityUnitApiResponseDto(
-                response.generation,
-                response.position
-            )
-        }
-    }
+    constructor(response: ActivityUnitAppResponseDto) : this(
+        generation = response.generation,
+        position = response.position
+    )
 }
