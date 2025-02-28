@@ -15,7 +15,7 @@ data class AdminUserPageApiRequestDto(
 
     fun toAppRequest(): AdminUserPageAppRequestDto {
         return AdminUserPageAppRequestDto(
-            offset = page - 1,
+            offset = size * page,
             limit = size
         )
     }
