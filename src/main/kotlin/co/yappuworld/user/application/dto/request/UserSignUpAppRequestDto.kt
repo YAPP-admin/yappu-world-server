@@ -8,7 +8,7 @@ data class UserSignUpAppRequestDto(
     val password: String,
     val name: String,
     val activityUnits: List<ActivityUnitAppRequestDto>,
-    val signUpCode: String,
+    val signUpCode: String?,
     val fcmToken: String,
     val deviceAlarmToggle: Boolean
 ) {

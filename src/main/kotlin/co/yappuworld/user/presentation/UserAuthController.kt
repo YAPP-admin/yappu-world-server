@@ -14,6 +14,7 @@ import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RestController
 class UserAuthController(
@@ -24,20 +25,20 @@ class UserAuthController(
     override fun signUp(request: UserSignUpApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val now = getCurrentDateTimeInKST()
 
-        if (request.signUpCode.isBlank()) {
+        if (request.signUpCode.isNullOrBlank()) {
             signUpService.submitSignUpRequest(request.toAppRequest(), now)
-            return ResponseEntity.ok(SuccessResponse.of(null))
+            return ResponseEntity.created(URI.create("")).build()
         }
 
         return ResponseEntity.ok(
-            SuccessResponse.of(signUpService.signUpWithCode(request.toAppRequest(), now))
+            SuccessResponse(signUpService.signUpWithCode(request.toAppRequest(), now))
         )
     }
 
     override fun login(request: LoginApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val now = getCurrentDateTimeInKST()
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 userAuthService.login(request.toAppRequest(), now)
             )
         )
@@ -46,7 +47,7 @@ class UserAuthController(
     override fun reissueToken(request: ReissueTokenApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
         val token = userAuthService.reissueToken(request.toAppRequest(getCurrentDateTimeInKST()))
         return ResponseEntity.ok(
-            SuccessResponse.of(token)
+            SuccessResponse(token)
         )
     }
 
@@ -61,7 +62,7 @@ class UserAuthController(
         request: LatestSignUpApplicationApiRequestDto
     ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>> {
         return ResponseEntity.ok(
-            SuccessResponse.of(
+            SuccessResponse(
                 LatestSignUpApplicationApiResponseDto.of(
                     signUpService.findLatestSignUpApplication(request.toAppRequest())
                 )

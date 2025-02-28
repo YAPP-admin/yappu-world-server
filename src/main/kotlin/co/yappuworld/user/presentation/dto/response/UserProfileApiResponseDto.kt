@@ -25,7 +25,7 @@ data class UserProfileApiResponseDto(
                 response.name,
                 response.role.label,
                 response.activityUnits
-                    .map { ActivityUnitApiResponseDto.of(it) }
+                    .map { ActivityUnitApiResponseDto(it) }
                     .sortedByDescending { it.generation }
             )
         }

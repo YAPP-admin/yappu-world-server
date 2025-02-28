@@ -65,7 +65,7 @@ class SignUpService(
 
         val user = initializeUser(
             request.toApplication(),
-            getUserRoleWithSignUpCode(request.signUpCode)
+            getUserRoleWithSignUpCode(request.signUpCode!!)
         )
 
         return user.let {

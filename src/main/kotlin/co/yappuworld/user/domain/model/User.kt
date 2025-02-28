@@ -13,10 +13,10 @@ import java.util.UUID
 
 @Table("users")
 class User private constructor(
-    val email: String,
-    val password: String,
-    val name: String,
-    val role: UserRole,
+    email: String,
+    password: String,
+    name: String,
+    role: UserRole,
     isActive: Boolean = true,
     @Id
     @JvmField
@@ -24,6 +24,15 @@ class User private constructor(
 ) : BaseEntity(), Persistable<UUID> {
 
     var isActive: Boolean = isActive
+        private set
+
+    var email: String = email
+        private set
+    var password: String = password
+        private set
+    var name: String = name
+        private set
+    var role: UserRole = role
         private set
 
     constructor(
@@ -61,5 +70,9 @@ class User private constructor(
 
     fun isWithdrawn(): Boolean {
         return !this.isActive
+    }
+
+    fun updateRole(role: UserRole) {
+        this.role = role
     }
 }

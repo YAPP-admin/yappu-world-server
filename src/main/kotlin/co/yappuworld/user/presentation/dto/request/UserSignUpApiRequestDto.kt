@@ -23,8 +23,8 @@ data class UserSignUpApiRequestDto(
     @Schema(description = "활동한 기수와 직군 기입")
     @field:NotEmpty
     val activityUnits: List<ActivityUnitApiRequestDto>,
-    @Schema(description = "가입코드, 6자리 숫자", example = "000000")
-    val signUpCode: String,
+    @Schema(description = "가입코드, 6자리 숫자", example = "000000", nullable = true)
+    val signUpCode: String?,
     @Schema(description = "FCM 토큰")
     @field:NotEmpty(message = "FCM 토큰은 필수로 전달되어야 합니다.")
     val fcmToken: String,

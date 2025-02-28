@@ -21,6 +21,10 @@ spring:
         init:
             mode: always
 
+logging:
+    level:
+        p6spy: DEBUG
+
 jwt:
     secret_key: thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocalenvironment
     access_token_expiration_times: 3600000 # 1hour = 1000(=1s) * 60 * 60

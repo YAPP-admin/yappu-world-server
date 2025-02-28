@@ -36,6 +36,6 @@ object SecurityPathMatchersManager {
     )
 
     val staffOrAdminMatchers: RequestMatcher = RequestMatchers.anyOf(
-        antMatcher(POST, "/v1/admin/**")
+        antMatcher(POST, "/admin/**")
     )
 }

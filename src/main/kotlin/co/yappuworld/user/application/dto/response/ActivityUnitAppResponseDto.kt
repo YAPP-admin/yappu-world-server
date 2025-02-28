@@ -1,19 +1,17 @@
 package co.yappuworld.user.application.dto.response
 
-import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.vo.Position
 
 data class ActivityUnitAppResponseDto(
     val generation: Int,
     val position: Position
 ) {
 
-    companion object {
-        fun of(activityUnit: ActivityUnit): ActivityUnitAppResponseDto {
-            return ActivityUnitAppResponseDto(
-                activityUnit.generation,
-                activityUnit.position
-            )
-        }
-    }
+    constructor(
+        activityUnit: ActivityUnit
+    ) : this(
+        generation = activityUnit.generation,
+        position = activityUnit.position
+    )
 }
