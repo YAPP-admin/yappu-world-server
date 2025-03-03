@@ -90,6 +90,51 @@ interface UserAdminApi {
         @PathVariable("userId") userId: UUID
     ): ResponseEntity<SuccessResponse<AdminUserDetailsApiResponseDto>>
 
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                description = "성공",
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저 목록 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "data": [
+                                                {
+                                                    "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                                                    "name": "홍길동",
+                                                    "email": "abc@abc.com",
+                                                    "role": {
+                                                        "name": "ADMIN",
+                                                        "label": "어드민"
+                                                    },
+                                                    "lastActivityUnit": {
+                                                        "generation": 2,
+                                                        "position": "PM"
+                                                    }
+                                                }
+                                            ],
+                                            "totalCount": 1,
+                                            "page": 1,
+                                            "size": 10,
+                                            "totalPage": 1
+                                          },
+                                          "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @Operation(summary = "유저 목록 조회")
     @GetMapping("/admin/v1/users")
     fun getUsers(

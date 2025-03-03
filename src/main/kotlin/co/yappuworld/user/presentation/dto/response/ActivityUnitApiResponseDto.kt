@@ -1,18 +1,18 @@
 package co.yappuworld.user.presentation.dto.response
 
+import co.yappuworld.operation.presentation.dto.response.PositionApiResponseDto
 import co.yappuworld.user.application.dto.response.ActivityUnitAppResponseDto
-import co.yappuworld.user.domain.vo.Position
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ActivityUnitApiResponseDto(
-    @Schema(description = "기수")
+    @Schema(description = "기수", minContains = 1)
     val generation: Int,
     @Schema(description = "직군")
-    val position: Position
+    val position: PositionApiResponseDto
 ) {
 
     constructor(response: ActivityUnitAppResponseDto) : this(
         generation = response.generation,
-        position = response.position
+        position = PositionApiResponseDto(response.position)
     )
 }
