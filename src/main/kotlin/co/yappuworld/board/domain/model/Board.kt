@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
-import java.util.*
+import java.util.UUID
 
 @Table(name = "board")
 data class Board(
@@ -19,20 +19,19 @@ data class Board(
     val title: String,
     val content: String,
     val displayTarget: String?,
-
     @Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
     val writer: Writer,
     val isActive: Boolean = true
-) : BaseEntity(), Persistable<UUID> {
+) : BaseEntity(),
+    Persistable<UUID> {
     override fun getId() = id
 
     override fun isNew() = !isCreatedAtInitialized()
 
-    fun filterInfoByRole(userRole: UserRole): Board {
-        return if (userRole != UserRole.ADMIN) {
+    fun filterInfoByRole(userRole: UserRole): Board =
+        if (userRole != UserRole.ADMIN) {
             this.copy(displayTarget = null)
         } else {
             this
         }
-    }
 }

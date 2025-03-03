@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 
 @Service
 class BoardService(
@@ -22,7 +22,12 @@ class BoardService(
     private val activityUnitRepository: ActivityUnitRepository
 ) {
     @Transactional(readOnly = true)
-    fun readBoardPage(userId: UUID, pageNumber: Int, size: Int, noticeType: String?): Page<BoardResponse> {
+    fun readBoardPage(
+        userId: UUID,
+        pageNumber: Int,
+        size: Int,
+        noticeType: String?
+    ): Page<BoardResponse> {
         val user = userRepository.findByIdOrNull(userId) ?: throw BusinessException(UserError.USER_NOT_FOUND)
 
         return if (noticeType != null) {
@@ -40,7 +45,10 @@ class BoardService(
     }
 
     @Transactional(readOnly = true)
-    fun readBoardDetail(userId: UUID, boardId: UUID): BoardResponse {
+    fun readBoardDetail(
+        userId: UUID,
+        boardId: UUID
+    ): BoardResponse {
         val user = userRepository.findByIdOrNull(userId) ?: throw BusinessException(UserError.USER_NOT_FOUND)
         val board = boardRepository.findBoardByIdAndIsActiveTrue(boardId)?.filterInfoByRole(user.role)
             ?: throw BusinessException(BoardError.BOARD_NOT_FOUND)
@@ -48,11 +56,13 @@ class BoardService(
         return buildBoardResponse(board)
     }
 
-    private fun buildBoardResponse(board: Board) = BoardResponse.of(
-        board = board,
-        user = userRepository.findByIdOrNull(board.writer.writerId)
-            ?: throw BusinessException(UserError.USER_NOT_FOUND),
-        activityUnit = activityUnitRepository.findAllByUserIdOrderByGenerationDesc(board.writer.writerId)
-            .firstOrNull() ?: throw BusinessException(UserError.USER_RELATED_DATA_NOT_FOUND)
-    )
+    private fun buildBoardResponse(board: Board) =
+        BoardResponse.of(
+            board = board,
+            user = userRepository.findByIdOrNull(board.writer.writerId)
+                ?: throw BusinessException(UserError.USER_NOT_FOUND),
+            activityUnit = activityUnitRepository
+                .findAllByUserIdOrderByGenerationDesc(board.writer.writerId)
+                .firstOrNull() ?: throw BusinessException(UserError.USER_RELATED_DATA_NOT_FOUND)
+        )
 }

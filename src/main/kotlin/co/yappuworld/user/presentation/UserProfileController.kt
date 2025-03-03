@@ -12,13 +12,12 @@ class UserProfileController(
     private val userProfileService: UserProfileService
 ) : UserProfileApi {
 
-    override fun getProfile(securityUser: SecurityUser): ResponseEntity<SuccessResponse<UserProfileApiResponseDto>> {
-        return ResponseEntity.ok(
+    override fun getProfile(securityUser: SecurityUser): ResponseEntity<SuccessResponse<UserProfileApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 UserProfileApiResponseDto.of(
                     userProfileService.findUserProfile(securityUser.userId)
                 )
             )
         )
-    }
 }

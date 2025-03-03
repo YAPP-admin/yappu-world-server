@@ -5,7 +5,7 @@ import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.User
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
-import java.util.*
+import java.util.UUID
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class BoardResponse(
@@ -26,8 +26,12 @@ data class BoardResponse(
     companion object {
         private const val POST_FIX = "기"
 
-        fun of(board: Board, user: User, activityUnit: ActivityUnit): BoardResponse {
-            return BoardResponse(
+        fun of(
+            board: Board,
+            user: User,
+            activityUnit: ActivityUnit
+        ): BoardResponse =
+            BoardResponse(
                 id = board.id,
                 boardType = board.boardType,
                 noticeType = board.noticeType,
@@ -36,6 +40,5 @@ data class BoardResponse(
                 displayTarget = board.displayTarget,
                 writer = activityUnit.generation.toString() + POST_FIX + " " + user.name
             )
-        }
     }
 }
