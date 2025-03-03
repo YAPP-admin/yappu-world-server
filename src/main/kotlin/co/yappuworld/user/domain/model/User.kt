@@ -75,4 +75,12 @@ class User private constructor(
     fun updateRole(role: UserRole) {
         this.role = role
     }
+
+    fun updateDetails(
+        name: String,
+        email: String
+    ) {
+        this.name = name
+        this.email = email
+    }
 }

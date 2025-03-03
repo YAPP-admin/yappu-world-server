@@ -1,7 +1,10 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.ifNotEmpty
+import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
+import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
 import co.yappuworld.user.application.dto.response.UserDetailsAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
@@ -50,5 +53,57 @@ class UserAdminService(
             data = userWithActivityUnit.map { UserOverviewAppResponseDto(it) },
             totalCount = totalCount
         )
+    }
+
+    fun updateUserDetails(request: AdminUserUpdateAppRequestDto) {
+        updateUser(request)
+        handleActivityUnitRequest(request.userId, request.activityUnits)
+    }
+
+    private fun updateUser(request: AdminUserUpdateAppRequestDto) {
+        val user = userRepository.findByIdOrNull(request.userId)
+            ?: throw BusinessException(UserError.USER_NOT_FOUND)
+
+        user.updateDetails(request.name, request.email)
+        userRepository.save(user)
+    }
+
+    private fun handleActivityUnitRequest(
+        userId: UUID,
+        requests: List<AdminActivityUnitUpdateAppRequestDto>
+    ) {
+        requests.partition { it.id == null }
+            .let { (toCreate, toUpdateOrDelete) ->
+                toUpdateOrDelete.ifNotEmpty { updateOrDeleteActivityUnit(userId, it) }
+                toCreate.ifNotEmpty {
+                    activityUnitRepository.saveAll(
+                        it.map { r ->
+                            r.toActivityUnit(userId)
+                        }
+                    )
+                }
+            }
+    }
+
+    private fun updateOrDeleteActivityUnit(
+        userId: UUID,
+        requests: List<AdminActivityUnitUpdateAppRequestDto>
+    ) {
+        val activityUnits = activityUnitRepository.findAllByUserId(userId)
+            .ifEmpty { return }
+
+        val requestById = requests.associateBy { it.id }
+        activityUnits.partition { it.id in requestById.keys }
+            .let { (toUpdate, toDelete) ->
+                toDelete.ifNotEmpty { units -> activityUnitRepository.deleteAllById(units.map { it.id }) }
+                toUpdate.ifNotEmpty { units ->
+                    units.forEach { u ->
+                        requestById[u.id]?.let { request ->
+                            u.updateActivityUnit(request.generation, request.position)
+                        }
+                    }
+                    activityUnitRepository.saveAll(units)
+                }
+            }
     }
 }
