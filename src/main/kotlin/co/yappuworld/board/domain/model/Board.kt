@@ -1,8 +1,9 @@
 package co.yappuworld.board.domain.model
 
+import co.yappuworld.board.domain.vo.BoardType
+import co.yappuworld.board.domain.vo.NoticeType
 import co.yappuworld.board.domain.vo.Writer
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.user.domain.vo.UserRole
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Embedded
@@ -14,11 +15,10 @@ data class Board(
     @Id
     @JvmField
     val id: UUID,
-    val boardType: String,
-    val noticeType: String? = null,
+    val boardType: BoardType,
+    val noticeType: NoticeType? = null,
     val title: String,
     val content: String,
-    val displayTarget: String?,
     @Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
     val writer: Writer,
     val isActive: Boolean = true
@@ -27,11 +27,4 @@ data class Board(
     override fun getId() = id
 
     override fun isNew() = !isCreatedAtInitialized()
-
-    fun filterInfoByRole(userRole: UserRole): Board =
-        if (userRole != UserRole.ADMIN) {
-            this.copy(displayTarget = null)
-        } else {
-            this
-        }
 }

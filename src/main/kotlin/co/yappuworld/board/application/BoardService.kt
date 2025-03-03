@@ -1,6 +1,6 @@
 package co.yappuworld.board.application
 
-import co.yappuworld.board.application.dto.response.BoardResponse
+import co.yappuworld.board.presentation.dto.response.BoardResponse
 import co.yappuworld.board.domain.model.Board
 import co.yappuworld.board.domain.vo.BoardError
 import co.yappuworld.board.infrastructure.BoardRepository
@@ -14,6 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import org.springframework.data.domain.Pageable
 
 @Service
 class BoardService(
@@ -23,34 +24,20 @@ class BoardService(
 ) {
     @Transactional(readOnly = true)
     fun readBoardPage(
-        userId: UUID,
         pageNumber: Int,
         size: Int,
         noticeType: String?
-    ): Page<BoardResponse> {
-        val user = userRepository.findByIdOrNull(userId) ?: throw BusinessException(UserError.USER_NOT_FOUND)
-
-        return if (noticeType != null) {
-            boardRepository.findAllByIsActiveTrueAndNoticeTypeOrderByCreatedAtDesc(
-                noticeType = noticeType,
-                pageable = PageRequest.of(pageNumber, size)
-            )
-        } else {
-            boardRepository.findAllByIsActiveTrueOrderByCreatedAtDesc(pageable = PageRequest.of(pageNumber, size))
-        }.map { board ->
-            board.filterInfoByRole(userRole = user.role)
-        }.map { board ->
+    ): Page<BoardResponse> =
+        getBoards(
+            noticeType = noticeType,
+            pageable = PageRequest.of(pageNumber, size)
+        ).map { board ->
             buildBoardResponse(board)
         }
-    }
 
     @Transactional(readOnly = true)
-    fun readBoardDetail(
-        userId: UUID,
-        boardId: UUID
-    ): BoardResponse {
-        val user = userRepository.findByIdOrNull(userId) ?: throw BusinessException(UserError.USER_NOT_FOUND)
-        val board = boardRepository.findBoardByIdAndIsActiveTrue(boardId)?.filterInfoByRole(user.role)
+    fun readBoardDetail(boardId: UUID): BoardResponse {
+        val board = boardRepository.findBoardByIdAndIsActiveTrue(boardId)
             ?: throw BusinessException(BoardError.BOARD_NOT_FOUND)
 
         return buildBoardResponse(board)
@@ -65,4 +52,17 @@ class BoardService(
                 .findAllByUserIdOrderByGenerationDesc(board.writer.writerId)
                 .firstOrNull() ?: throw BusinessException(UserError.USER_RELATED_DATA_NOT_FOUND)
         )
+
+    private fun getBoards(
+        noticeType: String?,
+        pageable: Pageable
+    ): Page<Board> =
+        if (noticeType != null) {
+            boardRepository.findAllByIsActiveTrueAndNoticeTypeOrderByCreatedAtDesc(
+                noticeType = noticeType,
+                pageable = pageable
+            )
+        } else {
+            boardRepository.findAllByIsActiveTrueOrderByCreatedAtDesc(pageable = pageable)
+        }
 }

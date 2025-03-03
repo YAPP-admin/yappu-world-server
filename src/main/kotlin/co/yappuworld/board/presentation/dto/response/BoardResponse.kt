@@ -1,13 +1,11 @@
-package co.yappuworld.board.application.dto.response
+package co.yappuworld.board.presentation.dto.response
 
 import co.yappuworld.board.domain.model.Board
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.User
-import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 data class BoardResponse(
     @Schema(description = "게시판 식별자")
     val id: UUID,
@@ -19,12 +17,14 @@ data class BoardResponse(
     val title: String,
     @Schema(description = "내용")
     val content: String,
-    val displayTarget: String?,
     @Schema(description = "작성자")
-    val writer: String
+    val writer: Writer
 ) {
     companion object {
-        private const val POST_FIX = "기"
+        data class Writer(
+            val name: String,
+            val generation: Int
+        )
 
         fun of(
             board: Board,
@@ -33,12 +33,14 @@ data class BoardResponse(
         ): BoardResponse =
             BoardResponse(
                 id = board.id,
-                boardType = board.boardType,
-                noticeType = board.noticeType,
+                boardType = board.boardType.name,
+                noticeType = board.noticeType?.label,
                 title = board.title,
                 content = board.content,
-                displayTarget = board.displayTarget,
-                writer = activityUnit.generation.toString() + POST_FIX + " " + user.name
+                writer = Writer(
+                    name = user.name,
+                    generation = activityUnit.generation
+                )
             )
     }
 }
