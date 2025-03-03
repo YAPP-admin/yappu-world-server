@@ -63,7 +63,7 @@ CREATE TABLE user_devices
     created_at datetime,
     updated_at datetime,
     user_id    varchar(36)  NOT NULL,
-    fcm_token  varchar(128) NOT NULL
+    fcm_token  varchar(512) NOT NULL
 );
 
 DROP TABLE IF EXISTS schedules;

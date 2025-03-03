@@ -3,6 +3,7 @@ package co.yappuworld.user.application.dto.response
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.vo.UserRole
+import java.time.LocalDate
 import java.util.UUID
 
 data class UserDetailsAppResponseDto(
@@ -11,6 +12,7 @@ data class UserDetailsAppResponseDto(
     val name: String,
     val role: UserRole,
     val isActive: Boolean,
+    val registrationDate: LocalDate,
     val activityUnits: List<ActivityUnitAppResponseDto>
 ) {
 
@@ -20,6 +22,7 @@ data class UserDetailsAppResponseDto(
         name = user.name,
         role = user.role,
         isActive = user.isActive,
+        registrationDate = user.createdAt.toLocalDate(),
         activityUnits = activityUnits.map { ActivityUnitAppResponseDto(it) }
     )
 }
