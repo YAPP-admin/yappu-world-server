@@ -19,7 +19,7 @@ CREATE TABLE users
     password   varchar(64) NOT NULL,
     name       varchar(16) NOT NULL,
     role       varchar(16) NOT NULL,
-    is_active  tinyint(1) NOT NULL
+    is_active  tinyint(1)  NOT NULL
 );
 
 DROP TABLE IF EXISTS sign_up_application;
@@ -52,8 +52,8 @@ CREATE TABLE user_alarm_settings
     created_at datetime,
     updated_at datetime,
     user_id    varchar(36) NOT NULL,
-    device     tinyint(1) NOT NULL,
-    master     tinyint(1) NOT NULL
+    device     tinyint(1)  NOT NULL,
+    master     tinyint(1)  NOT NULL
 );
 
 DROP TABLE IF EXISTS user_devices;
@@ -72,7 +72,7 @@ CREATE TABLE schedules
     id          varchar(36) PRIMARY KEY,
     created_at  datetime,
     updated_at  datetime,
-    is_deleted  tinyint(1) NOT NULL,
+    is_deleted  tinyint(1)  NOT NULL,
     name        varchar(32) NOT NULL,
     description varchar(256),
     place       varchar(32) NOT NULL,
@@ -87,14 +87,14 @@ CREATE TABLE schedules
 DROP TABLE IF EXISTS board;
 CREATE TABLE board
 (
-    id         varchar(36) PRIMARY KEY,
-    created_at datetime,
-    updated_at datetime,
-    board_type varchar(255),
-    notice_type varchar(255),
-    title varchar(255),
-    content varchar(4000),
+    id             varchar(36) PRIMARY KEY,
+    created_at     datetime,
+    updated_at     datetime,
+    board_type     varchar(255),
+    notice_type    varchar(255),
+    title          varchar(255),
+    content        varchar(4000),
     display_target varchar(255),
-    writer_id varchar(36) NOT NULL,
-    is_active tinyint(1) NOT NULL
+    writer_id      varchar(36) NOT NULL,
+    is_active      tinyint(1)  NOT NULL
 );
