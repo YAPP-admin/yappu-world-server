@@ -1,12 +1,22 @@
+-- 가입코드
 INSERT INTO config (id, created_at, updated_at, label, category, value)
-VALUES ('authenticationCodeAdmin', now(), now(), '어드민 인증번호', 'AUTHENTICATION_CODE', '000000'),
-       ('authenticationCodeStaff', now(), now(), '운영진 인증번호', 'AUTHENTICATION_CODE', '000001'),
-       ('authenticationCodeAlumni', now(), now(), '정회원 인증번호', 'AUTHENTICATION_CODE', '000002'),
-       ('authenticationCodeActive', now(), now(), '활동회원 인증번호', 'AUTHENTICATION_CODE', '000003'),
-       ('needForceUpdate', now(), now(), '강제 업데이트', 'FORCE_UPDATE', false),
-       ('forceUpdateReason', now(), now(), '강제 업데이트 사유', 'FORCE_UPDATE', null),
-       ('activeGeneration', now(), now(), '활동 기수', 'ACTIVE_GENERATION', '25'),
-       ('usageInquiryLink', now(), now(), '이용 문의', 'LINK', 'http://pf.kakao.com/_ixmUxjn/chat'),
+VALUES ('authenticationCodeAdmin', now(), now(), '어드민 가입코드', 'AUTHENTICATION_CODE', '000000'),
+       ('authenticationCodeStaff', now(), now(), '운영진 가입코드', 'AUTHENTICATION_CODE', '000001'),
+       ('authenticationCodeAlumni', now(), now(), '정회원 가입코드', 'AUTHENTICATION_CODE', '000002'),
+       ('authenticationCodeActive', now(), now(), '활동회원 가입코드', 'AUTHENTICATION_CODE', '000003');
+
+-- 최소 지원 버전
+INSERT INTO config (id, created_at, updated_at, label, category, value)
+VALUES ('minSupportVersionInIos', now(), now(), 'iOS 최소 지원 버전', 'FORCE_UPDATE', '1.0.0'),
+       ('minSupportVersionInAndroid', now(), now(), '안드로이드 최소 지원 버전', 'FORCE_UPDATE', '1.0.0');
+
+-- 활동기수
+INSERT INTO config (id, created_at, updated_at, label, category, value)
+VALUES ('activeGeneration', now(), now(), '활동 기수', 'ACTIVE_GENERATION', '25');
+
+-- 이용링크
+INSERT INTO config (id, created_at, updated_at, label, category, value)
+VALUES ('usageInquiryLink', now(), now(), '이용 문의', 'LINK', 'http://pf.kakao.com/_ixmUxjn/chat'),
        ('termsOfServiceLink', now(), now(), '이용약관', 'LINK',
         'https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4'),
        ('privacyPolicyLink', now(), now(), '개인정보 처리방침', 'LINK',

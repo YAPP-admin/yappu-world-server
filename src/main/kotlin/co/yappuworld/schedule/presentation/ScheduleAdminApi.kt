@@ -24,7 +24,7 @@ interface ScheduleAdminApi {
             )
         ]
     )
-    @PostMapping("/v1/admin/schedules")
+    @PostMapping("/admin/v1/schedules")
     fun createSchedule(
         @Valid @RequestBody request: ScheduleCreateApiRequestDto
     ): ResponseEntity<Unit>
