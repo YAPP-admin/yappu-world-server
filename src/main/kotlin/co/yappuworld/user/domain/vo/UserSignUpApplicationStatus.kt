@@ -5,8 +5,10 @@ package co.yappuworld.user.domain.vo
  * @property APPROVED 신청승인
  * @property REJECTED 신청거절
  */
-enum class UserSignUpApplicationStatus {
-    PENDING,
-    APPROVED,
-    REJECTED
+enum class UserSignUpApplicationStatus(
+    val label: String
+) {
+    PENDING("대기"),
+    APPROVED("승인"),
+    REJECTED("거절")
 }

@@ -6,12 +6,15 @@ import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequ
 import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationAppResponseDto
 import co.yappuworld.user.application.dto.response.UserDetailsAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewBundleAppResponseDto
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus.APPROVED
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,6 +23,7 @@ import java.util.UUID
 @Service
 class UserAdminService(
     private val userRepository: UserRepository,
+    private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
     private val activityUnitRepository: ActivityUnitRepository
 ) {
 
@@ -105,5 +109,18 @@ class UserAdminService(
                     activityUnitRepository.saveAll(units)
                 }
             }
+    }
+
+    fun getSignUpApplicationDetails(applicationId: UUID): AdminSignUpApplicationAppResponseDto {
+        val application = userSignUpApplicationRepository.findByIdOrNull(applicationId)
+            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+
+        return when (application.status == APPROVED) {
+            true -> AdminSignUpApplicationAppResponseDto(
+                application,
+                userRepository.findUserOrNullByEmail(application.applicantEmail)
+            )
+            false -> AdminSignUpApplicationAppResponseDto(application)
+        }
     }
 }

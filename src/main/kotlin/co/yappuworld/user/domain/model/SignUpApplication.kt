@@ -17,7 +17,7 @@ class SignUpApplication private constructor(
     @JvmField
     val id: UUID,
     val applicantEmail: String,
-    private val details: ApplicationDetails,
+    val details: ApplicationDetails,
     status: UserSignUpApplicationStatus,
     rejectReason: String?
 ) : BaseEntity(), Persistable<UUID> {
