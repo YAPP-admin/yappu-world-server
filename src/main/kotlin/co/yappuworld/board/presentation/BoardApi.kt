@@ -135,8 +135,8 @@ interface BoardApi {
     )
     @GetMapping("/v1/boards")
     fun getBoards(
-        @RequestParam(value = "page", defaultValue = "0") page: Int,
-        @RequestParam(value = "size", defaultValue = "10") size: Int,
+        @RequestParam(value = "lastCreatedAt", required = false) lastCreatedAt: String?,
+        @RequestParam(value = "limit", defaultValue = "10") limit: Int,
         @RequestParam(value = "noticeType", required = false) noticeType: String?
     ): ResponseEntity<SuccessResponse<Page<BoardResponse>>>
 

@@ -18,7 +18,9 @@ data class BoardResponse(
     @Schema(description = "내용")
     val content: String,
     @Schema(description = "작성자")
-    val writer: Writer
+    val writer: Writer,
+    @Schema(description = "작성날짜")
+    val createdAt: String
 ) {
     companion object {
         data class Writer(
@@ -37,6 +39,7 @@ data class BoardResponse(
                 noticeType = board.noticeType?.label,
                 title = board.title,
                 content = board.content,
+                createdAt = board.createdAt.toString(),
                 writer = Writer(
                     name = user.name,
                     generation = activityUnit.generation
