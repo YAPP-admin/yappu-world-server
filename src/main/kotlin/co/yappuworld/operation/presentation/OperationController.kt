@@ -2,6 +2,10 @@ package co.yappuworld.operation.presentation
 
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.domain.ClientPlatform
+import co.yappuworld.operation.domain.ClientPlatform.ANDROID
+import co.yappuworld.operation.domain.ClientPlatform.IOS
+import co.yappuworld.operation.domain.Version
 import co.yappuworld.operation.presentation.dto.response.ActiveGenerationApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.ForceUpdateApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.OperationLinkApiResponseDto
@@ -26,11 +30,20 @@ class OperationController(
         )
     }
 
-    override fun getForceUpdateInfo(): ResponseEntity<SuccessResponse<ForceUpdateApiResponseDto>> {
-        val configs = configInquiryComponent.findConfigsBy(listOf("needForceUpdate", "forceUpdateReason"))
+    override fun getForceUpdateInfo(
+        version: Version,
+        platform: ClientPlatform
+    ): ResponseEntity<SuccessResponse<ForceUpdateApiResponseDto>> {
+        val minSupportVersion = when (platform) {
+            ANDROID -> configInquiryComponent.findConfigBy("minSupportVersionInAndroid")
+            IOS -> configInquiryComponent.findConfigBy("minSupportVersionInIos")
+        }.value
+
         return ResponseEntity.ok(
             SuccessResponse(
-                ForceUpdateApiResponseDto.of(configs)
+                ForceUpdateApiResponseDto(
+                    minSupportVersion != null && version.isBeforeThan(Version(minSupportVersion))
+                )
             )
         )
     }

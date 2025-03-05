@@ -1,6 +1,9 @@
 package co.yappuworld.operation.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.operation.domain.ClientPlatform
+import co.yappuworld.operation.domain.Version
 import co.yappuworld.operation.presentation.dto.response.ActiveGenerationApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.ForceUpdateApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.OperationLinkApiResponseDto
@@ -14,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @Tag(name = "운영 API")
 interface OperationApi {
@@ -39,8 +43,7 @@ interface OperationApi {
                                     {
                                         "isSuccess": "true",
                                         "data": {
-                                            "needForceUpdate": "true",
-                                            "reason": "강제 업데이트 하라면 하쇼"
+                                            "needForceUpdate": "true"
                                         }
                                     }
                                 """
@@ -51,9 +54,30 @@ interface OperationApi {
                                     {
                                         "isSuccess": "true",
                                         "data": {
-                                            "needForceUpdate": "false",
-                                            "reason": null
+                                            "needForceUpdate": "false"
                                         }
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                description = "잘못된 포맷 요청",
+                responseCode = "400",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "강제 업데이트 필요",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "message": "올바르지 않은 버전 형태입니다. 버전은 x.y.z 형태여야 합니다.",
+                                        "errorCode": "CFG_0001"
                                     }
                                 """
                             )
@@ -64,7 +88,10 @@ interface OperationApi {
         ]
     )
     @GetMapping("/v1/operations/force-update")
-    fun getForceUpdateInfo(): ResponseEntity<SuccessResponse<ForceUpdateApiResponseDto>>
+    fun getForceUpdateInfo(
+        @RequestParam version: Version,
+        @RequestParam platform: ClientPlatform
+    ): ResponseEntity<SuccessResponse<ForceUpdateApiResponseDto>>
 
     @Operation(summary = "현재 활동 중인 기수")
     @ApiResponses(
