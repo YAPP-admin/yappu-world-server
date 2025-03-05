@@ -10,7 +10,7 @@ import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixtur
 import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
@@ -117,7 +117,7 @@ class SignUpServiceTest {
         signUpService.findLatestSignUpApplication(request).also {
             assertThat(it.status).isEqualTo(application.status)
             when (it.status) {
-                UserSignUpApplicationStatus.REJECTED -> assertNotNull(it.rejectReason)
+                SignUpApplicationStatus.REJECTED -> assertNotNull(it.rejectReason)
                 else -> assertNull(it.rejectReason)
             }
         }

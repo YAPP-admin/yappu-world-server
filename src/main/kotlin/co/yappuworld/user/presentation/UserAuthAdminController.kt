@@ -1,12 +1,18 @@
 package co.yappuworld.user.presentation
 
+import co.yappuworld.global.response.PageResponse
+import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
+import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
+import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
+import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 class UserAuthAdminController(
@@ -27,5 +33,34 @@ class UserAuthAdminController(
     override fun rejectSignUpApplication(request: SignUpApplicationRejectApiRequestDto): ResponseEntity<Unit> {
         signUpService.rejectSignUpApplication(request.toAppRequest())
         return ResponseEntity.noContent().build()
+    }
+
+    override fun getSignUpApplications(
+        request: AdminSignUpApplicationPageApiRequestDto
+    ): ResponseEntity<SuccessResponse<PageResponse<AdminSignUpApplicationOverviewApiResponseDto>>> {
+        return userAdminService.getSignUpApplications(request.toAppRequest()).let {
+            ResponseEntity.ok(
+                SuccessResponse(
+                    PageResponse(
+                        data = it.data.map { d -> AdminSignUpApplicationOverviewApiResponseDto(d) },
+                        totalCount = it.totalCount,
+                        page = request.page,
+                        size = request.size
+                    )
+                )
+            )
+        }
+    }
+
+    override fun getSignUpApplication(
+        applicationId: UUID
+    ): ResponseEntity<SuccessResponse<AdminSignUpApplicationApiResponseDto>> {
+        return ResponseEntity.ok(
+            SuccessResponse(
+                AdminSignUpApplicationApiResponseDto(
+                    userAdminService.getSignUpApplicationDetails(applicationId)
+                )
+            )
+        )
     }
 }

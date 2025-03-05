@@ -1,7 +1,7 @@
 package co.yappuworld.user.presentation.dto.response
 
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class LatestSignUpApplicationApiResponseDto(
@@ -9,7 +9,7 @@ data class LatestSignUpApplicationApiResponseDto(
         description = "가장 최근 회원가입 신청의 처리 상태",
         examples = ["REJECTED", "APPROVED", "PENDING"]
     )
-    val status: UserSignUpApplicationStatus,
+    val status: SignUpApplicationStatus,
     @Schema(description = "거절 사유", nullable = true)
     val rejectReason: String?
 ) {

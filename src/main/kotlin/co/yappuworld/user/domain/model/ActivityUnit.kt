@@ -14,13 +14,18 @@ import java.util.UUID
  */
 @Table("activity_units")
 class ActivityUnit private constructor(
-    val generation: Int,
-    val position: Position,
+    generation: Int,
+    position: Position,
     val userId: UUID,
     @Id
     @JvmField
     val id: UUID
 ) : BaseEntity(), Persistable<UUID> {
+
+    var generation: Int = generation
+        private set
+    var position: Position = position
+        private set
 
     constructor(
         generation: Int,
@@ -38,5 +43,13 @@ class ActivityUnit private constructor(
 
     override fun isNew(): Boolean {
         return !isCreatedAtInitialized()
+    }
+
+    fun updateActivityUnit(
+        generation: Int,
+        position: Position
+    ) {
+        this.generation = generation
+        this.position = position
     }
 }

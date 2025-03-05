@@ -25,3 +25,6 @@ VALUES ('usageInquiryLink', now(), now(), '이용 문의', 'LINK', 'http://pf.ka
 INSERT INTO users (id, created_at, updated_at, email, password, name, role, is_active)
 VALUES ('01954809-38fd-1268-e0d6-d3fda39f6b4c', now(), now(), 'admin@admin.com',
         '$2a$10$FlqVcwbK6JAnkVx7gEdFdeH3Gb7bF/bzDfu5u0afry0jss.3I71Oe', '홍길동', 'ADMIN', true);
+
+INSERT INTO activity_units (id, created_at, updated_at, position, generation, user_id)
+VALUES (uuid(), now(), now(), 'PM', 1, '01954809-38fd-1268-e0d6-d3fda39f6b4c');

@@ -17,7 +17,7 @@ import co.yappuworld.user.domain.model.UserAlarmSetting
 import co.yappuworld.user.domain.model.UserDevice
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
@@ -130,14 +130,14 @@ class SignUpService(
 
         val applications = signUpApplicationRepository.findByApplicantEmailAndStatus(
             email,
-            UserSignUpApplicationStatus.PENDING
+            SignUpApplicationStatus.PENDING
         )
 
         if (applications.isEmpty()) {
             return
         }
 
-        if (applications.any { it.status == UserSignUpApplicationStatus.PENDING }) {
+        if (applications.any { it.status == SignUpApplicationStatus.PENDING }) {
             logger.error { "${email}의 처리되지 않은 기존 신청이 존재합니다." }
             throw BusinessException(UserError.UNPROCESSED_APPLICATION_EXISTS)
         }

@@ -4,6 +4,7 @@ import co.yappuworld.global.response.PageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
+import co.yappuworld.user.presentation.dto.request.AdminUserUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminUserDetailsApiResponseDto
 import co.yappuworld.user.presentation.dto.response.AdminUserOverviewApiResponseDto
 import org.springframework.http.ResponseEntity
@@ -38,5 +39,9 @@ class UserAdminController(
         return ResponseEntity.ok(
             SuccessResponse(response)
         )
+    }
+
+    override fun updateUserDetails(request: AdminUserUpdateApiRequestDto) {
+        userAdminService.updateUserDetails(request.toAppRequest())
     }
 }

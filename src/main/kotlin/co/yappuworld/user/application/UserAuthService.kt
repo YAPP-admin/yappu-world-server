@@ -9,7 +9,7 @@ import co.yappuworld.user.application.dto.request.LoginAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
 import co.yappuworld.user.domain.checkLoginAvailability
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -75,15 +75,15 @@ class UserAuthService(
         }
 
         throw when (recentApplication.status) {
-            UserSignUpApplicationStatus.PENDING -> {
+            SignUpApplicationStatus.PENDING -> {
                 logger.error { "${email}의 기존 가입 신청이 처리되지 않았습니다." }
                 BusinessException(UserError.CANNOT_LOGIN_WITH_UNPROCESSED_SIGN_UP_APPLICATION)
             }
-            UserSignUpApplicationStatus.REJECTED -> {
+            SignUpApplicationStatus.REJECTED -> {
                 logger.error { "${email}의 기존 가입 신청이 처리되지 않았습니다." }
                 BusinessException(UserError.RECENT_SIGN_UP_APPLICATION_REJECTED)
             }
-            UserSignUpApplicationStatus.APPROVED -> {
+            SignUpApplicationStatus.APPROVED -> {
                 logger.error { "${email}의 가입 프로세스에 문제가 생겼습니다." }
                 BusinessException(UserError.CANNOT_LOGIN_WRONG_USER_STATE)
             }

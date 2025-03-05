@@ -48,3 +48,7 @@ management:
         web:
             exposure:
                 include: prometheus
+
+logging:
+    level:
+        p6spy: WARN

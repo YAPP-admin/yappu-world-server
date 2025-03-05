@@ -24,7 +24,7 @@ class OperationController(
         return ResponseEntity.ok(
             SuccessResponse(
                 PositionsApiResponseDto(
-                    Position.entries.map { PositionApiResponseDto.of(it) }
+                    Position.entries.map { PositionApiResponseDto(it) }
                 )
             )
         )
