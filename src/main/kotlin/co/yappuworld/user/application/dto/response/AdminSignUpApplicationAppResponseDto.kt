@@ -3,13 +3,13 @@ package co.yappuworld.user.application.dto.response
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus.APPROVED
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus.REJECTED
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus.APPROVED
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus.REJECTED
 
 data class AdminSignUpApplicationAppResponseDto(
     val details: AdminSignUpApplicationDetailsAppResponseDto,
-    val status: UserSignUpApplicationStatus,
+    val status: SignUpApplicationStatus,
     val rejectReason: String?,
     val assignedRole: UserRole?
 ) {

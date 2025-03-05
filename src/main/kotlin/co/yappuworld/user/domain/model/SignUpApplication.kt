@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import com.github.f4b6a3.ulid.UlidCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable
@@ -18,11 +18,11 @@ class SignUpApplication private constructor(
     val id: UUID,
     val applicantEmail: String,
     val details: ApplicationDetails,
-    status: UserSignUpApplicationStatus,
+    status: SignUpApplicationStatus,
     rejectReason: String?
 ) : BaseEntity(), Persistable<UUID> {
 
-    var status: UserSignUpApplicationStatus = status
+    var status: SignUpApplicationStatus = status
         private set
     var rejectReason: String? = rejectReason
         private set
@@ -31,16 +31,16 @@ class SignUpApplication private constructor(
         UlidCreator.getMonotonicUlid().toUuid(),
         application.email,
         application,
-        UserSignUpApplicationStatus.PENDING,
+        SignUpApplicationStatus.PENDING,
         null
     )
 
     fun approve() {
-        this.status = UserSignUpApplicationStatus.APPROVED
+        this.status = SignUpApplicationStatus.APPROVED
     }
 
     fun reject(reason: String) {
-        this.status = UserSignUpApplicationStatus.REJECTED
+        this.status = SignUpApplicationStatus.REJECTED
         this.rejectReason = reason
     }
 

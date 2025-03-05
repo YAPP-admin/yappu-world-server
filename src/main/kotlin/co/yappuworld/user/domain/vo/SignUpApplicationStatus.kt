@@ -5,7 +5,7 @@ package co.yappuworld.user.domain.vo
  * @property APPROVED 신청승인
  * @property REJECTED 신청거절
  */
-enum class UserSignUpApplicationStatus(
+enum class SignUpApplicationStatus(
     val label: String
 ) {
     PENDING("대기"),

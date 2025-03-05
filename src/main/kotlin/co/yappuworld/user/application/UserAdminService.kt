@@ -3,15 +3,17 @@ package co.yappuworld.user.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.ifNotEmpty
 import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
+import co.yappuworld.user.application.dto.request.AdminSignUpApplicationPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
 import co.yappuworld.user.application.dto.response.AdminSignUpApplicationAppResponseDto
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationBundleAppResponse
 import co.yappuworld.user.application.dto.response.UserDetailsAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewBundleAppResponseDto
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus.APPROVED
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.domain.vo.UserSignUpApplicationStatus.APPROVED
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
@@ -64,6 +66,27 @@ class UserAdminService(
         handleActivityUnitRequest(request.userId, request.activityUnits)
     }
 
+    fun getSignUpApplicationDetails(applicationId: UUID): AdminSignUpApplicationAppResponseDto {
+        val application = userSignUpApplicationRepository.findByIdOrNull(applicationId)
+            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+
+        return when (application.status == APPROVED) {
+            true -> AdminSignUpApplicationAppResponseDto(
+                application,
+                userRepository.findUserOrNullByEmail(application.applicantEmail)
+            )
+            false -> AdminSignUpApplicationAppResponseDto(application)
+        }
+    }
+
+    fun getSignUpApplications(
+        request: AdminSignUpApplicationPageAppRequestDto
+    ): AdminSignUpApplicationBundleAppResponse {
+        return userSignUpApplicationRepository.findAll(request.toPageRequest()).let {
+            AdminSignUpApplicationBundleAppResponse(it)
+        }
+    }
+
     private fun updateUser(request: AdminUserUpdateAppRequestDto) {
         val user = userRepository.findByIdOrNull(request.userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
@@ -109,18 +132,5 @@ class UserAdminService(
                     activityUnitRepository.saveAll(units)
                 }
             }
-    }
-
-    fun getSignUpApplicationDetails(applicationId: UUID): AdminSignUpApplicationAppResponseDto {
-        val application = userSignUpApplicationRepository.findByIdOrNull(applicationId)
-            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
-
-        return when (application.status == APPROVED) {
-            true -> AdminSignUpApplicationAppResponseDto(
-                application,
-                userRepository.findUserOrNullByEmail(application.applicantEmail)
-            )
-            false -> AdminSignUpApplicationAppResponseDto(application)
-        }
     }
 }
