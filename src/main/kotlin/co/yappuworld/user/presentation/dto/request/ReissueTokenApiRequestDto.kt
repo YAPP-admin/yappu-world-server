@@ -8,11 +8,10 @@ data class ReissueTokenApiRequestDto(
     val refreshToken: String
 ) {
 
-    fun toAppRequest(now: LocalDateTime): ReissueTokenAppRequestDto {
-        return ReissueTokenAppRequestDto(
+    fun toAppRequest(now: LocalDateTime): ReissueTokenAppRequestDto =
+        ReissueTokenAppRequestDto(
             this.accessToken,
             this.refreshToken,
             now
         )
-    }
 }

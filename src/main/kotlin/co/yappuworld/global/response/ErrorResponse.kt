@@ -18,18 +18,16 @@ data class ErrorResponse(
         fun of(
             message: String,
             errorCode: String? = null
-        ): ErrorResponse {
-            return ErrorResponse(
+        ): ErrorResponse =
+            ErrorResponse(
                 message,
                 errorCode
             )
-        }
 
-        fun of(error: Error): ErrorResponse {
-            return ErrorResponse(
+        fun of(error: Error): ErrorResponse =
+            ErrorResponse(
                 error.message,
                 error.code
             )
-        }
     }
 }

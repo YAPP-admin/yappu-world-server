@@ -18,7 +18,6 @@ data class AdminActivityUnitUpdateApiRequestDto(
     @field:NotEmpty(message = "직군은 필수로 입력해야 합니다.")
     val position: Position
 ) {
-    fun toAppRequest(): AdminActivityUnitUpdateAppRequestDto {
-        return AdminActivityUnitUpdateAppRequestDto(id, generation, position)
-    }
+    fun toAppRequest(): AdminActivityUnitUpdateAppRequestDto =
+        AdminActivityUnitUpdateAppRequestDto(id, generation, position)
 }

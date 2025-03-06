@@ -1,11 +1,10 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
+    kotlin("kapt") version "2.1.10"
     id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.7"
-    // ktlint
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
-    // sentry
+    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
     id("io.sentry.jvm.gradle") version "5.2.0"
 }
 
@@ -31,8 +30,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
 
     // ulid
@@ -67,6 +66,10 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
+}
+
+ktlint {
+    version.set("1.5.0")
 }
 
 tasks {

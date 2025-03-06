@@ -16,12 +16,11 @@ class JwtResolver(
     private val jwtProperty: JwtProperty
 ) {
 
-    fun extractSecurityUserOrNull(accessToken: String): SecurityUser? {
-        return accessToken.let {
+    fun extractSecurityUserOrNull(accessToken: String): SecurityUser? =
+        accessToken.let {
             val payload = parseToken(it).payload
             SecurityUser.fromValidToken(payload as Map<*, *>)
         }
-    }
 
     fun extractUserIdFrom(accessToken: String): UUID {
         val userId = getClaimsFrom(accessToken)["userId"]
@@ -29,18 +28,17 @@ class JwtResolver(
         return UUID.fromString(userId.toString())
     }
 
-    fun getClaimsFrom(accessToken: String): Map<*, *> {
-        return try {
+    fun getClaimsFrom(accessToken: String): Map<*, *> =
+        try {
             parseToken(accessToken).payload as Map<*, *>
         } catch (e: ExpiredJwtException) {
             e.claims as Map<*, *>
         }
-    }
 
-    private fun parseToken(accessToken: String): Jwt<*, *> {
-        return Jwts.parser()
+    private fun parseToken(accessToken: String): Jwt<*, *> =
+        Jwts
+            .parser()
             .verifyWith(jwtProperty.base64UrlSecretKey)
             .build()
             .parse(accessToken)
-    }
 }

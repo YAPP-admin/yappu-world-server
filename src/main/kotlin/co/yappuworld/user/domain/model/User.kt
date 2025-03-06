@@ -21,7 +21,8 @@ class User private constructor(
     @Id
     @JvmField
     val id: UUID
-) : BaseEntity(), Persistable<UUID> {
+) : BaseEntity(),
+    Persistable<UUID> {
 
     var isActive: Boolean = isActive
         private set
@@ -42,17 +43,11 @@ class User private constructor(
         role: UserRole
     ) : this(email, password, name, role, true, UlidCreator.getMonotonicUlid().toUuid())
 
-    fun withId(id: UUID): User {
-        return User(this.email, this.password, this.name, this.role, this.isActive, id)
-    }
+    fun withId(id: UUID): User = User(this.email, this.password, this.name, this.role, this.isActive, id)
 
-    override fun getId(): UUID {
-        return this.id
-    }
+    override fun getId(): UUID = this.id
 
-    override fun isNew(): Boolean {
-        return !isCreatedAtInitialized()
-    }
+    override fun isNew(): Boolean = !isCreatedAtInitialized()
 
     fun checkPassword(plainPassword: String) {
         if (!EncryptUtils.isMatch(plainPassword, this.password)) {
@@ -68,9 +63,7 @@ class User private constructor(
         this.isActive = false
     }
 
-    fun isWithdrawn(): Boolean {
-        return !this.isActive
-    }
+    fun isWithdrawn(): Boolean = !this.isActive
 
     fun updateRole(role: UserRole) {
         this.role = role

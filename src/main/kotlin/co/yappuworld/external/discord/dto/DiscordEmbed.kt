@@ -22,15 +22,14 @@ data class DiscordEmbed(
             description: String? = null,
             url: String? = null,
             fields: List<DiscordEmbedField>? = null
-        ): DiscordEmbed {
-            return DiscordEmbed(
+        ): DiscordEmbed =
+            DiscordEmbed(
                 title = title,
                 description = description,
                 url = url,
                 color = 1752220,
                 fields = fields
             )
-        }
     }
 }
 

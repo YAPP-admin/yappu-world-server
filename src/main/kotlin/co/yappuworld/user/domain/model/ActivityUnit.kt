@@ -20,7 +20,8 @@ class ActivityUnit private constructor(
     @Id
     @JvmField
     val id: UUID
-) : BaseEntity(), Persistable<UUID> {
+) : BaseEntity(),
+    Persistable<UUID> {
 
     var generation: Int = generation
         private set
@@ -33,17 +34,11 @@ class ActivityUnit private constructor(
         userId: UUID
     ) : this(generation, position, userId, UlidCreator.getMonotonicUlid().toUuid())
 
-    fun withId(id: UUID): ActivityUnit {
-        return ActivityUnit(generation, position, userId, id)
-    }
+    fun withId(id: UUID): ActivityUnit = ActivityUnit(generation, position, userId, id)
 
-    override fun getId(): UUID {
-        return this.id
-    }
+    override fun getId(): UUID = this.id
 
-    override fun isNew(): Boolean {
-        return !isCreatedAtInitialized()
-    }
+    override fun isNew(): Boolean = !isCreatedAtInitialized()
 
     fun updateActivityUnit(
         generation: Int,

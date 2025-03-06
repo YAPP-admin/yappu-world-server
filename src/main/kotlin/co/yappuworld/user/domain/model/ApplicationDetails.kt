@@ -11,12 +11,11 @@ data class ApplicationDetails(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toUser(role: UserRole): User {
-        return User(
+    fun toUser(role: UserRole): User =
+        User(
             this.email,
             this.password,
             this.name,
             role
         )
-    }
 }

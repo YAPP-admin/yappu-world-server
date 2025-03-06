@@ -24,24 +24,26 @@ class SecurityConfig(
 ) {
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        return http
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
+        http
             .csrf { it.disable() }
             .cors { getCorsConfigure() }
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers(staffOrAdminMatchers).hasAnyRole("ADMIN", "STAFF")
-                    .requestMatchers(userMatchers).hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
-                    .requestMatchers(anyoneMatchers).permitAll()
-            }
-            .authorizeHttpRequests { it.anyRequest().permitAll() }
+                it
+                    .requestMatchers(staffOrAdminMatchers)
+                    .hasAnyRole("ADMIN", "STAFF")
+                    .requestMatchers(userMatchers)
+                    .hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
+                    .requestMatchers(anyoneMatchers)
+                    .permitAll()
+            }.authorizeHttpRequests { it.anyRequest().permitAll() }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
-    }
 
-    private fun getCorsConfigure(): CorsConfiguration {
-        return CorsConfiguration().apply {
+    private fun getCorsConfigure(): CorsConfiguration =
+        CorsConfiguration().apply {
             addAllowedHeader("*")
             addAllowedMethod(GET)
             addAllowedMethod(POST)
@@ -49,5 +51,4 @@ class SecurityConfig(
             addAllowedMethod(DELETE)
             addAllowedOriginPattern("*")
         }
-    }
 }

@@ -17,31 +17,31 @@ class SwaggerConfig {
     private val securitySchemeName = "JWT Authorization"
 
     @Bean
-    fun openAPI(): OpenAPI {
-        return OpenAPI().info(getInfo())
+    fun openAPI(): OpenAPI =
+        OpenAPI()
+            .info(getInfo())
             .addSecurityItem(getSecurityRequirement())
             .components(Components().addSecuritySchemes(securitySchemeName, getSecurityScheme()))
-    }
 
     @Bean
-    fun appApi(): GroupedOpenApi {
-        return GroupedOpenApi.builder()
+    fun appApi(): GroupedOpenApi =
+        GroupedOpenApi
+            .builder()
             .group("App API")
             .pathsToExclude("/admin/**")
             .build()
-    }
 
     @Bean
-    fun adminApi(): GroupedOpenApi {
-        return GroupedOpenApi.builder()
+    fun adminApi(): GroupedOpenApi =
+        GroupedOpenApi
+            .builder()
             .group("Admin API")
             .pathsToMatch("/admin/**") // 어드민 API만 포함
             .build()
-    }
 
     @Bean
-    fun customGlobalResponses(): OpenApiCustomizer {
-        return OpenApiCustomizer { openApi ->
+    fun customGlobalResponses(): OpenApiCustomizer =
+        OpenApiCustomizer { openApi ->
             openApi.paths.values.forEach { item ->
                 item.readOperations().forEach { operation ->
                     val responses = operation.responses
@@ -51,32 +51,26 @@ class SwaggerConfig {
                 }
             }
         }
-    }
 
-    private fun getInfo(): Info {
-        return Info()
+    private fun getInfo(): Info =
+        Info()
             .title("Yappu World API")
             .description("YAPP 공식 APP 서버 스웨거\n ")
             .contact(getContact())
             .version("0.0.1")
-    }
 
-    private fun getContact(): Contact {
-        return Contact()
+    private fun getContact(): Contact =
+        Contact()
             .name("Github Repository")
             .url("https://github.com/YAPP-admin/yappu-world-server")
-    }
 
-    private fun getSecurityRequirement(): SecurityRequirement {
-        return SecurityRequirement().addList(securitySchemeName)
-    }
+    private fun getSecurityRequirement(): SecurityRequirement = SecurityRequirement().addList(securitySchemeName)
 
-    private fun getSecurityScheme(): SecurityScheme {
-        return SecurityScheme()
+    private fun getSecurityScheme(): SecurityScheme =
+        SecurityScheme()
             .name(securitySchemeName)
             .type(SecurityScheme.Type.HTTP)
             .`in`(SecurityScheme.In.HEADER)
             .scheme("Bearer")
             .bearerFormat("JWT")
-    }
 }

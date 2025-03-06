@@ -6,4 +6,6 @@ import java.util.UUID
 
 interface ActivityUnitRepository : CrudRepository<ActivityUnit, UUID> {
     fun findAllByUserId(userId: UUID): List<ActivityUnit>
+
+    fun findAllByUserIdOrderByGenerationDesc(userId: UUID): List<ActivityUnit>
 }

@@ -7,11 +7,10 @@ data class ActivityUnitParam(
     val generation: Int,
     val position: Position
 ) {
-    fun toActivityUnit(userId: UUID): ActivityUnit {
-        return ActivityUnit(
+    fun toActivityUnit(userId: UUID): ActivityUnit =
+        ActivityUnit(
             generation,
             position,
             userId
         )
-    }
 }

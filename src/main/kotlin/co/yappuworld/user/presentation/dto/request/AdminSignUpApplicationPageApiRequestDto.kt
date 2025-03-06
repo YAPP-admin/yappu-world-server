@@ -13,10 +13,9 @@ data class AdminSignUpApplicationPageApiRequestDto(
     val size: Int
 ) {
 
-    fun toAppRequest(): AdminSignUpApplicationPageAppRequestDto {
-        return AdminSignUpApplicationPageAppRequestDto(
+    fun toAppRequest(): AdminSignUpApplicationPageAppRequestDto =
+        AdminSignUpApplicationPageAppRequestDto(
             page = page,
             size = size
         )
-    }
 }

@@ -22,19 +22,18 @@ class FcmConfig(
         }.let { FirebaseMessaging.getInstance(it) }
     }
 
-    private fun getApp(apps: List<FirebaseApp>): FirebaseApp {
-        return try {
+    private fun getApp(apps: List<FirebaseApp>): FirebaseApp =
+        try {
             apps.single { it.name == FirebaseApp.DEFAULT_APP_NAME }
         } catch (e: NoSuchElementException) {
             initializeApp()
         }
-    }
 
-    private fun initializeApp(): FirebaseApp {
-        return FirebaseApp.initializeApp(
-            FirebaseOptions.builder()
+    private fun initializeApp(): FirebaseApp =
+        FirebaseApp.initializeApp(
+            FirebaseOptions
+                .builder()
                 .setCredentials(GoogleCredentials.fromStream(fcmProperty.toInputStream()))
                 .build()
         )
-    }
 }

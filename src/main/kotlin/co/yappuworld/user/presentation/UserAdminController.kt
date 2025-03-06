@@ -1,6 +1,6 @@
 package co.yappuworld.user.presentation
 
-import co.yappuworld.global.response.PageResponse
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
@@ -16,19 +16,18 @@ class UserAdminController(
     private val userAdminService: UserAdminService
 ) : UserAdminApi {
 
-    override fun getUserDetails(userId: UUID): ResponseEntity<SuccessResponse<AdminUserDetailsApiResponseDto>> {
-        return ResponseEntity.ok(
+    override fun getUserDetails(userId: UUID): ResponseEntity<SuccessResponse<AdminUserDetailsApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 AdminUserDetailsApiResponseDto(userAdminService.getUserDetails(userId))
             )
         )
-    }
 
     override fun getUsers(
         request: AdminUserPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<PageResponse<AdminUserOverviewApiResponseDto>>> {
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminUserOverviewApiResponseDto>>> {
         val response = userAdminService.getUserOverviews(request.toAppRequest()).let { response ->
-            PageResponse(
+            OffsetPageResponse(
                 data = response.data.map { AdminUserOverviewApiResponseDto(it) },
                 totalCount = response.totalCount,
                 page = request.page,

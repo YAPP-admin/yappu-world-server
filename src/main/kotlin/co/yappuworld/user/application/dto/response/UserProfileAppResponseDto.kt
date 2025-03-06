@@ -16,13 +16,12 @@ data class UserProfileAppResponseDto(
         fun of(
             user: User,
             activityUnits: List<ActivityUnit>
-        ): UserProfileAppResponseDto {
-            return UserProfileAppResponseDto(
+        ): UserProfileAppResponseDto =
+            UserProfileAppResponseDto(
                 user.id,
                 user.name,
                 user.role,
                 activityUnits.map { ActivityUnitAppResponseDto(it) }
             )
-        }
     }
 }

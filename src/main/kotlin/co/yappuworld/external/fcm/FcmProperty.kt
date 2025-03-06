@@ -32,9 +32,8 @@ data class FcmProperty(
     val universeDomain: String
 ) {
 
-    fun toInputStream(): InputStream {
-        return jacksonObjectMapper()
+    fun toInputStream(): InputStream =
+        jacksonObjectMapper()
             .writeValueAsString(this)
             .byteInputStream(StandardCharsets.UTF_8)
-    }
 }

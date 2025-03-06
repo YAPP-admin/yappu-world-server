@@ -19,8 +19,8 @@ data class UserProfileApiResponseDto(
 ) {
 
     companion object {
-        fun of(response: UserProfileAppResponseDto): UserProfileApiResponseDto {
-            return UserProfileApiResponseDto(
+        fun of(response: UserProfileAppResponseDto): UserProfileApiResponseDto =
+            UserProfileApiResponseDto(
                 response.id,
                 response.name,
                 response.role.label,
@@ -28,6 +28,5 @@ data class UserProfileApiResponseDto(
                     .map { ActivityUnitApiResponseDto(it) }
                     .sortedByDescending { it.generation }
             )
-        }
     }
 }

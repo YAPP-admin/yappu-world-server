@@ -15,10 +15,9 @@ data class LoginApiRequestDto(
     @field:Length(min = 8, max = 20, message = "올바르지 않은 비밀번호입니다.")
     val password: String
 ) {
-    fun toAppRequest(): LoginAppRequestDto {
-        return LoginAppRequestDto(
+    fun toAppRequest(): LoginAppRequestDto =
+        LoginAppRequestDto(
             this.email,
             this.password
         )
-    }
 }

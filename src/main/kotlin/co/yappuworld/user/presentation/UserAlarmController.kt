@@ -16,15 +16,14 @@ class UserAlarmController(
 
     override fun getAlarmStatus(
         securityUser: SecurityUser
-    ): ResponseEntity<SuccessResponse<UserAlarmStatusApiResponse>> {
-        return ResponseEntity.ok(
+    ): ResponseEntity<SuccessResponse<UserAlarmStatusApiResponse>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 UserAlarmStatusApiResponse.of(
                     userAlarmService.getAlarmStatus(securityUser.userId)
                 )
             )
         )
-    }
 
     override fun updateDeviceAlarm(
         securityUser: SecurityUser,
@@ -36,13 +35,12 @@ class UserAlarmController(
 
     override fun toggleMasterAlarm(
         securityUser: SecurityUser
-    ): ResponseEntity<SuccessResponse<MasterAlarmToggleApiResponse>> {
-        return ResponseEntity.ok(
+    ): ResponseEntity<SuccessResponse<MasterAlarmToggleApiResponse>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 MasterAlarmToggleApiResponse.of(
                     userAlarmService.toggleMasterAlarm(securityUser.userId)
                 )
             )
         )
-    }
 }

@@ -31,8 +31,8 @@ data class ScheduleCreateApiRequestDto(
     var type: ScheduleType
 ) {
 
-    fun toAppRequest(): ScheduleCreateAppRequestDto {
-        return ScheduleCreateAppRequestDto(
+    fun toAppRequest(): ScheduleCreateAppRequestDto =
+        ScheduleCreateAppRequestDto(
             name = this.name,
             description = this.description,
             place = this.place,
@@ -43,5 +43,4 @@ data class ScheduleCreateApiRequestDto(
             generation = this.generation,
             type = this.type
         )
-    }
 }

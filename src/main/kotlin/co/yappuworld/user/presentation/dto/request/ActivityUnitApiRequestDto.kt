@@ -15,7 +15,5 @@ data class ActivityUnitApiRequestDto(
     @field:NotEmpty(message = "직군은 필수로 입력해야 합니다.")
     val position: Position
 ) {
-    fun toAppRequest(): ActivityUnitAppRequestDto {
-        return ActivityUnitAppRequestDto(generation, position)
-    }
+    fun toAppRequest(): ActivityUnitAppRequestDto = ActivityUnitAppRequestDto(generation, position)
 }

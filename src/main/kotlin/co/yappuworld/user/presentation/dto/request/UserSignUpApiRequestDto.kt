@@ -32,8 +32,8 @@ data class UserSignUpApiRequestDto(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toAppRequest(): UserSignUpAppRequestDto {
-        return UserSignUpAppRequestDto(
+    fun toAppRequest(): UserSignUpAppRequestDto =
+        UserSignUpAppRequestDto(
             this.email,
             EncryptUtils.encrypt(this.password),
             this.name,
@@ -42,5 +42,4 @@ data class UserSignUpApiRequestDto(
             this.fcmToken,
             this.deviceAlarmToggle
         )
-    }
 }

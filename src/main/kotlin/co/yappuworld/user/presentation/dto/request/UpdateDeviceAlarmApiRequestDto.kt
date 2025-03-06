@@ -7,7 +7,5 @@ data class UpdateDeviceAlarmApiRequestDto(
     @Schema(description = "기기 알림 설정 정보 (On: T / Off: F)")
     val deviceToggle: Boolean
 ) {
-    fun toAppRequest(): UpdateDeviceAlarmAppRequestDto {
-        return UpdateDeviceAlarmAppRequestDto(deviceToggle)
-    }
+    fun toAppRequest(): UpdateDeviceAlarmAppRequestDto = UpdateDeviceAlarmAppRequestDto(deviceToggle)
 }

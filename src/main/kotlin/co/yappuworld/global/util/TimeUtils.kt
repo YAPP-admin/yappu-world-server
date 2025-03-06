@@ -6,11 +6,7 @@ import java.time.ZonedDateTime
 
 object TimeUtils {
 
-    fun getCurrentZonedTimeInKST(): ZonedDateTime {
-        return ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
-    }
+    fun getCurrentZonedTimeInKST(): ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
 
-    fun getCurrentDateTimeInKST(): LocalDateTime {
-        return getCurrentZonedTimeInKST().toLocalDateTime()
-    }
+    fun getCurrentDateTimeInKST(): LocalDateTime = getCurrentZonedTimeInKST().toLocalDateTime()
 }

@@ -6,10 +6,9 @@ data class UserAlarmStatusAppResponse(
     val isMasterEnabled: Boolean
 ) {
     companion object {
-        fun of(setting: UserAlarmSetting): UserAlarmStatusAppResponse {
-            return UserAlarmStatusAppResponse(
+        fun of(setting: UserAlarmSetting): UserAlarmStatusAppResponse =
+            UserAlarmStatusAppResponse(
                 isMasterEnabled = setting.master
             )
-        }
     }
 }

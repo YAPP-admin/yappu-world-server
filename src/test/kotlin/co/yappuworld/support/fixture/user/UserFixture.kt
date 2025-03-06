@@ -24,9 +24,8 @@ object UserFixture {
         role = role
     )
 
-    fun getSignUpApplicationFixture(details: ApplicationDetails = getApplicationDetailsFixture()): SignUpApplication {
-        return SignUpApplication(details)
-    }
+    fun getSignUpApplicationFixture(details: ApplicationDetails = getApplicationDetailsFixture()): SignUpApplication =
+        SignUpApplication(details)
 
     fun getApplicationDetailsFixture(
         email: String = "email@email.com",
@@ -35,8 +34,8 @@ object UserFixture {
         activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams(),
         fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1",
         masterAlarmToggle: Boolean = true
-    ): ApplicationDetails {
-        return ApplicationDetails(
+    ): ApplicationDetails =
+        ApplicationDetails(
             email,
             password,
             name,
@@ -44,33 +43,27 @@ object UserFixture {
             fcmToken,
             masterAlarmToggle
         )
-    }
 
     fun getActivityUnitParams(
         vararg activityUnitParams: ActivityUnitParam = arrayOf(
             ActivityUnitParam(1, Position.PM)
         )
-    ): List<ActivityUnitParam> {
-        return activityUnitParams.toList()
-    }
+    ): List<ActivityUnitParam> = activityUnitParams.toList()
 
     fun getActivityUnit(
         generation: Int = 25,
         position: Position = Position.SERVER,
         userId: UUID = UUID.randomUUID()
-    ): ActivityUnit {
-        return ActivityUnit(
+    ): ActivityUnit =
+        ActivityUnit(
             generation = generation,
             position = position,
             userId = userId
         )
-    }
 
     fun getActivityUnits(
         vararg activityUnits: ActivityUnit = arrayOf(
             ActivityUnit(1, Position.PM, UlidCreator.getMonotonicUlid().toUuid())
         )
-    ): List<ActivityUnit> {
-        return activityUnits.toList()
-    }
+    ): List<ActivityUnit> = activityUnits.toList()
 }

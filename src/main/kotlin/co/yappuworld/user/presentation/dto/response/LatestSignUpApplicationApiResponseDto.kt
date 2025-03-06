@@ -14,11 +14,10 @@ data class LatestSignUpApplicationApiResponseDto(
     val rejectReason: String?
 ) {
     companion object {
-        fun of(response: LatestSignUpApplicationAppResponseDto): LatestSignUpApplicationApiResponseDto {
-            return LatestSignUpApplicationApiResponseDto(
+        fun of(response: LatestSignUpApplicationAppResponseDto): LatestSignUpApplicationApiResponseDto =
+            LatestSignUpApplicationApiResponseDto(
                 response.status,
                 response.rejectReason
             )
-        }
     }
 }

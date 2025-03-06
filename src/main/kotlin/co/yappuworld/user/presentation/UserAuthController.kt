@@ -60,15 +60,14 @@ class UserAuthController(
 
     override fun findLatestSignUpApplication(
         request: LatestSignUpApplicationApiRequestDto
-    ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>> {
-        return ResponseEntity.ok(
+    ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 LatestSignUpApplicationApiResponseDto.of(
                     signUpService.findLatestSignUpApplication(request.toAppRequest())
                 )
             )
         )
-    }
 
     override fun withdrawUser(securityUser: SecurityUser): ResponseEntity<Unit> {
         userAuthService.withdrawUser(securityUser.userId)

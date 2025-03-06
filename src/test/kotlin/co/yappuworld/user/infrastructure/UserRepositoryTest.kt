@@ -22,6 +22,7 @@ class UserRepositoryTest {
     @Test
     @Transactional
     fun `유저가 없으면 빈 배열이 반환된다`() {
+        userRepository.deleteAll()
         assertThat(userRepository.findUsersWithActivityUnit(10, 0)).isEmpty()
     }
 

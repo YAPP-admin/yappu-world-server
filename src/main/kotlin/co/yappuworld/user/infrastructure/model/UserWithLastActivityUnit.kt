@@ -10,7 +10,7 @@ import java.util.UUID
  * 읽기 전용입니다.
  * created_at과 updated_at을 초기화 하지 않아서, 저장에 사용하면 예외 발생합니다.
  */
-data class UserWithLastActivityUnit private constructor(
+data class UserWithLastActivityUnit(
     val userId: UUID,
     val email: String,
     val name: String,

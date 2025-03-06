@@ -5,8 +5,6 @@ data class DiscordMessage(
     val embeds: List<DiscordEmbed>? = null
 ) {
     companion object {
-        fun of(embed: DiscordEmbed): DiscordMessage {
-            return DiscordMessage(embeds = listOf(embed))
-        }
+        fun of(embed: DiscordEmbed): DiscordMessage = DiscordMessage(embeds = listOf(embed))
     }
 }

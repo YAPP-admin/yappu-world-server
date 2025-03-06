@@ -1,6 +1,6 @@
 package co.yappuworld.user.presentation
 
-import co.yappuworld.global.response.PageResponse
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
 import co.yappuworld.user.presentation.dto.request.AdminUserUpdateApiRequestDto
@@ -142,7 +142,7 @@ interface UserAdminApi {
     @GetMapping("/admin/v1/users")
     fun getUsers(
         @Valid @ParameterObject request: AdminUserPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<PageResponse<AdminUserOverviewApiResponseDto>>>
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminUserOverviewApiResponseDto>>>
 
     @Operation(
         summary = "유저 정보 변경",

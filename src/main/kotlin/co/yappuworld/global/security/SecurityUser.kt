@@ -26,8 +26,6 @@ class SecurityUser(
             )
         }
 
-        fun from(user: User): SecurityUser {
-            return SecurityUser(user.id, user.role)
-        }
+        fun from(user: User): SecurityUser = SecurityUser(user.id, user.role)
     }
 }

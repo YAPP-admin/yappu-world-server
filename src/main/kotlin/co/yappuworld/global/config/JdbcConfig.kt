@@ -11,12 +11,12 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 
 @Configuration
-@EnableJdbcRepositories(basePackages = ["co.yappuworld.**.infrastructure"])
 @EnableJdbcAuditing
+@EnableJdbcRepositories(basePackages = ["co.yappuworld.**.infrastructure"])
 class JdbcConfig : AbstractJdbcConfiguration() {
 
-    override fun jdbcCustomConversions(): JdbcCustomConversions {
-        return JdbcCustomConversions(
+    override fun jdbcCustomConversions(): JdbcCustomConversions =
+        JdbcCustomConversions(
             listOf(
                 UuidIdentifierWritingConverter(),
                 UuidIdentifierReadingConverter(),
@@ -24,5 +24,4 @@ class JdbcConfig : AbstractJdbcConfiguration() {
                 UserApplicationReadingConverter()
             )
         )
-    }
 }
