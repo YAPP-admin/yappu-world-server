@@ -1,6 +1,6 @@
 package co.yappuworld.user.presentation
 
-import co.yappuworld.global.response.PageResponse
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
@@ -37,11 +37,11 @@ class UserAuthAdminController(
 
     override fun getSignUpApplications(
         request: AdminSignUpApplicationPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<PageResponse<AdminSignUpApplicationOverviewApiResponseDto>>> {
-        return userAdminService.getSignUpApplications(request.toAppRequest()).let {
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewApiResponseDto>>> =
+        userAdminService.getSignUpApplications(request.toAppRequest()).let {
             ResponseEntity.ok(
                 SuccessResponse(
-                    PageResponse(
+                    OffsetPageResponse(
                         data = it.data.map { d -> AdminSignUpApplicationOverviewApiResponseDto(d) },
                         totalCount = it.totalCount,
                         page = request.page,
@@ -50,17 +50,15 @@ class UserAuthAdminController(
                 )
             )
         }
-    }
 
     override fun getSignUpApplication(
         applicationId: UUID
-    ): ResponseEntity<SuccessResponse<AdminSignUpApplicationApiResponseDto>> {
-        return ResponseEntity.ok(
+    ): ResponseEntity<SuccessResponse<AdminSignUpApplicationApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 AdminSignUpApplicationApiResponseDto(
                     userAdminService.getSignUpApplicationDetails(applicationId)
                 )
             )
         )
-    }
 }

@@ -10,23 +10,17 @@ import java.util.UUID
 
 @WritingConverter
 class UuidIdentifierWritingConverter : Converter<UUID, String> {
-    override fun convert(source: UUID): String {
-        return source.toString()
-    }
+    override fun convert(source: UUID): String = source.toString()
 }
 
 @ReadingConverter
 class UuidIdentifierReadingConverter : Converter<String, UUID> {
-    override fun convert(source: String): UUID {
-        return UUID.fromString(source)
-    }
+    override fun convert(source: String): UUID = UUID.fromString(source)
 }
 
 @WritingConverter
 class UserApplicationWritingConverter : Converter<ApplicationDetails, String> {
-    override fun convert(source: ApplicationDetails): String {
-        return ObjectMapper().writeValueAsString(source)
-    }
+    override fun convert(source: ApplicationDetails): String = ObjectMapper().writeValueAsString(source)
 }
 
 @ReadingConverter

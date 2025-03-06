@@ -17,12 +17,21 @@ interface UserRepository : CrudRepository<User, UUID> {
 
     @Query(
         """
-            SELECT u.*, ra.*, u.id user_id, ra.id activity_unit_id 
+            SELECT 
+                u.id AS user_id, 
+                u.email, 
+                u.name, 
+                u.role, 
+                u.is_active, 
+                u.created_at, 
+                la.generation, 
+                la.position, 
+                la.id AS activity_unit_id
             FROM users u
             INNER JOIN (
                 SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
                 FROM activity_units
-            ) ra ON u.id = ra.user_id AND ra.rn = 1
+            ) la ON u.id = la.user_id AND la.rn = 1
             ORDER BY u.id ASC
             LIMIT :limit OFFSET :offset;
         """
@@ -30,5 +39,29 @@ interface UserRepository : CrudRepository<User, UUID> {
     fun findUsersWithActivityUnit(
         @Param("limit") limit: Int,
         @Param("offset") offset: Int
+    ): List<UserWithLastActivityUnit>
+
+    @Query(
+        """
+            SELECT 
+                u.id AS user_id, 
+                u.email, 
+                u.name, 
+                u.role, 
+                u.is_active, 
+                u.created_at, 
+                la.generation, 
+                la.position, 
+                la.id AS activity_unit_id
+            FROM users u
+            INNER JOIN (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
+                FROM activity_units
+            ) la ON u.id = la.user_id AND la.rn = 1
+            WHERE u.id in (:#{#userIds});
+        """
+    )
+    fun findUsersWithActivityUnit(
+        @Param("userIds") userIds: Collection<String>
     ): List<UserWithLastActivityUnit>
 }

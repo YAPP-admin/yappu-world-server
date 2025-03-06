@@ -10,10 +10,9 @@ data class SignUpApplicationRejectApiRequestDto(
     @Schema(description = "거절 사유")
     val reason: String
 ) {
-    fun toAppRequest(): SignUpApplicationRejectAppRequestDto {
-        return SignUpApplicationRejectAppRequestDto(
+    fun toAppRequest(): SignUpApplicationRejectAppRequestDto =
+        SignUpApplicationRejectAppRequestDto(
             applicationId,
             reason
         )
-    }
 }

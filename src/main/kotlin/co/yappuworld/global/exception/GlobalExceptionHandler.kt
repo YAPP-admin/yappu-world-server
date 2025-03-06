@@ -60,19 +60,17 @@ class GlobalExceptionHandler {
         return getInternalServerErrorResponse()
     }
 
-    private fun getHttpStatusBy(errorType: ErrorType): HttpStatus {
-        return when (errorType) {
+    private fun getHttpStatusBy(errorType: ErrorType): HttpStatus =
+        when (errorType) {
             ErrorType.WRONG_ARGUMENT -> HttpStatus.BAD_REQUEST
             ErrorType.UNAUTHORIZED -> HttpStatus.UNAUTHORIZED
             ErrorType.NOT_FOUND -> HttpStatus.NOT_FOUND
             ErrorType.WRONG_STATE -> HttpStatus.CONFLICT
             ErrorType.UNEXPECTED_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR
         }
-    }
 
-    private fun getInternalServerErrorResponse(): ResponseEntity<ErrorResponse> {
-        return ResponseEntity
+    private fun getInternalServerErrorResponse(): ResponseEntity<ErrorResponse> =
+        ResponseEntity
             .internalServerError()
             .body(ErrorResponse.of(GlobalError.INTERNAL_SERVER_ERROR))
-    }
 }

@@ -22,9 +22,8 @@ class UserAlarmService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getAlarmStatus(userId: UUID): UserAlarmStatusAppResponse {
-        return UserAlarmStatusAppResponse.of(getUserAlarmSetting(userId))
-    }
+    fun getAlarmStatus(userId: UUID): UserAlarmStatusAppResponse =
+        UserAlarmStatusAppResponse.of(getUserAlarmSetting(userId))
 
     @Transactional
     fun updateDeviceAlarm(
@@ -49,17 +48,17 @@ class UserAlarmService(
         userId: UUID,
         fcmToken: String
     ) {
-        userDeviceRepository.findUserDeviceOrNullByUserId(userId)
+        userDeviceRepository
+            .findUserDeviceOrNullByUserId(userId)
             ?.apply { updateFcmToken(fcmToken) }
             ?.also { userDeviceRepository.save(it) }
             ?: throw BusinessException(UserError.USER_RELATED_DATA_NOT_FOUND)
     }
 
-    private fun getUserAlarmSetting(userId: UUID): UserAlarmSetting {
-        return userAlarmSettingRepository.findUserAlarmSettingOrNullByUserId(userId)
+    private fun getUserAlarmSetting(userId: UUID): UserAlarmSetting =
+        userAlarmSettingRepository.findUserAlarmSettingOrNullByUserId(userId)
             ?: run {
                 logger.error { "${userId}의 알람 데이터가 존재하지 않습니다. 데이터를 확인하세요" }
                 throw BusinessException(UserError.USER_RELATED_DATA_NOT_FOUND)
             }
-    }
 }

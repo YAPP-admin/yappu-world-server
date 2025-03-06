@@ -48,11 +48,11 @@ class JwtFilter(
         }
     }
 
-    private fun extractAccessTokenOrNull(request: HttpServletRequest): String? {
-        return request.getHeader("Authorization")
+    private fun extractAccessTokenOrNull(request: HttpServletRequest): String? =
+        request
+            .getHeader("Authorization")
             ?.takeIf { it.startsWith("Bearer") }
             ?.replace("Bearer ", "")
-    }
 
     private fun saveSecurityUserOnContextHolder(securityUser: SecurityUser) {
         SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
@@ -77,13 +77,14 @@ class JwtFilter(
         response.characterEncoding = "UTF-8"
         response.status = HttpStatus.UNAUTHORIZED.value()
 
-        ErrorResponse.of(
-            message = error.message,
-            errorCode = error.code
-        ).let {
-            response.writer.write(
-                jacksonObjectMapper().writeValueAsString(it)
-            )
-        }
+        ErrorResponse
+            .of(
+                message = error.message,
+                errorCode = error.code
+            ).let {
+                response.writer.write(
+                    jacksonObjectMapper().writeValueAsString(it)
+                )
+            }
     }
 }

@@ -83,7 +83,8 @@ class UserAuthServiceTest {
 
         assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)
-            .message().isEqualTo(UserError.UNPROCESSED_APPLICATION_EXISTS.message)
+            .message()
+            .isEqualTo(UserError.UNPROCESSED_APPLICATION_EXISTS.message)
     }
 
     @Test
@@ -93,7 +94,8 @@ class UserAuthServiceTest {
 
         assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)
-            .message().isEqualTo(UserError.ALREADY_SIGNED_UP_EMAIL.message)
+            .message()
+            .isEqualTo(UserError.ALREADY_SIGNED_UP_EMAIL.message)
     }
 
     @Test
@@ -103,12 +105,14 @@ class UserAuthServiceTest {
         every { userRepository.findByIdOrNull(any()) } returns user
         val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
 
-        val reissuedToken = jwtGenerator.generateToken(SecurityUser.from(user), now)
-            .run {
-                userAuthService.reissueToken(
-                    ReissueTokenAppRequestDto(accessToken, refreshToken!!, now.plusHours(1L).minusNanos(1L))
-                )
-            }
+        val reissuedToken =
+            jwtGenerator
+                .generateToken(SecurityUser.from(user), now)
+                .run {
+                    userAuthService.reissueToken(
+                        ReissueTokenAppRequestDto(accessToken, refreshToken!!, now.plusHours(1L).minusNanos(1L))
+                    )
+                }
 
         assertDoesNotThrow {
             checkNotNull(jwtResolver.extractSecurityUserOrNull(reissuedToken.accessToken))
@@ -122,11 +126,13 @@ class UserAuthServiceTest {
         every { userRepository.findByIdOrNull(any()) } returns user
         val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
 
-        val token = jwtGenerator.generateToken(SecurityUser.from(user), now.minusHours(1L))
-            .apply {
-                assertThatThrownBy { jwtResolver.extractSecurityUserOrNull(this.accessToken) }
-                    .isInstanceOf(ExpiredJwtException::class.java)
-            }
+        val token =
+            jwtGenerator
+                .generateToken(SecurityUser.from(user), now.minusHours(1L))
+                .apply {
+                    assertThatThrownBy { jwtResolver.extractSecurityUserOrNull(this.accessToken) }
+                        .isInstanceOf(ExpiredJwtException::class.java)
+                }
 
         val reissuedToken = userAuthService.reissueToken(
             ReissueTokenAppRequestDto(token.accessToken, token.refreshToken!!, now)

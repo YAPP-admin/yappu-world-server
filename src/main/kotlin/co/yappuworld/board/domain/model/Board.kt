@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Embedded
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
-@Table(name = "board")
+@Table(name = "boards")
 data class Board(
     @Id
     @JvmField

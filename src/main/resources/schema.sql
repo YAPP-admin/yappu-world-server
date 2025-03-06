@@ -84,8 +84,8 @@ CREATE TABLE schedules
     type        varchar(32) NOT NULL
 );
 
-DROP TABLE IF EXISTS board;
-CREATE TABLE board
+DROP TABLE IF EXISTS boards;
+CREATE TABLE boards
 (
     id             varchar(36) PRIMARY KEY,
     created_at     datetime,

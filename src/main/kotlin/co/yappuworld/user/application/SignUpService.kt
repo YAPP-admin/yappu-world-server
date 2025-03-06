@@ -83,10 +83,11 @@ class SignUpService(
     fun findLatestSignUpApplication(
         request: LatestSignUpApplicationAppRequestDto
     ): LatestSignUpApplicationAppResponseDto {
-        val signUpApplication = signUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
-            request.email,
-            Limit.of(1)
-        )?.apply { checkPassword(request.password) }
+        val signUpApplication = signUpApplicationRepository
+            .findByApplicantEmailOrderByUpdatedAtDesc(
+                request.email,
+                Limit.of(1)
+            )?.apply { checkPassword(request.password) }
             ?: throw BusinessException(UserError.NO_SIGN_UP_APPLICATION)
 
         return LatestSignUpApplicationAppResponseDto.of(signUpApplication)
@@ -106,7 +107,8 @@ class SignUpService(
 
     @Transactional
     fun rejectSignUpApplication(request: SignUpApplicationRejectAppRequestDto) {
-        val application = signUpApplicationRepository.findByIdOrNull(request.applicationId)
+        val application = signUpApplicationRepository
+            .findByIdOrNull(request.applicationId)
             ?.apply { reject(request.reason) }
             ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
 

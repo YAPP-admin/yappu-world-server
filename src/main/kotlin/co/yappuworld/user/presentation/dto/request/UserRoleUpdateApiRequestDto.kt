@@ -15,10 +15,9 @@ data class UserRoleUpdateApiRequestDto(
     val role: UserRole
 ) {
 
-    fun toAppRequest(): UserRoleUpdateAppRequestDto {
-        return UserRoleUpdateAppRequestDto(
+    fun toAppRequest(): UserRoleUpdateAppRequestDto =
+        UserRoleUpdateAppRequestDto(
             userId = userId,
             role = role
         )
-    }
 }

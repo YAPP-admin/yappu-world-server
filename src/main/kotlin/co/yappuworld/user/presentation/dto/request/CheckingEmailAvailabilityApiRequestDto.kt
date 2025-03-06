@@ -9,7 +9,5 @@ data class CheckingEmailAvailabilityApiRequestDto(
     @field:NotEmpty(message = "이메일은 필수로 입력해야 합니다.")
     val email: String
 ) {
-    fun toAppRequest(): CheckingEmailAvailabilityAppRequestDto {
-        return CheckingEmailAvailabilityAppRequestDto(this.email)
-    }
+    fun toAppRequest(): CheckingEmailAvailabilityAppRequestDto = CheckingEmailAvailabilityAppRequestDto(this.email)
 }

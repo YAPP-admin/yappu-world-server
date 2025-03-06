@@ -9,8 +9,7 @@ data class MasterAlarmToggleApiResponse(
 ) {
 
     companion object {
-        fun of(response: MasterAlarmToggleAppResponse): MasterAlarmToggleApiResponse {
-            return MasterAlarmToggleApiResponse(response.isEnabled)
-        }
+        fun of(response: MasterAlarmToggleAppResponse): MasterAlarmToggleApiResponse =
+            MasterAlarmToggleApiResponse(response.isEnabled)
     }
 }

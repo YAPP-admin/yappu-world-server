@@ -7,10 +7,9 @@ data class ActivityUnitAppRequestDto(
     val generation: Int,
     val position: Position
 ) {
-    fun toActivityUnitParam(): ActivityUnitParam {
-        return ActivityUnitParam(
+    fun toActivityUnitParam(): ActivityUnitParam =
+        ActivityUnitParam(
             this.generation,
             this.position
         )
-    }
 }

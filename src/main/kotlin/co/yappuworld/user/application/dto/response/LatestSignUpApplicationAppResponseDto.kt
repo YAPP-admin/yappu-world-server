@@ -8,11 +8,10 @@ data class LatestSignUpApplicationAppResponseDto(
     val rejectReason: String?
 ) {
     companion object {
-        fun of(application: SignUpApplication): LatestSignUpApplicationAppResponseDto {
-            return LatestSignUpApplicationAppResponseDto(
+        fun of(application: SignUpApplication): LatestSignUpApplicationAppResponseDto =
+            LatestSignUpApplicationAppResponseDto(
                 application.status,
                 application.rejectReason
             )
-        }
     }
 }

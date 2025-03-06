@@ -14,24 +14,19 @@ class UserDevice private constructor(
     @Id
     @JvmField
     val id: UUID
-) : BaseEntity(), Persistable<UUID> {
+) : BaseEntity(),
+    Persistable<UUID> {
 
     var fcmToken: String? = fcmToken
         private set
 
     constructor(userId: UUID, fcmToken: String) : this(userId, fcmToken, UlidCreator.getMonotonicUlid().toUuid())
 
-    fun withId(id: UUID): UserDevice {
-        return UserDevice(this.userId, this.fcmToken, id)
-    }
+    fun withId(id: UUID): UserDevice = UserDevice(this.userId, this.fcmToken, id)
 
-    override fun getId(): UUID {
-        return this.id
-    }
+    override fun getId(): UUID = this.id
 
-    override fun isNew(): Boolean {
-        return !isCreatedAtInitialized()
-    }
+    override fun isNew(): Boolean = !isCreatedAtInitialized()
 
     fun updateFcmToken(fcmToken: String) {
         this.fcmToken = fcmToken

@@ -20,7 +20,8 @@ class SignUpApplication private constructor(
     val details: ApplicationDetails,
     status: SignUpApplicationStatus,
     rejectReason: String?
-) : BaseEntity(), Persistable<UUID> {
+) : BaseEntity(),
+    Persistable<UUID> {
 
     var status: SignUpApplicationStatus = status
         private set
@@ -44,9 +45,7 @@ class SignUpApplication private constructor(
         this.rejectReason = reason
     }
 
-    fun toUser(role: UserRole): User {
-        return this.details.toUser(role)
-    }
+    fun toUser(role: UserRole): User = this.details.toUser(role)
 
     fun checkPassword(password: String) {
         if (details.password != password) {
@@ -54,25 +53,16 @@ class SignUpApplication private constructor(
         }
     }
 
-    override fun getId(): UUID {
-        return this.id
-    }
+    override fun getId(): UUID = this.id
 
-    override fun isNew(): Boolean {
-        return !isCreatedAtInitialized()
-    }
+    override fun isNew(): Boolean = !isCreatedAtInitialized()
 
-    fun toActivityUnits(userId: UUID): List<ActivityUnit> {
-        return this.details.activityUnits.map {
+    fun toActivityUnits(userId: UUID): List<ActivityUnit> =
+        this.details.activityUnits.map {
             it.toActivityUnit(userId)
         }
-    }
 
-    fun getFcmToken(): String {
-        return details.fcmToken
-    }
+    fun getFcmToken(): String = details.fcmToken
 
-    fun getDeviceAlarmToggle(): Boolean {
-        return this.details.deviceAlarmToggle
-    }
+    fun getDeviceAlarmToggle(): Boolean = this.details.deviceAlarmToggle
 }

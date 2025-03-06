@@ -1,7 +1,7 @@
 package co.yappuworld.user.presentation
 
 import co.yappuworld.global.response.ErrorResponse
-import co.yappuworld.global.response.PageResponse
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
@@ -164,7 +164,7 @@ interface UserAuthAdminApi {
     @GetMapping("/admin/v1/auth/applications")
     fun getSignUpApplications(
         @Valid @ParameterObject request: AdminSignUpApplicationPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<PageResponse<AdminSignUpApplicationOverviewApiResponseDto>>>
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewApiResponseDto>>>
 
     @Operation(summary = "회원가입 신청서 상세")
     @ApiResponses(

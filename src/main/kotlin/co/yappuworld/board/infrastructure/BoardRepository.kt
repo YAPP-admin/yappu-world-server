@@ -1,18 +1,19 @@
 package co.yappuworld.board.infrastructure
 
 import co.yappuworld.board.domain.model.Board
-import java.time.LocalDateTime
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Repository
 interface BoardRepository :
     CrudRepository<Board, UUID>,
     PagingAndSortingRepository<Board, UUID> {
+
     fun findBoardByIdAndIsActiveTrue(id: UUID): Board?
 
     fun findAllByIsActiveTrueOrderByCreatedAtDesc(pageable: Pageable): Page<Board>

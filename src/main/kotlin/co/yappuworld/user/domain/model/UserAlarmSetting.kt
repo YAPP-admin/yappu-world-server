@@ -15,7 +15,8 @@ class UserAlarmSetting private constructor(
     @Id
     @JvmField
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
-) : BaseEntity(), Persistable<UUID> {
+) : BaseEntity(),
+    Persistable<UUID> {
 
     var device: Boolean = device
         private set
@@ -29,17 +30,11 @@ class UserAlarmSetting private constructor(
         id = UlidCreator.getMonotonicUlid().toUuid()
     )
 
-    fun withId(id: UUID): UserAlarmSetting {
-        return UserAlarmSetting(this.userId, this.device, this.master, id)
-    }
+    fun withId(id: UUID): UserAlarmSetting = UserAlarmSetting(this.userId, this.device, this.master, id)
 
-    override fun getId(): UUID {
-        return this.id
-    }
+    override fun getId(): UUID = this.id
 
-    override fun isNew(): Boolean {
-        return !this.isCreatedAtInitialized()
-    }
+    override fun isNew(): Boolean = !this.isCreatedAtInitialized()
 
     fun toggleMaster() {
         this.master = !this.master

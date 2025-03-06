@@ -22,7 +22,8 @@ class FcmClient(
     ) {
         try {
             firebaseMessaging.send(
-                Message.builder()
+                Message
+                    .builder()
                     .setToken(token)
                     .setNotification(notification)
                     .build()
@@ -50,7 +51,8 @@ class FcmClient(
 
         try {
             val responses = firebaseMessaging.sendEachForMulticast(
-                MulticastMessage.builder()
+                MulticastMessage
+                    .builder()
                     .addAllTokens(tokens)
                     .setNotification(notification)
                     .build()
@@ -76,10 +78,9 @@ class FcmClient(
         }
     }
 
-    private fun getCountByErrorCode(response: BatchResponse): Map<String, Int> {
-        return response.responses
+    private fun getCountByErrorCode(response: BatchResponse): Map<String, Int> =
+        response.responses
             .filter { !it.isSuccessful }
             .groupingBy { it.exception.messagingErrorCode.name }
             .eachCount()
-    }
 }

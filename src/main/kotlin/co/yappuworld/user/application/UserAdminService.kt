@@ -81,11 +81,10 @@ class UserAdminService(
 
     fun getSignUpApplications(
         request: AdminSignUpApplicationPageAppRequestDto
-    ): AdminSignUpApplicationBundleAppResponse {
-        return userSignUpApplicationRepository.findAll(request.toPageRequest()).let {
+    ): AdminSignUpApplicationBundleAppResponse =
+        userSignUpApplicationRepository.findAll(request.toPageRequest()).let {
             AdminSignUpApplicationBundleAppResponse(it)
         }
-    }
 
     private fun updateUser(request: AdminUserUpdateAppRequestDto) {
         val user = userRepository.findByIdOrNull(request.userId)
@@ -99,7 +98,8 @@ class UserAdminService(
         userId: UUID,
         requests: List<AdminActivityUnitUpdateAppRequestDto>
     ) {
-        requests.partition { it.id == null }
+        requests
+            .partition { it.id == null }
             .let { (toCreate, toUpdateOrDelete) ->
                 toUpdateOrDelete.ifNotEmpty { updateOrDeleteActivityUnit(userId, it) }
                 toCreate.ifNotEmpty {
@@ -116,11 +116,13 @@ class UserAdminService(
         userId: UUID,
         requests: List<AdminActivityUnitUpdateAppRequestDto>
     ) {
-        val activityUnits = activityUnitRepository.findAllByUserId(userId)
+        val activityUnits = activityUnitRepository
+            .findAllByUserId(userId)
             .ifEmpty { return }
 
         val requestById = requests.associateBy { it.id }
-        activityUnits.partition { it.id in requestById.keys }
+        activityUnits
+            .partition { it.id in requestById.keys }
             .let { (toUpdate, toDelete) ->
                 toDelete.ifNotEmpty { units -> activityUnitRepository.deleteAllById(units.map { it.id }) }
                 toUpdate.ifNotEmpty { units ->

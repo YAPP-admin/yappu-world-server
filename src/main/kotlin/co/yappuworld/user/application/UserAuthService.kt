@@ -35,7 +35,8 @@ class UserAuthService(
         request: LoginAppRequestDto,
         now: LocalDateTime
     ): Token {
-        val user = userRepository.findUserOrNullByEmail(request.email)
+        val user = userRepository
+            .findUserOrNullByEmail(request.email)
             ?.apply { this.checkLoginAvailability(request.password) }
             ?: processLoginException(request.email)
 
@@ -57,7 +58,8 @@ class UserAuthService(
 
     @Transactional
     fun withdrawUser(userId: UUID) {
-        userRepository.findByIdOrNull(userId)
+        userRepository
+            .findByIdOrNull(userId)
             ?.apply { withdraw() }
             ?.let(userRepository::save)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)

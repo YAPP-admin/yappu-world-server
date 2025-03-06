@@ -34,22 +34,17 @@ class Version(
         patch = splited[2].toInt()
     }
 
-    fun isBeforeThan(other: Version): Boolean {
-        return major < other.major ||
+    fun isBeforeThan(other: Version): Boolean =
+        major < other.major ||
             (major == other.major && minor < other.minor) ||
             (major == other.major && minor == other.minor && patch < other.patch)
-    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is Version) return false
         return major == other.major && minor == other.minor && patch == other.patch
     }
 
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
-    }
+    override fun hashCode(): Int = javaClass.hashCode()
 
-    override fun toString(): String {
-        return version
-    }
+    override fun toString(): String = version
 }

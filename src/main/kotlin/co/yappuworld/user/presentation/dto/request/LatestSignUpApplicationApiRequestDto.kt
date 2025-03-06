@@ -16,10 +16,9 @@ data class LatestSignUpApplicationApiRequestDto(
     val password: String
 ) {
 
-    fun toAppRequest(): LatestSignUpApplicationAppRequestDto {
-        return LatestSignUpApplicationAppRequestDto(
+    fun toAppRequest(): LatestSignUpApplicationAppRequestDto =
+        LatestSignUpApplicationAppRequestDto(
             this.email,
             this.password
         )
-    }
 }

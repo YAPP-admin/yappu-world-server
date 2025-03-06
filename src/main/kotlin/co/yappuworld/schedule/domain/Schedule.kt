@@ -10,13 +10,15 @@ import java.time.LocalTime
 import java.util.UUID
 
 @Table("schedules")
-abstract class Schedule : BaseEntity(), Persistable<UUID> {
+abstract class Schedule :
+    BaseEntity(),
+    Persistable<UUID> {
     @Id
     @JvmField
     protected var id: UUID = UlidCreator.getMonotonicUlid().toUuid()
     protected var isDeleted: Boolean = false
 
-    protected abstract var name: String
+    protected abstract val name: String
 
     protected abstract var description: String?
     protected abstract var place: String?
@@ -28,11 +30,7 @@ abstract class Schedule : BaseEntity(), Persistable<UUID> {
 
     protected abstract var type: ScheduleType
 
-    override fun getId(): UUID {
-        return this.id
-    }
+    override fun getId(): UUID = this.id
 
-    override fun isNew(): Boolean {
-        return !isCreatedAtInitialized()
-    }
+    override fun isNew(): Boolean = !isCreatedAtInitialized()
 }

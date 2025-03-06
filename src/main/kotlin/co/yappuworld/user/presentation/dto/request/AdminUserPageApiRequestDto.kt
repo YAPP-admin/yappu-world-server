@@ -13,10 +13,9 @@ data class AdminUserPageApiRequestDto(
     val size: Int
 ) {
 
-    fun toAppRequest(): AdminUserPageAppRequestDto {
-        return AdminUserPageAppRequestDto(
+    fun toAppRequest(): AdminUserPageAppRequestDto =
+        AdminUserPageAppRequestDto(
             offset = size * (page - 1),
             limit = size
         )
-    }
 }

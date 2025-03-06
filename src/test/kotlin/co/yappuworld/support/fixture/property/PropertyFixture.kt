@@ -8,11 +8,10 @@ object PropertyFixture {
         secretKey: String = "thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocal",
         accessTokenExpirationTimes: Int = 3600000,
         refreshTokenExpirationTimes: Int = 1209600000
-    ): JwtProperty {
-        return JwtProperty(
+    ): JwtProperty =
+        JwtProperty(
             secretKey,
             accessTokenExpirationTimes,
             refreshTokenExpirationTimes
         )
-    }
 }

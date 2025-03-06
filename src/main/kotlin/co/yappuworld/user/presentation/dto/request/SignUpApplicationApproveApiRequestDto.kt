@@ -11,10 +11,9 @@ data class SignUpApplicationApproveApiRequestDto(
     @Schema(description = "회원 역할")
     val role: UserRole
 ) {
-    fun toAppRequest(): SignUpApplicationApproveAppRequestDto {
-        return SignUpApplicationApproveAppRequestDto(
+    fun toAppRequest(): SignUpApplicationApproveAppRequestDto =
+        SignUpApplicationApproveAppRequestDto(
             applicationId,
             role
         )
-    }
 }

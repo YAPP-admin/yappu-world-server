@@ -20,15 +20,14 @@ class OperationController(
     private val configInquiryComponent: ConfigInquiryComponent
 ) : OperationApi {
 
-    override fun getPositions(): ResponseEntity<SuccessResponse<PositionsApiResponseDto>> {
-        return ResponseEntity.ok(
+    override fun getPositions(): ResponseEntity<SuccessResponse<PositionsApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 PositionsApiResponseDto(
                     Position.entries.map { PositionApiResponseDto(it) }
                 )
             )
         )
-    }
 
     override fun getForceUpdateInfo(
         version: Version,
@@ -61,33 +60,30 @@ class OperationController(
         )
     }
 
-    override fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> {
-        return ResponseEntity.ok(
+    override fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 OperationLinkApiResponseDto(
                     configInquiryComponent.findConfigBy("usageInquiryLink").value
                 )
             )
         )
-    }
 
-    override fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> {
-        return ResponseEntity.ok(
+    override fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 OperationLinkApiResponseDto(
                     configInquiryComponent.findConfigBy("termsOfServiceLink").value
                 )
             )
         )
-    }
 
-    override fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> {
-        return ResponseEntity.ok(
+    override fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkApiResponseDto>> =
+        ResponseEntity.ok(
             SuccessResponse(
                 OperationLinkApiResponseDto(
                     configInquiryComponent.findConfigBy("privacyPolicyLink").value
                 )
             )
         )
-    }
 }

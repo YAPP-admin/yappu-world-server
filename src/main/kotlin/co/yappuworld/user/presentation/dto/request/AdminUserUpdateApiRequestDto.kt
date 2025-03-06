@@ -23,12 +23,11 @@ data class AdminUserUpdateApiRequestDto(
     val activityUnits: List<AdminActivityUnitUpdateApiRequestDto>
 ) {
 
-    fun toAppRequest(): AdminUserUpdateAppRequestDto {
-        return AdminUserUpdateAppRequestDto(
+    fun toAppRequest(): AdminUserUpdateAppRequestDto =
+        AdminUserUpdateAppRequestDto(
             userId = userId,
             name = name,
             email = email,
             activityUnits = activityUnits.map { AdminActivityUnitUpdateAppRequestDto(it) }
         )
-    }
 }

@@ -7,7 +7,5 @@ data class AdminSignUpApplicationPageAppRequestDto(
     val size: Int
 ) {
 
-    fun toPageRequest(): PageRequest {
-        return PageRequest.of(page - 1, size)
-    }
+    fun toPageRequest(): PageRequest = PageRequest.of(page - 1, size)
 }

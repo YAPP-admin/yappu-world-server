@@ -1,6 +1,5 @@
 package co.yappuworld.schedule.domain
 
-import org.springframework.data.domain.Persistable
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
@@ -15,7 +14,7 @@ class Session private constructor(
     override var endTime: LocalTime?,
     generation: Int,
     override var type: ScheduleType
-) : Schedule(), Persistable<UUID> {
+) : Schedule() {
 
     var generation: Int = generation
         private set
@@ -41,9 +40,8 @@ class Session private constructor(
         ScheduleType.SESSION
     )
 
-    fun withId(id: UUID): Session {
-        return Session(name, description, place, date, endDate, time, endTime, generation, type).apply {
+    fun withId(id: UUID): Session =
+        Session(name, description, place, date, endDate, time, endTime, generation, type).apply {
             this.id = id
         }
-    }
 }

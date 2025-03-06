@@ -1,24 +1,30 @@
 package co.yappuworld.board.application
 
-import co.yappuworld.board.presentation.dto.response.BoardResponse
+import co.yappuworld.board.application.dto.request.NoticePageAppRequestDto
+import co.yappuworld.board.application.dto.response.NoticeBundleAppResponseDto
 import co.yappuworld.board.domain.model.Board
+import co.yappuworld.board.domain.model.Notice
 import co.yappuworld.board.domain.vo.BoardError
 import co.yappuworld.board.infrastructure.BoardRepository
+import co.yappuworld.board.infrastructure.NoticeRepository
+import co.yappuworld.board.presentation.dto.response.BoardResponse
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import org.springframework.data.domain.Pageable
+import kotlin.math.min
 
 @Service
 class BoardService(
     private val boardRepository: BoardRepository,
+    private val noticeRepository: NoticeRepository,
     private val userRepository: UserRepository,
     private val activityUnitRepository: ActivityUnitRepository
 ) {
@@ -34,6 +40,16 @@ class BoardService(
         ).map { board ->
             buildBoardResponse(board)
         }
+
+    @Transactional(readOnly = true)
+    fun getNotices(request: NoticePageAppRequestDto): NoticeBundleAppResponseDto {
+        val notices = this.getNoticeModels(request)
+        val users = userRepository.findUsersWithActivityUnit(
+            notices.map { it.writer.writerId.toString() }.subList(0, min(request.limit, notices.size)).toSet()
+        )
+
+        return NoticeBundleAppResponseDto.from(notices, users, request.limit)
+    }
 
     @Transactional(readOnly = true)
     fun readBoardDetail(boardId: UUID): BoardResponse {
@@ -64,5 +80,25 @@ class BoardService(
             )
         } else {
             boardRepository.findAllByIsActiveTrueOrderByCreatedAtDesc(pageable = pageable)
+        }
+
+    private fun getNoticeModels(request: NoticePageAppRequestDto): List<Notice> =
+        when {
+            request.lastBoardId != null && request.noticeType != null -> noticeRepository.findNotices(
+                limit = request.limit + 1,
+                noticeType = request.noticeType,
+                lastBoardId = request.lastBoardId
+            )
+            request.lastBoardId != null && request.noticeType == null -> noticeRepository.findNotices(
+                limit = request.limit + 1,
+                lastBoardId = request.lastBoardId
+            )
+            request.lastBoardId == null && request.noticeType != null -> noticeRepository.findNotices(
+                limit = request.limit + 1,
+                noticeType = request.noticeType
+            )
+            else -> noticeRepository.findNotices(
+                limit = request.limit + 1
+            )
         }
 }

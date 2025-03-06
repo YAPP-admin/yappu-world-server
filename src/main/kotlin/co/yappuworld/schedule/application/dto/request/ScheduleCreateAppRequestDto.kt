@@ -20,16 +20,15 @@ data class ScheduleCreateAppRequestDto(
     val type: ScheduleType
 ) {
 
-    fun toDomain(): Schedule {
-        return when (type) {
+    fun toDomain(): Schedule =
+        when (type) {
             ScheduleType.SESSION -> convertToSession()
             ScheduleType.TASK -> TODO()
             ScheduleType.ETC -> TODO()
         }
-    }
 
-    private fun convertToSession(): Session {
-        return Session(
+    private fun convertToSession(): Session =
+        Session(
             name = name,
             description = description,
             place = place,
@@ -39,5 +38,4 @@ data class ScheduleCreateAppRequestDto(
             endTime = endTime,
             generation = generation ?: throw BusinessException(ScheduleError.SESSION_NEED_GENERATION)
         )
-    }
 }

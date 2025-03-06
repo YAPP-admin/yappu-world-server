@@ -13,8 +13,8 @@ data class UserSignUpAppRequestDto(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toApplication(): SignUpApplication {
-        return SignUpApplication(
+    fun toApplication(): SignUpApplication =
+        SignUpApplication(
             ApplicationDetails(
                 this.email,
                 this.password,
@@ -24,5 +24,4 @@ data class UserSignUpAppRequestDto(
                 this.deviceAlarmToggle
             )
         )
-    }
 }

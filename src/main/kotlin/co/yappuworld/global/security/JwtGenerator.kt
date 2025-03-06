@@ -22,24 +22,24 @@ class JwtGenerator(
     private fun generateAccessToken(
         securityUser: SecurityUser,
         now: Date
-    ): String {
-        return Jwts.builder()
+    ): String =
+        Jwts
+            .builder()
             .subject("AccessToken")
             .claims(securityUser.claim)
             .expiration(Date(now.time + jwtProperty.accessTokenExpirationTimes))
             .signWith(jwtProperty.base64UrlSecretKey)
             .compact()
-    }
 
     private fun generateRefreshToken(
         securityUser: SecurityUser,
         now: Date
-    ): String {
-        return Jwts.builder()
+    ): String =
+        Jwts
+            .builder()
             .subject("RefreshToken")
             .claims(securityUser.claim)
             .expiration(Date(now.time + jwtProperty.refreshTokenExpirationTimes))
             .signWith(jwtProperty.base64UrlSecretKey)
             .compact()
-    }
 }

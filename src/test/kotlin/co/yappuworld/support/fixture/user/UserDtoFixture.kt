@@ -8,20 +8,18 @@ object UserDtoFixture {
     fun getLatestSignUpApplicationAppRequestDtoFixture(
         email: String = "abc@abc.com",
         password: String = "abcabcabC!!"
-    ): LatestSignUpApplicationAppRequestDto {
-        return LatestSignUpApplicationAppRequestDto(
+    ): LatestSignUpApplicationAppRequestDto =
+        LatestSignUpApplicationAppRequestDto(
             email,
             password
         )
-    }
 
     fun getLoginApiRequestDto(
         email: String = "abc@abc.com",
         password: String = "abcabcabC!!"
-    ): LoginApiRequestDto {
-        return LoginApiRequestDto(
+    ): LoginApiRequestDto =
+        LoginApiRequestDto(
             email,
             password
         )
-    }
 }

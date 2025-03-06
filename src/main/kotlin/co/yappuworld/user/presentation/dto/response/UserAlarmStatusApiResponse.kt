@@ -9,8 +9,7 @@ data class UserAlarmStatusApiResponse(
 ) {
 
     companion object {
-        fun of(response: UserAlarmStatusAppResponse): UserAlarmStatusApiResponse {
-            return UserAlarmStatusApiResponse(response.isMasterEnabled)
-        }
+        fun of(response: UserAlarmStatusAppResponse): UserAlarmStatusApiResponse =
+            UserAlarmStatusApiResponse(response.isMasterEnabled)
     }
 }

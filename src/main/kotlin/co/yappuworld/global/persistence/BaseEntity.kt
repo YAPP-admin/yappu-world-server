@@ -12,7 +12,5 @@ abstract class BaseEntity {
     @LastModifiedDate
     lateinit var updatedAt: LocalDateTime
 
-    protected fun isCreatedAtInitialized(): Boolean {
-        return ::createdAt.isInitialized
-    }
+    protected fun isCreatedAtInitialized(): Boolean = ::createdAt.isInitialized
 }
