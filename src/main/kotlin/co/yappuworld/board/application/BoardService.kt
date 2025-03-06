@@ -1,6 +1,7 @@
 package co.yappuworld.board.application
 
 import co.yappuworld.board.application.dto.request.NoticePageAppRequestDto
+import co.yappuworld.board.application.dto.response.NoticeAppResponseDto
 import co.yappuworld.board.application.dto.response.NoticeBundleAppResponseDto
 import co.yappuworld.board.domain.model.Board
 import co.yappuworld.board.domain.model.Notice
@@ -49,6 +50,15 @@ class BoardService(
         )
 
         return NoticeBundleAppResponseDto.from(notices, users, request.limit)
+    }
+
+    @Transactional(readOnly = true)
+    fun getNotice(noticeId: UUID): NoticeAppResponseDto {
+        val notice = noticeRepository.findByIdOrNull(noticeId)
+            ?: throw BusinessException(BoardError.BOARD_NOT_FOUND)
+        val user = userRepository.findUserWithActivityUnit(notice.writer.writerId.toString())
+
+        return NoticeAppResponseDto(notice, user)
     }
 
     @Transactional(readOnly = true)

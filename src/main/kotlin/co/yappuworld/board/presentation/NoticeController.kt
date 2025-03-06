@@ -2,6 +2,7 @@ package co.yappuworld.board.presentation
 
 import co.yappuworld.board.application.BoardService
 import co.yappuworld.board.presentation.dto.request.NoticePageApiRequestDto
+import co.yappuworld.board.presentation.dto.response.NoticeApiResponseDto
 import co.yappuworld.board.presentation.dto.response.NoticeOverviewApiResponseDto
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.global.response.SuccessResponse
@@ -30,4 +31,11 @@ class NoticeController(
             )
         )
     }
+
+    override fun getNotice(noticeId: UUID): ResponseEntity<SuccessResponse<NoticeApiResponseDto>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                NoticeApiResponseDto(boardService.getNotice(noticeId))
+            )
+        )
 }

@@ -1,6 +1,7 @@
 package co.yappuworld.board.presentation
 
 import co.yappuworld.board.presentation.dto.request.NoticePageApiRequestDto
+import co.yappuworld.board.presentation.dto.response.NoticeApiResponseDto
 import co.yappuworld.board.presentation.dto.response.NoticeOverviewApiResponseDto
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.global.response.SuccessResponse
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import java.util.UUID
 
 @Tag(name = "게시판 API", description = "공지사항, 자유게시판 등")
@@ -72,8 +74,69 @@ interface NoticeApi {
         @ParameterObject request: NoticePageApiRequestDto
     ): ResponseEntity<SuccessResponse<CursorPageResponse<NoticeOverviewApiResponseDto, UUID>>>
 
-//    @GetMapping("/v1/posts/notices/{noticeId}")
-//    fun getNotice(
-//        @Path
-//    ): ResponseEntity<SuccessResponse<CursorPageResponse<NoticeOverviewApiResponseDto, UUID>>>
+    @Operation(summary = "공지사항 상세 조회")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                description = "성공",
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "공지사항 상세 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "notice": {
+                                                "id": "ad8750bf-fa3e-11ef-ba22-0242ac120002",
+                                                "title": "제목입니다5",
+                                                "content": "## 안녕하세요 만나서 반갑습니다",
+                                                "createdAt": "2025-03-06"
+                                            },
+                                            "writer": {
+                                                "id": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
+                                                "activityUnitGeneration": 1,
+                                                "activityUnitPosition": {
+                                                    "name": "PM",
+                                                    "label": "PM"
+                                                }
+                                            }
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                description = "조회 실패.",
+                responseCode = "404",
+                content = [
+                    Content(
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "해당 게시물이 존재하지 않습니다.",
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "errorCode": "BRD_0001",
+                                        "message": "게시글이 존재하지 않습니다."
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v1/posts/notices/{noticeId}")
+    fun getNotice(
+        @PathVariable noticeId: UUID
+    ): ResponseEntity<SuccessResponse<NoticeApiResponseDto>>
 }

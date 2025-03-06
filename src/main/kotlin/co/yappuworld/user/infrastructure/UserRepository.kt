@@ -64,4 +64,28 @@ interface UserRepository : CrudRepository<User, UUID> {
     fun findUsersWithActivityUnit(
         @Param("userIds") userIds: Collection<String>
     ): List<UserWithLastActivityUnit>
+
+    @Query(
+        """
+            SELECT 
+                u.id AS user_id, 
+                u.email, 
+                u.name, 
+                u.role, 
+                u.is_active, 
+                u.created_at, 
+                la.generation, 
+                la.position, 
+                la.id AS activity_unit_id
+            FROM users u
+            INNER JOIN (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
+                FROM activity_units
+            ) la ON u.id = la.user_id AND la.rn = 1
+            WHERE u.id = :userId;
+        """
+    )
+    fun findUserWithActivityUnit(
+        @Param("userId") userId: String
+    ): UserWithLastActivityUnit
 }
