@@ -15,8 +15,8 @@ class Generation(
 ) : Persistable<Int> {
 
     @Id
-    private var value: Int = value
-
+    var value: Int = value
+        private set
     var startDate = startDate
         private set
     var endDate = endDate

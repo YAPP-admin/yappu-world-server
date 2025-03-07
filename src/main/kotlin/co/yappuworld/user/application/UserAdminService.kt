@@ -24,6 +24,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import kotlin.math.ceil
 
 @Service
 class UserAdminService(
@@ -61,7 +62,8 @@ class UserAdminService(
 
         return UserOverviewBundleAppResponseDto(
             data = userWithActivityUnit.map { UserOverviewAppResponseDto(it) },
-            totalCount = totalCount
+            totalCount = totalCount,
+            totalPages = ceil(totalCount.toDouble() / request.limit).toInt()
         )
     }
 

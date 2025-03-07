@@ -50,6 +50,7 @@ class UserAuthAdminController(
                     OffsetPageResponse(
                         data = it.data.map { d -> AdminSignUpApplicationOverviewApiResponseDto(d) },
                         totalCount = it.totalCount,
+                        totalPages = it.totalPages,
                         page = request.page,
                         size = request.size
                     )
