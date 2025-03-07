@@ -2,9 +2,6 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.user.domain.vo.Position
-import com.github.f4b6a3.ulid.UlidCreator
-import org.springframework.data.annotation.Id
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
@@ -13,32 +10,18 @@ import java.util.UUID
  * @property position 직군
  */
 @Table("activity_units")
-class ActivityUnit private constructor(
+class ActivityUnit(
     generation: Int,
     position: Position,
-    val userId: UUID,
-    @Id
-    @JvmField
-    val id: UUID
-) : BaseEntity(),
-    Persistable<UUID> {
+    val userId: UUID
+) : BaseEntity() {
 
     var generation: Int = generation
         private set
     var position: Position = position
         private set
 
-    constructor(
-        generation: Int,
-        position: Position,
-        userId: UUID
-    ) : this(generation, position, userId, UlidCreator.getMonotonicUlid().toUuid())
-
-    fun withId(id: UUID): ActivityUnit = ActivityUnit(generation, position, userId, id)
-
-    override fun getId(): UUID = this.id
-
-    override fun isNew(): Boolean = !isCreatedAtInitialized()
+    fun withId(id: UUID): ActivityUnit = ActivityUnit(generation, position, userId).apply { this.id = id }
 
     fun updateActivityUnit(
         generation: Int,

@@ -1,9 +1,6 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.persistence.BaseEntity
-import com.github.f4b6a3.ulid.UlidCreator
-import org.springframework.data.annotation.Id
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
@@ -11,12 +8,8 @@ import java.util.UUID
 class UserAlarmSetting private constructor(
     val userId: UUID,
     device: Boolean,
-    master: Boolean,
-    @Id
-    @JvmField
-    val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
-) : BaseEntity(),
-    Persistable<UUID> {
+    master: Boolean
+) : BaseEntity() {
 
     var device: Boolean = device
         private set
@@ -26,15 +19,11 @@ class UserAlarmSetting private constructor(
     constructor(userId: UUID, deviceToggle: Boolean) : this(
         userId = userId,
         device = deviceToggle,
-        master = true,
-        id = UlidCreator.getMonotonicUlid().toUuid()
+        master = true
     )
 
-    fun withId(id: UUID): UserAlarmSetting = UserAlarmSetting(this.userId, this.device, this.master, id)
-
-    override fun getId(): UUID = this.id
-
-    override fun isNew(): Boolean = !this.isCreatedAtInitialized()
+    fun withId(id: UUID): UserAlarmSetting =
+        UserAlarmSetting(this.userId, this.device, this.master).apply { this.id = id }
 
     fun toggleMaster() {
         this.master = !this.master
