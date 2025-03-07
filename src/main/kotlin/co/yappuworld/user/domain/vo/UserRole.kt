@@ -10,7 +10,7 @@ package co.yappuworld.user.domain.vo
 enum class UserRole(
     val authority: String,
     val label: String,
-    val authenticationCodeKey: String
+    val signUpCodeKey: String
 ) {
     ADMIN("ROLE_ADMIN", "관리자", "authenticationCodeAdmin"),
     STAFF("ROLE_STAFF", "운영진", "authenticationCodeStaff"),

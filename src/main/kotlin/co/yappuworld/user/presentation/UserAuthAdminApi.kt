@@ -4,12 +4,13 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
+import co.yappuworld.user.presentation.dto.request.AdminSignUpCodeUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpAuthenticationCodesApiResponseDto
+import co.yappuworld.user.presentation.dto.response.AdminSignUpCodesApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -275,5 +276,11 @@ interface UserAuthAdminApi {
         ]
     )
     @GetMapping("/admin/v1/auth/authentication-codes")
-    fun getSignUpAuthenticationCode(): ResponseEntity<SuccessResponse<AdminSignUpAuthenticationCodesApiResponseDto>>
+    fun getSignUpAuthenticationCode(): ResponseEntity<SuccessResponse<AdminSignUpCodesApiResponseDto>>
+
+    @Operation(summary = "인증번호 수정")
+    @PatchMapping("/admin/v1/auth/authentication-codes")
+    fun updateSignUpAuthenticationCode(
+        @Valid @RequestBody request: AdminSignUpCodeUpdateApiRequestDto
+    ): ResponseEntity<Unit>
 }

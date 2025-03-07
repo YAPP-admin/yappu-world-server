@@ -7,13 +7,14 @@ import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
+import co.yappuworld.user.presentation.dto.request.AdminSignUpCodeUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpAuthenticationCodeApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpAuthenticationCodesApiResponseDto
+import co.yappuworld.user.presentation.dto.response.AdminSignUpCodeApiResponseDto
+import co.yappuworld.user.presentation.dto.response.AdminSignUpCodesApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -67,20 +68,24 @@ class UserAuthAdminController(
             )
         )
 
-    override fun getSignUpAuthenticationCode():
-        ResponseEntity<SuccessResponse<AdminSignUpAuthenticationCodesApiResponseDto>> {
+    override fun getSignUpAuthenticationCode(): ResponseEntity<SuccessResponse<AdminSignUpCodesApiResponseDto>> {
         val responseByKey = configInquiryComponent
-            .findConfigsBy(UserRole.entries.map { it.authenticationCodeKey })
+            .findConfigsBy(UserRole.entries.map { it.signUpCodeKey })
             .associateBy { it.id }
 
         val codes = UserRole.entries.map { role ->
-            AdminSignUpAuthenticationCodeApiResponseDto(responseByKey[role.authenticationCodeKey], role)
+            AdminSignUpCodeApiResponseDto(responseByKey[role.signUpCodeKey], role)
         }
 
         return ResponseEntity.ok(
             SuccessResponse(
-                AdminSignUpAuthenticationCodesApiResponseDto(codes)
+                AdminSignUpCodesApiResponseDto(codes)
             )
         )
+    }
+
+    override fun updateSignUpAuthenticationCode(request: AdminSignUpCodeUpdateApiRequestDto): ResponseEntity<Unit> {
+        userAdminService.updateSignUpCode(request.toAppRequest())
+        return ResponseEntity.noContent().build()
     }
 }

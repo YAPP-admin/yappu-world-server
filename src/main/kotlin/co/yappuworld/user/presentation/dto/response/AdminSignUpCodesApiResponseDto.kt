@@ -5,12 +5,12 @@ import co.yappuworld.user.domain.vo.UserRole
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 
-data class AdminSignUpAuthenticationCodesApiResponseDto(
+data class AdminSignUpCodesApiResponseDto(
     @Schema(description = "인증 번호 목록")
-    val codes: List<AdminSignUpAuthenticationCodeApiResponseDto>
+    val codes: List<AdminSignUpCodeApiResponseDto>
 )
 
-data class AdminSignUpAuthenticationCodeApiResponseDto(
+data class AdminSignUpCodeApiResponseDto(
     @Schema(description = "인증 번호")
     @field:NotNull
     val code: String,
