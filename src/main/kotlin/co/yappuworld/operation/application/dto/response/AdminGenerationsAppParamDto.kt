@@ -4,7 +4,7 @@ import co.yappuworld.operation.domain.Generation
 import org.springframework.data.domain.Page
 import java.time.LocalDate
 
-data class AdminGenerationsAppResponseDto(
+data class AdminGenerationsAppParamDto(
     val generations: List<AdminGenerationAppResponseDto>,
     val totalElements: Long,
     val totalPages: Int

@@ -35,7 +35,11 @@ class Generation(
         this.isNew = false
     }
 
-    fun done() {
+    fun activate() {
+        this.isActive = true
+    }
+
+    fun deactivate() {
         this.isActive = false
     }
 }

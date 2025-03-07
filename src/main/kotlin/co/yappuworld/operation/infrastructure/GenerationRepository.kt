@@ -8,5 +8,7 @@ interface GenerationRepository :
     CrudRepository<Generation, Int>,
     PagingAndSortingRepository<Generation, Int> {
 
-    fun findGenerationByIsActiveIsTrue(): Generation?
+    fun existsGenerationByIsActiveIsTrue(): Boolean
+
+    fun findAllByIsActiveIsTrue(): List<Generation>
 }

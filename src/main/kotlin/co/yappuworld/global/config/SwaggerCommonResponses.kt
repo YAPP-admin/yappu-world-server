@@ -10,7 +10,7 @@ object SwaggerCommonResponses {
         SwaggerCommonResponse(
             "500",
             ApiResponse().apply {
-                description = "예기치 못한 서버 에러"
+                description = "Internal Server Error"
                 content = Content().apply {
                     addMediaType(
                         "application/json",
@@ -34,7 +34,7 @@ object SwaggerCommonResponses {
         SwaggerCommonResponse(
             "400",
             ApiResponse().apply {
-                description = "잘못된 파라미터 요청"
+                description = "Bad Request"
                 content = Content().apply {
                     addMediaType(
                         "application/json",
@@ -56,9 +56,9 @@ object SwaggerCommonResponses {
             }
         ),
         SwaggerCommonResponse(
-            "403",
+            "401",
             ApiResponse().apply {
-                description = "인증 실패"
+                description = "Unauthorized"
                 content = Content().apply {
                     addMediaType(
                         "application/json",

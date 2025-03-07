@@ -4,13 +4,11 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
-import co.yappuworld.user.presentation.dto.request.AdminSignUpCodeUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpCodesApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -213,74 +211,4 @@ interface UserAuthAdminApi {
     fun getSignUpApplication(
         @PathVariable applicationId: UUID
     ): ResponseEntity<SuccessResponse<AdminSignUpApplicationApiResponseDto>>
-
-    @Operation(summary = "회원가입 인증번호 조회")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                description = "성공",
-                responseCode = "200",
-                content = [
-                    Content(
-                        examples = [
-                            ExampleObject(
-                                value = """
-                                    {
-                                        "data": {
-                                            "codes": [
-                                                {
-                                                  "code": "000000",
-                                                  "role": {
-                                                    "name": "ADMIN",
-                                                    "label": "관리자"
-                                                  }
-                                                },
-                                                {
-                                                  "code": "000001",
-                                                  "role": {
-                                                    "name": "STAFF",
-                                                    "label": "운영진"
-                                                  }
-                                                },
-                                                {
-                                                  "code": "000002",
-                                                  "role": {
-                                                    "name": "ALUMNI",
-                                                    "label": "정회원"
-                                                  }
-                                                },
-                                                {
-                                                  "code": "",
-                                                  "role": {
-                                                    "name": "GRADUATE",
-                                                    "label": "수료회원"
-                                                  }
-                                                },
-                                                {
-                                                  "code": "000003",
-                                                  "role": {
-                                                    "name": "ACTIVE",
-                                                    "label": "활동회원"
-                                                  }
-                                                }
-                                            ]
-                                        },
-                                        "isSuccess": true
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
-    @GetMapping("/admin/v1/auth/authentication-codes")
-    fun getSignUpAuthenticationCode(): ResponseEntity<SuccessResponse<AdminSignUpCodesApiResponseDto>>
-
-    @Operation(summary = "인증번호 수정")
-    @PatchMapping("/admin/v1/auth/authentication-codes")
-    fun updateSignUpAuthenticationCode(
-        @Valid @RequestBody request: AdminSignUpCodeUpdateApiRequestDto
-    ): ResponseEntity<Unit>
 }
