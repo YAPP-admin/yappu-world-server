@@ -6,4 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository
 
 interface GenerationRepository :
     CrudRepository<Generation, Int>,
-    PagingAndSortingRepository<Generation, Int>
+    PagingAndSortingRepository<Generation, Int> {
+
+    fun findGenerationByIsActiveIsTrue(): Generation?
+}

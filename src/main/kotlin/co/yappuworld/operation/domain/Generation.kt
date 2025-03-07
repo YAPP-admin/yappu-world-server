@@ -21,7 +21,7 @@ class Generation(
         private set
     var endDate = endDate
         private set
-    var isActive = false
+    var isActive = isActive
         private set
 
     @Transient
@@ -33,5 +33,9 @@ class Generation(
 
     fun load() {
         this.isNew = false
+    }
+
+    fun done() {
+        this.isActive = false
     }
 }
