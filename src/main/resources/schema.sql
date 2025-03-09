@@ -98,3 +98,12 @@ CREATE TABLE boards
     writer_id      varchar(36) NOT NULL,
     is_active      tinyint(1)  NOT NULL
 );
+
+DROP TABLE IF EXISTS generations;
+CREATE TABLE generations
+(
+    value      int PRIMARY KEY,
+    start_date date,
+    end_date   date,
+    is_active  tinyint(1)  NOT NULL
+)

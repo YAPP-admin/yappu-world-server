@@ -30,6 +30,7 @@ class UserAdminController(
             OffsetPageResponse(
                 data = response.data.map { AdminUserOverviewApiResponseDto(it) },
                 totalCount = response.totalCount,
+                totalPages = response.totalPages,
                 page = request.page,
                 size = request.size
             )

@@ -9,11 +9,12 @@ package co.yappuworld.user.domain.vo
  */
 enum class UserRole(
     val authority: String,
-    val label: String
+    val label: String,
+    val signUpCodeKey: String
 ) {
-    ADMIN("ROLE_ADMIN", "관리자"),
-    STAFF("ROLE_STAFF", "운영진"),
-    ALUMNI("ROLE_ALUMNI", "정회원"),
-    GRADUATE("ROLE_GRADUATE", "수료회원"),
-    ACTIVE("ROLE_ACTIVE", "활동회원")
+    ADMIN("ROLE_ADMIN", "관리자", "authenticationCodeAdmin"),
+    STAFF("ROLE_STAFF", "운영진", "authenticationCodeStaff"),
+    ALUMNI("ROLE_ALUMNI", "정회원", "authenticationCodeAlumni"),
+    GRADUATE("ROLE_GRADUATE", "수료회원", "authenticationCodeGraduate"),
+    ACTIVE("ROLE_ACTIVE", "활동회원", "authenticationCodeActive")
 }

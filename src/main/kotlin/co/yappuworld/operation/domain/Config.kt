@@ -9,5 +9,12 @@ class Config(
     val id: String,
     val label: String,
     val category: ConfigCategory,
-    val value: String?
-)
+    value: String?
+) {
+    var value: String? = value
+        private set
+
+    fun updateValue(value: String?) {
+        this.value = value
+    }
+}

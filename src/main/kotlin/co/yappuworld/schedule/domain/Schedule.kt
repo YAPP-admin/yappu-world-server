@@ -1,21 +1,14 @@
 package co.yappuworld.schedule.domain
 
 import co.yappuworld.global.persistence.BaseEntity
-import com.github.f4b6a3.ulid.UlidCreator
-import org.springframework.data.annotation.Id
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
 @Table("schedules")
-abstract class Schedule :
-    BaseEntity(),
-    Persistable<UUID> {
-    @Id
-    @JvmField
-    protected var id: UUID = UlidCreator.getMonotonicUlid().toUuid()
+abstract class Schedule : BaseEntity() {
+
     protected var isDeleted: Boolean = false
 
     protected abstract val name: String

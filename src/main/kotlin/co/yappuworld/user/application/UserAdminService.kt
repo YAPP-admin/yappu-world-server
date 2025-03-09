@@ -2,8 +2,11 @@ package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.ifNotEmpty
+import co.yappuworld.operation.domain.ConfigError
+import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminSignUpApplicationPageAppRequestDto
+import co.yappuworld.user.application.dto.request.AdminSignUpCodeUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
@@ -21,12 +24,14 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import kotlin.math.ceil
 
 @Service
 class UserAdminService(
     private val userRepository: UserRepository,
     private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
-    private val activityUnitRepository: ActivityUnitRepository
+    private val activityUnitRepository: ActivityUnitRepository,
+    private val configRepository: ConfigRepository
 ) {
 
     @Transactional
@@ -57,7 +62,8 @@ class UserAdminService(
 
         return UserOverviewBundleAppResponseDto(
             data = userWithActivityUnit.map { UserOverviewAppResponseDto(it) },
-            totalCount = totalCount
+            totalCount = totalCount,
+            totalPages = ceil(totalCount.toDouble() / request.limit).toInt()
         )
     }
 
@@ -66,6 +72,7 @@ class UserAdminService(
         handleActivityUnitRequest(request.userId, request.activityUnits)
     }
 
+    @Transactional(readOnly = true)
     fun getSignUpApplicationDetails(applicationId: UUID): AdminSignUpApplicationAppResponseDto {
         val application = userSignUpApplicationRepository.findByIdOrNull(applicationId)
             ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
@@ -79,12 +86,22 @@ class UserAdminService(
         }
     }
 
+    @Transactional(readOnly = true)
     fun getSignUpApplications(
         request: AdminSignUpApplicationPageAppRequestDto
     ): AdminSignUpApplicationBundleAppResponse =
         userSignUpApplicationRepository.findAll(request.toPageRequest()).let {
             AdminSignUpApplicationBundleAppResponse(it)
         }
+
+    @Transactional
+    fun updateSignUpCode(request: AdminSignUpCodeUpdateAppRequestDto) {
+        val config = configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply {
+            updateValue(request.code)
+        } ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
+
+        configRepository.save(config)
+    }
 
     private fun updateUser(request: AdminUserUpdateAppRequestDto) {
         val user = userRepository.findByIdOrNull(request.userId)

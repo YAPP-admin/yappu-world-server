@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page
 
 data class AdminSignUpApplicationBundleAppResponse(
     val data: List<AdminSignUpApplicationOverviewAppResponseDto>,
-    val totalCount: Long
+    val totalCount: Long,
+    val totalPages: Int
 ) {
 
     constructor(page: Page<SignUpApplication>) : this(
         data = page.content.map { AdminSignUpApplicationOverviewAppResponseDto(it) },
-        totalCount = page.totalElements
+        totalCount = page.totalElements,
+        totalPages = page.totalPages
     )
 }

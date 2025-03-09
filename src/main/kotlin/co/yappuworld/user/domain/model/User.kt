@@ -5,9 +5,6 @@ import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import com.github.f4b6a3.ulid.UlidCreator
-import org.springframework.data.annotation.Id
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
@@ -17,12 +14,8 @@ class User private constructor(
     password: String,
     name: String,
     role: UserRole,
-    isActive: Boolean = true,
-    @Id
-    @JvmField
-    val id: UUID
-) : BaseEntity(),
-    Persistable<UUID> {
+    isActive: Boolean = true
+) : BaseEntity() {
 
     var isActive: Boolean = isActive
         private set
@@ -41,9 +34,10 @@ class User private constructor(
         password: String,
         name: String,
         role: UserRole
-    ) : this(email, password, name, role, true, UlidCreator.getMonotonicUlid().toUuid())
+    ) : this(email, password, name, role, true)
 
-    fun withId(id: UUID): User = User(this.email, this.password, this.name, this.role, this.isActive, id)
+    fun withId(id: UUID): User =
+        User(this.email, this.password, this.name, this.role, this.isActive).apply { this.id = id }
 
     override fun getId(): UUID = this.id
 

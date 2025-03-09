@@ -48,15 +48,16 @@ class OperationController(
     }
 
     override fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationApiResponseDto>> {
-        val activeGenerationResponse = configInquiryComponent.findConfigBy("activeGeneration").let {
-            when (it.value?.isNotBlank()) {
-                true -> ActiveGenerationApiResponseDto(true, it.value.toInt())
-                null, false -> ActiveGenerationApiResponseDto(false, null)
-            }
-        }
+        val response = configInquiryComponent
+            .findConfigBy("activeGeneration")
+            .value
+            .takeUnless { it.isNullOrBlank() }
+            ?.let {
+                ActiveGenerationApiResponseDto(true, it.toInt())
+            } ?: ActiveGenerationApiResponseDto(false, null)
 
         return ResponseEntity.ok(
-            SuccessResponse(activeGenerationResponse)
+            SuccessResponse(response)
         )
     }
 

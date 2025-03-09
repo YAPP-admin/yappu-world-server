@@ -3,7 +3,8 @@ INSERT INTO config (id, created_at, updated_at, label, category, value)
 VALUES ('authenticationCodeAdmin', now(), now(), '어드민 가입코드', 'AUTHENTICATION_CODE', '000000'),
        ('authenticationCodeStaff', now(), now(), '운영진 가입코드', 'AUTHENTICATION_CODE', '000001'),
        ('authenticationCodeAlumni', now(), now(), '정회원 가입코드', 'AUTHENTICATION_CODE', '000002'),
-       ('authenticationCodeActive', now(), now(), '활동회원 가입코드', 'AUTHENTICATION_CODE', '000003');
+       ('authenticationCodeGraduate', now(), now(), '수료회원 가입코드', 'AUTHENTICATION_CODE', '000003'),
+       ('authenticationCodeActive', now(), now(), '활동회원 가입코드', 'AUTHENTICATION_CODE', '000004');
 
 -- 최소 지원 버전
 INSERT INTO config (id, created_at, updated_at, label, category, value)
@@ -41,3 +42,7 @@ VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안�
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
        (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true);
+
+INSERT INTO generations (value, start_date, end_date, is_active)
+VALUES (24, '2024-05-03', '2024-09-14', false),
+       (25, '2024-11-16', '2025-03-08', true)

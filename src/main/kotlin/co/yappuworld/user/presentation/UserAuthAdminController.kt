@@ -2,6 +2,7 @@ package co.yappuworld.user.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
@@ -17,7 +18,8 @@ import java.util.UUID
 @RestController
 class UserAuthAdminController(
     private val userAdminService: UserAdminService,
-    private val signUpService: SignUpService
+    private val signUpService: SignUpService,
+    private val configInquiryComponent: ConfigInquiryComponent
 ) : UserAuthAdminApi {
 
     override fun updateUserRole(request: UserRoleUpdateApiRequestDto): ResponseEntity<Unit> {
@@ -44,6 +46,7 @@ class UserAuthAdminController(
                     OffsetPageResponse(
                         data = it.data.map { d -> AdminSignUpApplicationOverviewApiResponseDto(d) },
                         totalCount = it.totalCount,
+                        totalPages = it.totalPages,
                         page = request.page,
                         size = request.size
                     )

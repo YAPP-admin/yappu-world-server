@@ -2,26 +2,19 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.domain.vo.SignUpApplicationStatus
-import com.github.f4b6a3.ulid.UlidCreator
-import org.springframework.data.annotation.Id
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
 
 @Table("sign_up_application")
-class SignUpApplication private constructor(
-    @Id
-    @JvmField
-    val id: UUID,
+class SignUpApplication(
     val applicantEmail: String,
     val details: ApplicationDetails,
     status: SignUpApplicationStatus,
     rejectReason: String?
-) : BaseEntity(),
-    Persistable<UUID> {
+) : BaseEntity() {
 
     var status: SignUpApplicationStatus = status
         private set
@@ -29,7 +22,6 @@ class SignUpApplication private constructor(
         private set
 
     constructor(application: ApplicationDetails) : this(
-        UlidCreator.getMonotonicUlid().toUuid(),
         application.email,
         application,
         SignUpApplicationStatus.PENDING,
@@ -52,10 +44,6 @@ class SignUpApplication private constructor(
             throw BusinessException(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION)
         }
     }
-
-    override fun getId(): UUID = this.id
-
-    override fun isNew(): Boolean = !isCreatedAtInitialized()
 
     fun toActivityUnits(userId: UUID): List<ActivityUnit> =
         this.details.activityUnits.map {
