@@ -4,13 +4,13 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.operation.application.ConfigInquiryComponent
-import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationAppRequestDtoFixture
+import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationApiRequestDtoFixture
 import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
 import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
 import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
+import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
@@ -69,15 +69,17 @@ class SignUpServiceTest {
     fun `가장 최근 회원가입 신청이 존재하지 않으면 예외가 발생한다`() {
         every { authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(any(), any()) } returns null
 
-        val request = getLatestSignUpApplicationAppRequestDtoFixture()
-        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
+        val request = getLatestSignUpApplicationApiRequestDtoFixture()
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request.toAppRequest()) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.NO_SIGN_UP_APPLICATION.message)
     }
 
     @Test
     fun `회원가입 신청 시 입력한 비밀번호와 로그인 시도 시 입력한 비밀번호가 다르면 예외가 발생한다`() {
-        val details = getApplicationDetailsFixture()
+        val details = getApplicationDetailsFixture(
+            password = "abcabC!!"
+        )
         val application = SignUpApplication(details)
         every {
             authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
@@ -86,12 +88,12 @@ class SignUpServiceTest {
             )
         } returns application
 
-        val request = getLatestSignUpApplicationAppRequestDtoFixture(
+        val request = getLatestSignUpApplicationApiRequestDtoFixture(
             email = application.applicantEmail,
             password = details.password + "a"
         )
 
-        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request.toAppRequest()) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION.message)
     }
@@ -109,12 +111,12 @@ class SignUpServiceTest {
             )
         } returns application
 
-        val request = getLatestSignUpApplicationAppRequestDtoFixture(
+        val request = getLatestSignUpApplicationApiRequestDtoFixture(
             email = application.applicantEmail,
-            password = details.password
+            password = "abcabC!!"
         )
 
-        signUpService.findLatestSignUpApplication(request).also {
+        signUpService.findLatestSignUpApplication(request.toAppRequest()).also {
             assertThat(it.status).isEqualTo(application.status)
             when (it.status) {
                 SignUpApplicationStatus.REJECTED -> assertNotNull(it.rejectReason)

@@ -1,5 +1,6 @@
 package co.yappuworld.support.fixture.user
 
+import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.ActivityUnitParam
 import co.yappuworld.user.domain.model.ApplicationDetails
@@ -37,7 +38,7 @@ object UserFixture {
     ): ApplicationDetails =
         ApplicationDetails(
             email,
-            password,
+            EncryptUtils.encrypt(password),
             name,
             activityUnitParams,
             fcmToken,
