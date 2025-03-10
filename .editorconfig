@@ -20,6 +20,8 @@ ktlint_standard_no-empty-first-line-in-class-body = disabled
 ktlint_standard_no-blank-line-before-rbrace = disabled
 ij_kotlin_allow_trailing_comma = false
 ij_kotlin_allow_trailing_comma_on_call_site = false
+# backing property
+ktlint_standard_backing-property-naming = disabled
 
 [src/test/**.{kt,kts}]
 ktlint_standard_annotation = disabled

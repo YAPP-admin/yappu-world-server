@@ -69,7 +69,7 @@ CREATE TABLE user_devices
 DROP TABLE IF EXISTS schedules;
 CREATE TABLE schedules
 (
-    id          varchar(36) PRIMARY KEY,
+    id          binary(16) PRIMARY KEY,
     created_at  datetime,
     updated_at  datetime,
     is_deleted  tinyint(1)  NOT NULL,

@@ -1,26 +1,22 @@
 package co.yappuworld.schedule.infrastructure
 
+import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
 import co.yappuworld.support.fixture.schedule.ScheduleFixture
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.assertDoesNotThrow
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.data.mapping.model.MappingInstantiationException
-import kotlin.jvm.optionals.getOrNull
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.repository.findByIdOrNull
 import kotlin.test.Test
 
-@DataJdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ScheduleRepositoryTest {
 
     @Autowired
-    lateinit var scheduleRepository: ScheduleRepository
-
-    @Autowired
-    lateinit var sessionRepository: SessionRepository
+    lateinit var scheduleRepository: ScheduleJpaRepository
 
     @Test
     fun `Session 타입의 데이터도 잘 저장이 된다`() {
@@ -31,24 +27,13 @@ class ScheduleRepositoryTest {
     }
 
     @Test
-    fun `ScheduleRepository를 사용하면 추상 클래스 인스턴스화가 안 되어 조회가 불가하다`() {
-        val session = ScheduleFixture.getSessionFixture()
-        scheduleRepository.save(session)
-
-        assertThrows<MappingInstantiationException> {
-            scheduleRepository.findById(session.id)
-        }
-    }
-
-    @Test
-    @Disabled
-    fun `조회 시에는 구체 클래스의 Repository를 이용해야 한다`() {
+    fun `JPA가 알아서 구현체로 타입을 조회한다`() {
         val session = ScheduleFixture.getSessionFixture()
         scheduleRepository.save(session)
 
         assertDoesNotThrow {
-            val findSession = sessionRepository.findById(session.id)
-            assertThat(findSession.getOrNull()?.id).isEqualTo(session.id)
+            val schedule = scheduleRepository.findByIdOrNull(session.id)!!
+            Assertions.assertThat(schedule).isInstanceOf(SessionEntity::class.java)
         }
     }
 }
