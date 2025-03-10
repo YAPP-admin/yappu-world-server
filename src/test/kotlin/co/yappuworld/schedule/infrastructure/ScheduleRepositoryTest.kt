@@ -13,7 +13,7 @@ import kotlin.test.Test
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ScheduleJpaRepositoryTest {
+class ScheduleRepositoryTest {
 
     @Autowired
     lateinit var scheduleRepository: ScheduleJpaRepository
