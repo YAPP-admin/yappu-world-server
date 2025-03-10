@@ -42,6 +42,8 @@ data class NoticeDetailsApiResponseDto(
 data class NoticeDetailsWriterApiResponseDto(
     @Schema(description = "작성자 ID")
     val id: UUID,
+    @Schema(description = "작성자 이름")
+    val name: String,
     @Schema(description = "작성자 가장 최근 활동 기수")
     val activityUnitGeneration: Int,
     @Schema(description = "작성자 직군")
@@ -50,6 +52,7 @@ data class NoticeDetailsWriterApiResponseDto(
 
     constructor(writer: NoticeDetailsWriterAppResponseDto) : this(
         id = writer.id,
+        name = writer.name,
         activityUnitGeneration = writer.activityUnitGeneration,
         activityUnitPosition = PositionApiResponseDto(writer.activityUnitPosition)
     )

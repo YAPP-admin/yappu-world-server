@@ -47,6 +47,7 @@ interface NoticeApi {
                                                     },
                                                     "writer": {
                                                         "userId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
+                                                        "name": "홍길동",
                                                         "activityUnitGeneration": 1,
                                                         "activityUnitPosition": {
                                                             "name": "PM",
@@ -97,6 +98,7 @@ interface NoticeApi {
                                             },
                                             "writer": {
                                                 "id": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
+                                                "name": "홍길동",
                                                 "activityUnitGeneration": 1,
                                                 "activityUnitPosition": {
                                                     "name": "PM",
