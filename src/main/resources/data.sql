@@ -30,6 +30,12 @@ VALUES ('01954809-38fd-1268-e0d6-d3fda39f6b4c', '2025-03-05 03:11:16', now(), 'a
 INSERT INTO activity_units (id, created_at, updated_at, position, generation, user_id)
 VALUES (uuid(), now(), now(), 'PM', 1, '01954809-38fd-1268-e0d6-d3fda39f6b4c');
 
+INSERT INTO user_devices (id, created_at, updated_at, user_id, fcm_token)
+VALUES (uuid(), now(), now(), '01954809-38fd-1268-e0d6-d3fda39f6b4c', 'fcm_token');
+
+INSERT INTO user_alarm_settings (id, created_at, updated_at, user_id, device, master)
+VALUES (uuid(), now(), now(), '01954809-38fd-1268-e0d6-d3fda39f6b4c', true, true);
+
 INSERT INTO boards (id, created_at, updated_at, board_type, notice_type, title, content, display_target, writer_id,
                     is_active)
 VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '몰라?',

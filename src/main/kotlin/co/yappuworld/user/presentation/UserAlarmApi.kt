@@ -26,7 +26,6 @@ interface UserAlarmApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -59,7 +58,6 @@ interface UserAlarmApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "204",
                 content = [Content()]
             )
@@ -75,7 +73,6 @@ interface UserAlarmApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -83,12 +80,23 @@ interface UserAlarmApi {
                         schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "유저 마스터 알림 On/Off",
+                                name = "유저 마스터 알림 On",
                                 value = """
                                     {
                                         "isSuccess": "true",
                                         "data": {
                                             "isEnabled": "true"
+                                        }
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "유저 마스터 알림 Off",
+                                value = """
+                                    {
+                                        "isSuccess": "true",
+                                        "data": {
+                                            "isEnabled": "false"
                                         }
                                     }
                                 """
