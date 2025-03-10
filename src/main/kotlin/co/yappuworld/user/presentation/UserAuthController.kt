@@ -35,13 +35,10 @@ class UserAuthController(
         )
     }
 
-    override fun login(request: LoginApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
+    override fun login(request: LoginApiRequestDto): ResponseEntity<Unit> {
         val now = getCurrentDateTimeInKST()
-        return ResponseEntity.ok(
-            SuccessResponse(
-                userAuthService.login(request.toAppRequest(), now)
-            )
-        )
+        userAuthService.login(request.toAppRequest(), now)
+        return ResponseEntity.noContent().build()
     }
 
     override fun reissueToken(request: ReissueTokenApiRequestDto): ResponseEntity<SuccessResponse<Token>> {

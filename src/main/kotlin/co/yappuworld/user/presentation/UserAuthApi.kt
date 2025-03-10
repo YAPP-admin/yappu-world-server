@@ -21,7 +21,6 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
@@ -121,7 +120,6 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -145,7 +143,6 @@ interface UserAuthApi {
                 ]
             ),
             ApiResponse(
-                description = "로그인 실패",
                 responseCode = "404",
                 useReturnTypeSchema = true,
                 content = [
@@ -167,7 +164,6 @@ interface UserAuthApi {
                 ]
             ),
             ApiResponse(
-                description = "로그인 실패",
                 responseCode = "409",
                 useReturnTypeSchema = true,
                 content = [
@@ -214,13 +210,12 @@ interface UserAuthApi {
     @PostMapping("/v1/auth/login")
     fun login(
         @Valid @RequestBody request: LoginApiRequestDto
-    ): ResponseEntity<SuccessResponse<Token>>
+    ): ResponseEntity<Unit>
 
     @Operation(summary = "토큰 재발급")
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "토큰 재발급 성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -243,7 +238,6 @@ interface UserAuthApi {
                 ]
             ),
             ApiResponse(
-                description = "로그인 실패",
                 responseCode = "404",
                 useReturnTypeSchema = true,
                 content = [
@@ -265,7 +259,6 @@ interface UserAuthApi {
                 ]
             ),
             ApiResponse(
-                description = "토큰 오류",
                 responseCode = "409",
                 useReturnTypeSchema = true,
                 content = [
@@ -297,13 +290,11 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "이메일 사용 가능",
                 responseCode = "204",
                 useReturnTypeSchema = true,
                 content = [Content()]
             ),
             ApiResponse(
-                description = "중복된 이메일입니다.",
                 responseCode = "409",
                 useReturnTypeSchema = true,
                 content = [
@@ -335,7 +326,6 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -383,8 +373,7 @@ interface UserAuthApi {
                 ]
             ),
             ApiResponse(
-                description = "가입 시 입력한 계정 정보와 일치하지 않습니다. (비밀번호 불일치)",
-                responseCode = "403",
+                responseCode = "409",
                 useReturnTypeSchema = true,
                 content = [
                     Content(
@@ -428,7 +417,7 @@ interface UserAuthApi {
             )
         ]
     )
-    @GetMapping("/v1/auth/applications/latest")
+    @PostMapping("/v1/auth/applications/latest")
     fun findLatestSignUpApplication(
         @Valid @RequestBody request: LatestSignUpApplicationApiRequestDto
     ): ResponseEntity<SuccessResponse<LatestSignUpApplicationApiResponseDto>>
@@ -437,12 +426,10 @@ interface UserAuthApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "회원탈퇴 성공",
                 responseCode = "204",
                 content = [Content()]
             ),
             ApiResponse(
-                description = "이미 탈퇴한 계정입니다.",
                 responseCode = "409",
                 useReturnTypeSchema = true,
                 content = [
