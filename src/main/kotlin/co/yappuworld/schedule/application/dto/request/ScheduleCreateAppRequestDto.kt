@@ -1,10 +1,10 @@
 package co.yappuworld.schedule.application.dto.request
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.domain.Schedule
+import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleError
 import co.yappuworld.schedule.domain.ScheduleType
-import co.yappuworld.schedule.domain.Session
+import co.yappuworld.schedule.domain.SessionEntity
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -20,15 +20,15 @@ data class ScheduleCreateAppRequestDto(
     val type: ScheduleType
 ) {
 
-    fun toDomain(): Schedule =
+    fun toDomain(): ScheduleEntity =
         when (type) {
             ScheduleType.SESSION -> convertToSession()
             ScheduleType.TASK -> TODO()
             ScheduleType.ETC -> TODO()
         }
 
-    private fun convertToSession(): Session =
-        Session(
+    private fun convertToSession(): ScheduleEntity =
+        SessionEntity(
             name = name,
             description = description,
             place = place,

@@ -1,10 +1,11 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.infrastructure.entity
 
+import co.yappuworld.schedule.domain.ScheduleType
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-class Session private constructor(
+class SessionJdbcEntity private constructor(
     override var name: String,
     override var description: String?,
     override var place: String?,
@@ -14,7 +15,7 @@ class Session private constructor(
     override var endTime: LocalTime?,
     generation: Int,
     override var type: ScheduleType
-) : Schedule() {
+) : ScheduleJdbcEntity() {
 
     var generation: Int = generation
         private set
@@ -40,8 +41,8 @@ class Session private constructor(
         ScheduleType.SESSION
     )
 
-    fun withId(id: UUID): Session =
-        Session(name, description, place, date, endDate, time, endTime, generation, type).apply {
+    fun withId(id: UUID): SessionJdbcEntity =
+        SessionJdbcEntity(name, description, place, date, endDate, time, endTime, generation, type).apply {
             this.id = id
         }
 }

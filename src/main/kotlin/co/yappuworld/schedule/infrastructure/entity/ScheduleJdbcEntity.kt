@@ -1,13 +1,14 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.schedule.domain.ScheduleType
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
 @Table("schedules")
-abstract class Schedule : BaseEntity() {
+abstract class ScheduleJdbcEntity : BaseEntity() {
 
     protected var isDeleted: Boolean = false
 
