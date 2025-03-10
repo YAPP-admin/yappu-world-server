@@ -19,7 +19,7 @@ data class AdminUserDetailsApiResponseDto(
     @Schema(description = "가입일")
     val registrationDate: LocalDate,
     @Schema(description = "활동 내역")
-    val activityUnits: List<ActivityUnitApiResponseDto>
+    val activityUnits: List<AdminActivityUnitApiResponseDto>
 ) {
 
     constructor(response: UserDetailsAppResponseDto) : this(
@@ -30,7 +30,7 @@ data class AdminUserDetailsApiResponseDto(
         isActive = response.isActive,
         registrationDate = response.registrationDate,
         activityUnits = response.activityUnits
-            .map { ActivityUnitApiResponseDto(it) }
+            .map { AdminActivityUnitApiResponseDto(it) }
             .sortedByDescending { it.generation }
     )
 }

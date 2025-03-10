@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotEmpty
 
-data class ActivityUnitApiRequestDto(
+data class ActivityUnitRegistrationApiRequestDto(
     @Schema(description = "기수")
     @field:NotEmpty(message = "기수는 필수로 입력해야 합니다.")
     @field:Min(value = 1L)

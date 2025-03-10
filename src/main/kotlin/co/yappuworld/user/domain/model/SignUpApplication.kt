@@ -2,6 +2,7 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
@@ -40,7 +41,7 @@ class SignUpApplication(
     fun toUser(role: UserRole): User = this.details.toUser(role)
 
     fun checkPassword(password: String) {
-        if (details.password != password) {
+        if (!EncryptUtils.isMatch(password, details.password)) {
             throw BusinessException(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION)
         }
     }

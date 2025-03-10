@@ -22,7 +22,7 @@ data class UserSignUpApiRequestDto(
     val name: String,
     @Schema(description = "활동한 기수와 직군 기입")
     @field:NotEmpty
-    val activityUnits: List<ActivityUnitApiRequestDto>,
+    val activityUnits: List<ActivityUnitRegistrationApiRequestDto>,
     @Schema(description = "가입코드, 6자리 숫자", example = "000000", nullable = true)
     val signUpCode: String?,
     @Schema(description = "FCM 토큰")
