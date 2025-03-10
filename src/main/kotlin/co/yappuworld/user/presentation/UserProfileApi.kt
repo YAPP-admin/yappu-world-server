@@ -37,11 +37,17 @@ interface UserProfileApi {
                                             "activityUnits": [
                                                 {
                                                     "generation": 1,
-                                                    "position": "PM"
+                                                    "position": {
+                                                        "name": "ANDROID",
+                                                        "label": "Android"
+                                                    }
                                                 },
                                                 {
                                                     "generation": 2,
-                                                    "position": "ANDROID"
+                                                    "position": {
+                                                        "name": "STAFF",
+                                                        "label": "운영진"
+                                                    }
                                                 }
                                             ]
                                         }

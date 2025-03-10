@@ -10,7 +10,7 @@ data class AdminUserOverviewApiResponseDto(
     val email: String,
     val role: UserRoleApiResponseDto,
     val registrationDate: LocalDate,
-    val lastActivityUnit: ActivityUnitApiResponseDto
+    val lastActivityUnit: AdminActivityUnitApiResponseDto
 ) {
 
     constructor(
@@ -21,6 +21,6 @@ data class AdminUserOverviewApiResponseDto(
         email = response.email,
         role = UserRoleApiResponseDto(response.role),
         registrationDate = response.registrationDate,
-        lastActivityUnit = ActivityUnitApiResponseDto(response.lastActivityUnit)
+        lastActivityUnit = AdminActivityUnitApiResponseDto(response.lastActivityUnit)
     )
 }

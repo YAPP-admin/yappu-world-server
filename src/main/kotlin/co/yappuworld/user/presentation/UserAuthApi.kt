@@ -210,7 +210,7 @@ interface UserAuthApi {
     @PostMapping("/v1/auth/login")
     fun login(
         @Valid @RequestBody request: LoginApiRequestDto
-    ): ResponseEntity<Unit>
+    ): ResponseEntity<SuccessResponse<Token>>
 
     @Operation(summary = "토큰 재발급")
     @ApiResponses(
