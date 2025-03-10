@@ -37,12 +37,14 @@ data class NoticeSimpleAppResponseDto(
 
 data class NoticeOverviewWriterAppResponseDto(
     val userId: UUID,
+    val name: String,
     val activityUnitGeneration: Int,
     val activityUnitPosition: Position
 ) {
 
     constructor(user: UserWithLastActivityUnit) : this(
         userId = user.userId,
+        name = user.name,
         activityUnitGeneration = user.activityUnit.generation,
         activityUnitPosition = user.activityUnit.position
     )
