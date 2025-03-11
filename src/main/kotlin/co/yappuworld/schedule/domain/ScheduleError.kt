@@ -7,8 +7,13 @@ enum class ScheduleError : Error {
 
     // 1000 - 세션
     SESSION_NEED_GENERATION {
-        override val message: String = "세션 타입의 일정은 기수가 필수입니다."
+        override val message: String = "세션 일정은 기수가 필수입니다."
         override val code: String = "SCH_1000"
+        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
+    },
+    SESSION_NEED_TYPE {
+        override val message: String = "세션 일정은 타입 지정이 필요합니다."
+        override val code: String = "SCH_1001"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     }
 }

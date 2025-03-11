@@ -1,6 +1,7 @@
 package co.yappuworld.support.fixture.schedule
 
 import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.domain.SessionType
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -14,7 +15,8 @@ object ScheduleFixture {
         endDate: LocalDate? = null,
         time: LocalTime = LocalTime.of(14, 0, 0),
         endTime: LocalTime? = null,
-        generation: Int = 25
+        generation: Int = 25,
+        sessionType: SessionType = SessionType.OFFLINE
     ) = SessionEntity(
         name = name,
         description = description,
@@ -23,6 +25,7 @@ object ScheduleFixture {
         endDate = endDate,
         time = time,
         endTime = endTime,
-        generation = generation
+        generation = generation,
+        sessionType = SessionType.OFFLINE
     )
 }

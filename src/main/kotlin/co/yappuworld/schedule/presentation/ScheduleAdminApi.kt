@@ -18,7 +18,6 @@ interface ScheduleAdminApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "스케줄 생성 성공",
                 responseCode = "201",
                 content = [Content()]
             )
