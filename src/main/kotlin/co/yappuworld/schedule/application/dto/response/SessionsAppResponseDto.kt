@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.application.dto.response
 
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqualThan
+import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionLifecycleStatus
 import co.yappuworld.schedule.domain.SessionLifecycleStatus.DONE
@@ -44,7 +44,7 @@ data class SessionsAppResponseDto(
             orderedSessions: List<SessionEntity>,
             now: LocalDate
         ): Pair<Int, SessionLifecycleStatus>? {
-            val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqualThan(it.date) }
+            val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqual(it.date) }
                 ?: return null
             val upcomingSessionIndex = orderedSessions.indexOf(upcomingSession)
 

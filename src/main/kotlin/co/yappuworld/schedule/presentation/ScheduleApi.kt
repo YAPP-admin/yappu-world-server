@@ -1,12 +1,16 @@
 package co.yappuworld.schedule.presentation
 
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.schedule.presentation.dto.request.SchedulePageApiRequestDto
 import co.yappuworld.schedule.presentation.dto.response.ActiveGenerationSessionsApiResponseDto
+import co.yappuworld.schedule.presentation.dto.response.SchedulePageApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 
@@ -24,4 +28,11 @@ interface ScheduleApi {
     )
     @GetMapping("/v1/sessions")
     fun getSessions(): ResponseEntity<SuccessResponse<ActiveGenerationSessionsApiResponseDto>>
+
+    @Operation(summary = "일정 조회")
+    @ApiResponses()
+    @GetMapping("/v1/schedules")
+    fun getSchedules(
+        @Valid @ParameterObject request: SchedulePageApiRequestDto
+    ): ResponseEntity<SuccessResponse<SchedulePageApiResponseDto>>
 }

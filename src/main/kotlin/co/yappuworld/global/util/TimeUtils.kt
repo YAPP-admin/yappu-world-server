@@ -11,7 +11,7 @@ object TimeUtils {
 
     fun getCurrentDateTimeInKST(): LocalDateTime = getCurrentZonedTimeInKST().toLocalDateTime()
 
-    fun LocalDate.isBeforeOrEqualThan(other: LocalDate): Boolean = this.isBefore(other) || this.isEqual(other)
+    fun LocalDate.isBeforeOrEqual(other: LocalDate): Boolean = this.isBefore(other) || this.isEqual(other)
 
     fun LocalDate.isAfterOrEqualThan(other: LocalDate): Boolean = this.isAfter(other) || this.isEqual(other)
 }
