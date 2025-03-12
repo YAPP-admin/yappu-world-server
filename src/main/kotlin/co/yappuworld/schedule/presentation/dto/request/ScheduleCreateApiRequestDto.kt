@@ -2,6 +2,7 @@ package co.yappuworld.schedule.presentation.dto.request
 
 import co.yappuworld.schedule.application.dto.request.ScheduleCreateAppRequestDto
 import co.yappuworld.schedule.domain.ScheduleType
+import co.yappuworld.schedule.domain.SessionType
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -28,7 +29,9 @@ data class ScheduleCreateApiRequestDto(
     var generation: Int?,
     @Schema(description = "스케줄 종류", nullable = false, example = "SESSION")
     @field:NotNull
-    var type: ScheduleType
+    var type: ScheduleType,
+    @Schema(description = "세션 종류", nullable = true, example = "OFFLINE")
+    var sessionType: SessionType?
 ) {
 
     fun toAppRequest(): ScheduleCreateAppRequestDto =
@@ -41,6 +44,7 @@ data class ScheduleCreateApiRequestDto(
             time = this.time,
             endTime = this.endTime,
             generation = this.generation,
-            type = this.type
+            type = this.type,
+            sessionType = this.sessionType
         )
 }

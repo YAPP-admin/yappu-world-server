@@ -10,5 +10,7 @@ interface GenerationRepository :
 
     fun existsGenerationByIsActiveIsTrue(): Boolean
 
+    fun getGenerationOrNullByIsActiveIsTrue(): Generation?
+
     fun findAllByIsActiveIsTrue(): List<Generation>
 }

@@ -16,15 +16,15 @@ import java.time.LocalTime
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 abstract class ScheduleEntity : BaseJpaEntity() {
 
-    protected var isDeleted: Boolean = false
+    val isDeleted: Boolean = false
 
-    protected abstract var name: String
+    abstract val name: String
 
-    protected abstract var description: String?
-    protected abstract var place: String?
+    abstract val description: String?
+    abstract val place: String?
 
-    protected abstract var date: LocalDate
-    protected abstract var endDate: LocalDate?
-    protected abstract var time: LocalTime?
-    protected abstract var endTime: LocalTime?
+    abstract val date: LocalDate
+    abstract val endDate: LocalDate?
+    abstract val time: LocalTime?
+    abstract val endTime: LocalTime?
 }

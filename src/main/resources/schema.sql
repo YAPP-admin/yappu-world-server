@@ -69,19 +69,20 @@ CREATE TABLE user_devices
 DROP TABLE IF EXISTS schedules;
 CREATE TABLE schedules
 (
-    id          binary(16) PRIMARY KEY,
-    created_at  datetime,
-    updated_at  datetime,
-    is_deleted  tinyint(1)  NOT NULL,
-    name        varchar(32) NOT NULL,
-    description varchar(256),
-    place       varchar(32) NOT NULL,
-    date        date        NOT NULL,
-    end_date    date,
-    time        time,
-    end_time    time,
-    generation  int,
-    type        varchar(32) NOT NULL
+    id           binary(16) PRIMARY KEY,
+    created_at   datetime,
+    updated_at   datetime,
+    is_deleted   tinyint(1)  NOT NULL,
+    name         varchar(32) NOT NULL,
+    description  varchar(256),
+    place        varchar(32),
+    date         date        NOT NULL,
+    end_date     date,
+    time         time,
+    end_time     time,
+    generation   int,
+    type         varchar(32) NOT NULL,
+    session_type varchar(32)
 );
 
 DROP TABLE IF EXISTS boards;
