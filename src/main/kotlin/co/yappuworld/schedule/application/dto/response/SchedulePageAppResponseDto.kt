@@ -1,5 +1,7 @@
 package co.yappuworld.schedule.application.dto.response
 
+import co.yappuworld.global.util.LocalDateRange
+import co.yappuworld.schedule.application.dto.request.SchedulePageAppRequestDto
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.ScheduleType
@@ -18,14 +20,19 @@ data class SchedulePageAppResponseDto(
     companion object {
         fun from(
             schedules: List<ScheduleEntity>,
+            request: SchedulePageAppRequestDto,
             now: LocalDateTime
         ): SchedulePageAppResponseDto {
             val scheduleByDate = schedules.groupBy { it.date }
-            return SchedulePageAppResponseDto(
-                scheduleByDate.keys.sortedBy { it.dayOfMonth }.map {
-                    DateGroupedScheduleAppResponseDto(it, scheduleByDate[it] ?: emptyList(), now)
-                }
-            )
+
+            return LocalDateRange(request.from, request.to)
+                .map { date ->
+                    DateGroupedScheduleAppResponseDto(
+                        date = date,
+                        schedules = scheduleByDate[date] ?: emptyList(),
+                        now = now
+                    )
+                }.let { SchedulePageAppResponseDto(it) }
         }
     }
 }
@@ -45,6 +52,7 @@ data class SimpleScheduleAppResponseDto(
     val name: String,
     val place: String?,
     val date: LocalDate,
+    val endDate: LocalDate?,
     val time: LocalTime?,
     val endTime: LocalTime?,
     val scheduleType: ScheduleType,
@@ -72,6 +80,7 @@ data class SimpleScheduleAppResponseDto(
                 name = session.name,
                 place = session.place,
                 date = session.date,
+                endDate = session.endDate,
                 time = session.time,
                 endTime = session.endTime,
                 scheduleType = ScheduleType.SESSION,

@@ -56,11 +56,11 @@ VALUES (24, '2024-05-03', '2024-09-14', false),
 INSERT INTO schedules (id, created_at, updated_at, is_deleted, name, description, place, date, end_date, time, end_time,
                        generation, type, session_type)
 VALUES (UUID_TO_BIN(uuid()), now(), now(), false, 'OT', '첫 세션이에요',
-        '강북노동자복지관', '2024-11-16', '2024-11-16', '14:00:00', '18:00:00',
+        '강북노동자복지관', '2024-11-1', null, '14:00:00', '18:00:00',
         25, 'SESSION', 'OFFLINE'),
-       (UUID_TO_BIN(uuid()), now(), now(), false, '팀매칭',
-        '팀을 매칭해요', 'SBA 산학센터', '2024-11-23', '2024-11-23',
-        '14:00:00', '18:00:00', 25, 'SESSION', 'OFFLINE'),
        (UUID_TO_BIN(uuid()), now(), now(), false, '팀세션', '첫 팀세션',
-        '', '2024-11-30', '2024-11-30', '', '', 25, 'SESSION',
-        'TEAM');
+        null, '2024-11-1', null, null, null, 25, 'SESSION',
+        'TEAM'),
+       (UUID_TO_BIN(uuid()), now(), now(), false, '팀매칭',
+        '팀을 매칭해요', 'SBA 산학센터', '2024-11-3', null,
+        '14:00:00', '18:00:00', 25, 'SESSION', 'OFFLINE');

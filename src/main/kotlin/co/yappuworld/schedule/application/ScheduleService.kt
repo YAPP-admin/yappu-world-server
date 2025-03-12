@@ -31,6 +31,6 @@ class ScheduleService(
         now: LocalDateTime
     ): SchedulePageAppResponseDto {
         val schedules = scheduleJpaRepository.findScheduleEntitiesByDateIsBetween(request.from, request.to)
-        return SchedulePageAppResponseDto.from(schedules, now)
+        return SchedulePageAppResponseDto.from(schedules, request, now)
     }
 }
