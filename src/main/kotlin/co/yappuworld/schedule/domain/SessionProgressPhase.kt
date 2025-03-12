@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.domain
 
-enum class SessionLifecycleStatus(
+enum class SessionProgressPhase(
     private val label: String
 ) {
     DONE("완료"),

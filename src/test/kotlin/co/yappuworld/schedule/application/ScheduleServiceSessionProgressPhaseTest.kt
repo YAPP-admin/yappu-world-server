@@ -2,10 +2,10 @@ package co.yappuworld.schedule.application
 
 import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.schedule.domain.SessionEntity
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.DONE
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.PENDING
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.TODAY
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.UPCOMING
+import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
+import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
+import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
+import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
 import co.yappuworld.support.fixture.operation.OperationFixture
 import co.yappuworld.support.fixture.schedule.ScheduleFixture
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
-class ScheduleServiceTest {
+class ScheduleServiceSessionProgressPhaseTest {
 
     private val generationRepository = mockk<GenerationRepository>()
     private val scheduleRepository = mockk<ScheduleJpaRepository>()
@@ -48,9 +48,9 @@ class ScheduleServiceTest {
         )
 
         val result = scheduleService.getCurrentGenerationSessions(now)
-        assertEquals(result.sessions[0].status, DONE)
-        assertEquals(result.sessions[1].status, TODAY)
-        assertEquals(result.sessions[2].status, PENDING)
+        assertEquals(result.sessions[0].progressPhase, DONE)
+        assertEquals(result.sessions[1].progressPhase, TODAY)
+        assertEquals(result.sessions[2].progressPhase, PENDING)
         assertEquals(result.upcomingSessionIndex, 1)
     }
 
@@ -66,10 +66,10 @@ class ScheduleServiceTest {
         )
 
         val result = scheduleService.getCurrentGenerationSessions(now)
-        assertEquals(result.sessions[0].status, DONE)
-        assertEquals(result.sessions[1].status, DONE)
-        assertEquals(result.sessions[2].status, UPCOMING)
-        assertEquals(result.sessions[3].status, PENDING)
+        assertEquals(result.sessions[0].progressPhase, DONE)
+        assertEquals(result.sessions[1].progressPhase, DONE)
+        assertEquals(result.sessions[2].progressPhase, UPCOMING)
+        assertEquals(result.sessions[3].progressPhase, PENDING)
         assertEquals(result.upcomingSessionIndex, 2)
     }
 }

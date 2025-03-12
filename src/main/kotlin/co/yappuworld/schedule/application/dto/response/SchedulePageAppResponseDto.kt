@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.presentation.dto.response
+package co.yappuworld.schedule.application.dto.response
 
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleProgressPhase
@@ -13,7 +13,7 @@ import java.time.LocalTime
 import java.util.UUID
 
 data class SchedulePageAppResponseDto(
-    val schedules: List<ScheduleOverviewAppResponseDto>
+    val dates: List<DateGroupedScheduleAppResponseDto>
 ) {
     companion object {
         fun from(
@@ -23,24 +23,24 @@ data class SchedulePageAppResponseDto(
             val scheduleByDate = schedules.groupBy { it.date }
             return SchedulePageAppResponseDto(
                 scheduleByDate.keys.sortedBy { it.dayOfMonth }.map {
-                    ScheduleOverviewAppResponseDto(it, scheduleByDate[it] ?: emptyList(), now)
+                    DateGroupedScheduleAppResponseDto(it, scheduleByDate[it] ?: emptyList(), now)
                 }
             )
         }
     }
 }
 
-data class ScheduleOverviewAppResponseDto(
+data class DateGroupedScheduleAppResponseDto(
     val date: LocalDate,
-    val contents: List<ScheduleSimpleContentAppResponseDto>
+    val schedules: List<SimpleScheduleAppResponseDto>
 ) {
     constructor(date: LocalDate, schedules: List<ScheduleEntity>, now: LocalDateTime) : this(
         date = date,
-        contents = schedules.map { ScheduleSimpleContentAppResponseDto.from(it, now) }
+        schedules = schedules.map { SimpleScheduleAppResponseDto.from(it, now) }
     )
 }
 
-data class ScheduleSimpleContentAppResponseDto(
+data class SimpleScheduleAppResponseDto(
     val id: UUID,
     val name: String,
     val place: String?,
@@ -56,7 +56,7 @@ data class ScheduleSimpleContentAppResponseDto(
         fun from(
             schedule: ScheduleEntity,
             now: LocalDateTime
-        ): ScheduleSimpleContentAppResponseDto =
+        ): SimpleScheduleAppResponseDto =
             when (schedule) {
                 is SessionEntity -> convertSession(schedule, now)
                 is TaskEntity -> TODO()
@@ -66,8 +66,8 @@ data class ScheduleSimpleContentAppResponseDto(
         private fun convertSession(
             session: SessionEntity,
             now: LocalDateTime
-        ): ScheduleSimpleContentAppResponseDto =
-            ScheduleSimpleContentAppResponseDto(
+        ): SimpleScheduleAppResponseDto =
+            SimpleScheduleAppResponseDto(
                 id = session.id,
                 name = session.name,
                 place = session.place,

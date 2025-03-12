@@ -13,7 +13,7 @@ object ScheduleFixture {
         place: String? = "공덕 창업 허브",
         date: LocalDate = LocalDate.of(2025, 2, 15),
         endDate: LocalDate? = null,
-        time: LocalTime = LocalTime.of(14, 0, 0),
+        time: LocalTime? = null,
         endTime: LocalTime? = null,
         generation: Int = 25,
         sessionType: SessionType = SessionType.OFFLINE

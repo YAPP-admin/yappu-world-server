@@ -2,11 +2,11 @@ package co.yappuworld.schedule.application.dto.response
 
 import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.SessionEntity
-import co.yappuworld.schedule.domain.SessionLifecycleStatus
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.DONE
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.PENDING
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.TODAY
-import co.yappuworld.schedule.domain.SessionLifecycleStatus.UPCOMING
+import co.yappuworld.schedule.domain.SessionProgressPhase
+import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
+import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
+import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
+import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.domain.SessionType
 import java.time.LocalDate
 import java.time.LocalTime
@@ -43,7 +43,7 @@ data class SessionsAppResponseDto(
         private fun getUpcomingSessionIndexAndStatus(
             orderedSessions: List<SessionEntity>,
             now: LocalDate
-        ): Pair<Int, SessionLifecycleStatus>? {
+        ): Pair<Int, SessionProgressPhase>? {
             val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqual(it.date) }
                 ?: return null
             val upcomingSessionIndex = orderedSessions.indexOf(upcomingSession)
@@ -64,10 +64,10 @@ data class SessionAppResponseDto(
     val time: LocalTime?,
     val endTime: LocalTime?,
     val type: SessionType,
-    val status: SessionLifecycleStatus
+    val progressPhase: SessionProgressPhase
 ) {
 
-    constructor(session: SessionEntity, status: SessionLifecycleStatus) : this(
+    constructor(session: SessionEntity, status: SessionProgressPhase) : this(
         id = session.id,
         name = session.name,
         place = session.place,
@@ -75,6 +75,6 @@ data class SessionAppResponseDto(
         time = session.time,
         endTime = session.endTime,
         type = session.sessionType,
-        status = status
+        progressPhase = status
     )
 }

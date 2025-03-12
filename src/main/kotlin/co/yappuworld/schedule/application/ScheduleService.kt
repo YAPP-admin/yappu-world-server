@@ -4,7 +4,7 @@ import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.schedule.application.dto.request.SchedulePageAppRequestDto
 import co.yappuworld.schedule.application.dto.response.SessionsAppResponseDto
 import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
-import co.yappuworld.schedule.presentation.dto.response.SchedulePageAppResponseDto
+import co.yappuworld.schedule.application.dto.response.SchedulePageAppResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate

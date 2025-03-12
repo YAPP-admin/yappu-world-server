@@ -1,5 +1,8 @@
 package co.yappuworld.schedule.presentation.dto.response
 
+import co.yappuworld.schedule.application.dto.response.DateGroupedScheduleAppResponseDto
+import co.yappuworld.schedule.application.dto.response.SchedulePageAppResponseDto
+import co.yappuworld.schedule.application.dto.response.SimpleScheduleAppResponseDto
 import co.yappuworld.schedule.domain.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.ScheduleType
 import co.yappuworld.schedule.domain.SessionType
@@ -14,7 +17,7 @@ data class SchedulePageApiResponseDto(
     constructor(
         response: SchedulePageAppResponseDto
     ) : this(
-        dates = response.schedules.map { DateGroupedScheduleApiResponseDto(it) }
+        dates = response.dates.map { DateGroupedScheduleApiResponseDto(it) }
     )
 }
 
@@ -23,9 +26,9 @@ data class DateGroupedScheduleApiResponseDto(
     val schedules: List<SimpleScheduleApiResponseDto>
 ) {
 
-    constructor(overview: ScheduleOverviewAppResponseDto) : this(
+    constructor(overview: DateGroupedScheduleAppResponseDto) : this(
         date = overview.date,
-        schedules = overview.contents.map { SimpleScheduleApiResponseDto(it) }.sortedBy { it.time }
+        schedules = overview.schedules.map { SimpleScheduleApiResponseDto(it) }.sortedBy { it.time }
     )
 }
 
@@ -41,7 +44,7 @@ data class SimpleScheduleApiResponseDto(
     val scheduleProgressPhase: ScheduleProgressPhase
 ) {
 
-    constructor(content: ScheduleSimpleContentAppResponseDto) : this(
+    constructor(content: SimpleScheduleAppResponseDto) : this(
         id = content.id,
         name = content.name,
         place = content.place,

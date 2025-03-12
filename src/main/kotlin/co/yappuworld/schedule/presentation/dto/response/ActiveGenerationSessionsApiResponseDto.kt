@@ -2,7 +2,7 @@ package co.yappuworld.schedule.presentation.dto.response
 
 import co.yappuworld.schedule.application.dto.response.SessionAppResponseDto
 import co.yappuworld.schedule.application.dto.response.SessionsAppResponseDto
-import co.yappuworld.schedule.domain.SessionLifecycleStatus
+import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -36,7 +36,7 @@ data class ActiveGenerationSessionApiResponseDto(
     val time: LocalTime?,
     val endTime: LocalTime?,
     val type: SessionType,
-    val status: SessionLifecycleStatus
+    val progressPhase: SessionProgressPhase
 ) {
     constructor(session: SessionAppResponseDto) : this(
         id = session.id,
@@ -46,6 +46,6 @@ data class ActiveGenerationSessionApiResponseDto(
         time = session.time,
         endTime = session.endTime,
         type = session.type,
-        status = session.status
+        progressPhase = session.progressPhase
     )
 }
