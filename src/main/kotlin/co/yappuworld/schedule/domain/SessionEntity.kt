@@ -17,7 +17,36 @@ class SessionEntity(
     override var endDate: LocalDate?,
     override var time: LocalTime?,
     override var endTime: LocalTime?,
-    val generation: Int,
+    generation: Int,
+    sessionType: SessionType
+) : ScheduleEntity() {
+
+    var generation: Int = generation
+        private set
+
     @Enumerated(EnumType.STRING)
-    val sessionType: SessionType
-) : ScheduleEntity()
+    var sessionType: SessionType = sessionType
+        private set
+
+    fun update(
+        name: String,
+        description: String?,
+        place: String?,
+        date: LocalDate,
+        endDate: LocalDate?,
+        time: LocalTime?,
+        endTime: LocalTime?,
+        generation: Int,
+        sessionType: SessionType
+    ) {
+        this.name = name
+        this.description = description
+        this.place = place
+        this.date = date
+        this.endDate = endDate
+        this.time = time
+        this.endTime = endTime
+        this.generation = generation
+        this.sessionType = sessionType
+    }
+}

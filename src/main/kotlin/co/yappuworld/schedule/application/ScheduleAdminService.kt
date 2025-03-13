@@ -2,6 +2,7 @@ package co.yappuworld.schedule.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.application.dto.request.AdminSessionPageAppRequestDto
+import co.yappuworld.schedule.application.dto.request.AdminSessionUpdateAppRequestDto
 import co.yappuworld.schedule.application.dto.request.ScheduleCreateAppRequestDto
 import co.yappuworld.schedule.application.dto.response.AdminSessionDetailsAppResponseDto
 import co.yappuworld.schedule.application.dto.response.AdminSessionPageAppResponseDto
@@ -44,5 +45,13 @@ class ScheduleAdminService(
     @Transactional
     fun deleteSession(id: UUID) {
         scheduleJpaRepository.deleteById(id)
+    }
+
+    @Transactional
+    fun updateSession(request: AdminSessionUpdateAppRequestDto) {
+        val schedule = scheduleJpaRepository.findByIdOrNull(request.id)
+            ?: throw BusinessException(ScheduleError.NOT_SESSION_TYPE)
+
+        (schedule as SessionEntity).apply { request.applyTo(this) }
     }
 }

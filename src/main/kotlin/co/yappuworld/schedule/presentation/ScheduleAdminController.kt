@@ -4,8 +4,9 @@ import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.schedule.application.ScheduleAdminService
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionDeleteApiRequestDto
-import co.yappuworld.schedule.presentation.dto.request.AdminSessionDetailsApiResponseDto
+import co.yappuworld.schedule.presentation.dto.response.AdminSessionDetailsApiResponseDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionPageApiRequestDto
+import co.yappuworld.schedule.presentation.dto.request.AdminSessionUpdateApiRequestDto
 import co.yappuworld.schedule.presentation.dto.request.SessionCreateApiRequestDto
 import co.yappuworld.schedule.presentation.dto.response.AdminSessionOverviewApiResponseDto
 import org.springframework.http.ResponseEntity
@@ -47,6 +48,11 @@ class ScheduleAdminController(
 
     override fun deleteSession(request: AdminSessionDeleteApiRequestDto): ResponseEntity<Unit> {
         scheduleAdminService.deleteSession(request.id)
+        return ResponseEntity.noContent().build()
+    }
+
+    override fun updateSession(request: AdminSessionUpdateApiRequestDto): ResponseEntity<Unit> {
+        scheduleAdminService.updateSession(request.toAppRequest())
         return ResponseEntity.noContent().build()
     }
 }
