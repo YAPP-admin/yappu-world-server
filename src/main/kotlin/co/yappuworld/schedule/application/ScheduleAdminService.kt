@@ -50,7 +50,7 @@ class ScheduleAdminService(
     @Transactional
     fun updateSession(request: AdminSessionUpdateAppRequestDto) {
         val schedule = scheduleJpaRepository.findByIdOrNull(request.id)
-            ?: throw BusinessException(ScheduleError.NOT_SESSION_TYPE)
+            ?: throw BusinessException(ScheduleError.UPDATE_FAIL_NOT_SESSION_TYPE)
 
         (schedule as SessionEntity).apply { request.applyTo(this) }
     }
