@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.time.LocalTime
 
-data class ScheduleCreateApiRequestDto(
+data class SessionCreateApiRequestDto(
     @Schema(description = "스케줄 이름", nullable = false, example = "데모데이")
     @field:NotBlank
     val name: String,
