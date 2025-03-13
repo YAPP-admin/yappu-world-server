@@ -2,6 +2,7 @@ package co.yappuworld.schedule.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.schedule.presentation.dto.request.AdminSessionDeleteApiRequestDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionDetailsApiResponseDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionPageApiRequestDto
 import co.yappuworld.schedule.presentation.dto.request.SessionCreateApiRequestDto
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -147,4 +149,37 @@ interface ScheduleAdminApi {
     fun getSession(
         @PathVariable sessionId: UUID
     ): ResponseEntity<SuccessResponse<AdminSessionDetailsApiResponseDto>>
+
+    @Operation(summary = "세션 삭제")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "ID와 일치하는 세션이 존재하지 않습니다.",
+                                value = """
+                                    {
+                                        "message": "세션을 찾지 못했습니다.",
+                                        "errorCode": "SCH_1002",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @DeleteMapping("/admin/v1/sessions")
+    fun deleteSession(
+        @RequestBody request: AdminSessionDeleteApiRequestDto
+    ): ResponseEntity<Unit>
 }

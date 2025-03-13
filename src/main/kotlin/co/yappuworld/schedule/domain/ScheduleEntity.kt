@@ -16,7 +16,8 @@ import java.time.LocalTime
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 abstract class ScheduleEntity : BaseJpaEntity() {
 
-    val isDeleted: Boolean = false
+    var isDeleted: Boolean = false
+        protected set
 
     abstract val name: String
 
@@ -27,4 +28,8 @@ abstract class ScheduleEntity : BaseJpaEntity() {
     abstract val endDate: LocalDate?
     abstract val time: LocalTime?
     abstract val endTime: LocalTime?
+
+    fun delete() {
+        this.isDeleted = true
+    }
 }

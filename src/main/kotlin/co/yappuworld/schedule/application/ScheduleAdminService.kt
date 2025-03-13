@@ -37,4 +37,12 @@ class ScheduleAdminService(
             .findByIdOrNull(id)
             ?.let { AdminSessionDetailsAppResponseDto(it as SessionEntity) }
             ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
+
+    /**
+     * 어드민에서 요청하는 세션 삭제라, hard delete 구현
+     */
+    @Transactional
+    fun deleteSession(id: UUID) {
+        scheduleJpaRepository.deleteById(id)
+    }
 }
