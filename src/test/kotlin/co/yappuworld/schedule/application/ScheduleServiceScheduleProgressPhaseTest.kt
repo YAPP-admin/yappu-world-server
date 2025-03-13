@@ -18,7 +18,7 @@ class ScheduleServiceScheduleProgressPhaseTest {
     private val scheduleService = ScheduleService(generationRepository, scheduleRepository)
 
     fun mockScheduleRepository(vararg schedules: ScheduleEntity) {
-        every { scheduleRepository.findScheduleEntitiesByDateIsBetween(any(), any()) } returns schedules.toList()
+        every { scheduleRepository.findScheduleEntitiesByDateBetween(any(), any()) } returns schedules.toList()
     }
 
     @Test

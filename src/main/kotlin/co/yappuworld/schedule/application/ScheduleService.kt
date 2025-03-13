@@ -21,7 +21,7 @@ class ScheduleService(
         val currentGeneration = generationRepository.getGenerationOrNullByIsActiveIsTrue()
             ?: return SessionsAppResponseDto.from(emptyList(), now)
         return SessionsAppResponseDto.from(
-            sessions = scheduleJpaRepository.findSessionEntitiesByGeneration(currentGeneration.value),
+            sessions = scheduleJpaRepository.findAllSessionEntityByGeneration(currentGeneration.value),
             now = now
         )
     }
@@ -30,7 +30,7 @@ class ScheduleService(
         request: SchedulePageAppRequestDto,
         now: LocalDateTime
     ): SchedulePageAppResponseDto {
-        val schedules = scheduleJpaRepository.findScheduleEntitiesByDateIsBetween(request.from, request.to)
+        val schedules = scheduleJpaRepository.findScheduleEntitiesByDateBetween(request.from, request.to)
         return SchedulePageAppResponseDto.from(schedules, request, now)
     }
 }
