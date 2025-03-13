@@ -43,8 +43,8 @@ interface ScheduleAdminApi {
             )
         ]
     )
-    @GetMapping("/admin/v1/schedules")
-    fun getSchedule(
+    @GetMapping("/admin/v1/sessions")
+    fun getSessions(
         @Valid @ParameterObject request: AdminSessionPageApiRequestDto
     ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSessionOverviewApiResponseDto>>>
 }

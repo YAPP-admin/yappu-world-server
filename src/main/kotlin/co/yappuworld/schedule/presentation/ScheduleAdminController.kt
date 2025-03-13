@@ -20,9 +20,20 @@ class ScheduleAdminController(
         return ResponseEntity.created(URI.create("/v1/admin/schedules/$scheduleId")).build()
     }
 
-    override fun getSchedule(
+    override fun getSessions(
         request: AdminSessionPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSessionOverviewApiResponseDto>>> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSessionOverviewApiResponseDto>>> =
+        scheduleAdminService.getSessions(request.toAppRequest()).let {
+            ResponseEntity.ok(
+                SuccessResponse(
+                    OffsetPageResponse(
+                        data = it.sessions.map { AdminSessionOverviewApiResponseDto(it) },
+                        totalCount = it.totalElements,
+                        totalPages = it.totalPages,
+                        page = request.page,
+                        size = request.size
+                    )
+                )
+            )
+        }
 }

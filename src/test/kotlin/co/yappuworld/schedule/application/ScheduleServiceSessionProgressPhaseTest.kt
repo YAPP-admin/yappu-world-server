@@ -34,7 +34,7 @@ class ScheduleServiceSessionProgressPhaseTest {
     }
 
     fun mockScheduleRepository(schedules: List<SessionEntity>) {
-        every { scheduleRepository.findSessionEntitiesByGeneration(generation) } returns schedules
+        every { scheduleRepository.findAllSessionEntityByGeneration(generation) } returns schedules
     }
 
     @Test
