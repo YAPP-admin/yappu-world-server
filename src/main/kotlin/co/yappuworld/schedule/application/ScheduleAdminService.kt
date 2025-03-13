@@ -2,6 +2,7 @@ package co.yappuworld.schedule.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.application.dto.request.AdminSessionPageAppRequestDto
+import co.yappuworld.schedule.application.dto.request.AdminSessionUpdateAppRequestDto
 import co.yappuworld.schedule.application.dto.request.ScheduleCreateAppRequestDto
 import co.yappuworld.schedule.application.dto.response.AdminSessionDetailsAppResponseDto
 import co.yappuworld.schedule.application.dto.response.AdminSessionPageAppResponseDto
@@ -37,4 +38,20 @@ class ScheduleAdminService(
             .findByIdOrNull(id)
             ?.let { AdminSessionDetailsAppResponseDto(it as SessionEntity) }
             ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
+
+    /**
+     * 어드민에서 요청하는 세션 삭제라, hard delete 구현
+     */
+    @Transactional
+    fun deleteSession(id: UUID) {
+        scheduleJpaRepository.deleteById(id)
+    }
+
+    @Transactional
+    fun updateSession(request: AdminSessionUpdateAppRequestDto) {
+        val schedule = scheduleJpaRepository.findByIdOrNull(request.id)
+            ?: throw BusinessException(ScheduleError.UPDATE_FAIL_NOT_SESSION_TYPE)
+
+        (schedule as SessionEntity).apply { request.applyTo(this) }
+    }
 }

@@ -20,5 +20,10 @@ enum class ScheduleError : Error {
         override val message: String = "세션을 찾지 못했습니다."
         override val code: String = "SCH_1002"
         override val type: ErrorType = ErrorType.NOT_FOUND
+    },
+    UPDATE_FAIL_NOT_SESSION_TYPE {
+        override val message: String = "세션 타입 수정만 요청 가능합니다."
+        override val code: String = "SCH_1003"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     }
 }

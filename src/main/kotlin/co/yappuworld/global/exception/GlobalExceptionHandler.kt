@@ -63,6 +63,7 @@ class GlobalExceptionHandler {
     private fun getHttpStatusBy(errorType: ErrorType): HttpStatus =
         when (errorType) {
             ErrorType.WRONG_ARGUMENT -> HttpStatus.BAD_REQUEST
+            ErrorType.BAD_REQUEST -> HttpStatus.BAD_REQUEST
             ErrorType.UNAUTHORIZED -> HttpStatus.UNAUTHORIZED
             ErrorType.NOT_FOUND -> HttpStatus.NOT_FOUND
             ErrorType.WRONG_STATE -> HttpStatus.CONFLICT

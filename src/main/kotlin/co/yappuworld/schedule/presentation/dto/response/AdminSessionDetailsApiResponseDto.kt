@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.presentation.dto.request
+package co.yappuworld.schedule.presentation.dto.response
 
 import co.yappuworld.schedule.application.dto.response.AdminSessionDetailsAppResponseDto
 import co.yappuworld.schedule.domain.SessionType
