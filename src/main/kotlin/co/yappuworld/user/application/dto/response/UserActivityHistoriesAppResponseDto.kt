@@ -14,12 +14,14 @@ data class UserActivityHistoriesAppResponseDto(
             generations: Map<Int, Generation>
         ): UserActivityHistoriesAppResponseDto =
             UserActivityHistoriesAppResponseDto(
-                activityUnits.map {
-                    UserActivityHistoryAppResponseDto(
-                        it,
-                        generations[it.generation]
-                    )
-                }
+                activityUnits
+                    .sortedByDescending { it.generation }
+                    .map {
+                        UserActivityHistoryAppResponseDto(
+                            it,
+                            generations[it.generation]
+                        )
+                    }
             )
     }
 }
