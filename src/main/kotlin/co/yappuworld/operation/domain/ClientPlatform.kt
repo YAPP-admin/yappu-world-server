@@ -1,6 +1,9 @@
 package co.yappuworld.operation.domain
 
-enum class ClientPlatform {
-    ANDROID,
-    IOS
+enum class ClientPlatform(
+    val label: String
+) {
+
+    ANDROID("Android"),
+    IOS("iOS")
 }

@@ -18,7 +18,7 @@ class GenerationRepositoryCallbackTest {
 
     @Test
     fun `저장 전과 후에 isNew 필드가 다르다`() {
-        val generation = OperationFixture.getGenerationFixture()
+        val generation = OperationFixture.getGenerationFixture(value = Int.MAX_VALUE)
         assertTrue { generation.isNew }
 
         generationRepository.save(generation)
@@ -27,7 +27,7 @@ class GenerationRepositoryCallbackTest {
 
     @Test
     fun `조회 해온 것도 isNew가 False로 되어 있다`() {
-        val generation = OperationFixture.getGenerationFixture()
+        val generation = OperationFixture.getGenerationFixture(value = Int.MAX_VALUE)
         generationRepository.save(generation)
 
         val findGeneration = generationRepository.findByIdOrNull(generation.id)!!

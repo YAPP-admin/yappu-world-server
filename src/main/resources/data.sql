@@ -50,8 +50,31 @@ VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안�
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true);
 
 INSERT INTO generations (value, start_date, end_date, is_active)
-VALUES (24, '2024-05-03', '2024-09-14', false),
-       (25, '2024-11-16', '2025-03-08', true);
+VALUES (1, null, null, false),
+       (2, null, null, false),
+       (3, null, null, false),
+       (4, null, null, false),
+       (5, null, null, false),
+       (6, null, null, false),
+       (7, null, null, false),
+       (8, null, null, false),
+       (9, null, null, false),
+       (10, null, null, false),
+       (11, null, null, false),
+       (12, null, null, false),
+       (13, null, null, false),
+       (14, null, null, false),
+       (15, null, null, false),
+       (16, null, null, false),
+       (17, null, null, false),
+       (18, null, null, false),
+       (19, null, null, false),
+       (20, '2022-04-02', '2022-08-06', false),
+       (21, '2022-10-23', '2023-02-26', false),
+       (22, '2023-04-29', '2023-08-05', false),
+       (23, '2023-10-28', '2024-02-24', false),
+       (24, '2024-05-11', '2024-09-14', false),
+       (25, '2024-11-16', '2025-03-08', false);
 
 INSERT INTO schedules (id, created_at, updated_at, is_deleted, name, description, place, date, end_date, time, end_time,
                        generation, type, session_type)

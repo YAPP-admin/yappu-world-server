@@ -2,8 +2,7 @@ package co.yappuworld.operation.presentation
 
 import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.operation.domain.ClientPlatform
-import co.yappuworld.operation.domain.Version
+import co.yappuworld.operation.presentation.dto.request.ForceUpdateInquiryRequest
 import co.yappuworld.operation.presentation.dto.response.ActiveGenerationApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.ForceUpdateApiResponseDto
 import co.yappuworld.operation.presentation.dto.response.OperationLinkApiResponseDto
@@ -15,11 +14,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
 
-@Tag(name = "운영 API")
+@Tag(name = "운영 API", description = "_")
 interface OperationApi {
 
     @Operation(summary = "직군 정보")
@@ -89,8 +88,7 @@ interface OperationApi {
     )
     @GetMapping("/v1/operations/force-update")
     fun getForceUpdateInfo(
-        @RequestParam version: Version,
-        @RequestParam platform: ClientPlatform
+        @ParameterObject request: ForceUpdateInquiryRequest
     ): ResponseEntity<SuccessResponse<ForceUpdateApiResponseDto>>
 
     @Operation(summary = "현재 활동 중인 기수")

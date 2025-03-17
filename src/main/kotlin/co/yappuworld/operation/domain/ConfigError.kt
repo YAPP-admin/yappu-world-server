@@ -11,6 +11,12 @@ enum class ConfigError : Error {
         override val type = ErrorType.WRONG_ARGUMENT
     },
 
+    MIN_VERSION_CANNOT_NULL {
+        override val message = "최소 지원 버전은 NULL일 수 없습니다."
+        override val code = "CFG_0002"
+        override val type = ErrorType.WRONG_STATE
+    },
+
     CONFIG_KEY_ERROR {
         override val message = "환경 변수 세팅에 오류가 발생했습니다. 요청 데이터를 확인해주세요."
         override val code = "CFG_9000"
