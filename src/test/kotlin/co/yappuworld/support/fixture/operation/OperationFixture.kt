@@ -7,8 +7,8 @@ object OperationFixture {
 
     fun getGenerationFixture(
         value: Int = 2,
-        startDate: LocalDate = LocalDate.of(2025, 11, 13),
-        endDate: LocalDate = LocalDate.of(2025, 3, 8),
+        startDate: LocalDate? = LocalDate.of(2025, 11, 13),
+        endDate: LocalDate? = LocalDate.of(2025, 3, 8),
         isActive: Boolean = true
     ) = Generation(
         value = value,

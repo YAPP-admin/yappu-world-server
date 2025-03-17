@@ -13,4 +13,6 @@ interface GenerationRepository :
     fun getGenerationOrNullByIsActiveIsTrue(): Generation?
 
     fun findAllByIsActiveIsTrue(): List<Generation>
+
+    fun findAllByValueIn(values: List<Int>): List<Generation>
 }

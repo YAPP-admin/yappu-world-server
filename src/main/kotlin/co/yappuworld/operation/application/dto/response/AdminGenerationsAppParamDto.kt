@@ -19,8 +19,8 @@ data class AdminGenerationsAppParamDto(
 
 data class AdminGenerationAppResponseDto(
     val generation: Int,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
+    val startDate: LocalDate?,
+    val endDate: LocalDate?,
     val isActive: Boolean
 ) {
 

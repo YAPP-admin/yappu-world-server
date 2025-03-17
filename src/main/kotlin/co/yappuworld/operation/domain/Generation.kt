@@ -9,8 +9,8 @@ import java.time.LocalDate
 @Table("generations")
 class Generation(
     value: Int,
-    startDate: LocalDate,
-    endDate: LocalDate,
+    startDate: LocalDate?,
+    endDate: LocalDate?,
     isActive: Boolean
 ) : Persistable<Int> {
 
