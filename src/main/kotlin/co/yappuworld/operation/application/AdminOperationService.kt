@@ -1,5 +1,6 @@
 package co.yappuworld.operation.application
 
+import co.yappuworld.operation.application.dto.request.AdminOperationLinkUpdateRequest
 import co.yappuworld.operation.application.dto.response.AdminForceUpdateInfoAppResponseDto
 import co.yappuworld.operation.application.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.domain.ClientPlatform.ANDROID
@@ -29,7 +30,7 @@ class AdminOperationService(
         when (request.platform) {
             ANDROID -> configRepository.findByIdOrNull("minSupportVersionInAndroid")
             IOS -> configRepository.findByIdOrNull("minSupportVersionInIos")
-        }?.apply { updateValue(request.version.value) }
+        }?.apply { update(request.version.value) }
             ?.also { configRepository.save(it) }
     }
 
@@ -38,4 +39,12 @@ class AdminOperationService(
         configRepository
             .findByCategory(ConfigCategory.LINK)
             .let { AdminOperationLinksResponse.from(it) }
+
+    @Transactional
+    fun updateOperationLink(request: AdminOperationLinkUpdateRequest) {
+        configRepository
+            .findByIdOrNull(request.id)
+            ?.apply { update(request.name, request.link) }
+            ?.also { configRepository.save(it) }
+    }
 }

@@ -2,6 +2,7 @@ package co.yappuworld.operation.presentation
 
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.application.AdminOperationService
+import co.yappuworld.operation.application.dto.request.AdminOperationLinkUpdateRequest
 import co.yappuworld.operation.application.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.presentation.dto.request.AdminMinSupportVersionUpdateRequest
 import co.yappuworld.operation.presentation.dto.response.AdminMinSupportVersionApiResponseDto
@@ -31,4 +32,9 @@ class AdminOperationController(
                 adminOperationService.getOperationLinks()
             )
         )
+
+    override fun updateOperationLinks(request: AdminOperationLinkUpdateRequest): ResponseEntity<Unit> {
+        adminOperationService.updateOperationLink(request)
+        return ResponseEntity.noContent().build()
+    }
 }

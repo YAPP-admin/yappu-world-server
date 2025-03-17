@@ -7,14 +7,25 @@ import org.springframework.data.relational.core.mapping.Table
 class Config(
     @Id
     val id: String,
-    val label: String,
+    label: String,
     val category: ConfigCategory,
     value: String?
 ) {
+    var label: String = label
+        private set
+
     var value: String? = value
         private set
 
-    fun updateValue(value: String?) {
+    fun update(value: String?) {
+        this.value = value
+    }
+
+    fun update(
+        label: String,
+        value: String?
+    ) {
+        this.label = label
         this.value = value
     }
 }

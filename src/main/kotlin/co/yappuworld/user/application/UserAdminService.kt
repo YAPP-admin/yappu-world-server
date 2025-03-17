@@ -97,7 +97,7 @@ class UserAdminService(
     @Transactional
     fun updateSignUpCode(request: AdminSignUpCodeUpdateAppRequestDto) {
         val config = configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply {
-            updateValue(request.code)
+            update(request.code)
         } ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
 
         configRepository.save(config)

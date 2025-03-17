@@ -1,6 +1,7 @@
 package co.yappuworld.operation.presentation
 
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.operation.application.dto.request.AdminOperationLinkUpdateRequest
 import co.yappuworld.operation.application.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.presentation.dto.request.AdminMinSupportVersionUpdateRequest
 import co.yappuworld.operation.presentation.dto.response.AdminMinSupportVersionApiResponseDto
@@ -110,4 +111,18 @@ interface AdminOperationApi {
     )
     @GetMapping("/admin/v1/operations/links")
     fun getOperationLinks(): ResponseEntity<SuccessResponse<AdminOperationLinksResponse>>
+
+    @Operation(summary = "운영 링크 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            )
+        ]
+    )
+    @PutMapping("/admin/v1/operations/links")
+    fun updateOperationLinks(
+        @RequestBody request: AdminOperationLinkUpdateRequest
+    ): ResponseEntity<Unit>
 }
