@@ -1,6 +1,7 @@
 package co.yappuworld.operation.application
 
 import co.yappuworld.operation.application.dto.response.AdminForceUpdateInfoAppResponseDto
+import co.yappuworld.operation.application.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.domain.ClientPlatform.ANDROID
 import co.yappuworld.operation.domain.ClientPlatform.IOS
 import co.yappuworld.operation.domain.ConfigCategory
@@ -31,4 +32,10 @@ class AdminOperationService(
         }?.apply { updateValue(request.version.value) }
             ?.also { configRepository.save(it) }
     }
+
+    @Transactional(readOnly = true)
+    fun getOperationLinks(): AdminOperationLinksResponse =
+        configRepository
+            .findByCategory(ConfigCategory.LINK)
+            .let { AdminOperationLinksResponse.from(it) }
 }

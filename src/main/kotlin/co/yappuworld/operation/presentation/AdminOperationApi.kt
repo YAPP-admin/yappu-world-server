@@ -1,6 +1,7 @@
 package co.yappuworld.operation.presentation
 
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.operation.application.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.presentation.dto.request.AdminMinSupportVersionUpdateRequest
 import co.yappuworld.operation.presentation.dto.response.AdminMinSupportVersionApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
@@ -69,4 +70,44 @@ interface AdminOperationApi {
     fun updateMinSupportVersion(
         @RequestBody request: AdminMinSupportVersionUpdateRequest
     ): ResponseEntity<Unit>
+
+    @Operation(summary = "운영 링크 목록")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                value = """
+                                    {
+                                        "data": {
+                                            "links": [
+                                                {
+                                                    "id": "privacyPolicyLink",
+                                                    "label": "개인정보 처리방침",
+                                                    "value": "https://yapp-workspace.notion.site/fc24f8ba29c34f9eb30eb945c621c1ca?pvs=4"
+                                                },
+                                                {
+                                                    "id": "termsOfServiceLink",
+                                                    "label": "이용약관",
+                                                    "value": "https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4"
+                                                }
+                                            ]
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/admin/v1/operations/links")
+    fun getOperationLinks(): ResponseEntity<SuccessResponse<AdminOperationLinksResponse>>
 }
