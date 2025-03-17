@@ -6,12 +6,12 @@ import io.swagger.v3.oas.annotations.media.Schema
 import org.springdoc.core.annotations.ParameterObject
 
 /**
- * @param version x.y.z
+ * @param value x.y.z
  */
 @ParameterObject
 class Version(
     @field:Schema(description = "버전 정보 (x.y.z)", required = true)
-    val version: String
+    val value: String
 ) {
 
     @JsonIgnore
@@ -24,7 +24,7 @@ class Version(
     val patch: Int
 
     init {
-        val splited = version.split(".")
+        val splited = value.split(".")
         if (splited.size != 3) {
             throw BusinessException(ConfigError.WRONG_VERSION_FORMAT)
         }
@@ -46,5 +46,5 @@ class Version(
 
     override fun hashCode(): Int = javaClass.hashCode()
 
-    override fun toString(): String = version
+    override fun toString(): String = value
 }
