@@ -3,6 +3,7 @@ package co.yappuworld.user.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.user.application.UserProfileService
+import co.yappuworld.user.presentation.dto.response.UserActivityHistoriesApiResponseDto
 import co.yappuworld.user.presentation.dto.response.UserProfileApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -18,6 +19,15 @@ class UserProfileController(
                 UserProfileApiResponseDto.of(
                     userProfileService.findUserProfile(securityUser.userId)
                 )
+            )
+        )
+
+    override fun getUserActivityHistories(
+        securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<UserActivityHistoriesApiResponseDto>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                UserActivityHistoriesApiResponseDto(userProfileService.findUserActivityHistories(securityUser.userId))
             )
         )
 }
