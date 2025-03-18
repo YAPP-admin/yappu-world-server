@@ -1,5 +1,11 @@
 # 야뿌들을 위한 세계, yappu-world
 
+## 🏛️ 아키텍처
+
+### 시스템 아키텍처
+
+![시스템 아키텍처](https://github.com/user-attachments/assets/4f185f42-3c4a-41f5-94b8-713dc15705c8)
+
 ## ⚙️ 프로젝트 세팅
 
 ### ktlint 설정
