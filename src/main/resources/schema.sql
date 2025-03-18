@@ -93,8 +93,9 @@ CREATE TABLE boards
     updated_at     datetime,
     board_type     varchar(255),
     notice_type    varchar(255),
-    title          varchar(255),
+    title          varchar(64),
     content        varchar(4000),
+    content_summary varchar(255),
     display_target varchar(255),
     writer_id      varchar(36) NOT NULL,
     is_active      tinyint(1)  NOT NULL

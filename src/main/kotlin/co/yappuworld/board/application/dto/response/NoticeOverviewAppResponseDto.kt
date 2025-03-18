@@ -30,7 +30,7 @@ data class NoticeSimpleAppResponseDto(
         id = notice.id,
         createdAt = LocalDate.now(),
         title = notice.title,
-        content = notice.content.take(200),
+        content = notice.contentSummary.take(200),
         noticeType = notice.noticeType
     )
 }

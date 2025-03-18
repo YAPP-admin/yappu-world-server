@@ -12,9 +12,13 @@ import java.util.UUID
 class Notice(
     override var title: String,
     override var content: String,
+    contentSummary: String,
     writer: Writer,
     noticeType: NoticeType
 ) : Post() {
+
+    var contentSummary: String = contentSummary
+        private set
 
     var noticeType: NoticeType = noticeType
         private set
@@ -30,6 +34,7 @@ class Notice(
             title = title,
             content = content,
             writer = writer,
-            noticeType = noticeType
+            noticeType = noticeType,
+            contentSummary = contentSummary
         ).apply { this.id = id }
 }
