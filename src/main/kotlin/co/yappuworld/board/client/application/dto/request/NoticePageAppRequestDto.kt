@@ -1,4 +1,4 @@
-package co.yappuworld.board.application.dto.request
+package co.yappuworld.board.client.application.dto.request
 
 import co.yappuworld.board.domain.vo.NoticeType
 import java.util.UUID

@@ -1,7 +1,7 @@
-package co.yappuworld.board.presentation
+package co.yappuworld.board.client.presentation
 
-import co.yappuworld.board.application.BoardService
-import co.yappuworld.board.presentation.dto.response.BoardResponse
+import co.yappuworld.board.client.application.BoardService
+import co.yappuworld.board.client.presentation.dto.response.BoardResponse
 import co.yappuworld.global.response.SuccessResponse
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity

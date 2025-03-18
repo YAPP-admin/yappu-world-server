@@ -1,4 +1,4 @@
-package co.yappuworld.board.presentation.dto.response
+package co.yappuworld.board.client.presentation.dto.response
 
 import co.yappuworld.board.domain.model.Board
 import co.yappuworld.user.domain.model.ActivityUnit

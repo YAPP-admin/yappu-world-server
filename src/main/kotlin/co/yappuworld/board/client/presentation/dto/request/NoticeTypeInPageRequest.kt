@@ -1,4 +1,4 @@
-package co.yappuworld.board.presentation.dto.request
+package co.yappuworld.board.client.presentation.dto.request
 
 /**
  * @property ALL 전체

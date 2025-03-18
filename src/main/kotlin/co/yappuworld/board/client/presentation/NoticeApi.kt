@@ -1,8 +1,8 @@
-package co.yappuworld.board.presentation
+package co.yappuworld.board.client.presentation
 
-import co.yappuworld.board.presentation.dto.request.NoticePageApiRequestDto
-import co.yappuworld.board.presentation.dto.response.NoticeApiResponseDto
-import co.yappuworld.board.presentation.dto.response.NoticeOverviewApiResponseDto
+import co.yappuworld.board.client.presentation.dto.request.NoticePageApiRequestDto
+import co.yappuworld.board.client.presentation.dto.response.NoticeApiResponseDto
+import co.yappuworld.board.client.presentation.dto.response.NoticeOverviewApiResponseDto
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import java.util.UUID
 
-@Tag(name = "게시판 API", description = "공지사항, 자유게시판 등")
+@Tag(name = "게시판 API", description = "공지사항, 자유게시판")
 interface NoticeApi {
 
     @Operation(summary = "공지사항 리스트 조회")

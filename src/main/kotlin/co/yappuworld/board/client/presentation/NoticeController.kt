@@ -1,9 +1,9 @@
-package co.yappuworld.board.presentation
+package co.yappuworld.board.client.presentation
 
-import co.yappuworld.board.application.BoardService
-import co.yappuworld.board.presentation.dto.request.NoticePageApiRequestDto
-import co.yappuworld.board.presentation.dto.response.NoticeApiResponseDto
-import co.yappuworld.board.presentation.dto.response.NoticeOverviewApiResponseDto
+import co.yappuworld.board.client.application.BoardService
+import co.yappuworld.board.client.presentation.dto.request.NoticePageApiRequestDto
+import co.yappuworld.board.client.presentation.dto.response.NoticeApiResponseDto
+import co.yappuworld.board.client.presentation.dto.response.NoticeOverviewApiResponseDto
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import org.springframework.http.ResponseEntity

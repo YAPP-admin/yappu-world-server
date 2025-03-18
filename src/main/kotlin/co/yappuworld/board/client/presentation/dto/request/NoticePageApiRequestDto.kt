@@ -1,6 +1,6 @@
-package co.yappuworld.board.presentation.dto.request
+package co.yappuworld.board.client.presentation.dto.request
 
-import co.yappuworld.board.application.dto.request.NoticePageAppRequestDto
+import co.yappuworld.board.client.application.dto.request.NoticePageAppRequestDto
 import co.yappuworld.board.domain.vo.NoticeType
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min

@@ -1,8 +1,8 @@
-package co.yappuworld.board.presentation.dto.response
+package co.yappuworld.board.client.presentation.dto.response
 
-import co.yappuworld.board.application.dto.response.NoticeOverviewAppResponseDto
-import co.yappuworld.board.application.dto.response.NoticeOverviewWriterAppResponseDto
-import co.yappuworld.board.application.dto.response.NoticeSimpleAppResponseDto
+import co.yappuworld.board.client.application.dto.response.NoticeOverviewAppResponseDto
+import co.yappuworld.board.client.application.dto.response.NoticeOverviewWriterAppResponseDto
+import co.yappuworld.board.client.application.dto.response.NoticeSimpleAppResponseDto
 import co.yappuworld.board.domain.vo.NoticeType
 import co.yappuworld.operation.presentation.dto.response.PositionApiResponseDto
 import io.swagger.v3.oas.annotations.media.Schema

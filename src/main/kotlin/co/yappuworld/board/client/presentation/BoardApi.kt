@@ -1,6 +1,6 @@
-package co.yappuworld.board.presentation
+package co.yappuworld.board.client.presentation
 
-import co.yappuworld.board.presentation.dto.response.BoardResponse
+import co.yappuworld.board.client.presentation.dto.response.BoardResponse
 import co.yappuworld.global.response.SuccessResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter

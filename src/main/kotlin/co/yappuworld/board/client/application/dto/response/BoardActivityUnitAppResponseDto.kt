@@ -1,4 +1,4 @@
-package co.yappuworld.board.application.dto.response
+package co.yappuworld.board.client.application.dto.response
 
 import co.yappuworld.user.domain.vo.Position
 

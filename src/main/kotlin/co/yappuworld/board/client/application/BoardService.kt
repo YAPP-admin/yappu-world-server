@@ -1,14 +1,13 @@
-package co.yappuworld.board.application
+package co.yappuworld.board.client.application
 
-import co.yappuworld.board.application.dto.request.NoticePageAppRequestDto
-import co.yappuworld.board.application.dto.response.NoticeAppResponseDto
-import co.yappuworld.board.application.dto.response.NoticeBundleAppResponseDto
+import co.yappuworld.board.client.application.dto.request.NoticePageAppRequestDto
+import co.yappuworld.board.client.application.dto.response.NoticeAppResponseDto
+import co.yappuworld.board.client.presentation.dto.response.BoardResponse
 import co.yappuworld.board.domain.model.Board
 import co.yappuworld.board.domain.model.Notice
 import co.yappuworld.board.domain.vo.BoardError
 import co.yappuworld.board.infrastructure.BoardRepository
 import co.yappuworld.board.infrastructure.NoticeRepository
-import co.yappuworld.board.presentation.dto.response.BoardResponse
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
@@ -43,13 +42,19 @@ class BoardService(
         }
 
     @Transactional(readOnly = true)
-    fun getNotices(request: NoticePageAppRequestDto): NoticeBundleAppResponseDto {
+    fun getNotices(
+        request: NoticePageAppRequestDto
+    ): co.yappuworld.board.client.application.dto.response.NoticeBundleAppResponseDto {
         val notices = this.getNoticeModels(request)
         val users = userRepository.findUsersWithActivityUnit(
             notices.map { it.writer.writerId.toString() }.subList(0, min(request.limit, notices.size)).toSet()
         )
 
-        return NoticeBundleAppResponseDto.from(notices, users, request.limit)
+        return co.yappuworld.board.client.application.dto.response.NoticeBundleAppResponseDto.from(
+            notices,
+            users,
+            request.limit
+        )
     }
 
     @Transactional(readOnly = true)

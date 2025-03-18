@@ -1,4 +1,4 @@
-package co.yappuworld.board.application.dto.response
+package co.yappuworld.board.client.application.dto.response
 
 import co.yappuworld.board.domain.model.Notice
 import co.yappuworld.board.domain.vo.NoticeType
@@ -7,43 +7,42 @@ import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import java.time.LocalDate
 import java.util.UUID
 
-data class NoticeOverviewAppResponseDto(
-    val notice: NoticeSimpleAppResponseDto,
-    val writer: NoticeOverviewWriterAppResponseDto
+data class NoticeAppResponseDto(
+    val notice: NoticeDetailsAppResponseDto,
+    val writer: NoticeDetailsWriterAppResponseDto
 ) {
-
     constructor(notice: Notice, user: UserWithLastActivityUnit) : this(
-        notice = NoticeSimpleAppResponseDto(notice),
-        writer = NoticeOverviewWriterAppResponseDto(user)
+        notice = NoticeDetailsAppResponseDto(notice),
+        writer = NoticeDetailsWriterAppResponseDto(user)
     )
 }
 
-data class NoticeSimpleAppResponseDto(
+data class NoticeDetailsAppResponseDto(
     val id: UUID,
-    val createdAt: LocalDate,
     val title: String,
     val content: String,
-    val noticeType: NoticeType
+    val createdAt: LocalDate,
+    val type: NoticeType
 ) {
 
     constructor(notice: Notice) : this(
         id = notice.id,
-        createdAt = LocalDate.now(),
         title = notice.title,
-        content = notice.contentSummary.take(200),
-        noticeType = notice.noticeType
+        content = notice.content,
+        createdAt = notice.createdAt.toLocalDate(),
+        type = notice.noticeType
     )
 }
 
-data class NoticeOverviewWriterAppResponseDto(
-    val userId: UUID,
+data class NoticeDetailsWriterAppResponseDto(
+    val id: UUID,
     val name: String,
     val activityUnitGeneration: Int,
     val activityUnitPosition: Position
 ) {
 
     constructor(user: UserWithLastActivityUnit) : this(
-        userId = user.userId,
+        id = user.userId,
         name = user.name,
         activityUnitGeneration = user.activityUnit.generation,
         activityUnitPosition = user.activityUnit.position
