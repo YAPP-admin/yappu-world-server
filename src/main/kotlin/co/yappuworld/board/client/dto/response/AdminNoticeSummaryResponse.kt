@@ -9,19 +9,19 @@ data class AdminNoticeSummaryResponse(
     val noticeId: String,
     val title: String,
     val createdAt: LocalDateTime,
-    val writer: AdminNoticeWriterResponse,
+    val writer: AdminNoticeSummaryWriterResponse,
     val noticeType: String
 ) {
     constructor(notice: NoticeEntity, user: User) : this(
         noticeId = notice.id.toString(),
         title = notice.title,
         createdAt = notice.createdAt,
-        writer = AdminNoticeWriterResponse(user),
+        writer = AdminNoticeSummaryWriterResponse(user),
         noticeType = notice.noticeType.label
     )
 }
 
-data class AdminNoticeWriterResponse(
+data class AdminNoticeSummaryWriterResponse(
     val userId: UUID,
     val name: String
 ) {
