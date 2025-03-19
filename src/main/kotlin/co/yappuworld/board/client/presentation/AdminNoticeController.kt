@@ -3,6 +3,7 @@ package co.yappuworld.board.client.presentation
 import co.yappuworld.board.client.application.AdminNoticeService
 import co.yappuworld.board.client.dto.request.AdminNoticeCreateRequest
 import co.yappuworld.board.client.dto.request.AdminNoticePageRequest
+import co.yappuworld.board.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.board.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.board.client.dto.response.AdminNoticeSummaryResponse
 import co.yappuworld.global.response.OffsetPageResponse
@@ -37,4 +38,9 @@ class AdminNoticeController(
         adminNoticeService.createNotice(securityUser.userId, request).let { noticeId ->
             ResponseEntity.created(URI.create("/admin/v1/notices/$noticeId")).build()
         }
+
+    override fun updateNotice(request: AdminNoticeUpdateRequest): ResponseEntity<Unit> {
+        adminNoticeService.updateNotice(request)
+        return ResponseEntity.noContent().build()
+    }
 }

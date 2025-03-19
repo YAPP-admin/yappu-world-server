@@ -2,6 +2,7 @@ package co.yappuworld.board.client.presentation
 
 import co.yappuworld.board.client.dto.request.AdminNoticeCreateRequest
 import co.yappuworld.board.client.dto.request.AdminNoticePageRequest
+import co.yappuworld.board.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.board.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.board.client.dto.response.AdminNoticeSummaryResponse
 import co.yappuworld.global.response.OffsetPageResponse
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
 
@@ -39,5 +41,11 @@ interface AdminNoticeApi {
     fun createNotice(
         @AuthenticationPrincipal securityUser: SecurityUser,
         @Valid @RequestBody request: AdminNoticeCreateRequest
+    ): ResponseEntity<Unit>
+
+    @Operation(summary = "공지사항 수정")
+    @PutMapping("/admin/v1/notices")
+    fun updateNotice(
+        @Valid @RequestBody request: AdminNoticeUpdateRequest
     ): ResponseEntity<Unit>
 }

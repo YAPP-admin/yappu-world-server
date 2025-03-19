@@ -20,4 +20,16 @@ class NoticeEntity(
     @Enumerated(EnumType.STRING)
     var noticeType: NoticeType = noticeType
         private set
+
+    fun update(
+        title: String,
+        content: String,
+        contentSummary: String,
+        noticeType: NoticeType
+    ) {
+        this.title = title
+        this.content = content
+        this.contentSummary = contentSummary
+        this.noticeType = noticeType
+    }
 }

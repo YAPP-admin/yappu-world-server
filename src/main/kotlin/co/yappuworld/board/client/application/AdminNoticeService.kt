@@ -2,6 +2,7 @@ package co.yappuworld.board.client.application
 
 import co.yappuworld.board.client.dto.request.AdminNoticeCreateRequest
 import co.yappuworld.board.client.dto.request.AdminNoticePageRequest
+import co.yappuworld.board.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.board.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.board.client.dto.response.AdminNoticeDetailWriterResponse
 import co.yappuworld.board.client.dto.response.AdminNoticeSummaryResponse
@@ -13,6 +14,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
@@ -21,6 +23,7 @@ class AdminNoticeService(
     private val userRepository: UserRepository
 ) {
 
+    @Transactional(readOnly = true)
     fun getNotices(request: AdminNoticePageRequest): OffsetPageResponse<AdminNoticeSummaryResponse> {
         val page = when (request.noticeType == "ALL") {
             true -> postRepository.findAll(request.toPageRequest())
@@ -44,6 +47,7 @@ class AdminNoticeService(
         )
     }
 
+    @Transactional(readOnly = true)
     fun getNotice(noticeId: UUID): AdminNoticeDetailResponse {
         val notice = postRepository
             .findById(noticeId)
@@ -63,6 +67,7 @@ class AdminNoticeService(
         )
     }
 
+    @Transactional
     fun createNotice(
         writerId: UUID,
         request: AdminNoticeCreateRequest
@@ -76,5 +81,20 @@ class AdminNoticeService(
         ).run { postRepository.save(this) }
 
         return notice.id
+    }
+
+    @Transactional
+    fun updateNotice(request: AdminNoticeUpdateRequest) {
+        val notice = postRepository
+            .findById(request.id)
+            .orElseThrow { BusinessException(BoardError.NOTICE_NOT_FOUND) }
+            as NoticeEntity
+
+        notice.update(
+            title = request.title,
+            content = request.content,
+            contentSummary = request.plainContent.take(200),
+            noticeType = request.type
+        )
     }
 }
