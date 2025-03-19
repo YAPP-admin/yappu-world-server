@@ -3,6 +3,7 @@ package co.yappuworld.board.presentation.dto.response
 import co.yappuworld.board.application.dto.response.NoticeAppResponseDto
 import co.yappuworld.board.application.dto.response.NoticeDetailsAppResponseDto
 import co.yappuworld.board.application.dto.response.NoticeDetailsWriterAppResponseDto
+import co.yappuworld.board.domain.vo.NoticeType
 import co.yappuworld.operation.presentation.dto.response.PositionApiResponseDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -28,14 +29,17 @@ data class NoticeDetailsApiResponseDto(
     @Schema(description = "공지사항 내용")
     val content: String,
     @Schema(description = "공지사항 작성일")
-    val createdAt: LocalDate
+    val createdAt: LocalDate,
+    @Schema(description = "공지사항 종류")
+    val noticeType: NoticeType
 ) {
 
     constructor(notice: NoticeDetailsAppResponseDto) : this(
         id = notice.id,
         title = notice.title,
         content = notice.content,
-        createdAt = notice.createdAt
+        createdAt = notice.createdAt,
+        noticeType = notice.type
     )
 }
 

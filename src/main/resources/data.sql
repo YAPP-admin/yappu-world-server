@@ -36,17 +36,18 @@ VALUES (uuid(), now(), now(), '01954809-38fd-1268-e0d6-d3fda39f6b4c', 'fcm_token
 INSERT INTO user_alarm_settings (id, created_at, updated_at, user_id, device, master)
 VALUES (uuid(), now(), now(), '01954809-38fd-1268-e0d6-d3fda39f6b4c', true, true);
 
-INSERT INTO boards (id, created_at, updated_at, board_type, notice_type, title, content, display_target, writer_id,
+INSERT INTO boards (id, created_at, updated_at, board_type, notice_type, title, content, content_summary,
+                    display_target, writer_id,
                     is_active)
-VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '몰라?',
+VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
-       (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '몰라?',
+       (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
-       (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다3', '## 안녕하세요 만나서 반갑습니다', '몰라?',
+       (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다3', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
-       (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '몰라?',
+       (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
-       (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '몰라?',
+       (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true);
 
 INSERT INTO generations (value, start_date, end_date, is_active)

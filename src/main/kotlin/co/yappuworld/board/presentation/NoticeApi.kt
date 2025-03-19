@@ -46,7 +46,7 @@ interface NoticeApi {
                                                         "noticeType": "OPERATION"
                                                     },
                                                     "writer": {
-                                                        "userId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
+                                                        "id": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
                                                         "name": "홍길동",
                                                         "activityUnitGeneration": 1,
                                                         "activityUnitPosition": {
@@ -94,7 +94,8 @@ interface NoticeApi {
                                                 "id": "ad8750bf-fa3e-11ef-ba22-0242ac120002",
                                                 "title": "제목입니다5",
                                                 "content": "## 안녕하세요 만나서 반갑습니다",
-                                                "createdAt": "2025-03-06"
+                                                "createdAt": "2025-03-06",
+                                                "noticeType": "OPERATION"
                                             },
                                             "writer": {
                                                 "id": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
