@@ -1,6 +1,7 @@
 package co.yappuworld.board.application.dto.response
 
 import co.yappuworld.board.domain.model.Notice
+import co.yappuworld.board.domain.vo.NoticeType
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import java.time.LocalDate
@@ -20,14 +21,16 @@ data class NoticeDetailsAppResponseDto(
     val id: UUID,
     val title: String,
     val content: String,
-    val createdAt: LocalDate
+    val createdAt: LocalDate,
+    val type: NoticeType
 ) {
 
     constructor(notice: Notice) : this(
         id = notice.id,
         title = notice.title,
         content = notice.content,
-        createdAt = notice.createdAt.toLocalDate()
+        createdAt = notice.createdAt.toLocalDate(),
+        type = notice.noticeType
     )
 }
 
