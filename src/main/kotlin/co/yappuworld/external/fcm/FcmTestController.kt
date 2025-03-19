@@ -17,7 +17,7 @@ import java.util.UUID
 private val logger = KotlinLogging.logger { }
 
 @Profile("local", "dev")
-@Tag(name = "FCM 테스트용")
+@Tag(name = "FCM 테스트용", description = "_")
 @RestController
 class FcmTestController(
     private val firebaseMessaging: FirebaseMessaging

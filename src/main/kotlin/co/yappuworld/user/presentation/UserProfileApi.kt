@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 
-@Tag(name = "유저 프로필 API", description = "프로필 조회, 수정 등..")
+@Tag(name = "유저 프로필 API", description = "_")
 interface UserProfileApi {
 
     @Operation(summary = "프로필 조회")

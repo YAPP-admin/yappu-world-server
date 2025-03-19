@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
 
-@Tag(name = "세션 어드민 API", description = "세션 생성, 수정, 삭제")
+@Tag(name = "세션 어드민 API", description = "세션 관리")
 interface ScheduleAdminApi {
 
     @Operation(summary = "세션 생성")

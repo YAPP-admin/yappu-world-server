@@ -15,7 +15,7 @@ import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 
-@Tag(name = "스케줄 API", description = "스케줄 목록")
+@Tag(name = "스케줄 API", description = "세션 및 기타 일정 조회")
 interface ScheduleApi {
 
     @Operation(summary = "활동 중인 기수의 세션 목록")

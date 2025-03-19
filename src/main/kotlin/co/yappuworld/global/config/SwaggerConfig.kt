@@ -15,6 +15,17 @@ import org.springframework.context.annotation.Configuration
 class SwaggerConfig {
 
     private val securitySchemeName = "JWT Authorization"
+    private val customiseResponses: OpenApiCustomizer =
+        OpenApiCustomizer { openApi ->
+            openApi.paths.values.forEach { item ->
+                item.readOperations().forEach { operation ->
+                    val responses = operation.responses
+                    SwaggerCommonResponses.values.forEach { value ->
+                        responses.addApiResponse(value.code, value.apiResponse)
+                    }
+                }
+            }
+        }
 
     @Bean
     fun openAPI(): OpenAPI =
@@ -29,6 +40,7 @@ class SwaggerConfig {
             .builder()
             .group("App API")
             .pathsToExclude("/admin/**")
+            .addOpenApiCustomizer(customiseResponses)
             .build()
 
     @Bean
@@ -37,20 +49,8 @@ class SwaggerConfig {
             .builder()
             .group("Admin API")
             .pathsToMatch("/admin/**") // 어드민 API만 포함
+            .addOpenApiCustomizer(customiseResponses)
             .build()
-
-    @Bean
-    fun customGlobalResponses(): OpenApiCustomizer =
-        OpenApiCustomizer { openApi ->
-            openApi.paths.values.forEach { item ->
-                item.readOperations().forEach { operation ->
-                    val responses = operation.responses
-                    SwaggerCommonResponses.values.forEach { value ->
-                        responses.addApiResponse(value.code, value.apiResponse)
-                    }
-                }
-            }
-        }
 
     private fun getInfo(): Info =
         Info()
