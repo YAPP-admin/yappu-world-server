@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
 
-@Tag(name = "회원 인증/인가 API", description = "회원가입 신청 승인, 거절 등..")
+@Tag(name = "회원 인증/인가 API", description = "회원 권한/가입신청 관리")
 interface UserAuthAdminApi {
 
     @Operation(summary = "유저 역할 변경")

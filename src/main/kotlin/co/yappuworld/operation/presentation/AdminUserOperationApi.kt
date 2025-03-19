@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "회원 운영 API")
+@Tag(name = "회원 운영 API", description = "_")
 interface AdminUserOperationApi {
 
     @Operation(summary = "기수 목록")

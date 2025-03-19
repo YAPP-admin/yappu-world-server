@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "유저 시스템 설정 관련 API", description = "FCM, 기기 정보 등..")
+@Tag(name = "유저 시스템 설정 관련 API", description = "FCM, 기기 정보 수정")
 interface UserSystemApi {
 
     @Operation(summary = "FCM 토큰 수정")

@@ -55,13 +55,9 @@ interface UserAlarmApi {
     ): ResponseEntity<SuccessResponse<UserAlarmStatusApiResponse>>
 
     @Operation(summary = "기기 알림 정보 업데이트")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "204",
-                content = [Content()]
-            )
-        ]
+    @ApiResponse(
+        responseCode = "204",
+        content = [Content()]
     )
     @PutMapping("/v1/alarms/device")
     fun updateDeviceAlarm(

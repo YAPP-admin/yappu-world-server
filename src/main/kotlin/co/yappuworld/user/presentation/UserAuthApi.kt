@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "유저 인증 API", description = "회원가입, 로그인, 로그아웃 등..")
+@Tag(name = "유저 인증 API", description = "회원가입, 로그인, 로그아웃 등")
 interface UserAuthApi {
 
     @Operation(summary = "회원가입")
