@@ -1,5 +1,6 @@
 package co.yappuworld.board.client.application
 
+import co.yappuworld.board.client.dto.request.AdminNoticeCreateRequest
 import co.yappuworld.board.client.dto.request.AdminNoticePageRequest
 import co.yappuworld.board.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.board.client.dto.response.AdminNoticeDetailWriterResponse
@@ -60,5 +61,20 @@ class AdminNoticeService(
             type = notice.noticeType,
             writer = AdminNoticeDetailWriterResponse(writer)
         )
+    }
+
+    fun createNotice(
+        writerId: UUID,
+        request: AdminNoticeCreateRequest
+    ): UUID {
+        val notice = NoticeEntity(
+            title = request.title,
+            content = request.content,
+            contentSummary = request.plainContent.take(200),
+            writerId = writerId,
+            noticeType = request.type
+        ).run { postRepository.save(this) }
+
+        return notice.id
     }
 }
