@@ -88,17 +88,33 @@ CREATE TABLE schedules
 DROP TABLE IF EXISTS boards;
 CREATE TABLE boards
 (
-    id             varchar(36) PRIMARY KEY,
-    created_at     datetime,
-    updated_at     datetime,
-    board_type     varchar(255),
-    notice_type    varchar(255),
-    title          varchar(64),
-    content        varchar(4000),
+    id              varchar(36) PRIMARY KEY,
+    created_at      datetime,
+    updated_at      datetime,
+    board_type      varchar(255),
+    notice_type     varchar(255),
+    title           varchar(64),
+    content         varchar(4000),
     content_summary varchar(255),
-    display_target varchar(255),
-    writer_id      varchar(36) NOT NULL,
-    is_active      tinyint(1)  NOT NULL
+    display_target  varchar(255),
+    writer_id       varchar(36) NOT NULL,
+    is_active       tinyint(1)  NOT NULL
+);
+
+DROP TABLE IF EXISTS posts;
+CREATE TABLE posts
+(
+    id              binary(16) PRIMARY KEY,
+    created_at      datetime,
+    updated_at      datetime,
+    type            varchar(255),
+    notice_type     varchar(255),
+    title           varchar(64),
+    content         varchar(4000),
+    content_summary varchar(255),
+    display_target  varchar(255),
+    writer_id       binary(16) NOT NULL,
+    is_active       tinyint(1)  NOT NULL
 );
 
 DROP TABLE IF EXISTS generations;
