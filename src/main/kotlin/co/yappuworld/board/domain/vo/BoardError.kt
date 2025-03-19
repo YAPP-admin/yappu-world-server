@@ -8,5 +8,12 @@ enum class BoardError : Error {
         override val message: String = "게시글이 존재하지 않습니다."
         override val code: String = "BRD_0001"
         override val type: ErrorType = ErrorType.NOT_FOUND
+    },
+
+    // 공지사항 1xxx
+    NOTICE_WRITER_NOT_FOUND {
+        override val message: String = "공지사항 작성자의 유저 정보가 존재하지 않습니다."
+        override val code: String = "BRD_1000"
+        override val type: ErrorType = ErrorType.NOT_FOUND
     }
 }

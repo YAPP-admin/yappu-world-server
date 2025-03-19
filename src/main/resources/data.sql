@@ -39,6 +39,7 @@ VALUES (uuid(), now(), now(), '01954809-38fd-1268-e0d6-d3fda39f6b4c', true, true
 INSERT INTO boards (id, created_at, updated_at, board_type, notice_type, title, content, content_summary,
                     display_target, writer_id,
                     is_active)
+<<<<<<< HEAD
 VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
        (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
@@ -48,7 +49,32 @@ VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안�
        (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
        (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '아', '몰라?',
+=======
+VALUES (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
+       (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
+       (uuid(), now(), now(), 'NOTICE', 'SESSION', '제목입니다3', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
+       (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        '01954809-38fd-1268-e0d6-d3fda39f6b4c', true),
+       (uuid(), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+>>>>>>> c2507e1 (feat: 어드민 공지사항 목록 API)
         '01954809-38fd-1268-e0d6-d3fda39f6b4c', true);
+
+INSERT INTO posts (id, created_at, updated_at, type, notice_type, title, content, content_summary,
+                   display_target, writer_id,
+                   is_active)
+VALUES (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
+       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
+       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다3', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
+       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
+       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+        UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true);
 
 INSERT INTO generations (value, start_date, end_date, is_active)
 VALUES (1, null, null, false),

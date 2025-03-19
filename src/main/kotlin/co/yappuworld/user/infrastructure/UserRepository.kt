@@ -15,6 +15,8 @@ interface UserRepository : CrudRepository<User, UUID> {
 
     fun findUserOrNullByEmail(email: String): User?
 
+    fun findAllByIdIn(userIds: List<UUID>): List<User>
+
     @Query(
         """
             SELECT 
