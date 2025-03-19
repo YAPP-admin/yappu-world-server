@@ -1,5 +1,7 @@
 package co.yappuworld.external.fcm
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.google.firebase.messaging.AndroidConfig
 import com.google.firebase.messaging.ApnsConfig
 import com.google.firebase.messaging.Aps
 import com.google.firebase.messaging.FirebaseMessaging
@@ -32,6 +34,15 @@ class FcmTestController(
     ) {
 
         fun toData(): Map<String, String> =
+            mapOf(
+                "title" to title,
+                "body" to body,
+                "type" to type,
+                "id" to id.toString()
+            )
+
+        @JsonIgnore
+        fun getDataWithNotification(): Map<String, String> =
             mapOf(
                 "title" to title,
                 "body" to body,
@@ -73,17 +84,23 @@ class FcmTestController(
             firebaseMessaging.send(
                 Message
                     .builder()
-                    .setApnsConfig(
+                    .setToken(request.token)
+                    .setAndroidConfig(
+                        AndroidConfig
+                            .builder()
+                            .putAllData(request.getDataWithNotification())
+                            .build()
+                    ).setApnsConfig(
                         ApnsConfig
                             .builder()
+                            .putAllCustomData(request.toData())
                             .setAps(
                                 Aps
                                     .builder()
                                     .setContentAvailable(true)
                                     .build()
                             ).build()
-                    ).putAllData(request.toData())
-                    .build()
+                    ).build()
             )
         } catch (e: FirebaseMessagingException) {
             logger.warn {
