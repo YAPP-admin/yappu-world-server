@@ -43,15 +43,15 @@ enum class UserError : Error {
         override val code: String = "USR_1003"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
-    CONTAIN_WRONG_APPLICATION_ID {
-        override val message: String = "잘못된 가입 신청 ID가 포함되어 있습니다."
+    CONTAIN_NOT_EXIST_APPLICATION_ID {
+        override val message: String = "존재하지 않는 가입 신청 ID가 포함되어 있습니다."
         override val code: String = "USR_1004"
-        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
+        override val type: ErrorType = ErrorType.NOT_FOUND
     },
-    DUPLICATE_EMAIL {
-        override val message: String = "중복된 이메일입니다."
+    CONTAIN_ALREADY_PROCESSED_APPLICATION {
+        override val message: String = "이미 처리된 가입 신청이 포함되어 있습니다."
         override val code: String = "USR_1005"
-        override val type: ErrorType = ErrorType.WRONG_STATE
+        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },
     NOT_FOUND_SIGN_UP_APPLICATION {
         override val message: String = "회원가입 신청 내역을 찾을 수 없습니다."

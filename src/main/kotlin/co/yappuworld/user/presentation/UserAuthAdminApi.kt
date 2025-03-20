@@ -7,7 +7,7 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
 import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest
-import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
 import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
@@ -165,7 +165,7 @@ interface UserAuthAdminApi {
     ): ResponseEntity<Unit>
 
     @Operation(
-        summary = "회원가입 신청 승인 (Bulk 가능)",
+        summary = "회원가입 신청 승인 (bulk 가능)",
         description = """
             단일 승인과 복수 승인 모두 이 API를 사용해주세요.
             복수 승인 시에 All or Nothing으로, 하나 실패하면 모두 실패입니다!
@@ -208,7 +208,7 @@ interface UserAuthAdminApi {
         @RequestBody request: SignUpApplicationApproveRequest
     ): ResponseEntity<Unit>
 
-    @Operation(summary = "회원가입 신청 반려")
+    @Operation(summary = "회원가입 신청 반려 (bulk 가능)")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -242,7 +242,7 @@ interface UserAuthAdminApi {
     )
     @PostMapping("/admin/v1/auth/applications/reject")
     fun rejectSignUpApplication(
-        @RequestBody request: SignUpApplicationRejectApiRequestDto
+        @RequestBody request: SignUpApplicationRejectRequest
     ): ResponseEntity<Unit>
 
     @Operation(summary = "회원가입 신청서 목록")

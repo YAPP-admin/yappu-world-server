@@ -1,7 +1,6 @@
 package co.yappuworld.user.application.dto.request
 
 import co.yappuworld.user.domain.vo.UserRole
-import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -10,8 +9,4 @@ data class SignUpApplicationApproveRequest(
     val applicationIds: List<UUID>,
     @Schema(description = "회원 역할")
     val role: UserRole
-) {
-
-    @JsonIgnore
-    val size = applicationIds.size
-}
+)
