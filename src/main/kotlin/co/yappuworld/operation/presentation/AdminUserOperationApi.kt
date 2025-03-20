@@ -2,6 +2,7 @@ package co.yappuworld.operation.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.operation.application.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.presentation.dto.request.AdminGenerationActiveUpdateApiRequestDto
 import co.yappuworld.operation.presentation.dto.request.AdminGenerationPageApiRequestDto
 import co.yappuworld.operation.presentation.dto.request.AdminGenerationRegisterApiRequestDto
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -265,5 +267,16 @@ interface AdminUserOperationApi {
     @PatchMapping("/admin/v1/auth/authentication-codes")
     fun updateSignUpAuthenticationCode(
         @Valid @RequestBody request: AdminSignUpCodeUpdateApiRequestDto
+    ): ResponseEntity<Unit>
+
+    @Operation(summary = "인증번호 삭제")
+    @ApiResponse(
+        responseCode = "204",
+        description = "No Content",
+        content = [Content()]
+    )
+    @DeleteMapping("/admin/v1/auth/authentication-codes")
+    fun deleteSignUpAuthenticationCode(
+        @Valid @RequestBody request: AdminSignupCodeDeleteRequest
     ): ResponseEntity<Unit>
 }
