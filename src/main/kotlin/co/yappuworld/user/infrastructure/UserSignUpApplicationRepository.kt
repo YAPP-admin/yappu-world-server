@@ -22,4 +22,6 @@ interface UserSignUpApplicationRepository :
         applicantEmail: String,
         limit: Limit
     ): SignUpApplication?
+
+    fun findAllByIdIn(ids: List<UUID>): List<SignUpApplication>
 }

@@ -8,11 +8,11 @@ import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
-import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
-import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest
+import co.yappuworld.user.application.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -35,30 +35,22 @@ class UserAuthAdminController(
         return ResponseEntity.noContent().build()
     }
 
-    override fun approveSignUpApplication(request: SignUpApplicationApproveApiRequestDto): ResponseEntity<Unit> {
-        signUpService.approveSignUpApplication(request.toAppRequest())
+    override fun approveSignUpApplication(request: SignUpApplicationApproveRequest): ResponseEntity<Unit> {
+        signUpService.approveSignUpApplication(request)
         return ResponseEntity.noContent().build()
     }
 
-    override fun rejectSignUpApplication(request: SignUpApplicationRejectApiRequestDto): ResponseEntity<Unit> {
-        signUpService.rejectSignUpApplication(request.toAppRequest())
+    override fun rejectSignUpApplication(request: SignUpApplicationRejectRequest): ResponseEntity<Unit> {
+        signUpService.rejectSignUpApplication(request)
         return ResponseEntity.noContent().build()
     }
 
     override fun getSignUpApplications(
         request: AdminSignUpApplicationPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewApiResponseDto>>> =
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>> =
         userAdminService.getSignUpApplications(request.toAppRequest()).let {
             ResponseEntity.ok(
-                SuccessResponse(
-                    OffsetPageResponse(
-                        data = it.data.map { d -> AdminSignUpApplicationOverviewApiResponseDto(d) },
-                        totalCount = it.totalCount,
-                        totalPages = it.totalPages,
-                        page = request.page,
-                        size = request.size
-                    )
-                )
+                SuccessResponse(it)
             )
         }
 

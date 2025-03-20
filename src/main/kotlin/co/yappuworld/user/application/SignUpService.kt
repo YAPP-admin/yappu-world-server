@@ -7,17 +7,17 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.CheckingEmailAvailabilityAppRequestDto
 import co.yappuworld.user.application.dto.request.LatestSignUpApplicationAppRequestDto
-import co.yappuworld.user.application.dto.request.SignUpApplicationApproveAppRequestDto
-import co.yappuworld.user.application.dto.request.SignUpApplicationRejectAppRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest
+import co.yappuworld.user.application.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.model.UserAlarmSetting
 import co.yappuworld.user.domain.model.UserDevice
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
@@ -26,10 +26,10 @@ import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Limit
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 private val logger = KotlinLogging.logger { }
 
@@ -94,25 +94,23 @@ class SignUpService(
     }
 
     @Transactional
-    fun approveSignUpApplication(request: SignUpApplicationApproveAppRequestDto) {
-        val application = signUpApplicationRepository.findByIdOrNull(request.applicationId)
-            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+    fun approveSignUpApplication(request: SignUpApplicationApproveRequest) {
+        val applications = getPendingApplications(request.applicationIds)
 
-        checkEmailDuplication(application.applicantEmail)
-        application.approve()
+        applications.forEach { application ->
+            checkEmailDuplication(application.applicantEmail)
+            application.approve()
 
-        signUpApplicationRepository.save(application)
-        initializeUser(application, request.role)
+            signUpApplicationRepository.save(application)
+            initializeUser(application, request.role)
+        }
     }
 
     @Transactional
-    fun rejectSignUpApplication(request: SignUpApplicationRejectAppRequestDto) {
-        val application = signUpApplicationRepository
-            .findByIdOrNull(request.applicationId)
-            ?.apply { reject(request.reason) }
-            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
-
-        signUpApplicationRepository.save(application)
+    fun rejectSignUpApplication(request: SignUpApplicationRejectRequest) {
+        val applications = getPendingApplications(request.applicationIds)
+        applications.forEach { it.reject(request.reason) }
+        signUpApplicationRepository.saveAll(applications)
     }
 
     private fun initializeUser(
@@ -171,5 +169,32 @@ class SignUpService(
             "authenticationCodeAlumni" -> UserRole.ALUMNI
             else -> UserRole.ACTIVE
         }
+    }
+
+    private fun getPendingApplications(applicationIds: List<UUID>): List<SignUpApplication> {
+        val applications = signUpApplicationRepository.findAllByIdIn(applicationIds)
+        if (applicationIds.size != applications.size) {
+            logger.error {
+                """
+                | 존재하지 않는 신청서 ID가 포함되어 있어서 처리에 실패했습니다.
+                | 요청한 ID: $applicationIds
+                | 조회한 ID: ${applications.map { it.id }}
+                """.trimIndent()
+            }
+            throw BusinessException(UserError.CONTAIN_NOT_EXIST_APPLICATION_ID)
+        }
+
+        if (applications.any { it.status != SignUpApplicationStatus.PENDING }) {
+            logger.error {
+                """
+                | 이미 처리된 신청서의 ID가 포함되어 있어서 처리에 실패했습니다.
+                | 요청한 ID: $applicationIds
+                | 조회한 ID: ${applications.map { it.id }}
+                """.trimMargin()
+            }
+            throw BusinessException(UserError.CONTAIN_ALREADY_PROCESSED_APPLICATION)
+        }
+
+        return applications
     }
 }

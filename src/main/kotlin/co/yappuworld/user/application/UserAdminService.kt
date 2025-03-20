@@ -1,6 +1,7 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
@@ -10,14 +11,14 @@ import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
-import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.application.dto.request.AdminSignUpApplicationPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminSignUpCodeUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
+import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
 import co.yappuworld.user.application.dto.response.AdminSignUpApplicationAppResponseDto
-import co.yappuworld.user.application.dto.response.AdminSignUpApplicationBundleAppResponse
+import co.yappuworld.user.application.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewBundleAppResponseDto
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus.APPROVED
@@ -25,7 +26,7 @@ import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
-import co.yappuworld.user.application.dto.response.AdminUserDetailResponse
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -117,9 +118,15 @@ class UserAdminService(
     @Transactional(readOnly = true)
     fun getSignUpApplications(
         request: AdminSignUpApplicationPageAppRequestDto
-    ): AdminSignUpApplicationBundleAppResponse =
+    ): OffsetPageResponse<AdminSignUpApplicationOverviewResponse> =
         userSignUpApplicationRepository.findAll(request.toPageRequest()).let {
-            AdminSignUpApplicationBundleAppResponse(it)
+            OffsetPageResponse(
+                data = it.content.map { c -> AdminSignUpApplicationOverviewResponse(c) },
+                totalCount = it.totalElements,
+                totalPages = it.totalPages,
+                page = request.page,
+                size = request.size
+            )
         }
 
     @Transactional
