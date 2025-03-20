@@ -7,7 +7,7 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.operation.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.CheckingEmailAvailabilityAppRequestDto
 import co.yappuworld.user.application.dto.request.LatestSignUpApplicationAppRequestDto
-import co.yappuworld.user.application.dto.request.SignUpApplicationApproveAppRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.application.dto.request.SignUpApplicationRejectAppRequestDto
 import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
 import co.yappuworld.user.application.dto.response.LatestSignUpApplicationAppResponseDto
@@ -15,9 +15,9 @@ import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.model.User
 import co.yappuworld.user.domain.model.UserAlarmSetting
 import co.yappuworld.user.domain.model.UserDevice
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.UserDeviceRepository
@@ -94,15 +94,19 @@ class SignUpService(
     }
 
     @Transactional
-    fun approveSignUpApplication(request: SignUpApplicationApproveAppRequestDto) {
-        val application = signUpApplicationRepository.findByIdOrNull(request.applicationId)
-            ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
+    fun approveSignUpApplication(request: SignUpApplicationApproveRequest) {
+        val applications = signUpApplicationRepository.findAllByIdIn(request.applicationIds)
+        if (request.size != applications.size || applications.any { it.status != SignUpApplicationStatus.PENDING }) {
+            throw BusinessException(UserError.CONTAIN_WRONG_APPLICATION_ID)
+        }
 
-        checkEmailDuplication(application.applicantEmail)
-        application.approve()
+        applications.forEach { application ->
+            checkEmailDuplication(application.applicantEmail)
+            application.approve()
 
-        signUpApplicationRepository.save(application)
-        initializeUser(application, request.role)
+            signUpApplicationRepository.save(application)
+            initializeUser(application, request.role)
+        }
     }
 
     @Transactional

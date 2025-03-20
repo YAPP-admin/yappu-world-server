@@ -43,8 +43,8 @@ enum class UserError : Error {
         override val code: String = "USR_1003"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
-    INVALID_EMAIL {
-        override val message: String = "이메일 형식이 아닙니다."
+    CONTAIN_WRONG_APPLICATION_ID {
+        override val message: String = "잘못된 가입 신청 ID가 포함되어 있습니다."
         override val code: String = "USR_1004"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },

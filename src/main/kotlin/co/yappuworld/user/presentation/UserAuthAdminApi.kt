@@ -6,7 +6,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
-import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
@@ -164,7 +164,13 @@ interface UserAuthAdminApi {
         @Valid @RequestBody request: UserRoleUpdateApiRequestDto
     ): ResponseEntity<Unit>
 
-    @Operation(summary = "회원가입 신청 승인")
+    @Operation(
+        summary = "회원가입 신청 승인 (Bulk 가능)",
+        description = """
+            단일 승인과 복수 승인 모두 이 API를 사용해주세요.
+            복수 승인 시에 All or Nothing으로, 하나 실패하면 모두 실패입니다!
+        """
+    )
     @ApiResponses(
         value = [
             ApiResponse(
@@ -199,7 +205,7 @@ interface UserAuthAdminApi {
     )
     @PostMapping("/admin/v1/auth/applications/approve")
     fun approveSignUpApplication(
-        @RequestBody request: SignUpApplicationApproveApiRequestDto
+        @RequestBody request: SignUpApplicationApproveRequest
     ): ResponseEntity<Unit>
 
     @Operation(summary = "회원가입 신청 반려")

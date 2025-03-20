@@ -8,7 +8,7 @@ import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
-import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
+import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
@@ -35,8 +35,8 @@ class UserAuthAdminController(
         return ResponseEntity.noContent().build()
     }
 
-    override fun approveSignUpApplication(request: SignUpApplicationApproveApiRequestDto): ResponseEntity<Unit> {
-        signUpService.approveSignUpApplication(request.toAppRequest())
+    override fun approveSignUpApplication(request: SignUpApplicationApproveRequest): ResponseEntity<Unit> {
+        signUpService.approveSignUpApplication(request)
         return ResponseEntity.noContent().build()
     }
 
