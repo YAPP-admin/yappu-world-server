@@ -45,11 +45,12 @@ class UserAuthServiceTest {
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
     private val userSystemNotifier = mockk<UserSystemNotifier>()
+    private val userLoginPermissionChecker = mockk<UserLoginPermissionChecker>()
     private val userAuthService = UserAuthService(
-        userRepository,
-        authApplicationRepository,
-        jwtGenerator,
-        jwtResolver
+        userRepository = userRepository,
+        jwtGenerator = jwtGenerator,
+        jwtResolver = jwtResolver,
+        userLoginPermissionChecker = userLoginPermissionChecker
     )
     private val signUpService = SignUpService(
         userRepository,
