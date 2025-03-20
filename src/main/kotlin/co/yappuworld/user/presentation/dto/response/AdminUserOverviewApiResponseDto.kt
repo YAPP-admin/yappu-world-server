@@ -1,5 +1,6 @@
 package co.yappuworld.user.presentation.dto.response
 
+import co.yappuworld.user.application.dto.response.AdminActivityUnitResponse
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
 import java.time.LocalDate
 import java.util.UUID
@@ -10,7 +11,7 @@ data class AdminUserOverviewApiResponseDto(
     val email: String,
     val role: UserRoleApiResponseDto,
     val registrationDate: LocalDate,
-    val lastActivityUnit: AdminActivityUnitApiResponseDto
+    val lastActivityUnit: AdminActivityUnitResponse
 ) {
 
     constructor(
@@ -21,6 +22,6 @@ data class AdminUserOverviewApiResponseDto(
         email = response.email,
         role = UserRoleApiResponseDto(response.role),
         registrationDate = response.registrationDate,
-        lastActivityUnit = AdminActivityUnitApiResponseDto(response.lastActivityUnit)
+        lastActivityUnit = AdminActivityUnitResponse(response.lastActivityUnit)
     )
 }

@@ -5,8 +5,10 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
+import co.yappuworld.operation.application.GenerationStateManager
 import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
+import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.application.dto.request.AdminSignUpApplicationPageAppRequestDto
@@ -16,7 +18,6 @@ import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
 import co.yappuworld.user.application.dto.response.AdminSignUpApplicationAppResponseDto
 import co.yappuworld.user.application.dto.response.AdminSignUpApplicationBundleAppResponse
-import co.yappuworld.user.application.dto.response.UserDetailsAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewBundleAppResponseDto
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus.APPROVED
@@ -24,6 +25,7 @@ import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.application.dto.response.AdminUserDetailResponse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,7 +40,9 @@ class UserAdminService(
     private val activityUnitRepository: ActivityUnitRepository,
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
-    private val userLoginPermissionChecker: UserLoginPermissionChecker
+    private val userLoginPermissionChecker: UserLoginPermissionChecker,
+    private val generationRepository: GenerationRepository,
+    private val generationStateManager: GenerationStateManager
 ) {
 
     @Transactional
@@ -67,12 +71,13 @@ class UserAdminService(
     }
 
     @Transactional(readOnly = true)
-    fun getUserDetails(userId: UUID): UserDetailsAppResponseDto {
+    fun getUserDetail(userId: UUID): AdminUserDetailResponse {
         val user = userRepository.findByIdOrNull(userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
         val activityUnits = activityUnitRepository.findAllByUserId(userId)
+        val activeGenerationOrNull = generationStateManager.getActiveGenerationOrNull()
 
-        return UserDetailsAppResponseDto(user, activityUnits)
+        return AdminUserDetailResponse(user, activityUnits, activeGenerationOrNull)
     }
 
     @Transactional(readOnly = true)

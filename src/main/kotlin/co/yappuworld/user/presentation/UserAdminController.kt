@@ -5,7 +5,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.application.UserAdminService
 import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
 import co.yappuworld.user.presentation.dto.request.AdminUserUpdateApiRequestDto
-import co.yappuworld.user.presentation.dto.response.AdminUserDetailsApiResponseDto
+import co.yappuworld.user.application.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.presentation.dto.response.AdminUserOverviewApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -16,11 +16,9 @@ class UserAdminController(
     private val userAdminService: UserAdminService
 ) : UserAdminApi {
 
-    override fun getUserDetails(userId: UUID): ResponseEntity<SuccessResponse<AdminUserDetailsApiResponseDto>> =
+    override fun getUserDetails(userId: UUID): ResponseEntity<SuccessResponse<AdminUserDetailResponse>> =
         ResponseEntity.ok(
-            SuccessResponse(
-                AdminUserDetailsApiResponseDto(userAdminService.getUserDetails(userId))
-            )
+            SuccessResponse(userAdminService.getUserDetail(userId))
         )
 
     override fun getUsers(

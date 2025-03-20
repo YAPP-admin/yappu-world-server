@@ -4,7 +4,7 @@ import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.presentation.dto.request.AdminUserPageApiRequestDto
 import co.yappuworld.user.presentation.dto.request.AdminUserUpdateApiRequestDto
-import co.yappuworld.user.presentation.dto.response.AdminUserDetailsApiResponseDto
+import co.yappuworld.user.application.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.presentation.dto.response.AdminUserOverviewApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -41,18 +41,20 @@ interface UserAdminApi {
                                 value = """
                                     {
                                         "data": {
-                                            "userId": "01954c67-0c2b-d741-4561-ed80b4c28d0c",
+                                            "id": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
                                             "name": "홍길동",
-                                            "email": "email@email.com",
-                                            "role": {
-                                                "name": "ADMIN",
-                                                "label": "관리자"
-                                            },
+                                            "email": "admin@admin.com",
+                                            "phoneNumber": null,
+                                            "gender": null,
+                                            "role": "관리자",
                                             "isActive": true,
+                                            "registrationDate": "2025-03-05",
                                             "activityUnits": [
                                                 {
-                                                  "generation": 1,
-                                                  "position": "PM"
+                                                    "id": "f3774b8f-0577-11f0-bb9e-0242ac120002",
+                                                    "generation": 1,
+                                                    "position": "PM",
+                                                    "isActive": false
                                                 }
                                             ]
                                         },
@@ -91,7 +93,7 @@ interface UserAdminApi {
     @GetMapping("/admin/v1/users/{userId}")
     fun getUserDetails(
         @PathVariable("userId") userId: UUID
-    ): ResponseEntity<SuccessResponse<AdminUserDetailsApiResponseDto>>
+    ): ResponseEntity<SuccessResponse<AdminUserDetailResponse>>
 
     @Operation(summary = "유저 목록 조회")
     @ApiResponses(

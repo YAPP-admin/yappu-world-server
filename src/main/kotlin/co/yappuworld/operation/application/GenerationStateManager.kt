@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 private val logger = KotlinLogging.logger { }
 
 @Component
-class GenerationActivator(
+class GenerationStateManager(
     private val generationRepository: GenerationRepository
 ) {
 
@@ -35,6 +35,9 @@ class GenerationActivator(
         GenerationActivationControlResult(
             deactivatedGeneration = deactivateGeneration(targetGenerationValue)
         )
+
+    @Transactional(readOnly = true)
+    fun getActiveGenerationOrNull(): Int? = generationRepository.getGenerationOrNullByIsActiveIsTrue()?.value
 
     private fun deactivateGeneration(targetGenerationValue: Int? = null): Int? {
         if (!generationRepository.existsGenerationByIsActiveIsTrue()) return null
