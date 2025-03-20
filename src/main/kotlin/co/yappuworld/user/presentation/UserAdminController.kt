@@ -16,7 +16,7 @@ class UserAdminController(
     private val userAdminService: UserAdminService
 ) : UserAdminApi {
 
-    override fun getUserDetails(userId: UUID): ResponseEntity<SuccessResponse<AdminUserDetailResponse>> =
+    override fun getUserDetail(userId: UUID): ResponseEntity<SuccessResponse<AdminUserDetailResponse>> =
         ResponseEntity.ok(
             SuccessResponse(userAdminService.getUserDetail(userId))
         )

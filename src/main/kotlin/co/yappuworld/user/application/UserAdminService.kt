@@ -5,7 +5,7 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
-import co.yappuworld.operation.application.GenerationStateManager
+import co.yappuworld.operation.application.GenerationActiveStateManager
 import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.operation.infrastructure.GenerationRepository
@@ -42,7 +42,7 @@ class UserAdminService(
     private val jwtGenerator: JwtGenerator,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
     private val generationRepository: GenerationRepository,
-    private val generationStateManager: GenerationStateManager
+    private val generationActiveStateManager: GenerationActiveStateManager
 ) {
 
     @Transactional
@@ -75,7 +75,7 @@ class UserAdminService(
         val user = userRepository.findByIdOrNull(userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
         val activityUnits = activityUnitRepository.findAllByUserId(userId)
-        val activeGenerationOrNull = generationStateManager.getActiveGenerationOrNull()
+        val activeGenerationOrNull = generationActiveStateManager.getActiveGenerationOrNull()
 
         return AdminUserDetailResponse(user, activityUnits, activeGenerationOrNull)
     }

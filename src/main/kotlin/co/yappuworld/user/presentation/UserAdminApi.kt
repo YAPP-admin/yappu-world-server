@@ -51,7 +51,13 @@ interface UserAdminApi {
                                             "registrationDate": "2025-03-05",
                                             "activityUnits": [
                                                 {
-                                                    "id": "f3774b8f-0577-11f0-bb9e-0242ac120002",
+                                                    "id": "7f1080cb-0579-11f0-bb9e-0242ac120003",
+                                                    "generation": 25,
+                                                    "position": "PM",
+                                                    "isActive": true
+                                                },
+                                                {
+                                                    "id": "7f1080cb-0579-11f0-bb9e-0242ac120002",
                                                     "generation": 1,
                                                     "position": "PM",
                                                     "isActive": false
@@ -91,7 +97,7 @@ interface UserAdminApi {
         ]
     )
     @GetMapping("/admin/v1/users/{userId}")
-    fun getUserDetails(
+    fun getUserDetail(
         @PathVariable("userId") userId: UUID
     ): ResponseEntity<SuccessResponse<AdminUserDetailResponse>>
 
