@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AdminUserOperationService(
-    private val generationActivator: GenerationActivator,
+    private val generationActiveStateManager: GenerationActiveStateManager,
     private val generationRepository: GenerationRepository
 ) {
 
@@ -40,8 +40,8 @@ class AdminUserOperationService(
     ): AdminGenerationActiveUpdateAppResponseDto =
         AdminGenerationActiveUpdateAppResponseDto(
             when (request.targetActive) {
-                true -> generationActivator.activate(request.generation)
-                false -> generationActivator.deactivate(request.generation)
+                true -> generationActiveStateManager.activate(request.generation)
+                false -> generationActiveStateManager.deactivate(request.generation)
             }
         )
 
