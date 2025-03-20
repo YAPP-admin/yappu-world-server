@@ -90,6 +90,11 @@ enum class UserError : Error {
         override val code: String = "USR_1122"
         override val type: ErrorType = ErrorType.NOT_FOUND
     },
+    NO_AUTH_FOR_ADMIN_PAGE {
+        override val message: String = "어드민 페이지에 로그인할 권한이 없습니다."
+        override val code: String = "USR_1190"
+        override val type: ErrorType = ErrorType.FORBIDDEN
+    },
 
     // 1200번대 - 회원탈퇴 에러
     ALREADY_WITHDRAWN_USER {

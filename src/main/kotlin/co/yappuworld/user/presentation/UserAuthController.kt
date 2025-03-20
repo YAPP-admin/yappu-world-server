@@ -6,9 +6,9 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAuthService
+import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
-import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
 import co.yappuworld.user.presentation.dto.request.ReissueTokenApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
@@ -35,11 +35,11 @@ class UserAuthController(
         )
     }
 
-    override fun login(request: LoginApiRequestDto): ResponseEntity<SuccessResponse<Token>> {
+    override fun login(request: LoginRequest): ResponseEntity<SuccessResponse<Token>> {
         val now = getCurrentDateTimeInKST()
         return ResponseEntity.ok(
             SuccessResponse(
-                userAuthService.login(request.toAppRequest(), now)
+                userAuthService.login(request, now)
             )
         )
     }

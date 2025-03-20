@@ -5,7 +5,7 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.support.fixture.property.PropertyFixture.getJwtProperty
-import co.yappuworld.support.fixture.user.UserDtoFixture.getLoginApiRequestDto
+import co.yappuworld.support.fixture.user.UserDtoFixture.getLoginRequest
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.UserRepository
@@ -38,10 +38,10 @@ class AuthServiceTest {
 
         assertDoesNotThrow {
             userAuthService.login(
-                getLoginApiRequestDto(
+                getLoginRequest(
                     user.email,
                     plainPassword
-                ).toAppRequest(),
+                ),
                 LocalDateTime.now()
             )
         }
@@ -55,10 +55,10 @@ class AuthServiceTest {
 
         assertThatThrownBy {
             userAuthService.login(
-                getLoginApiRequestDto(
+                getLoginRequest(
                     user.email,
                     "abcabcabaB!!"
-                ).toAppRequest(),
+                ),
                 LocalDateTime.now()
             )
         }.isInstanceOf(BusinessException::class.java)

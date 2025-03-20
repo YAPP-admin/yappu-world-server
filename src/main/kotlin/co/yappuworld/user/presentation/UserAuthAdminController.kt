@@ -2,9 +2,11 @@ package co.yappuworld.user.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.global.security.Token
+import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.user.application.SignUpService
 import co.yappuworld.user.application.UserAdminService
+import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.AdminSignUpApplicationPageApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRequestDto
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
@@ -18,9 +20,15 @@ import java.util.UUID
 @RestController
 class UserAuthAdminController(
     private val userAdminService: UserAdminService,
-    private val signUpService: SignUpService,
-    private val configInquiryComponent: ConfigInquiryComponent
+    private val signUpService: SignUpService
 ) : UserAuthAdminApi {
+
+    override fun login(request: LoginRequest): ResponseEntity<SuccessResponse<Token>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                userAdminService.login(request, getCurrentDateTimeInKST())
+            )
+        )
 
     override fun updateUserRole(request: UserRoleUpdateApiRequestDto): ResponseEntity<Unit> {
         userAdminService.updateUserRole(request.toAppRequest())
