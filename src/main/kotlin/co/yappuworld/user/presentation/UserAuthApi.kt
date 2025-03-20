@@ -4,9 +4,9 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
+import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.presentation.dto.request.CheckingEmailAvailabilityApiRequestDto
 import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
-import co.yappuworld.user.presentation.dto.request.LoginApiRequestDto
 import co.yappuworld.user.presentation.dto.request.ReissueTokenApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserSignUpApiRequestDto
 import co.yappuworld.user.presentation.dto.response.LatestSignUpApplicationApiResponseDto
@@ -209,7 +209,7 @@ interface UserAuthApi {
     )
     @PostMapping("/v1/auth/login")
     fun login(
-        @Valid @RequestBody request: LoginApiRequestDto
+        @Valid @RequestBody request: LoginRequest
     ): ResponseEntity<SuccessResponse<Token>>
 
     @Operation(summary = "토큰 재발급")

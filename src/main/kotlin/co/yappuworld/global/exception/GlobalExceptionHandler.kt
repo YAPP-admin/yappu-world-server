@@ -65,6 +65,7 @@ class GlobalExceptionHandler {
             ErrorType.WRONG_ARGUMENT -> HttpStatus.BAD_REQUEST
             ErrorType.BAD_REQUEST -> HttpStatus.BAD_REQUEST
             ErrorType.UNAUTHORIZED -> HttpStatus.UNAUTHORIZED
+            ErrorType.FORBIDDEN -> HttpStatus.FORBIDDEN
             ErrorType.NOT_FOUND -> HttpStatus.NOT_FOUND
             ErrorType.WRONG_STATE -> HttpStatus.CONFLICT
             ErrorType.UNEXPECTED_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR

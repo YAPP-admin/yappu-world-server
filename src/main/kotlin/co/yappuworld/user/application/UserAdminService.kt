@@ -1,10 +1,14 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.security.JwtGenerator
+import co.yappuworld.global.security.SecurityUser
+import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
 import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
+import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.application.dto.request.AdminSignUpApplicationPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminSignUpCodeUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminUserPageAppRequestDto
@@ -23,6 +27,7 @@ import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.math.ceil
 
@@ -31,8 +36,26 @@ class UserAdminService(
     private val userRepository: UserRepository,
     private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
     private val activityUnitRepository: ActivityUnitRepository,
-    private val configRepository: ConfigRepository
+    private val configRepository: ConfigRepository,
+    private val jwtGenerator: JwtGenerator,
+    private val userLoginPermissionChecker: UserLoginPermissionChecker
 ) {
+
+    @Transactional
+    fun login(
+        request: LoginRequest,
+        now: LocalDateTime
+    ): Token {
+        val user = userRepository
+            .findUserOrNullByEmail(request.email)
+            .let { userLoginPermissionChecker.checkPermissionAndGetUser(it, request.email, request.password) }
+
+        if (!user.role.canAccessAdminPage()) {
+            throw BusinessException(UserError.NO_AUTH_FOR_ADMIN_PAGE)
+        }
+
+        return jwtGenerator.generateToken(SecurityUser.from(user), now)
+    }
 
     @Transactional
     fun updateUserRole(request: UserRoleUpdateAppRequestDto) {

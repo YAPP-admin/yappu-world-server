@@ -32,12 +32,12 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(STATELESS) }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers(staffOrAdminMatchers)
-                    .hasAnyRole("ADMIN", "STAFF")
-                    .requestMatchers(userMatchers)
-                    .hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
                     .requestMatchers(anyoneMatchers)
                     .permitAll()
+                    .requestMatchers(userMatchers)
+                    .hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
+                    .requestMatchers(staffOrAdminMatchers)
+                    .hasAnyRole("ADMIN", "STAFF")
             }.authorizeHttpRequests { it.anyRequest().permitAll() }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()

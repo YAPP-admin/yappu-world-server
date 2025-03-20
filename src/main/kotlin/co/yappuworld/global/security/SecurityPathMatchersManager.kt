@@ -22,7 +22,9 @@ object SecurityPathMatchersManager {
         antMatcher(POST, "/v1/auth/check-email"),
         antMatcher(GET, "/v1/auth/applications/latest"),
         antMatcher(GET, "/v1/positions"),
-        antMatcher(GET, "/v1/operations/**")
+        antMatcher(GET, "/v1/operations/**"),
+        // admin
+        antMatcher(POST, "/admin/**/login")
     )
 
     val userMatchers: RequestMatcher = RequestMatchers.anyOf(
