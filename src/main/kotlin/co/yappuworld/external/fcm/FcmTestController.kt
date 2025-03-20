@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.google.firebase.messaging.AndroidConfig
 import com.google.firebase.messaging.ApnsConfig
 import com.google.firebase.messaging.Aps
+import com.google.firebase.messaging.ApsAlert
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
@@ -81,7 +82,7 @@ class FcmTestController(
         @RequestBody request: FcmOnlyDataRequest
     ) {
         try {
-            firebaseMessaging.send(
+            val result = firebaseMessaging.send(
                 Message
                     .builder()
                     .setToken(request.token)
@@ -93,12 +94,22 @@ class FcmTestController(
                     ).setApnsConfig(
                         ApnsConfig
                             .builder()
-                            .putAllCustomData(request.toData())
                             .setAps(
                                 Aps
                                     .builder()
                                     .setContentAvailable(true)
-                                    .build()
+                                    .setAlert(
+                                        ApsAlert
+                                            .builder()
+                                            .setTitle(request.title)
+                                            .setBody(request.body)
+                                            .build()
+                                    ).putAllCustomData(
+                                        mapOf(
+                                            "type" to request.type,
+                                            "id" to request.id.toString()
+                                        )
+                                    ).build()
                             ).build()
                     ).build()
             )
