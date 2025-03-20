@@ -12,7 +12,7 @@ import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRe
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -47,18 +47,10 @@ class UserAuthAdminController(
 
     override fun getSignUpApplications(
         request: AdminSignUpApplicationPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewApiResponseDto>>> =
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>> =
         userAdminService.getSignUpApplications(request.toAppRequest()).let {
             ResponseEntity.ok(
-                SuccessResponse(
-                    OffsetPageResponse(
-                        data = it.data.map { d -> AdminSignUpApplicationOverviewApiResponseDto(d) },
-                        totalCount = it.totalCount,
-                        totalPages = it.totalPages,
-                        page = request.page,
-                        size = request.size
-                    )
-                )
+                SuccessResponse(it)
             )
         }
 

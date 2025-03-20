@@ -10,7 +10,7 @@ import co.yappuworld.user.presentation.dto.request.SignUpApplicationApproveApiRe
 import co.yappuworld.user.presentation.dto.request.SignUpApplicationRejectApiRequestDto
 import co.yappuworld.user.presentation.dto.request.UserRoleUpdateApiRequestDto
 import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpApplicationOverviewApiResponseDto
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -283,7 +283,7 @@ interface UserAuthAdminApi {
     @GetMapping("/admin/v1/auth/applications")
     fun getSignUpApplications(
         @Valid @ParameterObject request: AdminSignUpApplicationPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewApiResponseDto>>>
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>>
 
     @Operation(summary = "회원가입 신청서 상세")
     @ApiResponses(
