@@ -4,6 +4,7 @@ import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.application.AdminUserOperationService
 import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.application.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.presentation.dto.request.AdminGenerationActiveUpdateApiRequestDto
 import co.yappuworld.operation.presentation.dto.request.AdminGenerationPageApiRequestDto
 import co.yappuworld.operation.presentation.dto.request.AdminGenerationRegisterApiRequestDto
@@ -76,6 +77,11 @@ class AdminUserOperationController(
 
     override fun updateSignUpAuthenticationCode(request: AdminSignUpCodeUpdateApiRequestDto): ResponseEntity<Unit> {
         userAdminService.updateSignUpCode(request.toAppRequest())
+        return ResponseEntity.noContent().build()
+    }
+
+    override fun deleteSignUpAuthenticationCode(request: AdminSignupCodeDeleteRequest): ResponseEntity<Unit> {
+        userAdminService.deleteSignupCode(request)
         return ResponseEntity.noContent().build()
     }
 }

@@ -7,6 +7,7 @@ import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
 import co.yappuworld.operation.application.GenerationActiveStateManager
+import co.yappuworld.operation.application.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.operation.infrastructure.GenerationRepository
@@ -18,6 +19,7 @@ import co.yappuworld.user.application.dto.request.AdminUserUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.LoginRequest
 import co.yappuworld.user.application.dto.request.UserRoleUpdateAppRequestDto
 import co.yappuworld.user.application.dto.response.AdminSignUpApplicationAppResponseDto
+import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
 import co.yappuworld.user.application.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.application.dto.response.UserOverviewAppResponseDto
 import co.yappuworld.user.application.dto.response.UserOverviewBundleAppResponseDto
@@ -26,7 +28,6 @@ import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
-import co.yappuworld.user.application.dto.response.AdminSignUpApplicationOverviewResponse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -131,9 +132,16 @@ class UserAdminService(
 
     @Transactional
     fun updateSignUpCode(request: AdminSignUpCodeUpdateAppRequestDto) {
-        val config = configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply {
-            update(request.code)
-        } ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
+        val config = configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply { update(request.code) }
+            ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
+
+        configRepository.save(config)
+    }
+
+    @Transactional
+    fun deleteSignupCode(request: AdminSignupCodeDeleteRequest) {
+        val config = configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply { update(null) }
+            ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
 
         configRepository.save(config)
     }
