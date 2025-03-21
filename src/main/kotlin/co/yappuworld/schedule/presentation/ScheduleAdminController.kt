@@ -7,7 +7,7 @@ import co.yappuworld.schedule.presentation.dto.request.AdminSessionDeleteApiRequ
 import co.yappuworld.schedule.presentation.dto.response.AdminSessionDetailsApiResponseDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionPageApiRequestDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionUpdateApiRequestDto
-import co.yappuworld.schedule.presentation.dto.request.SessionCreateApiRequestDto
+import co.yappuworld.schedule.application.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.presentation.dto.response.AdminSessionOverviewApiResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -19,8 +19,8 @@ class ScheduleAdminController(
     private val scheduleAdminService: ScheduleAdminService
 ) : ScheduleAdminApi {
 
-    override fun createSchedule(request: SessionCreateApiRequestDto): ResponseEntity<Unit> {
-        val scheduleId = scheduleAdminService.createSchedule(request.toAppRequest())
+    override fun createSchedule(request: AdminSessionCreateRequest): ResponseEntity<Unit> {
+        val scheduleId = scheduleAdminService.createSchedule(request)
         return ResponseEntity.created(URI.create("/v1/admin/schedules/$scheduleId")).build()
     }
 
