@@ -21,8 +21,7 @@ class ScheduleAdminService(
 
     @Transactional
     fun createSchedule(request: AdminSessionCreateRequest): UUID {
-        val domain = request.toDomain()
-        val schedule = scheduleJpaRepository.save(domain)
+        val schedule = scheduleJpaRepository.save(request.toDomain())
         return schedule.id
     }
 

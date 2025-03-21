@@ -22,19 +22,10 @@ data class AdminSessionCreateRequest(
     val date: LocalDate,
     @Schema(description = "종료일", nullable = false, example = "2025-02-27")
     var endDate: LocalDate,
-    @Schema(description = "시작 시간, 하루 종일이라면 null", nullable = true, example = "14:00:00")
-    var time: LocalTime? = null,
-    @Schema(description = "종료 시간, 하루 종일이라면 null", nullable = true, example = "18:00:00")
-    var endTime: LocalTime? = null,
-    @Schema(
-        description = """
-            하루 종일인지 여부
-            시작과 종료 시간이 있다면 false
-            시작 시간, 종료 시간보다 우선함        
-        """,
-        nullable = true
-    )
-    val isAllDay: Boolean = false,
+    @Schema(description = "시작 시간", nullable = false, example = "14:00:00")
+    var time: LocalTime,
+    @Schema(description = "종료 시간", nullable = false, example = "18:00:00")
+    var endTime: LocalTime,
     @Schema(description = "기수(세션, 태스크의 경우 필수)", nullable = false, example = "25")
     var generation: Int,
     @Schema(description = "스케줄 종류", nullable = false, example = "SESSION")
@@ -43,13 +34,6 @@ data class AdminSessionCreateRequest(
     @Schema(description = "세션 종류", nullable = false, example = "OFFLINE")
     var sessionType: SessionType
 ) {
-
-    init {
-        if (isAllDay) {
-            this.time = null
-            this.endTime = null
-        }
-    }
 
     fun toDomain(): ScheduleEntity =
         when (type) {
@@ -67,7 +51,7 @@ data class AdminSessionCreateRequest(
             endDate = endDate,
             time = time,
             endTime = endTime,
-            isAllDay = isAllDay,
+            isAllDay = false,
             generation = generation,
             sessionType = sessionType
         )
