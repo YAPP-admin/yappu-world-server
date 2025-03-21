@@ -2,10 +2,10 @@ package co.yappuworld.schedule.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.schedule.application.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionDeleteApiRequestDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionPageApiRequestDto
 import co.yappuworld.schedule.presentation.dto.request.AdminSessionUpdateApiRequestDto
-import co.yappuworld.schedule.presentation.dto.request.SessionCreateApiRequestDto
 import co.yappuworld.schedule.presentation.dto.response.AdminSessionDetailsApiResponseDto
 import co.yappuworld.schedule.presentation.dto.response.AdminSessionOverviewApiResponseDto
 import io.swagger.v3.oas.annotations.Operation
@@ -39,7 +39,7 @@ interface ScheduleAdminApi {
     )
     @PostMapping("/admin/v1/sessions")
     fun createSchedule(
-        @Valid @RequestBody request: SessionCreateApiRequestDto
+        @Valid @RequestBody request: AdminSessionCreateRequest
     ): ResponseEntity<Unit>
 
     @Operation(summary = "세션 목록 조회")

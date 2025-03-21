@@ -77,9 +77,10 @@ CREATE TABLE schedules
     description  varchar(256),
     place        varchar(32),
     date         date        NOT NULL,
-    end_date     date,
+    end_date     date        NOT NULL,
     time         time,
     end_time     time,
+    is_all_day   tinyint(1)  NOT NULL,
     generation   int,
     type         varchar(32) NOT NULL,
     session_type varchar(32)

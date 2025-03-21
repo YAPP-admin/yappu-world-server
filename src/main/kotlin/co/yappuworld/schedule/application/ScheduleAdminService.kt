@@ -1,9 +1,9 @@
 package co.yappuworld.schedule.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.schedule.application.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.application.dto.request.AdminSessionPageAppRequestDto
 import co.yappuworld.schedule.application.dto.request.AdminSessionUpdateAppRequestDto
-import co.yappuworld.schedule.application.dto.request.ScheduleCreateAppRequestDto
 import co.yappuworld.schedule.application.dto.response.AdminSessionDetailsAppResponseDto
 import co.yappuworld.schedule.application.dto.response.AdminSessionPageAppResponseDto
 import co.yappuworld.schedule.domain.ScheduleError
@@ -20,7 +20,7 @@ class ScheduleAdminService(
 ) {
 
     @Transactional
-    fun createSchedule(request: ScheduleCreateAppRequestDto): UUID {
+    fun createSchedule(request: AdminSessionCreateRequest): UUID {
         val schedule = scheduleJpaRepository.save(request.toDomain())
         return schedule.id
     }

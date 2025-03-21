@@ -12,6 +12,7 @@ data class AdminSessionUpdateAppRequestDto(
     val generation: Int,
     val place: String?,
     val date: LocalDate,
+    val endDate: LocalDate,
     val time: LocalTime?,
     val endTime: LocalTime?,
     val sessionType: SessionType
@@ -24,7 +25,7 @@ data class AdminSessionUpdateAppRequestDto(
             generation = generation,
             place = place,
             date = date,
-            endDate = null,
+            endDate = endDate,
             time = time,
             endTime = endTime,
             sessionType = sessionType

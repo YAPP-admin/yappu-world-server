@@ -25,9 +25,11 @@ abstract class ScheduleEntity : BaseJpaEntity() {
     abstract val place: String?
 
     abstract val date: LocalDate
-    abstract val endDate: LocalDate?
+    abstract val endDate: LocalDate
+
     abstract val time: LocalTime?
     abstract val endTime: LocalTime?
+    abstract val isAllDay: Boolean
 
     fun delete() {
         this.isDeleted = true
