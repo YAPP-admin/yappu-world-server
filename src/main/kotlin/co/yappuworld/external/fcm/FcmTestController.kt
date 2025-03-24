@@ -1,10 +1,6 @@
 package co.yappuworld.external.fcm
 
-import com.google.firebase.messaging.ApnsConfig
-import com.google.firebase.messaging.Aps
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessagingException
-import com.google.firebase.messaging.Message
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -12,7 +8,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 private val logger = KotlinLogging.logger { }
 
@@ -20,79 +15,60 @@ private val logger = KotlinLogging.logger { }
 @Tag(name = "FCM 테스트용", description = "_")
 @RestController
 class FcmTestController(
-    private val firebaseMessaging: FirebaseMessaging
+    private val fcmClient: FcmClient
 ) {
 
-    data class FcmOnlyDataRequest(
+    data class SingleFcm(
         val token: String,
         val title: String,
         val body: String,
-        val type: String,
-        val id: UUID
+        val deeplink: String
     ) {
 
-        fun toData(): Map<String, String> =
-            mapOf(
-                "title" to title,
-                "body" to body,
-                "type" to type,
-                "id" to id.toString()
+        @JsonIgnore
+        fun toFcmMessage(): FcmMessage =
+            FcmMessage(
+                title = title,
+                body = body,
+                deeplink = deeplink
             )
     }
 
-    @Operation(summary = "FCM Data 필드만 있는 메세지")
-    @PostMapping("/fcm-only-data")
-    fun sendNotificationOnlyData(
-        @RequestBody request: FcmOnlyDataRequest
+    data class MultiFcm(
+        val tokens: List<String>,
+        val title: String,
+        val body: String,
+        val deeplink: String
     ) {
-        try {
-            firebaseMessaging.send(
-                Message
-                    .builder()
-                    .setToken(request.token)
-                    .putAllData(request.toData())
-                    .build()
+
+        @JsonIgnore
+        fun toFcmMessage(): FcmMessage =
+            FcmMessage(
+                title = title,
+                body = body,
+                deeplink = deeplink
             )
-        } catch (e: FirebaseMessagingException) {
-            logger.warn {
-                """
-                    푸시 알림 전송에 실패했습니다.
-                    실패 사유: ${e.messagingErrorCode.name}
-                    fcm_token: ${request.token}
-                """.trimIndent()
-            }
-        }
     }
 
-    @Operation(summary = "Content Available 설정된 FCM 메세지")
-    @PostMapping("/fcm-content-available")
-    fun sendFcmWithContentAvailable(
-        @RequestBody request: FcmOnlyDataRequest
+    @Operation(summary = "FCM")
+    @PostMapping("/fcm")
+    fun sendFcm(
+        @RequestBody request: SingleFcm
     ) {
-        try {
-            firebaseMessaging.send(
-                Message
-                    .builder()
-                    .setApnsConfig(
-                        ApnsConfig
-                            .builder()
-                            .setAps(
-                                Aps
-                                    .builder()
-                                    .setContentAvailable(true)
-                                    .build()
-                            ).build()
-                    ).putAllData(request.toData())
-                    .build()
-            )
-        } catch (e: FirebaseMessagingException) {
-            logger.warn {
-                """
-                    푸시 알림 전송에 실패했습니다.
-                    실패 사유: ${e.messagingErrorCode.name}
-                    fcm_token: ${request.token}
-                """.trimIndent()
-            }
-        }
+        fcmClient.sendNotification(
+            request.token,
+            request.toFcmMessage()
+        )
+    }
+
+    @Operation(summary = "FCM 여러개")
+    @PostMapping("/fcm-multi")
+    fun sendFcms(
+        @RequestBody request: MultiFcm
+    ) {
+        fcmClient.sendNotification(
+            request.tokens,
+            request.toFcmMessage()
+        )
     }
 }
