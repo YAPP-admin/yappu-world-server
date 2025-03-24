@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.application.dto.request
+package co.yappuworld.schedule.client.dto.request
 
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleType

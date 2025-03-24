@@ -1,11 +1,11 @@
-package co.yappuworld.schedule.presentation.dto.request
+package co.yappuworld.schedule.client.dto.request
 
-import co.yappuworld.schedule.application.dto.request.SchedulePageAppRequestDto
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import java.time.LocalDate
 
-data class SchedulePageApiRequestDto(
+data class SchedulePageRequest(
     @field:Schema(description = "년도", required = true)
     val year: Int,
     @field:Schema(description = "월", required = true)
@@ -14,9 +14,6 @@ data class SchedulePageApiRequestDto(
     val month: Int
 ) {
 
-    fun toAppRequestDto() =
-        SchedulePageAppRequestDto(
-            year = year,
-            month = month
-        )
+    val from: LocalDate = LocalDate.of(year, month, 1)
+    val to: LocalDate = from.plusMonths(1).minusDays(1)
 }

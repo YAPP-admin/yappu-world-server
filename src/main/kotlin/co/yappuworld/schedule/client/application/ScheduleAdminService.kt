@@ -1,11 +1,12 @@
-package co.yappuworld.schedule.application
+package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.application.dto.request.AdminSessionCreateRequest
-import co.yappuworld.schedule.application.dto.request.AdminSessionPageAppRequestDto
-import co.yappuworld.schedule.application.dto.request.AdminSessionUpdateAppRequestDto
-import co.yappuworld.schedule.application.dto.response.AdminSessionDetailsAppResponseDto
-import co.yappuworld.schedule.application.dto.response.AdminSessionPageAppResponseDto
+import co.yappuworld.global.response.OffsetPageResponse
+import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
+import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import co.yappuworld.schedule.domain.ScheduleError
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
@@ -26,17 +27,25 @@ class ScheduleAdminService(
     }
 
     @Transactional(readOnly = true)
-    fun getSessions(request: AdminSessionPageAppRequestDto): AdminSessionPageAppResponseDto =
+    fun getSessions(request: AdminSessionPageRequest): OffsetPageResponse<AdminSessionOverviewResponse> =
         when (request.generation != null) {
             true -> scheduleJpaRepository.findAllByGeneration(request.toPageRequest(), request.generation)
             false -> scheduleJpaRepository.findAll(request.toPageRequest())
-        }.let { AdminSessionPageAppResponseDto(it) }
+        }.let {
+            OffsetPageResponse(
+                data = it.content.map { session -> AdminSessionOverviewResponse(session as SessionEntity) },
+                totalCount = it.totalElements,
+                totalPages = it.totalPages,
+                page = request.page,
+                size = request.size
+            )
+        }
 
     @Transactional(readOnly = true)
-    fun getSession(id: UUID): AdminSessionDetailsAppResponseDto =
+    fun getSession(id: UUID): AdminSessionDetailResponse =
         scheduleJpaRepository
             .findByIdOrNull(id)
-            ?.let { AdminSessionDetailsAppResponseDto(it as SessionEntity) }
+            ?.let { AdminSessionDetailResponse(it as SessionEntity) }
             ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
 
     /**
@@ -48,7 +57,7 @@ class ScheduleAdminService(
     }
 
     @Transactional
-    fun updateSession(request: AdminSessionUpdateAppRequestDto) {
+    fun updateSession(request: AdminSessionUpdateRequest) {
         val schedule = scheduleJpaRepository.findByIdOrNull(request.id)
             ?: throw BusinessException(ScheduleError.UPDATE_FAIL_NOT_SESSION_TYPE)
 

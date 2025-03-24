@@ -1,9 +1,9 @@
-package co.yappuworld.schedule.presentation
+package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.schedule.presentation.dto.request.SchedulePageApiRequestDto
-import co.yappuworld.schedule.presentation.dto.response.ActiveGenerationSessionsApiResponseDto
-import co.yappuworld.schedule.presentation.dto.response.SchedulePageApiResponseDto
+import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
+import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
+import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -79,7 +79,7 @@ interface ScheduleApi {
         ]
     )
     @GetMapping("/v1/sessions")
-    fun getSessions(): ResponseEntity<SuccessResponse<ActiveGenerationSessionsApiResponseDto>>
+    fun getSessions(): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>>
 
     @Operation(summary = "일정 조회")
     @ApiResponses(
@@ -159,6 +159,6 @@ interface ScheduleApi {
     )
     @GetMapping("/v1/schedules")
     fun getSchedules(
-        @Valid @ParameterObject request: SchedulePageApiRequestDto
-    ): ResponseEntity<SuccessResponse<SchedulePageApiResponseDto>>
+        @Valid @ParameterObject request: SchedulePageRequest
+    ): ResponseEntity<SuccessResponse<SchedulePageResponse>>
 }

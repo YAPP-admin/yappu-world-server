@@ -1,7 +1,7 @@
-package co.yappuworld.schedule.application.dto.response
+package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.LocalDateRange
-import co.yappuworld.schedule.application.dto.request.SchedulePageAppRequestDto
+import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.ScheduleType
@@ -14,40 +14,42 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
-data class SchedulePageAppResponseDto(
-    val dates: List<DateGroupedScheduleAppResponseDto>
+data class SchedulePageResponse(
+    val dates: List<DateGroupedScheduleResponse>
 ) {
+
     companion object {
         fun from(
             schedules: List<ScheduleEntity>,
-            request: SchedulePageAppRequestDto,
+            request: SchedulePageRequest,
             now: LocalDateTime
-        ): SchedulePageAppResponseDto {
+        ): SchedulePageResponse {
             val scheduleByDate = schedules.groupBy { it.date }
 
             return LocalDateRange(request.from, request.to)
                 .map { date ->
-                    DateGroupedScheduleAppResponseDto(
+                    DateGroupedScheduleResponse(
                         date = date,
                         schedules = scheduleByDate[date] ?: emptyList(),
                         now = now
                     )
-                }.let { SchedulePageAppResponseDto(it) }
+                }.let { SchedulePageResponse(it) }
         }
     }
 }
 
-data class DateGroupedScheduleAppResponseDto(
+data class DateGroupedScheduleResponse(
     val date: LocalDate,
-    val schedules: List<SimpleScheduleAppResponseDto>
+    val schedules: List<SimpleScheduleResponse>
 ) {
+
     constructor(date: LocalDate, schedules: List<ScheduleEntity>, now: LocalDateTime) : this(
         date = date,
-        schedules = schedules.map { SimpleScheduleAppResponseDto.from(it, now) }
+        schedules = schedules.map { SimpleScheduleResponse.from(it, now) }
     )
 }
 
-data class SimpleScheduleAppResponseDto(
+data class SimpleScheduleResponse(
     val id: UUID,
     val name: String,
     val place: String?,
@@ -57,14 +59,14 @@ data class SimpleScheduleAppResponseDto(
     val endTime: LocalTime?,
     val scheduleType: ScheduleType,
     val sessionType: SessionType?,
-    val progressPhase: ScheduleProgressPhase
+    val scheduleProgressPhase: ScheduleProgressPhase
 ) {
 
     companion object {
         fun from(
             schedule: ScheduleEntity,
             now: LocalDateTime
-        ): SimpleScheduleAppResponseDto =
+        ): SimpleScheduleResponse =
             when (schedule) {
                 is SessionEntity -> convertSession(schedule, now)
                 is TaskEntity -> TODO()
@@ -74,8 +76,8 @@ data class SimpleScheduleAppResponseDto(
         private fun convertSession(
             session: SessionEntity,
             now: LocalDateTime
-        ): SimpleScheduleAppResponseDto =
-            SimpleScheduleAppResponseDto(
+        ): SimpleScheduleResponse =
+            SimpleScheduleResponse(
                 id = session.id,
                 name = session.name,
                 place = session.place,
@@ -85,7 +87,7 @@ data class SimpleScheduleAppResponseDto(
                 endTime = session.endTime,
                 scheduleType = ScheduleType.SESSION,
                 sessionType = session.sessionType,
-                progressPhase = session.getProgressPhase(now)
+                scheduleProgressPhase = session.getProgressPhase(now)
             )
     }
 }

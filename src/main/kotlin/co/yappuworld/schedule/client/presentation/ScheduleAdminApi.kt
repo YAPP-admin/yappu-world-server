@@ -1,13 +1,13 @@
-package co.yappuworld.schedule.presentation
+package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.schedule.application.dto.request.AdminSessionCreateRequest
-import co.yappuworld.schedule.presentation.dto.request.AdminSessionDeleteApiRequestDto
-import co.yappuworld.schedule.presentation.dto.request.AdminSessionPageApiRequestDto
-import co.yappuworld.schedule.presentation.dto.request.AdminSessionUpdateApiRequestDto
-import co.yappuworld.schedule.presentation.dto.response.AdminSessionDetailsApiResponseDto
-import co.yappuworld.schedule.presentation.dto.response.AdminSessionOverviewApiResponseDto
+import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
+import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -94,8 +94,8 @@ interface ScheduleAdminApi {
     )
     @GetMapping("/admin/v1/sessions")
     fun getSessions(
-        @Valid @ParameterObject request: AdminSessionPageApiRequestDto
-    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSessionOverviewApiResponseDto>>>
+        @Valid @ParameterObject request: AdminSessionPageRequest
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSessionOverviewResponse>>>
 
     @Operation(summary = "세션 상세 조회")
     @ApiResponses(
@@ -150,7 +150,7 @@ interface ScheduleAdminApi {
     @GetMapping("/admin/v1/sessions/{sessionId}")
     fun getSession(
         @PathVariable sessionId: UUID
-    ): ResponseEntity<SuccessResponse<AdminSessionDetailsApiResponseDto>>
+    ): ResponseEntity<SuccessResponse<AdminSessionDetailResponse>>
 
     @Operation(summary = "세션 삭제")
     @ApiResponses(
@@ -182,7 +182,7 @@ interface ScheduleAdminApi {
     )
     @DeleteMapping("/admin/v1/sessions")
     fun deleteSession(
-        @RequestBody request: AdminSessionDeleteApiRequestDto
+        @RequestBody request: AdminSessionDeleteRequest
     ): ResponseEntity<Unit>
 
     @Operation(summary = "세션 수정")
@@ -234,6 +234,6 @@ interface ScheduleAdminApi {
     )
     @PutMapping("/admin/v1/sessions")
     fun updateSession(
-        @RequestBody request: AdminSessionUpdateApiRequestDto
+        @RequestBody request: AdminSessionUpdateRequest
     ): ResponseEntity<Unit>
 }

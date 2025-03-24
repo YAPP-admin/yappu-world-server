@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.application.dto.response
+package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-data class AdminSessionDetailsAppResponseDto(
+data class AdminSessionDetailResponse(
     val id: UUID,
     val name: String,
     val generation: Int,

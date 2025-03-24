@@ -1,10 +1,10 @@
-package co.yappuworld.schedule.application
+package co.yappuworld.schedule.client.application
 
 import co.yappuworld.operation.infrastructure.GenerationRepository
-import co.yappuworld.schedule.application.dto.request.SchedulePageAppRequestDto
-import co.yappuworld.schedule.application.dto.response.SessionsAppResponseDto
+import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
+import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
+import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
-import co.yappuworld.schedule.application.dto.response.SchedulePageAppResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -17,20 +17,20 @@ class ScheduleService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getCurrentGenerationSessions(now: LocalDate): SessionsAppResponseDto {
+    fun getCurrentGenerationSessions(now: LocalDate): ActiveGenerationSessionsResponse {
         val currentGeneration = generationRepository.getGenerationOrNullByIsActiveIsTrue()
-            ?: return SessionsAppResponseDto.from(emptyList(), now)
-        return SessionsAppResponseDto.from(
+            ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
+        return ActiveGenerationSessionsResponse.from(
             sessions = scheduleJpaRepository.findAllSessionEntityByGeneration(currentGeneration.value),
             now = now
         )
     }
 
     fun getSchedules(
-        request: SchedulePageAppRequestDto,
+        request: SchedulePageRequest,
         now: LocalDateTime
-    ): SchedulePageAppResponseDto {
+    ): SchedulePageResponse {
         val schedules = scheduleJpaRepository.findScheduleEntitiesByDateBetween(request.from, request.to)
-        return SchedulePageAppResponseDto.from(schedules, request, now)
+        return SchedulePageResponse.from(schedules, request, now)
     }
 }

@@ -1,13 +1,13 @@
-package co.yappuworld.schedule.presentation.dto.response
+package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.application.dto.response.AdminSessionOverviewAppResponseDto
+import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-data class AdminSessionOverviewApiResponseDto(
+data class AdminSessionOverviewResponse(
     @Schema(description = "세션 ID")
     val id: UUID,
     @Schema(description = "기수")
@@ -26,14 +26,14 @@ data class AdminSessionOverviewApiResponseDto(
     val endTime: LocalTime?
 ) {
 
-    constructor(response: AdminSessionOverviewAppResponseDto) : this(
-        id = response.id,
-        generation = response.generation,
-        type = response.type,
-        title = response.name,
-        place = response.place,
-        date = response.date,
-        time = response.time,
-        endTime = response.endTime
+    constructor(session: SessionEntity) : this(
+        id = session.id,
+        generation = session.generation,
+        type = session.sessionType,
+        title = session.name,
+        place = session.place,
+        date = session.date,
+        time = session.time,
+        endTime = session.endTime
     )
 }

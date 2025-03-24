@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.application
 
 import co.yappuworld.operation.infrastructure.GenerationRepository
-import co.yappuworld.schedule.application.dto.request.SchedulePageAppRequestDto
+import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
 import co.yappuworld.support.fixture.schedule.ScheduleFixture.getSessionFixture
@@ -31,7 +31,7 @@ class ScheduleServiceScheduleProgressPhaseTest {
         )
 
         val result = scheduleService.getSchedules(
-            request = SchedulePageAppRequestDto(2021, 5),
+            request = SchedulePageRequest(2021, 5),
             now = targetDate.atStartOfDay()
         )
 

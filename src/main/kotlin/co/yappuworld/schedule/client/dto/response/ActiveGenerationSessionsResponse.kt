@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.application.dto.response
+package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.SessionEntity
@@ -8,12 +8,22 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.domain.SessionType
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-data class SessionsAppResponseDto(
-    val sessions: List<SessionAppResponseDto>,
+data class ActiveGenerationSessionsResponse(
+    @Schema(description = "활동 중인 기수의 세션 목록, 데이터가 없다면 빈 리스트 반환")
+    val sessions: List<ActiveGenerationSessionResponse>,
+    @Schema(
+        description = """
+            가장 가까이 예정된 세션의 인덱스
+            모든 세션이 종료됐다면 마지막 인덱스 반환
+            빈 리스트인 경우 null
+        """,
+        nullable = true
+    )
     val upcomingSessionIndex: Int? = null
 ) {
 
@@ -21,19 +31,22 @@ data class SessionsAppResponseDto(
         fun from(
             sessions: List<SessionEntity>,
             now: LocalDate
-        ): SessionsAppResponseDto {
-            if (sessions.isEmpty()) return SessionsAppResponseDto(emptyList(), null)
+        ): ActiveGenerationSessionsResponse {
+            if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
 
             val orderedSessions = sessions.sortedBy { it.date }
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
-                ?: return SessionsAppResponseDto(sessions.map { SessionAppResponseDto(it, DONE) }, sessions.lastIndex)
+                ?: return ActiveGenerationSessionsResponse(
+                    sessions.map { ActiveGenerationSessionResponse(it, DONE) },
+                    sessions.lastIndex
+                )
 
-            return SessionsAppResponseDto(
+            return ActiveGenerationSessionsResponse(
                 sessions = sessions.mapIndexed { index, session ->
                     when {
-                        index < upcomingSessionIndex -> SessionAppResponseDto(session, DONE)
-                        index == upcomingSessionIndex -> SessionAppResponseDto(session, upcomingSessionStatus)
-                        else -> SessionAppResponseDto(session, PENDING)
+                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE)
+                        index == upcomingSessionIndex -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
+                        else -> ActiveGenerationSessionResponse(session, PENDING)
                     }
                 },
                 upcomingSessionIndex = upcomingSessionIndex
@@ -56,7 +69,7 @@ data class SessionsAppResponseDto(
     }
 }
 
-data class SessionAppResponseDto(
+data class ActiveGenerationSessionResponse(
     val id: UUID,
     val name: String,
     val place: String?,
