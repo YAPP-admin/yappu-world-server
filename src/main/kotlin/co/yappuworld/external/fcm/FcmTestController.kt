@@ -1,13 +1,6 @@
 package co.yappuworld.external.fcm
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.google.firebase.messaging.AndroidConfig
-import com.google.firebase.messaging.ApnsConfig
-import com.google.firebase.messaging.Aps
-import com.google.firebase.messaging.ApsAlert
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessagingException
-import com.google.firebase.messaging.Message
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -22,10 +15,10 @@ private val logger = KotlinLogging.logger { }
 @Tag(name = "FCM 테스트용", description = "_")
 @RestController
 class FcmTestController(
-    private val firebaseMessaging: FirebaseMessaging
+    private val fcmClient: FcmClient
 ) {
 
-    data class FcmOnlyDataRequest(
+    data class SingleFcm(
         val token: String,
         val title: String,
         val body: String,
@@ -33,55 +26,49 @@ class FcmTestController(
     ) {
 
         @JsonIgnore
-        fun getDataWithNotification(): Map<String, String> =
-            mapOf(
-                "title" to title,
-                "body" to body,
-                "deeplink" to deeplink
+        fun toFcmMessage(): FcmMessage =
+            FcmMessage(
+                title = title,
+                body = body,
+                deeplink = deeplink
+            )
+    }
+
+    data class MultiFcm(
+        val tokens: List<String>,
+        val title: String,
+        val body: String,
+        val deeplink: String
+    ) {
+
+        @JsonIgnore
+        fun toFcmMessage(): FcmMessage =
+            FcmMessage(
+                title = title,
+                body = body,
+                deeplink = deeplink
             )
     }
 
     @Operation(summary = "FCM")
     @PostMapping("/fcm")
-    fun sendFcmWithContentAvailable(
-        @RequestBody request: FcmOnlyDataRequest
+    fun sendFcm(
+        @RequestBody request: SingleFcm
     ) {
-        try {
-            firebaseMessaging.send(
-                Message
-                    .builder()
-                    .setToken(request.token)
-                    .setAndroidConfig(
-                        AndroidConfig
-                            .builder()
-                            .putAllData(request.getDataWithNotification())
-                            .build()
-                    ).setApnsConfig(
-                        ApnsConfig
-                            .builder()
-                            .setAps(
-                                Aps
-                                    .builder()
-                                    .setContentAvailable(true)
-                                    .setAlert(
-                                        ApsAlert
-                                            .builder()
-                                            .setTitle(request.title)
-                                            .setBody(request.body)
-                                            .build()
-                                    ).putCustomData("deeplink", request.deeplink)
-                                    .build()
-                            ).build()
-                    ).build()
-            )
-        } catch (e: FirebaseMessagingException) {
-            logger.warn {
-                """
-                    푸시 알림 전송에 실패했습니다.
-                    실패 사유: ${e.messagingErrorCode.name}
-                    fcm_token: ${request.token}
-                """.trimIndent()
-            }
-        }
+        fcmClient.sendNotification(
+            request.token,
+            request.toFcmMessage()
+        )
+    }
+
+    @Operation(summary = "FCM 여러개")
+    @PostMapping("/fcm-multi")
+    fun sendFcms(
+        @RequestBody request: MultiFcm
+    ) {
+        fcmClient.sendNotification(
+            request.tokens,
+            request.toFcmMessage()
+        )
     }
 }
