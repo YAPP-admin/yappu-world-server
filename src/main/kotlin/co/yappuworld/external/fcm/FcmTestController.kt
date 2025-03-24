@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 private val logger = KotlinLogging.logger { }
 
@@ -30,59 +29,25 @@ class FcmTestController(
         val token: String,
         val title: String,
         val body: String,
-        val type: String,
-        val id: UUID
+        val deeplink: String
     ) {
-
-        fun toData(): Map<String, String> =
-            mapOf(
-                "title" to title,
-                "body" to body,
-                "type" to type,
-                "id" to id.toString()
-            )
 
         @JsonIgnore
         fun getDataWithNotification(): Map<String, String> =
             mapOf(
                 "title" to title,
                 "body" to body,
-                "type" to type,
-                "id" to id.toString()
+                "deeplink" to deeplink
             )
     }
 
-    @Operation(summary = "FCM Data 필드만 있는 메세지")
-    @PostMapping("/fcm-only-data")
-    fun sendNotificationOnlyData(
-        @RequestBody request: FcmOnlyDataRequest
-    ) {
-        try {
-            firebaseMessaging.send(
-                Message
-                    .builder()
-                    .setToken(request.token)
-                    .putAllData(request.toData())
-                    .build()
-            )
-        } catch (e: FirebaseMessagingException) {
-            logger.warn {
-                """
-                    푸시 알림 전송에 실패했습니다.
-                    실패 사유: ${e.messagingErrorCode.name}
-                    fcm_token: ${request.token}
-                """.trimIndent()
-            }
-        }
-    }
-
-    @Operation(summary = "Content Available 설정된 FCM 메세지")
-    @PostMapping("/fcm-content-available")
+    @Operation(summary = "FCM")
+    @PostMapping("/fcm")
     fun sendFcmWithContentAvailable(
         @RequestBody request: FcmOnlyDataRequest
     ) {
         try {
-            val result = firebaseMessaging.send(
+            firebaseMessaging.send(
                 Message
                     .builder()
                     .setToken(request.token)
@@ -104,12 +69,8 @@ class FcmTestController(
                                             .setTitle(request.title)
                                             .setBody(request.body)
                                             .build()
-                                    ).putAllCustomData(
-                                        mapOf(
-                                            "type" to request.type,
-                                            "id" to request.id.toString()
-                                        )
-                                    ).build()
+                                    ).putCustomData("deeplink", request.deeplink)
+                                    .build()
                             ).build()
                     ).build()
             )
