@@ -4,6 +4,7 @@ import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.support.fixture.operation.OperationFixture.getGenerationFixture
 import co.yappuworld.support.fixture.user.ActivityUnitFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
+import co.yappuworld.user.client.application.UserProfileService
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import io.mockk.every

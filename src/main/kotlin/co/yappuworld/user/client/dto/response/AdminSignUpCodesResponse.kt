@@ -1,0 +1,26 @@
+package co.yappuworld.user.client.dto.response
+
+import co.yappuworld.operation.domain.Config
+import co.yappuworld.user.domain.vo.UserRole
+import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.NotNull
+
+data class AdminSignUpCodesResponse(
+    @Schema(description = "인증 번호 목록")
+    val codes: List<AdminSignUpCodeResponse>
+)
+
+data class AdminSignUpCodeResponse(
+    @Schema(description = "인증 번호")
+    @field:NotNull
+    val code: String,
+    @Schema(description = "역할")
+    @field:NotNull
+    val role: UserRoleResponse
+) {
+
+    constructor(config: Config?, role: UserRole) : this(
+        code = config?.value ?: "",
+        role = UserRoleResponse(role)
+    )
+}

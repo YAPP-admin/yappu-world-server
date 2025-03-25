@@ -6,6 +6,8 @@ import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.support.fixture.property.PropertyFixture.getJwtProperty
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLoginRequest
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
+import co.yappuworld.user.client.application.UserAuthService
+import co.yappuworld.user.client.application.UserLoginPermissionChecker
 import co.yappuworld.user.infrastructure.UserRepository
 import io.mockk.every
 import io.mockk.mockk

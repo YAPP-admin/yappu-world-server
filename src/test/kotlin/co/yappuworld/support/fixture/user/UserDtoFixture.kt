@@ -1,15 +1,15 @@
 package co.yappuworld.support.fixture.user
 
-import co.yappuworld.user.application.dto.request.LoginRequest
-import co.yappuworld.user.presentation.dto.request.LatestSignUpApplicationApiRequestDto
+import co.yappuworld.user.client.dto.request.LatestSignUpApplicationRequest
+import co.yappuworld.user.client.dto.request.LoginRequest
 
 object UserDtoFixture {
 
     fun getLatestSignUpApplicationApiRequestDtoFixture(
         email: String = "abc@abc.com",
         password: String = "abcabcabC!!"
-    ): LatestSignUpApplicationApiRequestDto =
-        LatestSignUpApplicationApiRequestDto(
+    ): LatestSignUpApplicationRequest =
+        LatestSignUpApplicationRequest(
             email,
             password
         )

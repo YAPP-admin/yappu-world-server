@@ -10,11 +10,11 @@ import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
-import co.yappuworld.user.application.UserAdminService
+import co.yappuworld.user.client.application.UserAdminService
+import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
+import co.yappuworld.user.client.dto.response.AdminSignUpCodeResponse
+import co.yappuworld.user.client.dto.response.AdminSignUpCodesResponse
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.presentation.dto.request.AdminSignUpCodeUpdateRequest
-import co.yappuworld.user.presentation.dto.response.AdminSignUpCodeApiResponseDto
-import co.yappuworld.user.presentation.dto.response.AdminSignUpCodesResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
@@ -51,7 +51,7 @@ class AdminUserOperationController(
             .associateBy { it.id }
 
         val codes = UserRole.entries.map { role ->
-            AdminSignUpCodeApiResponseDto(responseByKey[role.signUpCodeKey], role)
+            AdminSignUpCodeResponse(responseByKey[role.signUpCodeKey], role)
         }
 
         return ResponseEntity.ok(
@@ -62,7 +62,7 @@ class AdminUserOperationController(
     }
 
     override fun updateSignUpAuthenticationCode(request: AdminSignUpCodeUpdateRequest): ResponseEntity<Unit> {
-        userAdminService.updateSignUpCode(request.toAppRequest())
+        userAdminService.updateSignUpCode(request)
         return ResponseEntity.noContent().build()
     }
 

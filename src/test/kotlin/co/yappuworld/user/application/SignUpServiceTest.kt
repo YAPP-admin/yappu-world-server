@@ -7,6 +7,7 @@ import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationApiRequestDtoFixture
 import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
 import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
+import co.yappuworld.user.client.application.SignUpService
 import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplication
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
@@ -70,7 +71,7 @@ class SignUpServiceTest {
         every { authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(any(), any()) } returns null
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture()
-        assertThatThrownBy { signUpService.findLatestSignUpApplication(request.toAppRequest()) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.NO_SIGN_UP_APPLICATION.message)
     }
@@ -93,7 +94,7 @@ class SignUpServiceTest {
             password = details.password + "a"
         )
 
-        assertThatThrownBy { signUpService.findLatestSignUpApplication(request.toAppRequest()) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION.message)
     }
@@ -116,7 +117,7 @@ class SignUpServiceTest {
             password = "abcabC!!"
         )
 
-        signUpService.findLatestSignUpApplication(request.toAppRequest()).also {
+        signUpService.findLatestSignUpApplication(request).also {
             assertThat(it.status).isEqualTo(application.status)
             when (it.status) {
                 SignUpApplicationStatus.REJECTED -> assertNotNull(it.rejectReason)

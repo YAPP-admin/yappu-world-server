@@ -8,8 +8,8 @@ import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
-import co.yappuworld.user.presentation.dto.request.AdminSignUpCodeUpdateRequest
-import co.yappuworld.user.presentation.dto.response.AdminSignUpCodesResponse
+import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
+import co.yappuworld.user.client.dto.response.AdminSignUpCodesResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
