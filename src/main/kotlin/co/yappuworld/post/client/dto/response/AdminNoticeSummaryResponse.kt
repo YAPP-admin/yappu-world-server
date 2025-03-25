@@ -1,6 +1,6 @@
 package co.yappuworld.post.client.dto.response
 
-import co.yappuworld.post.domain.model.NoticeEntity
+import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.user.domain.model.User
 import java.time.LocalDateTime
 import java.util.UUID

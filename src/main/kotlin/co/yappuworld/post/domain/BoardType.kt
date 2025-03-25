@@ -1,4 +1,4 @@
-package co.yappuworld.post.domain.vo
+package co.yappuworld.post.domain
 
 enum class BoardType {
     NOTICE,

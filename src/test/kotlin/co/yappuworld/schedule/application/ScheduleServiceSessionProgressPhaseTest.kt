@@ -7,7 +7,7 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
-import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
+import co.yappuworld.schedule.infrastructure.ScheduleJpaRepository
 import co.yappuworld.support.fixture.operation.OperationFixture
 import co.yappuworld.support.fixture.schedule.ScheduleFixture
 import io.mockk.every

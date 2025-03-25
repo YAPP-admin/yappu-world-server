@@ -1,8 +1,8 @@
 package co.yappuworld.post.infrastructure
 
-import co.yappuworld.post.domain.model.NoticeEntity
-import co.yappuworld.post.domain.model.PostEntity
-import co.yappuworld.post.domain.vo.NoticeType
+import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.domain.PostEntity
+import co.yappuworld.post.domain.NoticeType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

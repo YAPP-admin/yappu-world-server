@@ -5,9 +5,9 @@ import co.yappuworld.post.client.application.dto.response.NoticeAppResponseDto
 import co.yappuworld.post.client.application.dto.response.NoticeBundleAppResponseDto
 import co.yappuworld.post.client.dto.request.NoticePageRequest
 import co.yappuworld.post.client.dto.request.NoticeTypeInRequest.ALL
-import co.yappuworld.post.domain.model.NoticeEntity
-import co.yappuworld.post.domain.vo.BoardError
-import co.yappuworld.post.domain.vo.NoticeType
+import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.domain.BoardError
+import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.infrastructure.PostJpaRepository
 import co.yappuworld.user.infrastructure.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.UserRepository

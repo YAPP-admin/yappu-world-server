@@ -1,7 +1,7 @@
 package co.yappuworld.post.client.application.dto.response
 
-import co.yappuworld.post.domain.model.NoticeEntity
-import co.yappuworld.post.domain.vo.NoticeType
+import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import java.time.LocalDate

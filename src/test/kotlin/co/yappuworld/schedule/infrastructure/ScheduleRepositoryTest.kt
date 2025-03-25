@@ -1,7 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.domain.SessionEntity
-import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
 import co.yappuworld.support.fixture.schedule.ScheduleFixture
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.assertDoesNotThrow

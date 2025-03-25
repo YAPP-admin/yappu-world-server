@@ -1,6 +1,5 @@
-package co.yappuworld.post.domain.model
+package co.yappuworld.post.domain
 
-import co.yappuworld.post.domain.vo.NoticeType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

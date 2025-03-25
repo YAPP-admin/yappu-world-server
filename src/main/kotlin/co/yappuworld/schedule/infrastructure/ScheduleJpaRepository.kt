@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.infrastructure.repository
+package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.SessionEntity

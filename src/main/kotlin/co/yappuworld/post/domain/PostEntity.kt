@@ -1,4 +1,4 @@
-package co.yappuworld.post.domain.model
+package co.yappuworld.post.domain
 
 import co.yappuworld.global.persistence.BaseJpaEntity
 import jakarta.persistence.DiscriminatorColumn

@@ -4,7 +4,7 @@ import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
-import co.yappuworld.schedule.infrastructure.repository.ScheduleJpaRepository
+import co.yappuworld.schedule.infrastructure.ScheduleJpaRepository
 import co.yappuworld.support.fixture.schedule.ScheduleFixture.getSessionFixture
 import io.mockk.every
 import io.mockk.mockk

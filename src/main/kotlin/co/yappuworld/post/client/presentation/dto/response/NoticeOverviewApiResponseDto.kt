@@ -4,7 +4,7 @@ import co.yappuworld.operation.client.dto.response.PositionResponse
 import co.yappuworld.post.client.application.dto.response.NoticeOverviewAppResponseDto
 import co.yappuworld.post.client.application.dto.response.NoticeOverviewWriterAppResponseDto
 import co.yappuworld.post.client.application.dto.response.NoticeSimpleAppResponseDto
-import co.yappuworld.post.domain.vo.NoticeType
+import co.yappuworld.post.domain.NoticeType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
