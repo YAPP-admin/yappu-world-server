@@ -6,11 +6,9 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
-import co.yappuworld.operation.application.GenerationActiveStateManager
-import co.yappuworld.operation.application.dto.request.AdminSignupCodeDeleteRequest
+import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
-import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.user.application.dto.request.AdminActivityUnitUpdateAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminSignUpApplicationPageAppRequestDto
 import co.yappuworld.user.application.dto.request.AdminSignUpCodeUpdateAppRequestDto
@@ -43,8 +41,7 @@ class UserAdminService(
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
-    private val generationRepository: GenerationRepository,
-    private val generationActiveStateManager: GenerationActiveStateManager
+    private val generationActiveStateManager: co.yappuworld.operation.client.application.GenerationActiveStateManager
 ) {
 
     @Transactional

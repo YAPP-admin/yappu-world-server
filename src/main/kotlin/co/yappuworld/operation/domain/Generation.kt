@@ -10,8 +10,7 @@ import java.time.LocalDate
 class Generation(
     value: Int,
     startDate: LocalDate?,
-    endDate: LocalDate?,
-    isActive: Boolean
+    endDate: LocalDate?
 ) : Persistable<Int> {
 
     @Id
@@ -21,7 +20,7 @@ class Generation(
         private set
     var endDate = endDate
         private set
-    var isActive = isActive
+    var isActive = false
         private set
 
     @Transient

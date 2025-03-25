@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.user.application.dto.request.CheckingEmailAvailabilityAppRequestDto
 import co.yappuworld.user.application.dto.request.LatestSignUpApplicationAppRequestDto
 import co.yappuworld.user.application.dto.request.SignUpApplicationApproveRequest

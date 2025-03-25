@@ -1,10 +1,10 @@
 package co.yappuworld.post.client.presentation.dto.response
 
+import co.yappuworld.operation.client.dto.response.PositionResponse
 import co.yappuworld.post.client.application.dto.response.NoticeAppResponseDto
 import co.yappuworld.post.client.application.dto.response.NoticeDetailsAppResponseDto
 import co.yappuworld.post.client.application.dto.response.NoticeDetailsWriterAppResponseDto
 import co.yappuworld.post.domain.vo.NoticeType
-import co.yappuworld.operation.presentation.dto.response.PositionApiResponseDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
@@ -51,13 +51,13 @@ data class NoticeDetailsWriterApiResponseDto(
     @Schema(description = "작성자 가장 최근 활동 기수")
     val activityUnitGeneration: Int,
     @Schema(description = "작성자 직군")
-    val activityUnitPosition: PositionApiResponseDto
+    val activityUnitPosition: PositionResponse
 ) {
 
     constructor(writer: NoticeDetailsWriterAppResponseDto) : this(
         id = writer.id,
         name = writer.name,
         activityUnitGeneration = writer.activityUnitGeneration,
-        activityUnitPosition = PositionApiResponseDto(writer.activityUnitPosition)
+        activityUnitPosition = PositionResponse(writer.activityUnitPosition)
     )
 }
