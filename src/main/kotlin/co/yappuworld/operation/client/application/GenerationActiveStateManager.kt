@@ -2,9 +2,9 @@ package co.yappuworld.operation.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.client.dto.param.GenerationActivationControlResult
-import co.yappuworld.operation.domain.Generation
+import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.operation.domain.OperationError
-import co.yappuworld.operation.infrastructure.GenerationRepository
+import co.yappuworld.operation.infrastructure.GenerationJpaRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -14,7 +14,7 @@ private val logger = KotlinLogging.logger { }
 
 @Component
 class GenerationActiveStateManager(
-    private val generationRepository: GenerationRepository
+    private val generationRepository: GenerationJpaRepository
 ) {
 
     @Transactional
@@ -53,11 +53,11 @@ class GenerationActiveStateManager(
     }
 
     private fun checkDeactivatingConsistency(
-        activeGenerations: List<Generation>,
+        activeGenerations: List<GenerationEntity>,
         deactivateTargetGeneration: Int? = null
     ) {
         if (deactivateTargetGeneration != null && activeGenerations.isEmpty()) {
-            co.yappuworld.operation.client.application.logger.error {
+            logger.error {
                 """
                 활성화 된 기수는 없으나, 비활성화 요청이 들어왔습니다.
                 비활성화 요청 기수: $deactivateTargetGeneration
@@ -67,7 +67,7 @@ class GenerationActiveStateManager(
         }
 
         if (activeGenerations.size > 1) {
-            co.yappuworld.operation.client.application.logger.error {
+            logger.error {
                 "활성화 된 기수: ${
                     activeGenerations.map { it.value }.joinToString(", ")
                 }}"
@@ -77,7 +77,7 @@ class GenerationActiveStateManager(
 
         val activeGeneration = activeGenerations.single()
         if (deactivateTargetGeneration != null && deactivateTargetGeneration != activeGeneration.value) {
-            co.yappuworld.operation.client.application.logger.error {
+            logger.error {
                 """
                     활성화 해제 목표: $deactivateTargetGeneration
                     현재 활성화 된 기수: ${activeGeneration.value}

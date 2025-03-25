@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.operation.infrastructure.GenerationRepository
+import co.yappuworld.operation.infrastructure.GenerationJpaRepository
 import co.yappuworld.user.client.dto.response.UserActivityHistoriesResponse
 import co.yappuworld.user.client.dto.response.UserProfileResponse
 import co.yappuworld.user.domain.vo.UserError
@@ -16,7 +16,7 @@ import java.util.UUID
 class UserProfileService(
     private val userRepository: UserRepository,
     private val activityUnitRepository: ActivityUnitRepository,
-    private val generationRepository: GenerationRepository
+    private val generationRepository: GenerationJpaRepository
 ) {
 
     @Transactional(readOnly = true)
@@ -31,7 +31,7 @@ class UserProfileService(
         val activityUnits = activityUnitRepository.findAllByUserId(userId)
         val generationByValue = generationRepository
             .findAllByValueIn(activityUnits.map { it.generation })
-            .associateBy { it.id }
+            .associateBy { it.value }
 
         return UserActivityHistoriesResponse(activityUnits, generationByValue)
     }

@@ -1,6 +1,6 @@
 package co.yappuworld.operation.client.dto.response
 
-import co.yappuworld.operation.domain.Generation
+import co.yappuworld.operation.domain.GenerationEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
@@ -15,7 +15,7 @@ data class AdminGenerationResponse(
     val isActive: Boolean
 ) {
 
-    constructor(generation: Generation) : this(
+    constructor(generation: GenerationEntity) : this(
         generation = generation.value,
         startDate = generation.startDate,
         endDate = generation.endDate,

@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.operation.domain.Generation
+import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.user.domain.model.ActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -9,7 +9,7 @@ data class UserActivityHistoriesResponse(
     val activityUnits: List<UserActivityHistoryResponse>
 ) {
 
-    constructor(activityUnits: List<ActivityUnit>, generationByValue: Map<Int, Generation>) : this(
+    constructor(activityUnits: List<ActivityUnit>, generationByValue: Map<Int, GenerationEntity>) : this(
         activityUnits
             .sortedByDescending { it.generation }
             .map {
@@ -35,7 +35,7 @@ data class UserActivityHistoryResponse(
     val activityEndDate: LocalDate?
 ) {
 
-    constructor(activityUnit: ActivityUnit, generation: Generation?) : this(
+    constructor(activityUnit: ActivityUnit, generation: GenerationEntity?) : this(
         generation = activityUnit.generation,
         position = activityUnit.position.label,
         activityStartDate = generation?.startDate,

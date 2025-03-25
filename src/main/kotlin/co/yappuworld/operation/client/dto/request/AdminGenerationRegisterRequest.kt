@@ -1,6 +1,6 @@
 package co.yappuworld.operation.client.dto.request
 
-import co.yappuworld.operation.domain.Generation
+import co.yappuworld.operation.domain.GenerationEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotNull
@@ -21,8 +21,8 @@ data class AdminGenerationRegisterRequest(
     val isActive: Boolean
 ) {
 
-    fun toDomain(): Generation =
-        Generation(
+    fun toDomain(): GenerationEntity =
+        GenerationEntity(
             value = generation,
             startDate = startDate,
             endDate = endDate

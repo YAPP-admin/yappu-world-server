@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.application
 
-import co.yappuworld.operation.infrastructure.GenerationRepository
+import co.yappuworld.operation.infrastructure.GenerationJpaRepository
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 @Service
 class ScheduleService(
-    private val generationRepository: GenerationRepository,
+    private val generationRepository: GenerationJpaRepository,
     private val scheduleJpaRepository: ScheduleJpaRepository
 ) {
 
