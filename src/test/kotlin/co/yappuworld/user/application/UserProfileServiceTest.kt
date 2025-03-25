@@ -48,9 +48,8 @@ class UserProfileServiceTest {
             getGenerationFixture(
                 value = 25,
                 startDate = startOfTwentyFive,
-                endDate = endOfTwentyFive,
-                isActive = true
-            )
+                endDate = endOfTwentyFive
+            ).apply { activate() }
         )
 
         val response = userProfileService.findUserActivityHistories(UUID.randomUUID())

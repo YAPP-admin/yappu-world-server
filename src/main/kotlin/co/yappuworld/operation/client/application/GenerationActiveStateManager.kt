@@ -26,7 +26,6 @@ class GenerationActiveStateManager(
 
         return targetGeneration
             .apply { activate() }
-            .also { generationRepository.save(it) }
             .let { GenerationActivationControlResult(it.value, deactivatedGeneration) }
     }
 
