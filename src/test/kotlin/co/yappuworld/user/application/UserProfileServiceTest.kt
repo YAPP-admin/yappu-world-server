@@ -47,7 +47,8 @@ class UserProfileServiceTest {
             getGenerationFixture(
                 value = 25,
                 startDate = startOfTwentyFive,
-                endDate = endOfTwentyFive
+                endDate = endOfTwentyFive,
+                isActive = true
             )
         )
 

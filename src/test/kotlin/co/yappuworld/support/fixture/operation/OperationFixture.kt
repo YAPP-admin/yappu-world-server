@@ -9,11 +9,18 @@ object OperationFixture {
         value: Int = 2,
         startDate: LocalDate? = LocalDate.of(2025, 11, 13),
         endDate: LocalDate? = LocalDate.of(2025, 3, 8),
-        isActive: Boolean = true
-    ) = Generation(
-        value = value,
-        startDate = startDate,
-        endDate = endDate,
-        isActive = isActive
-    )
+        isActive: Boolean = false
+    ): Generation {
+        val generation = Generation(
+            value = value,
+            startDate = startDate,
+            endDate = endDate
+        )
+
+        if (isActive) {
+            generation.activate()
+        }
+
+        return generation
+    }
 }

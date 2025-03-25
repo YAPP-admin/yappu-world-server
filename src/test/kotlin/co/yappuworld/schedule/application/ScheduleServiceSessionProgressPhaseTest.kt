@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.application
 
 import co.yappuworld.operation.infrastructure.GenerationRepository
+import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING

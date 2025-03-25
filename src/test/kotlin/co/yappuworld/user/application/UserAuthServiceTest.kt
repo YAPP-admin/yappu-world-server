@@ -5,7 +5,7 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
-import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
 import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
