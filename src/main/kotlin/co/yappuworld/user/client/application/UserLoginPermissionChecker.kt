@@ -1,10 +1,10 @@
 package co.yappuworld.user.client.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.SignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Limit
 import org.springframework.stereotype.Component
@@ -13,14 +13,14 @@ private val logger = KotlinLogging.logger { }
 
 @Component
 class UserLoginPermissionChecker(
-    private val signUpApplicationRepository: UserSignUpApplicationRepository
+    private val signUpApplicationRepository: SignUpApplicationRepository
 ) {
 
     fun checkPermissionAndGetUser(
-        user: User?,
+        user: UserEntity?,
         email: String,
         plainPassword: String
-    ): User {
+    ): UserEntity {
         if (user == null) processException(email)
 
         requireNotNull(user)

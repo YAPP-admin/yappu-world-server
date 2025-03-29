@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.request
 
 import co.yappuworld.user.domain.model.ApplicationDetails
-import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
@@ -32,8 +32,8 @@ data class UserSignUpRequest(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toApplication(): SignUpApplication =
-        SignUpApplication(
+    fun toApplication(): SignUpApplicationEntity =
+        SignUpApplicationEntity(
             ApplicationDetails(
                 this.email,
                 this.password,

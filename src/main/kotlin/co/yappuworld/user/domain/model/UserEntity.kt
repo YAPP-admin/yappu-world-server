@@ -1,24 +1,19 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.global.persistence.BaseJpaEntity
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import org.springframework.data.relational.core.mapping.Table
-import java.util.UUID
+import jakarta.persistence.Entity
 
-@Table("users")
-class User private constructor(
+@Entity
+class UserEntity(
     email: String,
     password: String,
     name: String,
-    role: UserRole,
-    isActive: Boolean = true
-) : BaseEntity() {
-
-    var isActive: Boolean = isActive
-        private set
+    role: UserRole
+) : BaseJpaEntity() {
 
     var email: String = email
         private set
@@ -28,20 +23,8 @@ class User private constructor(
         private set
     var role: UserRole = role
         private set
-
-    constructor(
-        email: String,
-        password: String,
-        name: String,
-        role: UserRole
-    ) : this(email, password, name, role, true)
-
-    fun withId(id: UUID): User =
-        User(this.email, this.password, this.name, this.role, this.isActive).apply { this.id = id }
-
-    override fun getId(): UUID = this.id
-
-    override fun isNew(): Boolean = !isCreatedAtInitialized()
+    var isActive: Boolean = true
+        private set
 
     fun checkPassword(plainPassword: String) {
         if (!EncryptUtils.isMatch(plainPassword, this.password)) {

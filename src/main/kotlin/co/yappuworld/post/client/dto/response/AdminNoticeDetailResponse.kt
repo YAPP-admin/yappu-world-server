@@ -1,7 +1,7 @@
 package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.post.domain.NoticeType
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.UserEntity
 import java.util.UUID
 
 data class AdminNoticeDetailResponse(
@@ -17,7 +17,7 @@ data class AdminNoticeDetailWriterResponse(
     val id: UUID,
     val name: String
 ) {
-    constructor(writer: User) : this(
+    constructor(writer: UserEntity) : this(
         id = writer.id,
         name = writer.name
     )

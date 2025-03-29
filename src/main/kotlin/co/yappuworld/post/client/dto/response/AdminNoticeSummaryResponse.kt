@@ -1,7 +1,7 @@
 package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.post.domain.NoticeEntity
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.UserEntity
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -12,7 +12,7 @@ data class AdminNoticeSummaryResponse(
     val writer: AdminNoticeSummaryWriterResponse,
     val noticeType: String
 ) {
-    constructor(notice: NoticeEntity, user: User) : this(
+    constructor(notice: NoticeEntity, user: UserEntity) : this(
         noticeId = notice.id.toString(),
         title = notice.title,
         createdAt = notice.createdAt,
@@ -25,5 +25,5 @@ data class AdminNoticeSummaryWriterResponse(
     val userId: UUID,
     val name: String
 ) {
-    constructor(user: User) : this(user.id, user.name)
+    constructor(user: UserEntity) : this(user.id, user.name)
 }

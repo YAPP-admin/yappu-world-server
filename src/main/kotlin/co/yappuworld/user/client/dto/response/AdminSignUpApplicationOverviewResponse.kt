@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import io.swagger.v3.oas.annotations.media.Schema
@@ -25,7 +25,7 @@ data class AdminSignUpApplicationOverviewResponse(
     val processDate: LocalDateTime?
 ) {
 
-    constructor(application: SignUpApplication) : this(
+    constructor(application: SignUpApplicationEntity) : this(
         id = application.id,
         name = application.details.name,
         email = application.details.email,

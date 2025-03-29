@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.ActivityUnit
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.ActivityUnitEntity
+import co.yappuworld.user.domain.model.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
@@ -28,8 +28,8 @@ data class AdminUserDetailResponse(
 ) {
 
     constructor(
-        user: User,
-        activityUnits: List<ActivityUnit>,
+        user: UserEntity,
+        activityUnits: List<ActivityUnitEntity>,
         activeGeneration: Int?
     ) : this(
         id = user.id,
@@ -58,7 +58,7 @@ data class AdminUserDetailActivityUnitResponse(
 ) {
 
     constructor(
-        activityUnit: ActivityUnit,
+        activityUnit: ActivityUnitEntity,
         activeGeneration: Int?
     ) : this(
         id = activityUnit.id,

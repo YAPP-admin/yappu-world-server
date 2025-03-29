@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import java.time.LocalDate
 
 data class AdminSignUpApplicationDetailsResponse(
@@ -10,7 +10,7 @@ data class AdminSignUpApplicationDetailsResponse(
     val activityUnits: List<AdminSignUpApplicationActivityUnitResponse>
 ) {
 
-    constructor(application: SignUpApplication) : this(
+    constructor(application: SignUpApplicationEntity) : this(
         name = application.details.name,
         email = application.details.email,
         applicationDate = application.createdAt.toLocalDate(),

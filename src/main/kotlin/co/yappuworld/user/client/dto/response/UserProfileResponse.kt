@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.ActivityUnit
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.ActivityUnitEntity
+import co.yappuworld.user.domain.model.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -20,8 +20,8 @@ data class UserProfileResponse(
 ) {
 
     constructor(
-        user: User,
-        activityUnits: List<ActivityUnit>
+        user: UserEntity,
+        activityUnits: List<ActivityUnitEntity>
     ) : this(
         user.id,
         user.name,

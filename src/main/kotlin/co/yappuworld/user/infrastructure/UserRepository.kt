@@ -1,21 +1,19 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
-import org.springframework.data.jdbc.repository.query.Query
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
-import org.springframework.stereotype.Repository
 import java.util.UUID
 
-@Repository
-interface UserRepository : CrudRepository<User, UUID> {
+interface UserRepository : JpaRepository<UserEntity, UUID> {
 
     fun existsUserByEmail(email: String): Boolean
 
-    fun findUserOrNullByEmail(email: String): User?
+    fun findUserOrNullByEmail(email: String): UserEntity?
 
-    fun findAllByIdIn(userIds: List<UUID>): List<User>
+    fun findAllByIdIn(userIds: List<UUID>): List<UserEntity>
 
     @Query(
         """
@@ -36,7 +34,8 @@ interface UserRepository : CrudRepository<User, UUID> {
             ) la ON u.id = la.user_id AND la.rn = 1
             ORDER BY u.id ASC
             LIMIT :limit OFFSET :offset;
-        """
+        """,
+        nativeQuery = true
     )
     fun findUsersWithActivityUnit(
         @Param("limit") limit: Int,
@@ -61,7 +60,8 @@ interface UserRepository : CrudRepository<User, UUID> {
                 FROM activity_units
             ) la ON u.id = la.user_id AND la.rn = 1
             WHERE u.id in (:#{#userIds});
-        """
+        """,
+        nativeQuery = true
     )
     fun findUsersWithActivityUnit(
         @Param("userIds") userIds: Collection<String>
@@ -84,8 +84,9 @@ interface UserRepository : CrudRepository<User, UUID> {
                 SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
                 FROM activity_units
             ) la ON u.id = la.user_id AND la.rn = 1
-            WHERE u.id = :userId;
-        """
+            WHERE u.id = :userId
+        """,
+        nativeQuery = true
     )
     fun findUserWithActivityUnit(
         @Param("userId") userId: String

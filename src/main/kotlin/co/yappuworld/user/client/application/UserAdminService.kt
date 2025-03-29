@@ -22,9 +22,9 @@ import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
+import co.yappuworld.user.infrastructure.SignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,8 +35,8 @@ import kotlin.math.ceil
 @Service
 class UserAdminService(
     private val userRepository: UserRepository,
-    private val userSignUpApplicationRepository: UserSignUpApplicationRepository,
-    private val activityUnitRepository: ActivityUnitRepository,
+    private val signUpApplicationRepository: SignUpApplicationRepository,
+    private val activityUnitJpaRepository: ActivityUnitJpaRepository,
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
@@ -72,7 +72,7 @@ class UserAdminService(
     fun getUserDetail(userId: UUID): AdminUserDetailResponse {
         val user = userRepository.findByIdOrNull(userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
-        val activityUnits = activityUnitRepository.findAllByUserId(userId)
+        val activityUnits = activityUnitJpaRepository.findAllByUserId(userId)
         val activeGenerationOrNull = generationActiveStateManager.getActiveGenerationOrNull()
 
         return AdminUserDetailResponse(user, activityUnits, activeGenerationOrNull)
@@ -102,7 +102,7 @@ class UserAdminService(
 
     @Transactional(readOnly = true)
     fun getSignUpApplicationDetails(applicationId: UUID): AdminSignUpApplicationResponse {
-        val application = userSignUpApplicationRepository.findByIdOrNull(applicationId)
+        val application = signUpApplicationRepository.findByIdOrNull(applicationId)
             ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
 
         return when (application.status == SignUpApplicationStatus.APPROVED) {
@@ -118,7 +118,7 @@ class UserAdminService(
     fun getSignUpApplications(
         request: AdminSignUpApplicationPageRequest
     ): OffsetPageResponse<AdminSignUpApplicationOverviewResponse> =
-        userSignUpApplicationRepository.findAll(request.toPageRequest()).let {
+        signUpApplicationRepository.findAll(request.toPageRequest()).let {
             OffsetPageResponse(
                 data = it.content.map { c -> AdminSignUpApplicationOverviewResponse(c) },
                 totalCount = it.totalElements,
@@ -159,7 +159,7 @@ class UserAdminService(
             .let { (toCreate, toUpdateOrDelete) ->
                 toUpdateOrDelete.ifNotEmpty { updateOrDeleteActivityUnit(userId, it) }
                 toCreate.ifNotEmpty {
-                    activityUnitRepository.saveAll(
+                    activityUnitJpaRepository.saveAll(
                         it.map { r -> r.toActivityUnit(userId) }
                     )
                 }
@@ -170,7 +170,7 @@ class UserAdminService(
         userId: UUID,
         requests: List<AdminActivityUnitUpdateRequest>
     ) {
-        val activityUnits = activityUnitRepository
+        val activityUnits = activityUnitJpaRepository
             .findAllByUserId(userId)
             .ifEmpty { return }
 
@@ -178,14 +178,14 @@ class UserAdminService(
         activityUnits
             .partition { it.id in requestById.keys }
             .let { (toUpdate, toDelete) ->
-                toDelete.ifNotEmpty { units -> activityUnitRepository.deleteAllById(units.map { it.id }) }
+                toDelete.ifNotEmpty { units -> activityUnitJpaRepository.deleteAllById(units.map { it.id }) }
                 toUpdate.ifNotEmpty { units ->
                     units.forEach { u ->
                         requestById[u.id]?.let { request ->
                             u.updateActivityUnit(request.generation, request.position)
                         }
                     }
-                    activityUnitRepository.saveAll(units)
+                    activityUnitJpaRepository.saveAll(units)
                 }
             }
     }

@@ -1,6 +1,6 @@
 package co.yappuworld.global.security
 
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.UserRole
 import java.util.UUID
 
@@ -26,6 +26,6 @@ class SecurityUser(
             )
         }
 
-        fun from(user: User): SecurityUser = SecurityUser(user.id, user.role)
+        fun from(user: UserEntity): SecurityUser = SecurityUser(user.id, user.role)
     }
 }

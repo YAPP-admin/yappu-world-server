@@ -9,14 +9,14 @@ import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixtu
 import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
 import co.yappuworld.user.client.application.SignUpService
 import co.yappuworld.user.domain.model.ApplicationDetails
-import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
+import co.yappuworld.user.infrastructure.SignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceRepository
+import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.mockk.every
 import io.mockk.mockk
@@ -36,9 +36,9 @@ class SignUpServiceTest {
         1209600000
     )
     private val userRepository = mockk<UserRepository>()
-    private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
-    private val activityUnitRepository = mockk<ActivityUnitRepository>()
-    private val userDeviceRepository = mockk<UserDeviceRepository>()
+    private val authApplicationRepository = mockk<SignUpApplicationRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitJpaRepository>()
+    private val userDeviceRepository = mockk<UserDeviceJpaRepository>()
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
@@ -56,7 +56,7 @@ class SignUpServiceTest {
 
     companion object {
         @JvmStatic
-        private fun provideSignUpApplicationAndDetails(): List<Pair<SignUpApplication, ApplicationDetails>> {
+        private fun provideSignUpApplicationAndDetails(): List<Pair<SignUpApplicationEntity, ApplicationDetails>> {
             val details = getApplicationDetailsFixture()
             return listOf(
                 Pair(getSignUpApplicationFixture(details), details),
@@ -81,7 +81,7 @@ class SignUpServiceTest {
         val details = getApplicationDetailsFixture(
             password = "abcabC!!"
         )
-        val application = SignUpApplication(details)
+        val application = SignUpApplicationEntity(details)
         every {
             authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
                 any(),
@@ -101,7 +101,7 @@ class SignUpServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideSignUpApplicationAndDetails")
-    fun `어플리케이션의 상태에 맞게 응답이 반환된다`(applicationAndDetails: Pair<SignUpApplication, ApplicationDetails>) {
+    fun `어플리케이션의 상태에 맞게 응답이 반환된다`(applicationAndDetails: Pair<SignUpApplicationEntity, ApplicationDetails>) {
         val application = applicationAndDetails.first
         val details = applicationAndDetails.second
 

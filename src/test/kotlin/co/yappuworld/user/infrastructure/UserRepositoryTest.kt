@@ -17,7 +17,7 @@ class UserRepositoryTest {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var activityUnitRepository: ActivityUnitRepository
+    lateinit var activityUnitRepository: ActivityUnitJpaRepository
 
     @Test
     @Transactional

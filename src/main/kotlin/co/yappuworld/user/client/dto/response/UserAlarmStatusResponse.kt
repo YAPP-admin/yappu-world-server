@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.UserAlarmSetting
+import co.yappuworld.user.domain.model.UserAlarmSettingEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class UserAlarmStatusResponse(
@@ -9,7 +9,7 @@ data class UserAlarmStatusResponse(
 ) {
 
     companion object {
-        fun of(setting: UserAlarmSetting): UserAlarmStatusResponse =
+        fun of(setting: UserAlarmSettingEntity): UserAlarmStatusResponse =
             UserAlarmStatusResponse(
                 isMasterEnabled = setting.master
             )

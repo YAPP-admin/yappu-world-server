@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import io.swagger.v3.oas.annotations.media.Schema
 
@@ -11,7 +11,7 @@ data class LatestSignUpApplicationResponse(
     val rejectReason: String?
 ) {
 
-    constructor(application: SignUpApplication) : this(
+    constructor(application: SignUpApplicationEntity) : this(
         application.status,
         application.rejectReason
     )

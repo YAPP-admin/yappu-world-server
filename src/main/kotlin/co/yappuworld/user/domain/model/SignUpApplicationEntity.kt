@@ -1,21 +1,26 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.global.persistence.ApplicationDetailsConverter
+import co.yappuworld.global.persistence.BaseJpaEntity
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import org.springframework.data.relational.core.mapping.Table
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
 import java.util.UUID
 
-@Table("sign_up_application")
-class SignUpApplication(
+@Entity
+class SignUpApplicationEntity(
     val applicantEmail: String,
+    @Column(columnDefinition = "JSON")
+    @Convert(converter = ApplicationDetailsConverter::class)
     val details: ApplicationDetails,
     status: SignUpApplicationStatus,
     rejectReason: String?
-) : BaseEntity() {
+) : BaseJpaEntity() {
 
     var status: SignUpApplicationStatus = status
         private set
@@ -38,7 +43,7 @@ class SignUpApplication(
         this.rejectReason = reason
     }
 
-    fun toUser(role: UserRole): User = this.details.toUser(role)
+    fun toUser(role: UserRole): UserEntity = this.details.toUser(role)
 
     fun checkPassword(password: String) {
         if (!EncryptUtils.isMatch(password, details.password)) {
@@ -46,7 +51,7 @@ class SignUpApplication(
         }
     }
 
-    fun toActivityUnits(userId: UUID): List<ActivityUnit> =
+    fun toActivityUnits(userId: UUID): List<ActivityUnitEntity> =
         this.details.activityUnits.map {
             it.toActivityUnit(userId)
         }

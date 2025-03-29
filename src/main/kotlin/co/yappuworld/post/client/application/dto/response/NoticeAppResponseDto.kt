@@ -15,11 +15,11 @@ data class NoticeAppResponseDto(
     companion object {
         fun from(
             notice: NoticeEntity,
-            user: UserWithLastActivityUnit
+            response: UserWithLastActivityUnit
         ): NoticeAppResponseDto =
             NoticeAppResponseDto(
                 notice = NoticeDetailsAppResponseDto(notice),
-                writer = NoticeDetailsWriterAppResponseDto(user)
+                writer = NoticeDetailsWriterAppResponseDto(response)
             )
     }
 }
@@ -48,10 +48,10 @@ data class NoticeDetailsWriterAppResponseDto(
     val activityUnitPosition: Position
 ) {
 
-    constructor(user: UserWithLastActivityUnit) : this(
-        id = user.userId,
-        name = user.name,
-        activityUnitGeneration = user.activityUnit.generation,
-        activityUnitPosition = user.activityUnit.position
+    constructor(response: UserWithLastActivityUnit) : this(
+        id = response.userId,
+        name = response.name,
+        activityUnitGeneration = response.generation,
+        activityUnitPosition = response.position
     )
 }

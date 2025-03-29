@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus.APPROVED
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus.REJECTED
 import io.swagger.v3.oas.annotations.media.Schema
@@ -17,7 +17,7 @@ data class AdminSignUpApplicationResponse(
     val assignedRole: UserRoleResponse?
 ) {
 
-    constructor(application: SignUpApplication, user: User? = null) : this(
+    constructor(application: SignUpApplicationEntity, user: UserEntity? = null) : this(
         details = AdminSignUpApplicationDetailsResponse(application),
         status = application.status.label,
         rejectReason = application.takeIf { it.status == REJECTED }?.rejectReason,

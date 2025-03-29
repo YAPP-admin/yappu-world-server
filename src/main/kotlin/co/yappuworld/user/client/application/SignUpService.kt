@@ -5,24 +5,24 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.operation.client.application.ConfigInquiryComponent
-import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
-import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.client.dto.request.CheckingEmailAvailabilityRequest
 import co.yappuworld.user.client.dto.request.LatestSignUpApplicationRequest
+import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
+import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.client.dto.request.UserSignUpRequest
 import co.yappuworld.user.client.dto.response.LatestSignUpApplicationResponse
-import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.model.User
-import co.yappuworld.user.domain.model.UserAlarmSetting
-import co.yappuworld.user.domain.model.UserDevice
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.model.UserAlarmSettingEntity
+import co.yappuworld.user.domain.model.UserDeviceEntity
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
+import co.yappuworld.user.infrastructure.SignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceRepository
+import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Limit
@@ -36,10 +36,10 @@ private val logger = KotlinLogging.logger { }
 @Service
 class SignUpService(
     private val userRepository: UserRepository,
-    private val signUpApplicationRepository: UserSignUpApplicationRepository,
-    private val activityUnitRepository: ActivityUnitRepository,
+    private val signUpApplicationRepository: SignUpApplicationRepository,
+    private val activityUnitJpaRepository: ActivityUnitJpaRepository,
     private val userAlarmSettingRepository: UserAlarmSettingRepository,
-    private val userDeviceRepository: UserDeviceRepository,
+    private val userDeviceRepository: UserDeviceJpaRepository,
     private val jwtGenerator: JwtGenerator,
     private val configInquiryComponent: ConfigInquiryComponent,
     private val userSystemNotifier: UserSystemNotifier
@@ -112,14 +112,14 @@ class SignUpService(
     }
 
     private fun initializeUser(
-        application: SignUpApplication,
+        application: SignUpApplicationEntity,
         role: UserRole
-    ): User {
+    ): UserEntity {
         val user = application.toUser(role)
         return userRepository.save(user).also {
-            activityUnitRepository.saveAll(application.toActivityUnits(it.id))
-            userAlarmSettingRepository.save(UserAlarmSetting(it.id, application.getDeviceAlarmToggle()))
-            userDeviceRepository.save(UserDevice(it.id, application.getFcmToken()))
+            activityUnitJpaRepository.saveAll(application.toActivityUnits(it.id))
+            userAlarmSettingRepository.save(UserAlarmSettingEntity(it.id, application.getDeviceAlarmToggle()))
+            userDeviceRepository.save(UserDeviceEntity(it.id, application.getFcmToken()))
         }
     }
 
@@ -169,7 +169,7 @@ class SignUpService(
         }
     }
 
-    private fun getPendingApplications(applicationIds: List<UUID>): List<SignUpApplication> {
+    private fun getPendingApplications(applicationIds: List<UUID>): List<SignUpApplicationEntity> {
         val applications = signUpApplicationRepository.findAllByIdIn(applicationIds)
         if (applicationIds.size != applications.size) {
             logger.error {

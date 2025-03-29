@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
 import co.yappuworld.operation.client.dto.response.PositionResponse
-import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.ActivityUnitEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ActivityUnitResponse(
@@ -11,7 +11,7 @@ data class ActivityUnitResponse(
     val position: PositionResponse
 ) {
 
-    constructor(response: ActivityUnit) : this(
+    constructor(response: ActivityUnitEntity) : this(
         generation = response.generation,
         position = PositionResponse(response.position)
     )

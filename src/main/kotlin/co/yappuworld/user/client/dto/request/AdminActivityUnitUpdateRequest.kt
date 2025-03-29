@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.request
 
-import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.ActivityUnitEntity
 import co.yappuworld.user.domain.vo.Position
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
@@ -19,8 +19,8 @@ data class AdminActivityUnitUpdateRequest(
     val position: Position
 ) {
 
-    fun toActivityUnit(userId: UUID): ActivityUnit =
-        ActivityUnit(
+    fun toActivityUnit(userId: UUID): ActivityUnitEntity =
+        ActivityUnitEntity(
             generation = generation,
             position = position,
             userId = userId

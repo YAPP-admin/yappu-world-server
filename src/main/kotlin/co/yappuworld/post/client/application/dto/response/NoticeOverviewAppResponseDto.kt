@@ -12,9 +12,9 @@ data class NoticeOverviewAppResponseDto(
     val writer: NoticeOverviewWriterAppResponseDto
 ) {
 
-    constructor(notice: NoticeEntity, user: UserWithLastActivityUnit) : this(
+    constructor(notice: NoticeEntity, response: UserWithLastActivityUnit) : this(
         notice = NoticeSimpleAppResponseDto(notice),
-        writer = NoticeOverviewWriterAppResponseDto(user)
+        writer = NoticeOverviewWriterAppResponseDto(response)
     )
 }
 
@@ -42,10 +42,10 @@ data class NoticeOverviewWriterAppResponseDto(
     val activityUnitPosition: Position
 ) {
 
-    constructor(user: UserWithLastActivityUnit) : this(
-        userId = user.userId,
-        name = user.name,
-        activityUnitGeneration = user.activityUnit.generation,
-        activityUnitPosition = user.activityUnit.position
+    constructor(response: UserWithLastActivityUnit) : this(
+        userId = response.userId,
+        name = response.name,
+        activityUnitGeneration = response.generation,
+        activityUnitPosition = response.position
     )
 }

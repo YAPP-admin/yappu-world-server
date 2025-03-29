@@ -1,6 +1,5 @@
 package co.yappuworld.user.infrastructure.model
 
-import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import java.time.LocalDateTime
@@ -17,14 +16,7 @@ data class UserWithLastActivityUnit(
     val role: UserRole,
     val isActive: Boolean,
     val createdAt: LocalDateTime,
-    private val generation: Int,
-    private val position: Position,
-    private val activityUnitId: UUID
-) {
-
-    val activityUnit = ActivityUnit(
-        generation = generation,
-        position = position,
-        userId = userId
-    ).withId(activityUnitId)
-}
+    val generation: Int,
+    val position: Position,
+    val activityUnitId: UUID
+)

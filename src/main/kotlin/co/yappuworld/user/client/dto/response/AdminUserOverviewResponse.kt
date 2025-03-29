@@ -19,6 +19,12 @@ data class AdminUserOverviewResponse(
         email = response.email,
         role = UserRoleResponse(response.role),
         registrationDate = response.createdAt.toLocalDate(),
-        lastActivityUnit = AdminActivityUnitResponse(response.activityUnit)
+        lastActivityUnit = AdminActivityUnitResponse(
+            id = response.activityUnitId,
+            generation = response.generation,
+            position = response.position.label,
+            // todo : isActive 값 할당
+            isActive = false
+        )
     )
 }

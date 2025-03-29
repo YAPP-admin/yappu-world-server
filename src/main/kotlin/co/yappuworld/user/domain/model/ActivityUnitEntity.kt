@@ -1,27 +1,21 @@
 package co.yappuworld.user.domain.model
 
-import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.global.persistence.BaseJpaEntity
 import co.yappuworld.user.domain.vo.Position
-import org.springframework.data.relational.core.mapping.Table
+import jakarta.persistence.Entity
 import java.util.UUID
 
-/**
- * @property generation 기수
- * @property position 직군
- */
-@Table("activity_units")
-class ActivityUnit(
+@Entity
+class ActivityUnitEntity(
     generation: Int,
     position: Position,
     val userId: UUID
-) : BaseEntity() {
+) : BaseJpaEntity() {
 
     var generation: Int = generation
         private set
     var position: Position = position
         private set
-
-    fun withId(id: UUID): ActivityUnit = ActivityUnit(generation, position, userId).apply { this.id = id }
 
     fun updateActivityUnit(
         generation: Int,
