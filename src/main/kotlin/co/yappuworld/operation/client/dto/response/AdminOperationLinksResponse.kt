@@ -1,6 +1,6 @@
 package co.yappuworld.operation.client.dto.response
 
-import co.yappuworld.operation.domain.Config
+import co.yappuworld.operation.domain.ConfigEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class AdminOperationLinksResponse(
@@ -9,7 +9,7 @@ data class AdminOperationLinksResponse(
 ) {
 
     companion object {
-        fun from(configs: List<Config>): AdminOperationLinksResponse =
+        fun from(configs: List<ConfigEntity>): AdminOperationLinksResponse =
             AdminOperationLinksResponse(
                 configs
                     .map { AdminOperationLinkResponse(it) }
@@ -27,7 +27,7 @@ data class AdminOperationLinkResponse(
     val value: String?
 ) {
 
-    constructor(config: Config) : this(
+    constructor(config: ConfigEntity) : this(
         id = config.id,
         label = config.label,
         value = config.value

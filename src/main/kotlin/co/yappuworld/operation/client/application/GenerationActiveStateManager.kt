@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.client.dto.param.GenerationActivationControlResult
 import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.operation.domain.OperationError
-import co.yappuworld.operation.infrastructure.GenerationJpaRepository
+import co.yappuworld.operation.infrastructure.GenerationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -14,7 +14,7 @@ private val logger = KotlinLogging.logger { }
 
 @Component
 class GenerationActiveStateManager(
-    private val generationRepository: GenerationJpaRepository
+    private val generationRepository: GenerationRepository
 ) {
 
     @Transactional

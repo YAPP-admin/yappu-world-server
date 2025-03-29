@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS config;
 CREATE TABLE config
 (
-    id         varchar(36) PRIMARY KEY,
+    name       varchar(36) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
     label      varchar(32),

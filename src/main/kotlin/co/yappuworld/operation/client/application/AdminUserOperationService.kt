@@ -6,14 +6,14 @@ import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
-import co.yappuworld.operation.infrastructure.GenerationJpaRepository
+import co.yappuworld.operation.infrastructure.GenerationRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AdminUserOperationService(
     private val generationActiveStateManager: GenerationActiveStateManager,
-    private val generationRepository: GenerationJpaRepository
+    private val generationRepository: GenerationRepository
 ) {
 
     @Transactional(readOnly = true)

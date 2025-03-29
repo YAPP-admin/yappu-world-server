@@ -3,7 +3,7 @@ package co.yappuworld.operation.infrastructure
 import co.yappuworld.operation.domain.GenerationEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface GenerationJpaRepository : JpaRepository<GenerationEntity, Int> {
+interface GenerationRepository : JpaRepository<GenerationEntity, Int> {
 
     fun existsGenerationByIsActiveIsTrue(): Boolean
 

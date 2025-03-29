@@ -1,7 +1,7 @@
 package co.yappuworld.operation.client.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.operation.infrastructure.GenerationJpaRepository
+import co.yappuworld.operation.infrastructure.GenerationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
@@ -17,7 +17,7 @@ import kotlin.test.Test
 class GenerationActiveStateManagerTest {
 
     @Autowired
-    lateinit var repository: GenerationJpaRepository
+    lateinit var repository: GenerationRepository
     lateinit var generationActiveStateManager: GenerationActiveStateManager
 
     @BeforeEach

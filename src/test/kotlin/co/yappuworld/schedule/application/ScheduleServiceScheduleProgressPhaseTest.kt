@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.application
 
-import co.yappuworld.operation.infrastructure.GenerationJpaRepository
+import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 
 class ScheduleServiceScheduleProgressPhaseTest {
 
-    private val generationRepository = mockk<GenerationJpaRepository>()
+    private val generationRepository = mockk<GenerationRepository>()
     private val scheduleRepository = mockk<ScheduleJpaRepository>()
     private val scheduleService = ScheduleService(generationRepository, scheduleRepository)
 

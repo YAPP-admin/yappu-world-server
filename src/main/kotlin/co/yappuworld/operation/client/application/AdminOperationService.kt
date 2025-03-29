@@ -1,10 +1,10 @@
 package co.yappuworld.operation.client.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.operation.client.dto.request.AdminOperationLinkUpdateRequest
-import co.yappuworld.operation.client.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.client.dto.request.AdminMinSupportVersionUpdateRequest
+import co.yappuworld.operation.client.dto.request.AdminOperationLinkUpdateRequest
 import co.yappuworld.operation.client.dto.response.AdminMinSupportVersionResponse
+import co.yappuworld.operation.client.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.domain.ClientPlatform.ANDROID
 import co.yappuworld.operation.domain.ClientPlatform.IOS
 import co.yappuworld.operation.domain.ConfigCategory
@@ -40,7 +40,6 @@ class AdminOperationService(
             ANDROID -> configRepository.findByIdOrNull("minSupportVersionInAndroid")
             IOS -> configRepository.findByIdOrNull("minSupportVersionInIos")
         }?.apply { update(request.version.value) }
-            ?.also { configRepository.save(it) }
     }
 
     @Transactional(readOnly = true)
@@ -54,6 +53,5 @@ class AdminOperationService(
         configRepository
             .findByIdOrNull(request.id)
             ?.apply { update(request.name, request.link) }
-            ?.also { configRepository.save(it) }
     }
 }

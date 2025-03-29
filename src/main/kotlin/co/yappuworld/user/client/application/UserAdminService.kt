@@ -130,20 +130,16 @@ class UserAdminService(
 
     @Transactional
     fun updateSignUpCode(request: AdminSignUpCodeUpdateRequest) {
-        val config = configRepository
+        configRepository
             .findByIdOrNull(request.role.signUpCodeKey)
             ?.apply { update(request.getPaddedCode()) }
             ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
-
-        configRepository.save(config)
     }
 
     @Transactional
     fun deleteSignupCode(request: AdminSignupCodeDeleteRequest) {
-        val config = configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply { update(null) }
+        configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply { update(null) }
             ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
-
-        configRepository.save(config)
     }
 
     private fun updateUser(request: AdminUserUpdateRequest) {

@@ -1,5 +1,5 @@
 -- 가입코드
-INSERT INTO config (id, created_at, updated_at, label, category, value)
+INSERT INTO config (name, created_at, updated_at, label, category, value)
 VALUES ('authenticationCodeAdmin', now(), now(), '어드민 가입코드', 'AUTHENTICATION_CODE', '000000'),
        ('authenticationCodeStaff', now(), now(), '운영진 가입코드', 'AUTHENTICATION_CODE', '000001'),
        ('authenticationCodeAlumni', now(), now(), '정회원 가입코드', 'AUTHENTICATION_CODE', '000002'),
@@ -7,16 +7,16 @@ VALUES ('authenticationCodeAdmin', now(), now(), '어드민 가입코드', 'AUTH
        ('authenticationCodeActive', now(), now(), '활동회원 가입코드', 'AUTHENTICATION_CODE', '000004');
 
 -- 최소 지원 버전
-INSERT INTO config (id, created_at, updated_at, label, category, value)
+INSERT INTO config (name, created_at, updated_at, label, category, value)
 VALUES ('minSupportVersionInIos', now(), now(), 'iOS 최소 지원 버전', 'FORCE_UPDATE', '1.0.0'),
        ('minSupportVersionInAndroid', now(), now(), '안드로이드 최소 지원 버전', 'FORCE_UPDATE', '1.0.0');
 
 -- 활동기수
-INSERT INTO config (id, created_at, updated_at, label, category, value)
+INSERT INTO config (name, created_at, updated_at, label, category, value)
 VALUES ('activeGeneration', now(), now(), '활동 기수', 'ACTIVE_GENERATION', '25');
 
 -- 이용링크
-INSERT INTO config (id, created_at, updated_at, label, category, value)
+INSERT INTO config (name, created_at, updated_at, label, category, value)
 VALUES ('usageInquiryLink', now(), now(), '이용 문의', 'LINK', 'http://pf.kakao.com/_ixmUxjn/chat'),
        ('termsOfServiceLink', now(), now(), '이용약관', 'LINK',
         'https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4'),

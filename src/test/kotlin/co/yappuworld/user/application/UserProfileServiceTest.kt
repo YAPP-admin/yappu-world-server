@@ -1,6 +1,6 @@
 package co.yappuworld.user.application
 
-import co.yappuworld.operation.infrastructure.GenerationJpaRepository
+import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.support.fixture.operation.OperationFixture.getGenerationFixture
 import co.yappuworld.support.fixture.user.ActivityUnitFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
@@ -19,7 +19,7 @@ class UserProfileServiceTest {
 
     private val userRepository = mockk<UserRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
-    private val generationRepository = mockk<GenerationJpaRepository>()
+    private val generationRepository = mockk<GenerationRepository>()
 
     private val userProfileService = UserProfileService(
         userRepository = userRepository,
