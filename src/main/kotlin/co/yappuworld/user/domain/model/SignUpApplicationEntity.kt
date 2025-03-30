@@ -10,9 +10,11 @@ import co.yappuworld.user.domain.vo.UserRole
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import java.util.UUID
 
-@Entity
+@Entity(name = "sign_up_applications")
+@Table
 class SignUpApplicationEntity(
     val applicantEmail: String,
     @Column(columnDefinition = "JSON")

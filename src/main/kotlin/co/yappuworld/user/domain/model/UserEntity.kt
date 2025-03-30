@@ -6,8 +6,10 @@ import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import jakarta.persistence.Entity
+import jakarta.persistence.Table
 
 @Entity
+@Table(name = "users")
 class UserEntity(
     email: String,
     password: String,

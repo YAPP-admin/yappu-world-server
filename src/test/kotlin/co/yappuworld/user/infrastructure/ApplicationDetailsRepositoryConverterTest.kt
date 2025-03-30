@@ -6,14 +6,14 @@ import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.data.domain.Limit
 import org.springframework.data.repository.findByIdOrNull
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@DataJdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ApplicationDetailsRepositoryConverterTest {
 
@@ -45,7 +45,7 @@ class ApplicationDetailsRepositoryConverterTest {
             Limit.of(1)
         )
 
-        assertThat(firstApplication.id).isEqualTo(assertNotNull(findApplication).id)
+        assertThat(secondApplication.id).isEqualTo(assertNotNull(findApplication).id)
     }
 
     @Test

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.PostLoad
 import jakarta.persistence.PostPersist
+import jakarta.persistence.Table
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable
 import java.io.Serializable
@@ -12,6 +13,7 @@ import java.util.Objects
 
 // TODO: alert id field to name
 @Entity
+@Table(name = "config")
 class ConfigEntity(
     @Id
     val name: String,

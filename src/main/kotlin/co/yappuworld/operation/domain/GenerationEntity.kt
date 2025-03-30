@@ -5,13 +5,15 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.PostLoad
 import jakarta.persistence.PostPersist
+import jakarta.persistence.Table
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable
 import java.io.Serializable
 import java.time.LocalDate
 import java.util.Objects
 
-@Entity(name = "generations")
+@Entity
+@Table(name = "generations")
 class GenerationEntity(
     @Id
     val value: Int,

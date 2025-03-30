@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS config;
 CREATE TABLE config
 (
-    name       varchar(36) PRIMARY KEY,
+    name       varchar(64) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
     label      varchar(32),
@@ -12,7 +12,7 @@ CREATE TABLE config
 DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
-    id         varchar(36) PRIMARY KEY,
+    id         binary(16) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
     email      varchar(64) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE users
 DROP TABLE IF EXISTS sign_up_application;
 CREATE TABLE sign_up_application
 (
-    id              varchar(36) PRIMARY KEY,
+    id              binary(16) PRIMARY KEY,
     created_at      datetime,
     updated_at      datetime,
     applicant_email varchar(64) NOT NULL,
@@ -37,21 +37,21 @@ CREATE TABLE sign_up_application
 DROP TABLE IF EXISTS activity_units;
 CREATE TABLE activity_units
 (
-    id         varchar(36) PRIMARY KEY,
+    id         binary(16) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
     generation int         NOT NULL,
     position   varchar(16) NOT NULL,
-    user_id    varchar(36) NOT NULL
+    user_id    binary(16) NOT NULL
 );
 
 DROP TABLE IF EXISTS user_alarm_settings;
 CREATE TABLE user_alarm_settings
 (
-    id         varchar(36) PRIMARY KEY,
+    id         binary(16) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
-    user_id    varchar(36) NOT NULL,
+    user_id    binary(16) NOT NULL,
     device     tinyint(1)  NOT NULL,
     master     tinyint(1)  NOT NULL
 );
@@ -59,10 +59,10 @@ CREATE TABLE user_alarm_settings
 DROP TABLE IF EXISTS user_devices;
 CREATE TABLE user_devices
 (
-    id         varchar(36) PRIMARY KEY,
+    id         binary(16) PRIMARY KEY,
     created_at datetime,
     updated_at datetime,
-    user_id    varchar(36)  NOT NULL,
+    user_id    binary(16)  NOT NULL,
     fcm_token  varchar(512) NOT NULL
 );
 
@@ -89,7 +89,7 @@ CREATE TABLE schedules
 DROP TABLE IF EXISTS boards;
 CREATE TABLE boards
 (
-    id              varchar(36) PRIMARY KEY,
+    id              binary(16) PRIMARY KEY,
     created_at      datetime,
     updated_at      datetime,
     board_type      varchar(255),
@@ -98,7 +98,7 @@ CREATE TABLE boards
     content         varchar(4000),
     content_summary varchar(255),
     display_target  varchar(255),
-    writer_id       varchar(36) NOT NULL,
+    writer_id       binary(16) NOT NULL,
     is_active       tinyint(1)  NOT NULL
 );
 

@@ -15,10 +15,14 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
 
     fun findAllByIdIn(userIds: List<UUID>): List<UserEntity>
 
+    /**
+     * Native Query는 binary(16) 형태의 UUID를 자동변환하지 못함
+     * 따라서 BIN_TO_UUID를 사용하여 변환해줘야 함
+     */
     @Query(
         """
             SELECT 
-                u.id AS user_id, 
+                BIN_TO_UUID(u.id) AS user_id, 
                 u.email, 
                 u.name, 
                 u.role, 
@@ -26,7 +30,7 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
                 u.created_at, 
                 la.generation, 
                 la.position, 
-                la.id AS activity_unit_id
+                BIN_TO_UUID(la.id) AS activity_unit_id
             FROM users u
             INNER JOIN (
                 SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
@@ -45,7 +49,7 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
     @Query(
         """
             SELECT 
-                u.id AS user_id, 
+                BIN_TO_UUID(u.id) AS user_id, 
                 u.email, 
                 u.name, 
                 u.role, 
@@ -53,7 +57,7 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
                 u.created_at, 
                 la.generation, 
                 la.position, 
-                la.id AS activity_unit_id
+                BIN_TO_UUID(la.id) AS activity_unit_id
             FROM users u
             INNER JOIN (
                 SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
@@ -70,7 +74,7 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
     @Query(
         """
             SELECT 
-                u.id AS user_id, 
+                BIN_TO_UUID(u.id) AS user_id, 
                 u.email, 
                 u.name, 
                 u.role, 
@@ -78,7 +82,7 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
                 u.created_at, 
                 la.generation, 
                 la.position, 
-                la.id AS activity_unit_id
+                BIN_TO_UUID(la.id) AS activity_unit_id
             FROM users u
             INNER JOIN (
                 SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
