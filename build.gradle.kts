@@ -31,7 +31,6 @@ dependencies {
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
 
