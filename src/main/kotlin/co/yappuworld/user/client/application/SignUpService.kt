@@ -50,7 +50,7 @@ class SignUpService(
         now: LocalDateTime
     ) {
         checkApplication(request.email)
-        signUpApplicationRepository.save(request.toApplication()).also {
+        signUpApplicationRepository.save(request.toDomain()).also {
             userSystemNotifier.notifySignUpRequestReceived(it.id, request.name)
         }
     }
@@ -63,7 +63,7 @@ class SignUpService(
         checkEmailDuplication(request.email)
 
         val user = initializeUser(
-            request.toApplication(),
+            request.toDomain(),
             getUserRoleWithSignUpCode(request.signUpCode!!)
         )
 
