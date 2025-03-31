@@ -12,7 +12,7 @@ import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
 import co.yappuworld.post.domain.BoardError
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
-import co.yappuworld.post.infrastructure.PostJpaRepository
+import co.yappuworld.post.infrastructure.PostRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ import java.util.UUID
 
 @Service
 class AdminNoticeService(
-    private val postRepository: PostJpaRepository,
+    private val postRepository: PostRepository,
     private val userRepository: UserRepository
 ) {
 
