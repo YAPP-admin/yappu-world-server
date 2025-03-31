@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.UUID
 
-interface PostJpaRepository : JpaRepository<PostEntity, UUID> {
+interface PostRepository : JpaRepository<PostEntity, UUID> {
 
     @Query(
         value = """

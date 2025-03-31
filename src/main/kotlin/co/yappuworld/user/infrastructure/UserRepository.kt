@@ -37,7 +37,7 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
                 FROM activity_units
             ) la ON u.id = la.user_id AND la.rn = 1
             ORDER BY u.id ASC
-            LIMIT :limit OFFSET :offset;
+            LIMIT :limit OFFSET :offset
         """,
         nativeQuery = true
     )
@@ -63,12 +63,12 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
                 SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY generation DESC) AS rn
                 FROM activity_units
             ) la ON u.id = la.user_id AND la.rn = 1
-            WHERE u.id in (:#{#userIds});
+            WHERE u.id in (:userIds)
         """,
         nativeQuery = true
     )
     fun findUsersWithActivityUnit(
-        @Param("userIds") userIds: Collection<String>
+        @Param("userIds") userIds: Collection<UUID>
     ): List<UserWithLastActivityUnit>
 
     @Query(
@@ -93,6 +93,6 @@ interface UserRepository : JpaRepository<UserEntity, UUID> {
         nativeQuery = true
     )
     fun findUserWithActivityUnit(
-        @Param("userId") userId: String
+        @Param("userId") userId: UUID
     ): UserWithLastActivityUnit
 }

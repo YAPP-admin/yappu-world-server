@@ -3,6 +3,8 @@ package co.yappuworld.user.domain.model
 import co.yappuworld.global.persistence.BaseJpaEntity
 import co.yappuworld.user.domain.vo.Position
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 import java.util.UUID
 
@@ -16,6 +18,8 @@ class ActivityUnitEntity(
 
     var generation: Int = generation
         private set
+
+    @Enumerated(EnumType.STRING)
     var position: Position = position
         private set
 
