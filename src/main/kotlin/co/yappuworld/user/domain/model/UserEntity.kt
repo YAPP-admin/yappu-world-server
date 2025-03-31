@@ -6,6 +6,8 @@ import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 
 @Entity
@@ -23,6 +25,8 @@ class UserEntity(
         private set
     var name: String = name
         private set
+
+    @Enumerated(EnumType.STRING)
     var role: UserRole = role
         private set
     var isActive: Boolean = true

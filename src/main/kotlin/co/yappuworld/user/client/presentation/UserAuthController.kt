@@ -49,11 +49,9 @@ class UserAuthController(
         )
     }
 
-    override fun checkEmailAvailability(
-        request: CheckingEmailAvailabilityRequest
-    ): ResponseEntity<SuccessResponse<Unit>> {
+    override fun checkEmailAvailability(request: CheckingEmailAvailabilityRequest): ResponseEntity<Unit> {
         signUpService.checkEmailAvailability(request)
-        return ResponseEntity.ok(SuccessResponse())
+        return ResponseEntity.noContent().build()
     }
 
     override fun findLatestSignUpApplication(

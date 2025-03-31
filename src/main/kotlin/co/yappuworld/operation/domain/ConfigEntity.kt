@@ -2,6 +2,8 @@ package co.yappuworld.operation.domain
 
 import co.yappuworld.global.persistence.BaseJpaEntity
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.PostLoad
 import jakarta.persistence.PostPersist
@@ -18,6 +20,7 @@ class ConfigEntity(
     @Id
     val name: String,
     label: String,
+    @Enumerated(EnumType.STRING)
     val category: ConfigCategory,
     value: String?
 ) : Persistable<String> {

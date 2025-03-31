@@ -3,6 +3,7 @@ package co.yappuworld.operation.client.dto.request
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 
 data class AdminGenerationPageRequest(
     @field:Schema(description = "페이지 번호", required = true)
@@ -13,5 +14,5 @@ data class AdminGenerationPageRequest(
     val size: Int
 ) {
 
-    fun toPageRequest(): PageRequest = PageRequest.of(page - 1, size)
+    fun toPageRequest(): PageRequest = PageRequest.of(page - 1, size).withSort(Sort.by(Sort.Direction.DESC, "value"))
 }

@@ -4,9 +4,9 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.CheckingEmailAvailabilityRequest
 import co.yappuworld.user.client.dto.request.LatestSignUpApplicationRequest
+import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.ReissueTokenRequest
 import co.yappuworld.user.client.dto.request.UserSignUpRequest
 import co.yappuworld.user.client.dto.response.LatestSignUpApplicationResponse
@@ -320,7 +320,7 @@ interface UserAuthApi {
     @PostMapping("/v1/auth/check-email")
     fun checkEmailAvailability(
         @Valid @RequestBody request: CheckingEmailAvailabilityRequest
-    ): ResponseEntity<SuccessResponse<Unit>>
+    ): ResponseEntity<Unit>
 
     @Operation(summary = "가장 최근의 회원가입 신청 조회")
     @ApiResponses(

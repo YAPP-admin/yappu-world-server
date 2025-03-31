@@ -31,7 +31,9 @@ class AdminUserOperationService(
     @Transactional
     fun registerGeneration(request: AdminGenerationRegisterRequest) {
         generationRepository.save(request.toDomain())
-        generationActiveStateManager.activate(request.generation)
+        if (request.isActive) {
+            generationActiveStateManager.activate(request.generation)
+        }
     }
 
     @Transactional
