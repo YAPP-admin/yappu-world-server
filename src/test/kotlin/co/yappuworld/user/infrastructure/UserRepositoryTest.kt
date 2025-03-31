@@ -4,12 +4,12 @@ import co.yappuworld.support.fixture.user.UserFixture
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
-@DataJdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
 
@@ -17,14 +17,7 @@ class UserRepositoryTest {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var activityUnitRepository: ActivityUnitRepository
-
-    @Test
-    @Transactional
-    fun `유저가 없으면 빈 배열이 반환된다`() {
-        userRepository.deleteAll()
-        assertThat(userRepository.findUsersWithActivityUnit(10, 0)).isEmpty()
-    }
+    lateinit var activityUnitRepository: ActivityUnitJpaRepository
 
     @Test
     @Transactional

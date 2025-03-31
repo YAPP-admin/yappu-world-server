@@ -5,18 +5,21 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
-import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
-import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
-import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
-import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
+import co.yappuworld.user.client.application.SignUpService
+import co.yappuworld.user.client.application.UserAuthService
+import co.yappuworld.user.client.application.UserLoginPermissionChecker
+import co.yappuworld.user.client.dto.request.ActivityUnitRegistrationRequest
+import co.yappuworld.user.client.dto.request.ReissueTokenRequest
+import co.yappuworld.user.client.dto.request.UserSignUpRequest
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
+import co.yappuworld.user.infrastructure.SignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceRepository
+import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
 import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
@@ -37,10 +40,10 @@ class UserAuthServiceTest {
         1209600000
     )
     private val userRepository = mockk<UserRepository>()
-    private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
-    private val activityUnitRepository = mockk<ActivityUnitRepository>()
+    private val authApplicationRepository = mockk<SignUpApplicationRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitJpaRepository>()
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
-    private val userDeviceRepository = mockk<UserDeviceRepository>()
+    private val userDeviceRepository = mockk<UserDeviceJpaRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
@@ -64,11 +67,11 @@ class UserAuthServiceTest {
     )
 
     val email = "abc@abc.com"
-    val request = UserSignUpAppRequestDto(
+    val request = UserSignUpRequest(
         email,
         "password",
         "name",
-        listOf(ActivityUnitAppRequestDto(1, Position.PM)),
+        listOf(ActivityUnitRegistrationRequest(1, Position.PM)),
         "",
         "fcmToken",
         true
@@ -111,7 +114,8 @@ class UserAuthServiceTest {
                 .generateToken(SecurityUser.from(user), now)
                 .run {
                     userAuthService.reissueToken(
-                        ReissueTokenAppRequestDto(accessToken, refreshToken!!, now.plusHours(1L).minusNanos(1L))
+                        ReissueTokenRequest(accessToken, refreshToken!!),
+                        now.plusHours(1L).minusNanos(1L)
                     )
                 }
 
@@ -136,7 +140,8 @@ class UserAuthServiceTest {
                 }
 
         val reissuedToken = userAuthService.reissueToken(
-            ReissueTokenAppRequestDto(token.accessToken, token.refreshToken!!, now)
+            ReissueTokenRequest(token.accessToken, token.refreshToken!!),
+            now
         )
 
         assertDoesNotThrow {

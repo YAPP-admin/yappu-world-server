@@ -11,8 +11,8 @@ data class ApplicationDetails(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toUser(role: UserRole): User =
-        User(
+    fun toUser(role: UserRole): UserEntity =
+        UserEntity(
             this.email,
             this.password,
             this.name,

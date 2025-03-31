@@ -1,11 +1,11 @@
 package co.yappuworld.support.fixture.user
 
 import co.yappuworld.global.util.EncryptUtils
-import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.ActivityUnitEntity
 import co.yappuworld.user.domain.model.ActivityUnitParam
 import co.yappuworld.user.domain.model.ApplicationDetails
-import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.model.User
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import com.github.f4b6a3.ulid.UlidCreator
@@ -18,15 +18,16 @@ object UserFixture {
         password: String = "password",
         name: String = "name",
         role: UserRole = UserRole.ACTIVE
-    ) = User(
+    ) = UserEntity(
         email = email,
         password = password,
         name = name,
         role = role
     )
 
-    fun getSignUpApplicationFixture(details: ApplicationDetails = getApplicationDetailsFixture()): SignUpApplication =
-        SignUpApplication(details)
+    fun getSignUpApplicationFixture(
+        details: ApplicationDetails = getApplicationDetailsFixture()
+    ): SignUpApplicationEntity = SignUpApplicationEntity(details)
 
     fun getApplicationDetailsFixture(
         email: String = "email@email.com",
@@ -55,16 +56,16 @@ object UserFixture {
         generation: Int = 25,
         position: Position = Position.SERVER,
         userId: UUID = UUID.randomUUID()
-    ): ActivityUnit =
-        ActivityUnit(
+    ): ActivityUnitEntity =
+        ActivityUnitEntity(
             generation = generation,
             position = position,
             userId = userId
         )
 
     fun getActivityUnits(
-        vararg activityUnits: ActivityUnit = arrayOf(
-            ActivityUnit(1, Position.PM, UlidCreator.getMonotonicUlid().toUuid())
+        vararg activityUnits: ActivityUnitEntity = arrayOf(
+            ActivityUnitEntity(1, Position.PM, UlidCreator.getMonotonicUlid().toUuid())
         )
-    ): List<ActivityUnit> = activityUnits.toList()
+    ): List<ActivityUnitEntity> = activityUnits.toList()
 }

@@ -1,17 +1,17 @@
 package co.yappuworld.post.client.application
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.post.client.dto.request.AdminNoticeCreateRequest
 import co.yappuworld.post.client.dto.request.AdminNoticePageRequest
 import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailWriterResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
-import co.yappuworld.post.domain.model.NoticeEntity
-import co.yappuworld.post.domain.vo.BoardError
-import co.yappuworld.post.domain.vo.NoticeType
+import co.yappuworld.post.domain.BoardError
+import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.infrastructure.PostJpaRepository
-import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

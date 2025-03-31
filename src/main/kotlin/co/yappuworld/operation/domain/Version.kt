@@ -26,6 +26,8 @@ class Version
         val patch: Int
 
         init {
+            if (value.isBlank()) throw BusinessException(ConfigError.WRONG_VERSION_FORMAT)
+
             val splited = value.split(".")
             if (splited.size != 3) {
                 throw BusinessException(ConfigError.WRONG_VERSION_FORMAT)

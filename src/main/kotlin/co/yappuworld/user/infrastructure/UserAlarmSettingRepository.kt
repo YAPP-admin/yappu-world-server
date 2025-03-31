@@ -1,10 +1,10 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.model.UserAlarmSetting
-import org.springframework.data.repository.CrudRepository
+import co.yappuworld.user.domain.model.UserAlarmSettingEntity
+import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 
-interface UserAlarmSettingRepository : CrudRepository<UserAlarmSetting, UUID> {
+interface UserAlarmSettingRepository : JpaRepository<UserAlarmSettingEntity, UUID> {
 
-    fun findUserAlarmSettingOrNullByUserId(userId: UUID): UserAlarmSetting?
+    fun findUserAlarmSettingOrNullByUserId(userId: UUID): UserAlarmSettingEntity?
 }

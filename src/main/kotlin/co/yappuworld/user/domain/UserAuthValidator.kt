@@ -1,22 +1,22 @@
 package co.yappuworld.user.domain
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.SignUpApplication
-import co.yappuworld.user.domain.model.User
-import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
+import co.yappuworld.user.domain.vo.UserError
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger { }
 
-fun User.checkLoginAvailability(requestPassword: String) {
+fun UserEntity.checkLoginAvailability(requestPassword: String) {
     this.checkPassword(requestPassword)
     if (isWithdrawn()) {
         throw BusinessException(UserError.WITHDRAWN_USER)
     }
 }
 
-fun List<SignUpApplication>.checkNewApplications(email: String) {
+fun List<SignUpApplicationEntity>.checkNewApplications(email: String) {
     if (this.isEmpty()) {
         return
     }

@@ -4,7 +4,8 @@ import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.support.fixture.operation.OperationFixture.getGenerationFixture
 import co.yappuworld.support.fixture.user.ActivityUnitFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
+import co.yappuworld.user.client.application.UserProfileService
+import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +18,7 @@ import java.util.UUID
 class UserProfileServiceTest {
 
     private val userRepository = mockk<UserRepository>()
-    private val activityUnitRepository = mockk<ActivityUnitRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitJpaRepository>()
     private val generationRepository = mockk<GenerationRepository>()
 
     private val userProfileService = UserProfileService(
@@ -48,7 +49,7 @@ class UserProfileServiceTest {
                 value = 25,
                 startDate = startOfTwentyFive,
                 endDate = endOfTwentyFive
-            )
+            ).apply { activate() }
         )
 
         val response = userProfileService.findUserActivityHistories(UUID.randomUUID())
