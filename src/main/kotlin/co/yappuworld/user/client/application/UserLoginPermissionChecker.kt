@@ -6,7 +6,6 @@ import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.SignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.data.domain.Limit
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger { }
@@ -34,10 +33,7 @@ class UserLoginPermissionChecker(
     }
 
     private fun processException(email: String) {
-        val recentApplication = signUpApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
-            email,
-            Limit.of(1)
-        )
+        val recentApplication = signUpApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(email)
 
         if (recentApplication == null) {
             logger.error { "${email}로 가입 시도조차 없습니다." }

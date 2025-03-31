@@ -68,7 +68,7 @@ class SignUpServiceTest {
 
     @Test
     fun `가장 최근 회원가입 신청이 존재하지 않으면 예외가 발생한다`() {
-        every { authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(any(), any()) } returns null
+        every { authApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(any()) } returns null
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture()
         assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
@@ -83,10 +83,7 @@ class SignUpServiceTest {
         )
         val application = SignUpApplicationEntity(details)
         every {
-            authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
-                any(),
-                any()
-            )
+            authApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(any())
         } returns application
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture(
@@ -106,10 +103,7 @@ class SignUpServiceTest {
         val details = applicationAndDetails.second
 
         every {
-            authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
-                application.applicantEmail,
-                any()
-            )
+            authApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(application.applicantEmail)
         } returns application
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture(

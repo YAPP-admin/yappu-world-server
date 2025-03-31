@@ -25,7 +25,6 @@ import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import co.yappuworld.user.infrastructure.UserSystemNotifier
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.data.domain.Limit
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -81,12 +80,10 @@ class SignUpService(
 
     @Transactional(readOnly = true)
     fun findLatestSignUpApplication(request: LatestSignUpApplicationRequest): LatestSignUpApplicationResponse {
-        val signUpApplication = signUpApplicationRepository
-            .findByApplicantEmailOrderByUpdatedAtDesc(
-                request.email,
-                Limit.of(1)
-            )?.also { it.checkPassword(request.password) }
+        val signUpApplication = signUpApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(request.email)
             ?: throw BusinessException(UserError.NO_SIGN_UP_APPLICATION)
+
+        signUpApplication.checkPassword(request.password)
 
         return LatestSignUpApplicationResponse(signUpApplication)
     }

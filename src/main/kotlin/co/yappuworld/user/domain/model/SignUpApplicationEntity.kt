@@ -10,11 +10,13 @@ import co.yappuworld.user.domain.vo.UserRole
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 import java.util.UUID
 
-@Entity(name = "sign_up_applications")
-@Table
+@Entity
+@Table(name = "sign_up_application")
 class SignUpApplicationEntity(
     val applicantEmail: String,
     @Column(columnDefinition = "JSON")
@@ -24,6 +26,7 @@ class SignUpApplicationEntity(
     rejectReason: String?
 ) : BaseJpaEntity() {
 
+    @Enumerated(EnumType.STRING)
     var status: SignUpApplicationStatus = status
         private set
     var rejectReason: String? = rejectReason
