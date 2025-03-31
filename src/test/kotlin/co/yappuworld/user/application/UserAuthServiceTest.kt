@@ -83,7 +83,7 @@ class UserAuthServiceTest {
         every { userRepository.existsUserByEmail(any()) } returns false
         every {
             authApplicationRepository.findByApplicantEmailAndStatus(email, any())
-        } returns listOf(request.toApplication())
+        } returns listOf(request.toDomain())
 
         assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)

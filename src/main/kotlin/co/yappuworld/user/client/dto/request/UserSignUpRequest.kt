@@ -1,5 +1,6 @@
 package co.yappuworld.user.client.dto.request
 
+import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import io.swagger.v3.oas.annotations.media.Schema
@@ -32,11 +33,11 @@ data class UserSignUpRequest(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toApplication(): SignUpApplicationEntity =
+    fun toDomain(): SignUpApplicationEntity =
         SignUpApplicationEntity(
             ApplicationDetails(
                 this.email,
-                this.password,
+                EncryptUtils.encrypt(this.password),
                 this.name,
                 this.activityUnits.map { it.toActivityUnitParam() },
                 this.fcmToken,
