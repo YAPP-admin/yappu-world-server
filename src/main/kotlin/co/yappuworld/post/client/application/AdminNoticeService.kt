@@ -3,6 +3,7 @@ package co.yappuworld.post.client.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.post.client.dto.request.AdminNoticeCreateRequest
+import co.yappuworld.post.client.dto.request.AdminNoticeDeleteRequest
 import co.yappuworld.post.client.dto.request.AdminNoticePageRequest
 import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
@@ -13,6 +14,7 @@ import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.infrastructure.PostJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -96,5 +98,13 @@ class AdminNoticeService(
             contentSummary = request.plainContent.take(200),
             noticeType = request.type
         )
+    }
+
+    @Transactional
+    fun deleteNotice(request: AdminNoticeDeleteRequest) {
+        val post = postRepository.findByIdOrNull(request.id)
+            ?: throw BusinessException(BoardError.NOTICE_NOT_FOUND)
+
+        postRepository.delete(post)
     }
 }
