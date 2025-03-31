@@ -53,15 +53,15 @@ VALUES (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다
 INSERT INTO posts (id, created_at, updated_at, type, notice_type, title, content, content_summary,
                    display_target, writer_id,
                    is_active)
-VALUES (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+VALUES (UUID_TO_BIN('0195ead2-2577-2f48-3d98-38abc4a0624c'), '2025-03-31 15:09:55.588721', '2025-03-31 15:09:55.588721', 'NOTICE', 'SESSION', '제목입니다1', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
         UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
-       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+       (UUID_TO_BIN('0195ead2-36a1-6006-56c8-336f73ed78fe'), '2025-03-31 15:09:59.969386', '2025-03-31 15:09:59.969386', 'NOTICE', 'SESSION', '제목입니다2', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
         UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
-       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'SESSION', '제목입니다3', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+       (UUID_TO_BIN('0195ead2-4342-96e2-9cf2-4dc2e91c24b0'), '2025-03-31 15:10:03.202644', '2025-03-31 15:10:03.202644', 'NOTICE', 'SESSION', '제목입니다3', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
         UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
-       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+       (UUID_TO_BIN('0195ead2-4f1a-3822-51cd-3bc627c968f8'), '2025-03-31 15:10:06.234822', '2025-03-31 15:10:06.234822', 'NOTICE', 'OPERATION', '제목입니다4', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
         UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true),
-       (UUID_TO_BIN(uuid()), now(), now(), 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
+       (UUID_TO_BIN('0195ead2-6304-2f5b-839a-15113f3469b3'), '2025-03-31 15:10:11.333284', '2025-03-31 15:10:11.333284', 'NOTICE', 'OPERATION', '제목입니다5', '## 안녕하세요 만나서 반갑습니다', '요약', '몰라?',
         UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), true);
 
 INSERT INTO generations (value, start_date, end_date, is_active)
