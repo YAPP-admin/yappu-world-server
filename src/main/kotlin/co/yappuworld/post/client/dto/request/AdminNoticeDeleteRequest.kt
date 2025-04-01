@@ -1,5 +1,6 @@
 package co.yappuworld.post.client.dto.request
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -8,6 +9,6 @@ data class AdminNoticeDeleteRequest(
     val noticeIds: List<UUID>
 ) {
 
-    @Transient
+    @JsonIgnore
     val size: Int = noticeIds.toSet().size
 }
