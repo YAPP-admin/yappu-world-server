@@ -1,26 +1,25 @@
-package co.yappuworld.post.client.presentation.dto.response
+package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.operation.client.dto.response.PositionResponse
-import co.yappuworld.post.client.application.dto.response.NoticeOverviewAppResponseDto
-import co.yappuworld.post.client.application.dto.response.NoticeOverviewWriterAppResponseDto
-import co.yappuworld.post.client.application.dto.response.NoticeSimpleAppResponseDto
+import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
+import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
 
-data class NoticeOverviewApiResponseDto(
-    val notice: NoticeSimpleApiResponseDto,
-    val writer: NoticeOverviewWriterApiResponseDto
+data class NoticeOverviewResponse(
+    val notice: NoticeSimpleResponse,
+    val writer: NoticeOverviewWriterResponse
 ) {
 
-    constructor(response: NoticeOverviewAppResponseDto) : this(
-        notice = NoticeSimpleApiResponseDto(response.notice),
-        writer = NoticeOverviewWriterApiResponseDto(response.writer)
+    constructor(notice: NoticeEntity, writer: UserWithLastActivityUnit) : this(
+        notice = NoticeSimpleResponse(notice),
+        writer = NoticeOverviewWriterResponse(writer)
     )
 }
 
-data class NoticeSimpleApiResponseDto(
+data class NoticeSimpleResponse(
     @Schema(description = "공지사항 ID")
     val id: UUID,
     @Schema(description = "작성일")
@@ -33,16 +32,16 @@ data class NoticeSimpleApiResponseDto(
     val noticeType: NoticeType
 ) {
 
-    constructor(notice: NoticeSimpleAppResponseDto) : this(
+    constructor(notice: NoticeEntity) : this(
         id = notice.id,
-        createdAt = notice.createdAt,
+        createdAt = LocalDate.now(),
         title = notice.title,
-        content = notice.content,
+        content = notice.contentSummary.take(200),
         noticeType = notice.noticeType
     )
 }
 
-data class NoticeOverviewWriterApiResponseDto(
+data class NoticeOverviewWriterResponse(
     @Schema(description = "작성자 ID")
     val id: UUID,
     @Schema(description = "작성자 이름")
@@ -53,10 +52,10 @@ data class NoticeOverviewWriterApiResponseDto(
     val activityUnitPosition: PositionResponse
 ) {
 
-    constructor(writer: NoticeOverviewWriterAppResponseDto) : this(
+    constructor(writer: UserWithLastActivityUnit) : this(
         id = writer.userId,
         name = writer.name,
-        activityUnitGeneration = writer.activityUnitGeneration,
-        activityUnitPosition = PositionResponse(writer.activityUnitPosition)
+        activityUnitGeneration = writer.generation,
+        activityUnitPosition = PositionResponse(writer.position)
     )
 }
