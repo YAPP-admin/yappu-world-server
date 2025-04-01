@@ -1,27 +1,33 @@
-package co.yappuworld.post.client.presentation.dto.response
+package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.operation.client.dto.response.PositionResponse
-import co.yappuworld.post.client.application.dto.response.NoticeAppResponseDto
-import co.yappuworld.post.client.application.dto.response.NoticeDetailsAppResponseDto
-import co.yappuworld.post.client.application.dto.response.NoticeDetailsWriterAppResponseDto
+import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
+import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
 
-data class NoticeApiResponseDto(
+data class NoticeResponse(
     @Schema(description = "공지사항 정보")
-    val notice: NoticeDetailsApiResponseDto,
+    val notice: NoticeDetailResponse,
     @Schema(description = "작성자 정보")
-    val writer: NoticeDetailsWriterApiResponseDto
+    val writer: NoticeDetailsWriterResponse
 ) {
-    constructor(response: NoticeAppResponseDto) : this(
-        notice = NoticeDetailsApiResponseDto(response.notice),
-        writer = NoticeDetailsWriterApiResponseDto(response.writer)
-    )
+
+    companion object {
+        fun from(
+            noticeEntity: NoticeEntity,
+            user: UserWithLastActivityUnit
+        ): NoticeResponse =
+            NoticeResponse(
+                notice = NoticeDetailResponse(noticeEntity),
+                writer = NoticeDetailsWriterResponse(user)
+            )
+    }
 }
 
-data class NoticeDetailsApiResponseDto(
+data class NoticeDetailResponse(
     @Schema(description = "공지사항 ID")
     val id: UUID,
     @Schema(description = "공지사항 제목")
@@ -34,16 +40,16 @@ data class NoticeDetailsApiResponseDto(
     val noticeType: NoticeType
 ) {
 
-    constructor(notice: NoticeDetailsAppResponseDto) : this(
+    constructor(notice: NoticeEntity) : this(
         id = notice.id,
         title = notice.title,
         content = notice.content,
-        createdAt = notice.createdAt,
-        noticeType = notice.type
+        createdAt = notice.createdAt.toLocalDate(),
+        noticeType = notice.noticeType
     )
 }
 
-data class NoticeDetailsWriterApiResponseDto(
+data class NoticeDetailsWriterResponse(
     @Schema(description = "작성자 ID")
     val id: UUID,
     @Schema(description = "작성자 이름")
@@ -54,10 +60,10 @@ data class NoticeDetailsWriterApiResponseDto(
     val activityUnitPosition: PositionResponse
 ) {
 
-    constructor(writer: NoticeDetailsWriterAppResponseDto) : this(
-        id = writer.id,
+    constructor(writer: UserWithLastActivityUnit) : this(
+        id = writer.userId,
         name = writer.name,
-        activityUnitGeneration = writer.activityUnitGeneration,
-        activityUnitPosition = PositionResponse(writer.activityUnitPosition)
+        activityUnitGeneration = writer.generation,
+        activityUnitPosition = PositionResponse(writer.position)
     )
 }

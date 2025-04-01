@@ -1,8 +1,8 @@
 package co.yappuworld.post.client.presentation
 
 import co.yappuworld.post.client.dto.request.NoticePageRequest
-import co.yappuworld.post.client.presentation.dto.response.NoticeApiResponseDto
-import co.yappuworld.post.client.presentation.dto.response.NoticeOverviewApiResponseDto
+import co.yappuworld.post.client.dto.response.NoticeResponse
+import co.yappuworld.post.client.dto.response.NoticeOverviewResponse
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -73,7 +73,7 @@ interface NoticeApi {
     @GetMapping("/v1/posts/notices")
     fun getNotices(
         @ParameterObject request: NoticePageRequest
-    ): ResponseEntity<SuccessResponse<CursorPageResponse<NoticeOverviewApiResponseDto, UUID>>>
+    ): ResponseEntity<SuccessResponse<CursorPageResponse<NoticeOverviewResponse, UUID>>>
 
     @Operation(summary = "공지사항 상세 조회")
     @ApiResponses(
@@ -141,5 +141,5 @@ interface NoticeApi {
     @GetMapping("/v1/posts/notices/{noticeId}")
     fun getNotice(
         @PathVariable noticeId: UUID
-    ): ResponseEntity<SuccessResponse<NoticeApiResponseDto>>
+    ): ResponseEntity<SuccessResponse<NoticeResponse>>
 }
