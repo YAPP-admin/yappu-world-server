@@ -22,7 +22,7 @@ enum class PostError : Error {
         override val type: ErrorType = ErrorType.NOT_FOUND
     },
     NOT_CONTAIN_DELETE_NOTICE {
-        override val message: String = "삭제 요청 공지사항 중 존재하지 않는 공지사항이 있습니다."
+        override val message: String = "존재하지 않는 공지사항이 요청에 포함되어 있습니다."
         override val code: String = "PST_1002"
         override val type: ErrorType = ErrorType.NOT_FOUND
     }

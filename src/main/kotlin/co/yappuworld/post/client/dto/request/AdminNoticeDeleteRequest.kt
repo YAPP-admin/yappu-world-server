@@ -9,5 +9,5 @@ data class AdminNoticeDeleteRequest(
 ) {
 
     @Transient
-    val size: Int = noticeIds.size
+    val size: Int = noticeIds.toSet().size
 }
