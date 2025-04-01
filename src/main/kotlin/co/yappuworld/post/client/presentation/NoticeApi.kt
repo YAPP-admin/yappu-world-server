@@ -1,10 +1,10 @@
 package co.yappuworld.post.client.presentation
 
-import co.yappuworld.post.client.dto.request.NoticePageRequest
-import co.yappuworld.post.client.dto.response.NoticeResponse
-import co.yappuworld.post.client.dto.response.NoticeOverviewResponse
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.post.client.dto.request.NoticePageRequest
+import co.yappuworld.post.client.dto.response.NoticeOverviewResponse
+import co.yappuworld.post.client.dto.response.NoticeResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -25,7 +25,6 @@ interface NoticeApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 content = [
                     Content(
@@ -79,7 +78,6 @@ interface NoticeApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 content = [
                     Content(
@@ -116,7 +114,6 @@ interface NoticeApi {
                 ]
             ),
             ApiResponse(
-                description = "조회 실패.",
                 responseCode = "404",
                 content = [
                     Content(

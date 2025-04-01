@@ -1,7 +1,13 @@
 package co.yappuworld.post.client.dto.request
 
+import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
 data class AdminNoticeDeleteRequest(
-    val id: UUID
-)
+    @Schema(description = "삭제할 ID 목록")
+    val noticeIds: List<UUID>
+) {
+
+    @Transient
+    val size: Int = noticeIds.toSet().size
+}

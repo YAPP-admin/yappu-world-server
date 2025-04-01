@@ -10,6 +10,11 @@ import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
@@ -52,6 +57,34 @@ interface AdminNoticeApi {
     ): ResponseEntity<Unit>
 
     @Operation(summary = "공지사항 삭제")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                content = [
+                    Content(
+                        schema = Schema(implementation = SuccessResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "존재하지 않는 공지사항이 요청에 포함",
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "errorCode": "PST_1002",
+                                        "message": "존재하지 않는 공지사항이 요청에 포함되어 있습니다."
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @DeleteMapping("/admin/v1/notices")
     fun deleteNotice(
         @RequestBody request: AdminNoticeDeleteRequest
