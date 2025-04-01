@@ -6,7 +6,7 @@ import co.yappuworld.post.client.dto.request.NoticePageRequest
 import co.yappuworld.post.client.dto.request.NoticeTypeInRequest.ALL
 import co.yappuworld.post.client.dto.response.NoticeOverviewResponse
 import co.yappuworld.post.client.dto.response.NoticeResponse
-import co.yappuworld.post.domain.BoardError
+import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.infrastructure.PostRepository
@@ -39,7 +39,7 @@ class NoticeService(
                 val user = users[notice.writerId]
                 if (user == null) {
                     logger.error { "게시물 작성자의 ID ${notice.writerId}를 유저 테이블에서 찾을 수 없었습니다." }
-                    throw BusinessException(BoardError.NOTICE_WRITER_NOT_FOUND)
+                    throw BusinessException(PostError.NOTICE_WRITER_NOT_FOUND)
                 }
                 NoticeOverviewResponse(notice, user)
             }.subList(0, min(request.limit, notices.size))
@@ -55,7 +55,7 @@ class NoticeService(
     @Transactional(readOnly = true)
     fun getNotice(noticeId: UUID): NoticeResponse {
         val notice = postRepository.findByIdOrNull(noticeId)
-            ?: throw BusinessException(BoardError.BOARD_NOT_FOUND)
+            ?: throw BusinessException(PostError.POST_NOT_FOUND)
         val user = userRepository.findUserWithActivityUnit(notice.writerId)
 
         return NoticeResponse.from(notice as NoticeEntity, user)
