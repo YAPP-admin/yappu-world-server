@@ -18,12 +18,13 @@ import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
-import co.yappuworld.user.infrastructure.SignUpApplicationRepository
-import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
-import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.UserFindService
 import co.yappuworld.user.infrastructure.UserSystemNotifier
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
+import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,11 +35,12 @@ private val logger = KotlinLogging.logger { }
 
 @Service
 class SignUpService(
-    private val userRepository: UserRepository,
+    private val userFindService: UserFindService,
+    private val userCommandService: UserCommandService,
     private val signUpApplicationRepository: SignUpApplicationRepository,
-    private val activityUnitJpaRepository: ActivityUnitJpaRepository,
+    private val activityUnitRepository: ActivityUnitRepository,
     private val userAlarmSettingRepository: UserAlarmSettingRepository,
-    private val userDeviceRepository: UserDeviceJpaRepository,
+    private val userDeviceRepository: UserDeviceRepository,
     private val jwtGenerator: JwtGenerator,
     private val configInquiryComponent: ConfigInquiryComponent,
     private val userSystemNotifier: UserSystemNotifier
@@ -113,8 +115,8 @@ class SignUpService(
         role: UserRole
     ): UserEntity {
         val user = application.toUser(role)
-        return userRepository.save(user).also {
-            activityUnitJpaRepository.saveAll(application.toActivityUnits(it.id))
+        return userCommandService.save(user).also {
+            activityUnitRepository.saveAll(application.toActivityUnits(it.id))
             userAlarmSettingRepository.save(UserAlarmSettingEntity(it.id, application.getDeviceAlarmToggle()))
             userDeviceRepository.save(UserDeviceEntity(it.id, application.getFcmToken()))
         }
@@ -139,7 +141,7 @@ class SignUpService(
     }
 
     private fun checkEmailDuplication(email: String) {
-        if (userRepository.existsUserByEmail(email)) {
+        if (userFindService.existsByEmail(email)) {
             logger.error { "${email}은 이미 가입된 이메일입니다." }
             throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }

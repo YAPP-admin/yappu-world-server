@@ -1,4 +1,4 @@
-package co.yappuworld.user.infrastructure
+package co.yappuworld.user.infrastructure.jpa
 
 import co.yappuworld.user.domain.model.UserAlarmSettingEntity
 import org.springframework.data.jpa.repository.JpaRepository

@@ -1,4 +1,4 @@
-package co.yappuworld.user.infrastructure
+package co.yappuworld.user.infrastructure.jpa
 
 import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus

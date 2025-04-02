@@ -12,12 +12,14 @@ import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
-import co.yappuworld.user.infrastructure.SignUpApplicationRepository
-import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
-import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.UserFindService
 import co.yappuworld.user.infrastructure.UserSystemNotifier
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
+import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
+import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
@@ -36,22 +38,25 @@ class SignUpServiceTest {
         1209600000
     )
     private val userRepository = mockk<UserRepository>()
+    private val userFindService = mockk<UserFindService>()
+    private val userCommandService = mockk<UserCommandService>()
     private val authApplicationRepository = mockk<SignUpApplicationRepository>()
-    private val activityUnitRepository = mockk<ActivityUnitJpaRepository>()
-    private val userDeviceRepository = mockk<UserDeviceJpaRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitRepository>()
+    private val userDeviceRepository = mockk<UserDeviceRepository>()
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
     private val jwtGenerator = JwtGenerator(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
     private val userSystemNotifier = mockk<UserSystemNotifier>()
     private val signUpService = SignUpService(
-        userRepository,
-        authApplicationRepository,
-        activityUnitRepository,
-        userAlarmSettingRepository,
-        userDeviceRepository,
-        jwtGenerator,
-        configInquiryComponent,
-        userSystemNotifier
+        userFindService = userFindService,
+        userCommandService = userCommandService,
+        signUpApplicationRepository = authApplicationRepository,
+        activityUnitRepository = activityUnitRepository,
+        userAlarmSettingRepository = userAlarmSettingRepository,
+        userDeviceRepository = userDeviceRepository,
+        jwtGenerator = jwtGenerator,
+        configInquiryComponent = configInquiryComponent,
+        userSystemNotifier = userSystemNotifier
     )
 
     companion object {

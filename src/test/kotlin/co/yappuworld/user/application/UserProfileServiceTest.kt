@@ -5,8 +5,8 @@ import co.yappuworld.support.fixture.operation.OperationFixture.getGenerationFix
 import co.yappuworld.support.fixture.user.ActivityUnitFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.client.application.UserProfileService
-import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
-import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
@@ -18,7 +18,7 @@ import java.util.UUID
 class UserProfileServiceTest {
 
     private val userRepository = mockk<UserRepository>()
-    private val activityUnitRepository = mockk<ActivityUnitJpaRepository>()
+    private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val generationRepository = mockk<GenerationRepository>()
 
     private val userProfileService = UserProfileService(
