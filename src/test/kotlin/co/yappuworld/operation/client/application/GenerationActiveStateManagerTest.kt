@@ -2,18 +2,16 @@ package co.yappuworld.operation.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationRepository
+import co.yappuworld.support.environment.CustomDataJpaTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import kotlin.test.Test
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@CustomDataJpaTest
 class GenerationActiveStateManagerTest {
 
     @Autowired
