@@ -1,5 +1,6 @@
 package co.yappuworld.post.client.dto.request
 
+import co.yappuworld.post.domain.NoticeType
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import org.springframework.data.domain.PageRequest
@@ -18,4 +19,9 @@ data class AdminNoticePageRequest(
 ) {
 
     fun toPageRequest(): PageRequest = PageRequest.of(page - 1, size, Sort.by(DESC, "id"))
+
+    val noticeTypeOrNull = when (noticeType) {
+        "ALL" -> null
+        else -> NoticeType.valueOf(noticeType)
+    }
 }
