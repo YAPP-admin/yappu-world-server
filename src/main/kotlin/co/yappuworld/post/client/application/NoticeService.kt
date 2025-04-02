@@ -9,7 +9,7 @@ import co.yappuworld.post.client.dto.response.NoticeResponse
 import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
-import co.yappuworld.post.infrastructure.PostRepository
+import co.yappuworld.post.infrastructure.PostJpaRepository
 import co.yappuworld.user.infrastructure.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.repository.findByIdOrNull
@@ -22,7 +22,7 @@ private val logger = KotlinLogging.logger { }
 
 @Service
 class NoticeService(
-    private val postRepository: PostRepository,
+    private val postJpaRepository: PostJpaRepository,
     private val userRepository: UserRepository
 ) {
 
@@ -54,7 +54,7 @@ class NoticeService(
 
     @Transactional(readOnly = true)
     fun getNotice(noticeId: UUID): NoticeResponse {
-        val notice = postRepository.findByIdOrNull(noticeId)
+        val notice = postJpaRepository.findByIdOrNull(noticeId)
             ?: throw BusinessException(PostError.POST_NOT_FOUND)
         val user = userRepository.findUserWithActivityUnit(notice.writerId)
 
@@ -63,20 +63,20 @@ class NoticeService(
 
     private fun getNoticeModels(request: NoticePageRequest): List<NoticeEntity> =
         when {
-            request.lastCursorId != null && request.noticeType != ALL -> postRepository.findAllNotices(
+            request.lastCursorId != null && request.noticeType != ALL -> postJpaRepository.findAllNotices(
                 limit = request.limit + 1,
                 noticeType = NoticeType.valueOf(request.noticeType.name),
                 lastPostId = request.lastCursorId
             )
-            request.lastCursorId != null && request.noticeType == ALL -> postRepository.findAllNotices(
+            request.lastCursorId != null && request.noticeType == ALL -> postJpaRepository.findAllNotices(
                 limit = request.limit + 1,
                 lastPostId = request.lastCursorId
             )
-            request.lastCursorId == null && request.noticeType != ALL -> postRepository.findAllNotices(
+            request.lastCursorId == null && request.noticeType != ALL -> postJpaRepository.findAllNotices(
                 limit = request.limit + 1,
                 noticeType = NoticeType.valueOf(request.noticeType.name)
             )
-            else -> postRepository.findAllNotices(
+            else -> postJpaRepository.findAllNotices(
                 limit = request.limit + 1
             )
         }

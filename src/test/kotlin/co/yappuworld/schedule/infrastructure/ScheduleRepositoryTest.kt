@@ -1,17 +1,15 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.schedule.ScheduleFixture
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.data.repository.findByIdOrNull
 import kotlin.test.Test
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@CustomDataJpaTest
 class ScheduleRepositoryTest {
 
     @Autowired

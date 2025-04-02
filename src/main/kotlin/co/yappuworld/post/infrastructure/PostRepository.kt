@@ -3,72 +3,43 @@ package co.yappuworld.post.infrastructure
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.domain.PostEntity
-import org.springframework.data.domain.Page
+import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicate
 import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Repository
 import java.util.UUID
 
-interface PostRepository : JpaRepository<PostEntity, UUID> {
+@Repository
+class PostRepository(
+    private val postJpaRepository: PostJpaRepository
+) {
 
-    fun findAllByIdIn(ids: List<UUID>): List<PostEntity>
+    fun findByIdOrNull(id: UUID): PostEntity? = postJpaRepository.findByIdOrNull(id)
 
-    @Query(
-        value = """
-            SELECT n
-            FROM NoticeEntity n
-            WHERE n.noticeType = :noticeType
-                AND n.id < :lastPostId
-            ORDER BY n.id DESC
-            LIMIT :limit
-        """
-    )
     fun findAllNotices(
         limit: Int,
-        noticeType: NoticeType,
-        lastPostId: UUID
-    ): List<NoticeEntity>
+        noticeType: NoticeType? = null,
+        lastNoticeId: UUID? = null
+    ): List<NoticeEntity> =
+        postJpaRepository
+            .findAll(Pageable.ofSize(limit)) {
+                val predicates = mutableListOf<Predicate>()
+                if (noticeType != null) {
+                    predicates.add(path(NoticeEntity::noticeType).equal(noticeType))
+                }
+                if (lastNoticeId != null) {
+                    predicates.add(path(NoticeEntity::getId).lessThan(lastNoticeId))
+                }
 
-    @Query(
-        value = """
-            SELECT n
-            FROM NoticeEntity n
-            WHERE n.noticeType = :noticeType
-            ORDER BY n.id DESC
-            LIMIT :limit
-        """
-    )
-    fun findAllNotices(
-        limit: Int,
-        noticeType: NoticeType
-    ): List<NoticeEntity>
+                val query = select(entity(NoticeEntity::class))
+                    .from(entity(NoticeEntity::class))
 
-    @Query(
-        value = """
-            SELECT n
-            FROM NoticeEntity n
-            WHERE n.id < :lastPostId
-            ORDER BY n.id DESC
-            LIMIT :limit
-        """
-    )
-    fun findAllNotices(
-        limit: Int,
-        lastPostId: UUID
-    ): List<NoticeEntity>
+                if (predicates.isNotEmpty()) {
+                    query.where(and(*predicates.toTypedArray()))
+                }
 
-    @Query(
-        value = """
-            SELECT n
-            FROM NoticeEntity n
-            ORDER BY n.id DESC
-            LIMIT :limit
-        """
-    )
-    fun findAllNotices(limit: Int): List<NoticeEntity>
-
-    fun findAllByNoticeType(
-        noticeType: NoticeType?,
-        pageable: Pageable
-    ): Page<NoticeEntity>
+                query.orderBy(
+                    path(NoticeEntity::getId).desc()
+                )
+            }.filterNotNull()
 }
