@@ -8,8 +8,8 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.ReissueTokenRequest
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.UserRepository
-import org.springframework.data.repository.findByIdOrNull
+import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -17,7 +17,8 @@ import java.util.UUID
 
 @Service
 class UserAuthService(
-    private val userRepository: UserRepository,
+    private val userFindService: UserFindService,
+    private val userCommandService: UserCommandService,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
     private val userLoginPermissionChecker: UserLoginPermissionChecker
@@ -28,8 +29,8 @@ class UserAuthService(
         request: LoginRequest,
         now: LocalDateTime
     ): Token {
-        val user = userRepository
-            .findUserOrNullByEmail(request.email)
+        val user = userFindService
+            .findByEmailOrNull(request.email)
             .let { userLoginPermissionChecker.checkPermissionAndGetUser(it, request.email, request.password) }
 
         return jwtGenerator.generateToken(SecurityUser.from(user), now)
@@ -41,7 +42,7 @@ class UserAuthService(
         now: LocalDateTime
     ): Token {
         val userId = jwtResolver.extractUserIdFrom(request.accessToken)
-        val user = userRepository.findByIdOrNull(userId)
+        val user = userFindService.findByIdOrNull(userId)
             ?: throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
 
         if (!user.isActive) {
@@ -53,10 +54,10 @@ class UserAuthService(
 
     @Transactional
     fun withdrawUser(userId: UUID) {
-        userRepository
+        userFindService
             .findByIdOrNull(userId)
             ?.apply { withdraw() }
-            ?.let(userRepository::save)
+            ?.let(userCommandService::save)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
     }
 }

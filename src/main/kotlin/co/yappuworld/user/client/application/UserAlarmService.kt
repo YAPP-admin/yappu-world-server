@@ -6,8 +6,8 @@ import co.yappuworld.user.client.dto.response.MasterAlarmToggleResponse
 import co.yappuworld.user.client.dto.response.UserAlarmStatusResponse
 import co.yappuworld.user.domain.model.UserAlarmSettingEntity
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceJpaRepository
+import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,7 +18,7 @@ private val logger = KotlinLogging.logger { }
 @Service
 class UserAlarmService(
     private val userAlarmSettingRepository: UserAlarmSettingRepository,
-    private val userDeviceRepository: UserDeviceJpaRepository
+    private val userDeviceRepository: UserDeviceRepository
 ) {
 
     @Transactional(readOnly = true)

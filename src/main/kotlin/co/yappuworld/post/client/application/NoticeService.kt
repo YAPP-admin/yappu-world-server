@@ -8,7 +8,7 @@ import co.yappuworld.post.client.dto.response.NoticeResponse
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.infrastructure.PostFindService
-import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserFindService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger { }
 @Service
 class NoticeService(
     private val postFindService: PostFindService,
-    private val userRepository: UserRepository
+    private val userFindService: UserFindService
 ) {
 
     @Transactional(readOnly = true)
@@ -30,8 +30,8 @@ class NoticeService(
             noticeType = request.noticeType.toDomainType(),
             lastNoticeId = request.lastCursorId
         )
-        val users = userRepository
-            .findUsersWithActivityUnit(
+        val users = userFindService
+            .findAllUserWithLastActivityUnit(
                 notices.map { it.writerId }.subList(0, min(request.limit, notices.size)).toSet()
             ).associateBy { it.userId }
 
@@ -57,7 +57,7 @@ class NoticeService(
     fun getNotice(noticeId: UUID): NoticeResponse {
         val notice = postFindService.findByIdOrNull(noticeId)
             ?: throw BusinessException(PostError.POST_NOT_FOUND)
-        val user = userRepository.findUserWithActivityUnit(notice.writerId)
+        val user = userFindService.findUserWithLastActivityUnit(notice.writerId)
 
         return NoticeResponse.from(notice as NoticeEntity, user)
     }

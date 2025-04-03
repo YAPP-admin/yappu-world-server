@@ -13,8 +13,7 @@ import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.infrastructure.PostCommandService
 import co.yappuworld.post.infrastructure.PostFindService
-import co.yappuworld.user.infrastructure.UserRepository
-import org.springframework.data.repository.findByIdOrNull
+import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -23,7 +22,7 @@ import java.util.UUID
 class AdminNoticeService(
     private val postFindService: PostFindService,
     private val postCommandService: PostCommandService,
-    private val userRepository: UserRepository
+    private val userFindService: UserFindService
 ) {
 
     @Transactional(readOnly = true)
@@ -33,7 +32,7 @@ class AdminNoticeService(
             request.toPageRequest()
         )
 
-        val userById = userRepository
+        val userById = userFindService
             .findAllByIdIn(page.content.map { notice -> notice.writerId })
             .associateBy { it.id }
 
@@ -55,7 +54,7 @@ class AdminNoticeService(
         val notice = postFindService.findByIdOrNull(noticeId)?.let { it as NoticeEntity }
             ?: throw BusinessException(PostError.NOTICE_NOT_FOUND)
 
-        val writer = userRepository.findByIdOrNull(notice.writerId)
+        val writer = userFindService.findByIdOrNull(notice.writerId)
             ?: throw BusinessException(PostError.NOTICE_WRITER_NOT_FOUND)
 
         return AdminNoticeDetailResponse(

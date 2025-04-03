@@ -5,7 +5,7 @@ import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
 import co.yappuworld.user.client.application.UserLoginPermissionChecker
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.SignUpApplicationRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test

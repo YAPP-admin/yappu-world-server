@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.SignUpApplicationRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 

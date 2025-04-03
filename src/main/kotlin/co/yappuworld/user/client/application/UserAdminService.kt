@@ -22,21 +22,23 @@ import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitJpaRepository
-import co.yappuworld.user.infrastructure.SignUpApplicationRepository
-import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.UserFindService
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.math.ceil
 
 @Service
 class UserAdminService(
-    private val userRepository: UserRepository,
+    private val userFindService: UserFindService,
+    private val userCommandService: UserCommandService,
     private val signUpApplicationRepository: SignUpApplicationRepository,
-    private val activityUnitJpaRepository: ActivityUnitJpaRepository,
+    private val activityUnitRepository: ActivityUnitRepository,
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
@@ -48,8 +50,8 @@ class UserAdminService(
         request: LoginRequest,
         now: LocalDateTime
     ): Token {
-        val user = userRepository
-            .findUserOrNullByEmail(request.email)
+        val user = userFindService
+            .findByEmailOrNull(request.email)
             .let { userLoginPermissionChecker.checkPermissionAndGetUser(it, request.email, request.password) }
 
         if (!user.role.canAccessAdminPage()) {
@@ -61,39 +63,40 @@ class UserAdminService(
 
     @Transactional
     fun updateUserRole(request: UserRoleUpdateRequest) {
-        val user = userRepository.findByIdOrNull(request.userId)
+        val user = userFindService.findByIdOrNull(request.userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
 
         user.updateRole(request.role)
-        userRepository.save(user)
+        userCommandService.save(user)
     }
 
     @Transactional(readOnly = true)
     fun getUserDetail(userId: UUID): AdminUserDetailResponse {
-        val user = userRepository.findByIdOrNull(userId)
+        val user = userFindService.findByIdOrNull(userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
-        val activityUnits = activityUnitJpaRepository.findAllByUserId(userId)
+        val activityUnits = activityUnitRepository.findAllByUserId(userId)
         val activeGenerationOrNull = generationActiveStateManager.getActiveGenerationOrNull()
 
         return AdminUserDetailResponse(user, activityUnits, activeGenerationOrNull)
     }
 
     @Transactional(readOnly = true)
-    fun getUserOverviews(request: AdminUserPageRequest): OffsetPageResponse<AdminUserOverviewResponse> {
-        val userWithActivityUnit = userRepository.findUsersWithActivityUnit(
-            limit = request.size,
-            offset = request.page - 1
-        )
-        val totalCount = userRepository.count()
-
-        return OffsetPageResponse(
-            data = userWithActivityUnit.map { AdminUserOverviewResponse(it) },
-            totalCount = totalCount,
-            totalPages = ceil(totalCount.toDouble() / request.size).toInt(),
-            page = request.page,
-            size = request.size
-        )
-    }
+    fun getUserOverviews(request: AdminUserPageRequest): OffsetPageResponse<AdminUserOverviewResponse> =
+        userFindService
+            .findAllUserWithLastActivityUnit(
+                PageRequest.of(
+                    request.page - 1,
+                    request.size
+                )
+            ).let { page ->
+                OffsetPageResponse(
+                    data = page.content.map { AdminUserOverviewResponse(it) },
+                    totalCount = page.totalElements,
+                    totalPages = page.totalPages,
+                    page = request.page,
+                    size = request.size
+                )
+            }
 
     fun updateUserDetails(request: AdminUserUpdateRequest) {
         updateUser(request)
@@ -108,7 +111,7 @@ class UserAdminService(
         return when (application.status == SignUpApplicationStatus.APPROVED) {
             true -> AdminSignUpApplicationResponse(
                 application,
-                userRepository.findUserOrNullByEmail(application.applicantEmail)
+                userFindService.findByEmailOrNull(application.applicantEmail)
             )
             false -> AdminSignUpApplicationResponse(application)
         }
@@ -143,11 +146,11 @@ class UserAdminService(
     }
 
     private fun updateUser(request: AdminUserUpdateRequest) {
-        val user = userRepository.findByIdOrNull(request.userId)
+        val user = userFindService.findByIdOrNull(request.userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
 
         user.updateDetails(request.name, request.email)
-        userRepository.save(user)
+        userCommandService.save(user)
     }
 
     private fun handleActivityUnitRequest(
@@ -159,7 +162,7 @@ class UserAdminService(
             .let { (toCreate, toUpdateOrDelete) ->
                 toUpdateOrDelete.ifNotEmpty { updateOrDeleteActivityUnit(userId, it) }
                 toCreate.ifNotEmpty {
-                    activityUnitJpaRepository.saveAll(
+                    activityUnitRepository.saveAll(
                         it.map { r -> r.toActivityUnit(userId) }
                     )
                 }
@@ -170,7 +173,7 @@ class UserAdminService(
         userId: UUID,
         requests: List<AdminActivityUnitUpdateRequest>
     ) {
-        val activityUnits = activityUnitJpaRepository
+        val activityUnits = activityUnitRepository
             .findAllByUserId(userId)
             .ifEmpty { return }
 
@@ -178,14 +181,14 @@ class UserAdminService(
         activityUnits
             .partition { it.id in requestById.keys }
             .let { (toUpdate, toDelete) ->
-                toDelete.ifNotEmpty { units -> activityUnitJpaRepository.deleteAllById(units.map { it.id }) }
+                toDelete.ifNotEmpty { units -> activityUnitRepository.deleteAllById(units.map { it.id }) }
                 toUpdate.ifNotEmpty { units ->
                     units.forEach { u ->
                         requestById[u.id]?.let { request ->
                             u.updateActivityUnit(request.generation, request.position)
                         }
                     }
-                    activityUnitJpaRepository.saveAll(units)
+                    activityUnitRepository.saveAll(units)
                 }
             }
     }
