@@ -34,7 +34,7 @@ data class NoticeSimpleResponse(
 
     constructor(notice: NoticeEntity) : this(
         id = notice.id,
-        createdAt = LocalDate.now(),
+        createdAt = notice.createdAt.toLocalDate(),
         title = notice.title,
         content = notice.contentSummary.take(200),
         noticeType = notice.noticeType
