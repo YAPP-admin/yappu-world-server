@@ -1,21 +1,21 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 categories:
-    -   title: '🎁 새로운 기능이 추가되었어요'
+    -   title: '🖌 기능이 추가되었어요'
         labels:
-            - '기능'
-    -   title: '🐞 기존 버그가 수정되었어요'
+            - '🖌️ feature'
+    -   title: '🐞 버그가 수정되었어요'
         labels:
-            - '버그'
-    -   title: '🐬 코드를 개선했어요'
+            - '🐞 bug'
+    -   title: '🛠 코드를 개선했어요'
         labels:
-            - '수정/리팩토링'
-    -   title: '⚙️ 인프라를 개선했어요'
+            - '🛠️ fix'
+    -   title: '🌏️ 인프라를 개선했어요'
         labels:
-            - '인프라'
+            - '🌏 infra'
     -   title: '📜️ 문서를 작성했어요'
         labels:
-            - '문서'
+            - '📜 document'
 
 change-template: '- $TITLE (#$NUMBER) @$AUTHOR '
 template: |
