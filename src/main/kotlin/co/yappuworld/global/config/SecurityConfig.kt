@@ -6,10 +6,6 @@ import co.yappuworld.global.security.SecurityPathMatchersManager.staffOrAdminMat
 import co.yappuworld.global.security.SecurityPathMatchersManager.userMatchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod.DELETE
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.POST
-import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
@@ -49,12 +45,9 @@ class SecurityConfig(
             registerCorsConfiguration(
                 "/**",
                 CorsConfiguration().apply {
-                    addAllowedHeader("*")
-                    addAllowedMethod(GET)
-                    addAllowedMethod(POST)
-                    addAllowedMethod(PUT)
-                    addAllowedMethod(DELETE)
-                    addAllowedOriginPattern("*")
+                    allowedHeaders = listOf("*")
+                    allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                    allowedOriginPatterns = listOf("*")
                 }
             )
         }
