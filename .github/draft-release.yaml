@@ -3,7 +3,6 @@ on:
     push:
         branches:
             - main
-            - docs/release
 jobs:
     update_release_draft:
         runs-on: ubuntu-latest
