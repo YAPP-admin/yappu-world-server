@@ -13,6 +13,9 @@ categories:
     -   title: '⚙️ 인프라를 개선했어요'
         labels:
             - '인프라'
+    -   title: '📜️ 문서를 작성했어요'
+        labels:
+            - '문서'
 
 change-template: '- $TITLE (#$NUMBER) @$AUTHOR '
 template: |
