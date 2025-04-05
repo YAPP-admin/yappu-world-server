@@ -9,9 +9,12 @@ data class AdminUserProfileResponse(
     val id: UUID,
     @Schema(description = "이름")
     val name: String,
-    @Schema(description = "역할 (권한)")
+    @Schema(description = "역할 (권한)", allowableValues = ["관리자", "운영진", "정회원", "수료회원", "활동회원"])
     val role: String,
-    @Schema(description = "최근 활동 기수의 직군")
+    @Schema(
+        description = "최근 활동 기수의 직군",
+        allowableValues = ["PM", "Design", "Web", "Android", "iOS", "Flutter", "Server", "운영진"]
+    )
     val position: String
 ) {
     constructor(userWithLastActivityUnit: UserWithLastActivityUnit) : this(
