@@ -1,5 +1,6 @@
 package co.yappuworld.user.infrastructure
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.user.UserFixture.getActivityUnit
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
@@ -11,6 +12,7 @@ import co.yappuworld.user.infrastructure.jpa.UserRepository
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -20,6 +22,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @CustomDataJpaTest
 class UserFindServiceJdslTest {
@@ -84,7 +87,7 @@ class UserFindServiceJdslTest {
             )
         )
 
-        val userWithActivityUnit = userFindService.findUserWithLastActivityUnit(user.id)
+        val userWithActivityUnit = assertNotNull(userFindService.findUserWithLastActivityUnit(user.id))
         assertEquals(userWithActivityUnit.generation, lastActivityUnit.generation)
     }
 
@@ -110,6 +113,15 @@ class UserFindServiceJdslTest {
                 assertEquals(userWithLastActivityUnit.generation, generationAndPosition[index].first)
                 assertEquals(userWithLastActivityUnit.position, generationAndPosition[index].second)
             }
+    }
+
+    @Test
+    @Transactional
+    fun `존재하지 않는 유저를 조회하면 예외가 발생한다`() {
+        val fakeUserId = UUID.randomUUID()
+        assertThrows<BusinessException> {
+            userFindService.findUserWithLastActivityUnit(fakeUserId)
+        }
     }
 
     @Test

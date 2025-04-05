@@ -9,7 +9,7 @@ import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.client.dto.response.AdminSignUpApplicationOverviewResponse
 import co.yappuworld.user.client.application.SignUpService
-import co.yappuworld.user.client.application.UserAdminService
+import co.yappuworld.user.client.application.AdminUserService
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.client.dto.request.UserRoleUpdateRequest
 import co.yappuworld.user.client.dto.response.AdminSignUpApplicationResponse
@@ -19,17 +19,17 @@ import java.util.UUID
 
 @RestController
 class UserAuthAdminController(
-    private val userAdminService: UserAdminService,
+    private val adminUserService: AdminUserService,
     private val signUpService: SignUpService
 ) : UserAuthAdminApi {
 
     override fun login(request: LoginRequest): ResponseEntity<SuccessResponse<Token>> =
         ResponseEntity.ok(
-            SuccessResponse(userAdminService.login(request, getCurrentDateTimeInKST()))
+            SuccessResponse(adminUserService.login(request, getCurrentDateTimeInKST()))
         )
 
     override fun updateUserRole(request: UserRoleUpdateRequest): ResponseEntity<Unit> {
-        userAdminService.updateUserRole(request)
+        adminUserService.updateUserRole(request)
         return ResponseEntity.noContent().build()
     }
 
@@ -47,13 +47,13 @@ class UserAuthAdminController(
         request: AdminSignUpApplicationPageRequest
     ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>> =
         ResponseEntity.ok(
-            SuccessResponse(userAdminService.getSignUpApplications(request))
+            SuccessResponse(adminUserService.getSignUpApplications(request))
         )
 
     override fun getSignUpApplication(
         applicationId: UUID
     ): ResponseEntity<SuccessResponse<AdminSignUpApplicationResponse>> =
         ResponseEntity.ok(
-            SuccessResponse(userAdminService.getSignUpApplicationDetails(applicationId))
+            SuccessResponse(adminUserService.getSignUpApplicationDetails(applicationId))
         )
 }
