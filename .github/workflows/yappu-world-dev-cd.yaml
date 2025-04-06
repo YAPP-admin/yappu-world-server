@@ -4,6 +4,9 @@ on:
     push:
         branches:
             - dev
+    pull_request:
+        branches:
+            - infra/change-action-branch
 
 jobs:
     build:
@@ -50,7 +53,7 @@ jobs:
             -   name: Prepare File for Deployment
                 run: |
                     mkdir -p deployment/build/libs
-                    cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/
+                    cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/dev/
                     cp -r ./build/libs/yappu-world-dev.jar deployment/build/libs
 
             # Github Action 실행 서버 IP 추출
@@ -77,7 +80,7 @@ jobs:
                     host: ${{ secrets.AWS_DEV_EC2_HOST }}
                     username: ec2-user
                     key: ${{ secrets.AWS_DEV_EC2_SSH_PRIVATE_KEY }}
-                    source: "deployment/*"
+                    source: "deployment/dev/*"
                     target: "/home/ec2-user/"
 
             -   name: Deploy using Docker Compose
@@ -87,7 +90,7 @@ jobs:
                     username: ec2-user
                     key: ${{ secrets.AWS_DEV_EC2_SSH_PRIVATE_KEY }}
                     script: |
-                        cd /home/ec2-user/deployment
+                        cd /home/ec2-user/deployment/dev
                         docker-compose -f docker-compose-dev.yaml down
                         docker system prune -f
                         docker-compose -f docker-compose-dev.yaml build --no-cache

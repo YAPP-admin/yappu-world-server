@@ -49,7 +49,7 @@ jobs:
             -   name: Prepare File for Deployment
                 run: |
                     mkdir -p deployment/build/libs
-                    cp ./docker/dockerfile-prod ./docker/docker-compose-prod.yaml deployment/
+                    cp ./docker/dockerfile-prod ./docker/docker-compose-prod.yaml deployment/prod/
                     cp -r ./build/libs/yappu-world-prod.jar deployment/build/libs
 
             # Github Action 실행 서버 IP 추출
@@ -76,7 +76,7 @@ jobs:
                     host: ${{ secrets.AWS_PROD_EC2_HOST }}
                     username: ec2-user
                     key: ${{ secrets.AWS_PROD_EC2_SSH_PRIVATE_KEY }}
-                    source: "deployment/*"
+                    source: "deployment/prod/*"
                     target: "/home/ec2-user/"
 
             -   name: Deploy using Docker Compose
@@ -86,7 +86,7 @@ jobs:
                     username: ec2-user
                     key: ${{ secrets.AWS_PROD_EC2_SSH_PRIVATE_KEY }}
                     script: |
-                        cd /home/ec2-user/deployment
+                        cd /home/ec2-user/deployment/prod
                         docker-compose -f docker-compose-prod.yaml down
                         docker system prune -f
                         docker-compose -f docker-compose-prod.yaml build --no-cache
