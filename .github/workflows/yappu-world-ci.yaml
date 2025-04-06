@@ -3,7 +3,7 @@ name: yappu-world-ci
 on:
     pull_request:
         branches:
-            - develop
+            - dev
             - prod
 
 jobs:
