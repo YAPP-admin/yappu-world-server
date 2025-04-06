@@ -50,9 +50,9 @@ jobs:
 
             -   name: Prepare File for Deployment
                 run: |
-                    mkdir -p deployment/build/libs
+                    mkdir -p deployment/dev/build/libs
                     cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/dev/
-                    cp -r ./build/libs/yappu-world-dev.jar deployment/build/libs
+                    cp -r ./build/libs/yappu-world-dev.jar deployment/dev/build/libs
 
             # Github Action 실행 서버 IP 추출
             -   name: Get Github Actions IP
@@ -79,7 +79,7 @@ jobs:
                     username: ec2-user
                     key: ${{ secrets.AWS_DEV_EC2_SSH_PRIVATE_KEY }}
                     source: "deployment/dev/*"
-                    target: "/home/ec2-user/"
+                    target: "/home/ec2-user/deployment/dev"
 
             -   name: Deploy using Docker Compose
                 uses: appleboy/ssh-action@v1.0.3
