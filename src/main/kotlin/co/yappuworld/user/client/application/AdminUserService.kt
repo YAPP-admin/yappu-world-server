@@ -6,6 +6,7 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
+import co.yappuworld.operation.client.application.GenerationActiveStateManager
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
@@ -20,6 +21,7 @@ import co.yappuworld.user.client.dto.response.AdminSignUpApplicationOverviewResp
 import co.yappuworld.user.client.dto.response.AdminSignUpApplicationResponse
 import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
+import co.yappuworld.user.client.dto.response.AdminUserProfileResponse
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.UserCommandService
@@ -34,7 +36,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
-class UserAdminService(
+class AdminUserService(
     private val userFindService: UserFindService,
     private val userCommandService: UserCommandService,
     private val signUpApplicationRepository: SignUpApplicationRepository,
@@ -42,7 +44,7 @@ class UserAdminService(
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
-    private val generationActiveStateManager: co.yappuworld.operation.client.application.GenerationActiveStateManager
+    private val generationActiveStateManager: GenerationActiveStateManager
 ) {
 
     @Transactional
@@ -144,6 +146,10 @@ class UserAdminService(
         configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply { update(null) }
             ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
     }
+
+    @Transactional(readOnly = true)
+    fun getUserProfile(userId: UUID): AdminUserProfileResponse =
+        AdminUserProfileResponse(userFindService.findUserWithLastActivityUnit(userId))
 
     private fun updateUser(request: AdminUserUpdateRequest) {
         val user = userFindService.findByIdOrNull(request.userId)
