@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
 
 @Tag(name = "회원 관리 API", description = "_")
-interface UserAdminApi {
+interface AdminUserManageApi {
 
     @Operation(summary = "유저 상세 조회")
     @ApiResponses(

@@ -1,7 +1,9 @@
 package co.yappuworld.user.infrastructure
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.domain.model.ActivityUnitEntity
 import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
@@ -13,6 +15,7 @@ import com.linecorp.kotlinjdsl.querymodel.jpql.entity.Entity
 import com.linecorp.kotlinjdsl.querymodel.jpql.select.SelectQuery
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -21,6 +24,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 @Transactional(readOnly = true)
@@ -45,9 +50,15 @@ class UserFindService(
                 .orderBy(path(UserEntity::getId).desc())
             getUserWithLastActivityUnit(userId)
         }.let { query ->
-            entityManager
-                .createQuery(query, context)
-                .singleResult
+            val typedQuery = entityManager.createQuery(query, context)
+            when (typedQuery.resultList.size) {
+                0 -> throw BusinessException(UserError.USER_NOT_FOUND)
+                1 -> typedQuery.singleResult
+                else -> {
+                    logger.error { "${typedQuery.resultList.size}개의 결과가 나오면 안 됩니다." }
+                    throw BusinessException(UserError.USER_FIND_ERROR)
+                }
+            }
         }
 
     fun findAllUserWithLastActivityUnit(userIds: Collection<UUID>): List<UserWithLastActivityUnit> =

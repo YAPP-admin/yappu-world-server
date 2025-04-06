@@ -10,7 +10,7 @@ import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
-import co.yappuworld.user.client.application.UserAdminService
+import co.yappuworld.user.client.application.AdminUserService
 import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
 import co.yappuworld.user.client.dto.response.AdminSignUpCodeResponse
 import co.yappuworld.user.client.dto.response.AdminSignUpCodesResponse
@@ -22,7 +22,7 @@ import java.net.URI
 @RestController
 class AdminUserOperationController(
     private val adminUserOperationService: AdminUserOperationService,
-    private val userAdminService: UserAdminService,
+    private val adminUserService: AdminUserService,
     private val configInquiryComponent: ConfigInquiryComponent
 ) : AdminUserOperationApi {
 
@@ -62,12 +62,12 @@ class AdminUserOperationController(
     }
 
     override fun updateSignUpAuthenticationCode(request: AdminSignUpCodeUpdateRequest): ResponseEntity<Unit> {
-        userAdminService.updateSignUpCode(request)
+        adminUserService.updateSignUpCode(request)
         return ResponseEntity.noContent().build()
     }
 
     override fun deleteSignUpAuthenticationCode(request: AdminSignupCodeDeleteRequest): ResponseEntity<Unit> {
-        userAdminService.deleteSignupCode(request)
+        adminUserService.deleteSignupCode(request)
         return ResponseEntity.noContent().build()
     }
 }
