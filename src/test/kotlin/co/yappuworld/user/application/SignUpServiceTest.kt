@@ -3,20 +3,23 @@ package co.yappuworld.user.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtProperty
-import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationApiRequestDtoFixture
 import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
 import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
+import co.yappuworld.user.client.application.SignUpService
 import co.yappuworld.user.domain.model.ApplicationDetails
-import co.yappuworld.user.domain.model.SignUpApplication
+import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
-import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceRepository
-import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.UserFindService
 import co.yappuworld.user.infrastructure.UserSystemNotifier
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
+import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
+import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
@@ -35,7 +38,9 @@ class SignUpServiceTest {
         1209600000
     )
     private val userRepository = mockk<UserRepository>()
-    private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
+    private val userFindService = mockk<UserFindService>()
+    private val userCommandService = mockk<UserCommandService>()
+    private val authApplicationRepository = mockk<SignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val userDeviceRepository = mockk<UserDeviceRepository>()
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
@@ -43,19 +48,20 @@ class SignUpServiceTest {
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
     private val userSystemNotifier = mockk<UserSystemNotifier>()
     private val signUpService = SignUpService(
-        userRepository,
-        authApplicationRepository,
-        activityUnitRepository,
-        userAlarmSettingRepository,
-        userDeviceRepository,
-        jwtGenerator,
-        configInquiryComponent,
-        userSystemNotifier
+        userFindService = userFindService,
+        userCommandService = userCommandService,
+        signUpApplicationRepository = authApplicationRepository,
+        activityUnitRepository = activityUnitRepository,
+        userAlarmSettingRepository = userAlarmSettingRepository,
+        userDeviceRepository = userDeviceRepository,
+        jwtGenerator = jwtGenerator,
+        configInquiryComponent = configInquiryComponent,
+        userSystemNotifier = userSystemNotifier
     )
 
     companion object {
         @JvmStatic
-        private fun provideSignUpApplicationAndDetails(): List<Pair<SignUpApplication, ApplicationDetails>> {
+        private fun provideSignUpApplicationAndDetails(): List<Pair<SignUpApplicationEntity, ApplicationDetails>> {
             val details = getApplicationDetailsFixture()
             return listOf(
                 Pair(getSignUpApplicationFixture(details), details),
@@ -67,10 +73,10 @@ class SignUpServiceTest {
 
     @Test
     fun `가장 최근 회원가입 신청이 존재하지 않으면 예외가 발생한다`() {
-        every { authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(any(), any()) } returns null
+        every { authApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(any()) } returns null
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture()
-        assertThatThrownBy { signUpService.findLatestSignUpApplication(request.toAppRequest()) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.NO_SIGN_UP_APPLICATION.message)
     }
@@ -80,12 +86,9 @@ class SignUpServiceTest {
         val details = getApplicationDetailsFixture(
             password = "abcabC!!"
         )
-        val application = SignUpApplication(details)
+        val application = SignUpApplicationEntity(details)
         every {
-            authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
-                any(),
-                any()
-            )
+            authApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(any())
         } returns application
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture(
@@ -93,22 +96,19 @@ class SignUpServiceTest {
             password = details.password + "a"
         )
 
-        assertThatThrownBy { signUpService.findLatestSignUpApplication(request.toAppRequest()) }
+        assertThatThrownBy { signUpService.findLatestSignUpApplication(request) }
             .isInstanceOf(BusinessException::class.java)
             .hasMessageMatching(UserError.MISMATCH_REQUEST_AND_SIGN_UP_APPLICATION.message)
     }
 
     @ParameterizedTest
     @MethodSource("provideSignUpApplicationAndDetails")
-    fun `어플리케이션의 상태에 맞게 응답이 반환된다`(applicationAndDetails: Pair<SignUpApplication, ApplicationDetails>) {
+    fun `어플리케이션의 상태에 맞게 응답이 반환된다`(applicationAndDetails: Pair<SignUpApplicationEntity, ApplicationDetails>) {
         val application = applicationAndDetails.first
         val details = applicationAndDetails.second
 
         every {
-            authApplicationRepository.findByApplicantEmailOrderByUpdatedAtDesc(
-                application.applicantEmail,
-                any()
-            )
+            authApplicationRepository.findFirstByApplicantEmailOrderByUpdatedAtDesc(application.applicantEmail)
         } returns application
 
         val request = getLatestSignUpApplicationApiRequestDtoFixture(
@@ -116,7 +116,7 @@ class SignUpServiceTest {
             password = "abcabC!!"
         )
 
-        signUpService.findLatestSignUpApplication(request.toAppRequest()).also {
+        signUpService.findLatestSignUpApplication(request).also {
             assertThat(it.status).isEqualTo(application.status)
             when (it.status) {
                 SignUpApplicationStatus.REJECTED -> assertNotNull(it.rejectReason)

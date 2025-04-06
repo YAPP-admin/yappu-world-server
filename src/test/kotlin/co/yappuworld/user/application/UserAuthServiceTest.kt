@@ -5,26 +5,30 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
-import co.yappuworld.operation.application.ConfigInquiryComponent
+import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
-import co.yappuworld.user.application.dto.request.ActivityUnitAppRequestDto
-import co.yappuworld.user.application.dto.request.ReissueTokenAppRequestDto
-import co.yappuworld.user.application.dto.request.UserSignUpAppRequestDto
+import co.yappuworld.user.client.application.SignUpService
+import co.yappuworld.user.client.application.UserAuthService
+import co.yappuworld.user.client.application.UserLoginPermissionChecker
+import co.yappuworld.user.client.dto.request.ActivityUnitRegistrationRequest
+import co.yappuworld.user.client.dto.request.ReissueTokenRequest
+import co.yappuworld.user.client.dto.request.UserSignUpRequest
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.ActivityUnitRepository
-import co.yappuworld.user.infrastructure.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.UserDeviceRepository
-import co.yappuworld.user.infrastructure.UserRepository
-import co.yappuworld.user.infrastructure.UserSignUpApplicationRepository
+import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.UserFindService
 import co.yappuworld.user.infrastructure.UserSystemNotifier
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
+import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
+import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
+import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.assertDoesNotThrow
-import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.test.Test
@@ -37,7 +41,9 @@ class UserAuthServiceTest {
         1209600000
     )
     private val userRepository = mockk<UserRepository>()
-    private val authApplicationRepository = mockk<UserSignUpApplicationRepository>()
+    private val userFindService = mockk<UserFindService>()
+    private val userCommandService = mockk<UserCommandService>()
+    private val authApplicationRepository = mockk<SignUpApplicationRepository>()
     private val activityUnitRepository = mockk<ActivityUnitRepository>()
     private val userAlarmSettingRepository = mockk<UserAlarmSettingRepository>()
     private val userDeviceRepository = mockk<UserDeviceRepository>()
@@ -45,14 +51,17 @@ class UserAuthServiceTest {
     private val jwtResolver = JwtResolver(jwtProperty)
     private val configInquiryComponent = mockk<ConfigInquiryComponent>()
     private val userSystemNotifier = mockk<UserSystemNotifier>()
+    private val userLoginPermissionChecker = mockk<UserLoginPermissionChecker>()
     private val userAuthService = UserAuthService(
-        userRepository,
-        authApplicationRepository,
-        jwtGenerator,
-        jwtResolver
+        userFindService = userFindService,
+        userCommandService = userCommandService,
+        jwtGenerator = jwtGenerator,
+        jwtResolver = jwtResolver,
+        userLoginPermissionChecker = userLoginPermissionChecker
     )
     private val signUpService = SignUpService(
-        userRepository,
+        userFindService,
+        userCommandService,
         authApplicationRepository,
         activityUnitRepository,
         userAlarmSettingRepository,
@@ -62,12 +71,12 @@ class UserAuthServiceTest {
         userSystemNotifier
     )
 
-    val email = "abc@abc.com"
-    val request = UserSignUpAppRequestDto(
+    private val email = "abc@abc.com"
+    private val request = UserSignUpRequest(
         email,
         "password",
         "name",
-        listOf(ActivityUnitAppRequestDto(1, Position.PM)),
+        listOf(ActivityUnitRegistrationRequest(1, Position.PM)),
         "",
         "fcmToken",
         true
@@ -76,10 +85,10 @@ class UserAuthServiceTest {
     @Test
     @DisplayName("기존에 처리되지 않은 신청이 있다면 예외가 발생한다.")
     fun validateExistsPendingApplication() {
-        every { userRepository.existsUserByEmail(any()) } returns false
+        every { userFindService.existsByEmail(any()) } returns false
         every {
             authApplicationRepository.findByApplicantEmailAndStatus(email, any())
-        } returns listOf(request.toApplication())
+        } returns listOf(request.toDomain())
 
         assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)
@@ -90,7 +99,7 @@ class UserAuthServiceTest {
     @Test
     @DisplayName("이미 가입된 이메일이면 예외가 발생한다.")
     fun validateExistsApprovedApplication() {
-        every { userRepository.existsUserByEmail(any()) } returns true
+        every { userFindService.existsByEmail(any()) } returns true
 
         assertThatThrownBy { signUpService.submitSignUpRequest(request, LocalDateTime.now()) }
             .isInstanceOf(BusinessException::class.java)
@@ -102,7 +111,7 @@ class UserAuthServiceTest {
     @DisplayName("만료되지 않은 토큰 재발급이 정상적으로 처리된다.")
     fun successReissueValidAccessToken() {
         val user = getUserFixture()
-        every { userRepository.findByIdOrNull(any()) } returns user
+        every { userFindService.findByIdOrNull(any()) } returns user
         val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
 
         val reissuedToken =
@@ -110,7 +119,8 @@ class UserAuthServiceTest {
                 .generateToken(SecurityUser.from(user), now)
                 .run {
                     userAuthService.reissueToken(
-                        ReissueTokenAppRequestDto(accessToken, refreshToken!!, now.plusHours(1L).minusNanos(1L))
+                        ReissueTokenRequest(accessToken, refreshToken!!),
+                        now.plusHours(1L).minusNanos(1L)
                     )
                 }
 
@@ -123,7 +133,7 @@ class UserAuthServiceTest {
     @DisplayName("만료된 토큰도 재발급이 정상적으로 처리된다.")
     fun successReissueExpiredAccessToken() {
         val user = getUserFixture()
-        every { userRepository.findByIdOrNull(any()) } returns user
+        every { userFindService.findByIdOrNull(any()) } returns user
         val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
 
         val token =
@@ -135,7 +145,8 @@ class UserAuthServiceTest {
                 }
 
         val reissuedToken = userAuthService.reissueToken(
-            ReissueTokenAppRequestDto(token.accessToken, token.refreshToken!!, now)
+            ReissueTokenRequest(token.accessToken, token.refreshToken!!),
+            now
         )
 
         assertDoesNotThrow {
@@ -146,7 +157,7 @@ class UserAuthServiceTest {
     @Test
     fun `이미 회원탈퇴 된 유저는 탈퇴 시 예외가 발생한다`() {
         val user = getUserFixture().apply { withdraw() }
-        every { userRepository.findByIdOrNull(any()) } returns user
+        every { userFindService.findByIdOrNull(any()) } returns user
 
         assertThatThrownBy { userAuthService.withdrawUser(user.id) }
             .isInstanceOf(BusinessException::class.java)
@@ -156,8 +167,8 @@ class UserAuthServiceTest {
     @Test
     fun `탈퇴한 적 없는 유저는 정상적으로 탈퇴된다`() {
         val user = getUserFixture()
-        every { userRepository.findByIdOrNull(any()) } returns user
-        every { userRepository.save(any()) } returns user
+        every { userFindService.findByIdOrNull(any()) } returns user
+        every { userCommandService.save(any()) } returns user
 
         assertDoesNotThrow { userAuthService.withdrawUser(user.id) }
     }

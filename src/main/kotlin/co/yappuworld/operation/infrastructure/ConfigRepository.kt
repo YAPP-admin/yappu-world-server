@@ -1,14 +1,12 @@
 package co.yappuworld.operation.infrastructure
 
-import co.yappuworld.operation.domain.Config
 import co.yappuworld.operation.domain.ConfigCategory
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import co.yappuworld.operation.domain.ConfigEntity
+import org.springframework.data.jpa.repository.JpaRepository
 
-@Repository
-interface ConfigRepository : CrudRepository<Config, String> {
+interface ConfigRepository : JpaRepository<ConfigEntity, String> {
 
-    fun findAllByIdIn(ids: List<String>): List<Config>
+    fun findAllByIdIn(ids: List<String>): List<ConfigEntity>
 
-    fun findByCategory(category: ConfigCategory): List<Config>
+    fun findByCategory(category: ConfigCategory): List<ConfigEntity>
 }

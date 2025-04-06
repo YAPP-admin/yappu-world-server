@@ -1,18 +1,15 @@
 package co.yappuworld.operation.infrastructure
 
-import co.yappuworld.operation.domain.Generation
-import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.PagingAndSortingRepository
+import co.yappuworld.operation.domain.GenerationEntity
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface GenerationRepository :
-    CrudRepository<Generation, Int>,
-    PagingAndSortingRepository<Generation, Int> {
+interface GenerationRepository : JpaRepository<GenerationEntity, Int> {
 
     fun existsGenerationByIsActiveIsTrue(): Boolean
 
-    fun getGenerationOrNullByIsActiveIsTrue(): Generation?
+    fun getGenerationOrNullByIsActiveIsTrue(): GenerationEntity?
 
-    fun findAllByIsActiveIsTrue(): List<Generation>
+    fun findAllByIsActiveIsTrue(): List<GenerationEntity>
 
-    fun findAllByValueIn(values: List<Int>): List<Generation>
+    fun findAllByValueIn(values: List<Int>): List<GenerationEntity>
 }

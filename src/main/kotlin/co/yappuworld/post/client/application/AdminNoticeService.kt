@@ -1,43 +1,45 @@
 package co.yappuworld.post.client.application
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.post.client.dto.request.AdminNoticeCreateRequest
+import co.yappuworld.post.client.dto.request.AdminNoticeDeleteRequest
 import co.yappuworld.post.client.dto.request.AdminNoticePageRequest
 import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailWriterResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
-import co.yappuworld.post.domain.model.NoticeEntity
-import co.yappuworld.post.domain.vo.BoardError
-import co.yappuworld.post.domain.vo.NoticeType
-import co.yappuworld.post.infrastructure.PostJpaRepository
-import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.response.OffsetPageResponse
-import co.yappuworld.user.infrastructure.UserRepository
+import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.domain.PostError
+import co.yappuworld.post.infrastructure.PostCommandService
+import co.yappuworld.post.infrastructure.PostFindService
+import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
 class AdminNoticeService(
-    private val postRepository: PostJpaRepository,
-    private val userRepository: UserRepository
+    private val postFindService: PostFindService,
+    private val postCommandService: PostCommandService,
+    private val userFindService: UserFindService
 ) {
 
     @Transactional(readOnly = true)
     fun getNotices(request: AdminNoticePageRequest): OffsetPageResponse<AdminNoticeSummaryResponse> {
-        val page = when (request.noticeType == "ALL") {
-            true -> postRepository.findAll(request.toPageRequest())
-            false -> postRepository.findAllByNoticeType(NoticeType.valueOf(request.noticeType), request.toPageRequest())
-        }
+        val page = postFindService.findAllByNoticeType(
+            noticeType = request.noticeTypeOrNull,
+            request.toPageRequest()
+        )
 
-        val userById = userRepository
+        val userById = userFindService
             .findAllByIdIn(page.content.map { notice -> notice.writerId })
             .associateBy { it.id }
 
         return OffsetPageResponse(
             data = page.content.map { notice ->
                 userById
-                    .getOrElse(notice.writerId) { throw BusinessException(BoardError.NOTICE_WRITER_NOT_FOUND) }
+                    .getOrElse(notice.writerId) { throw BusinessException(PostError.NOTICE_WRITER_NOT_FOUND) }
                     .let { user -> AdminNoticeSummaryResponse(notice as NoticeEntity, user) }
             },
             page = request.page,
@@ -49,13 +51,11 @@ class AdminNoticeService(
 
     @Transactional(readOnly = true)
     fun getNotice(noticeId: UUID): AdminNoticeDetailResponse {
-        val notice = postRepository
-            .findById(noticeId)
-            .orElseThrow { BusinessException(BoardError.NOTICE_NOT_FOUND) }
-            as NoticeEntity
-        val writer = userRepository
-            .findById(notice.writerId)
-            .orElseThrow { BusinessException(BoardError.NOTICE_WRITER_NOT_FOUND) }
+        val notice = postFindService.findByIdOrNull(noticeId)?.let { it as NoticeEntity }
+            ?: throw BusinessException(PostError.NOTICE_NOT_FOUND)
+
+        val writer = userFindService.findByIdOrNull(notice.writerId)
+            ?: throw BusinessException(PostError.NOTICE_WRITER_NOT_FOUND)
 
         return AdminNoticeDetailResponse(
             noticeId = notice.id,
@@ -78,17 +78,15 @@ class AdminNoticeService(
             contentSummary = request.plainContent.take(200),
             writerId = writerId,
             noticeType = request.type
-        ).run { postRepository.save(this) }
+        ).run { postCommandService.save(this) }
 
         return notice.id
     }
 
     @Transactional
     fun updateNotice(request: AdminNoticeUpdateRequest) {
-        val notice = postRepository
-            .findById(request.id)
-            .orElseThrow { BusinessException(BoardError.NOTICE_NOT_FOUND) }
-            as NoticeEntity
+        val notice = postFindService.findByIdOrNull(request.id)?.let { it as NoticeEntity }
+            ?: throw BusinessException(PostError.NOTICE_NOT_FOUND)
 
         notice.update(
             title = request.title,
@@ -96,5 +94,15 @@ class AdminNoticeService(
             contentSummary = request.plainContent.take(200),
             noticeType = request.type
         )
+    }
+
+    @Transactional
+    fun deleteNotice(request: AdminNoticeDeleteRequest) {
+        val notices = postFindService.findAllByIdIn(request.noticeIds)
+        if (notices.size != request.size) {
+            throw BusinessException(PostError.NOT_CONTAIN_DELETE_NOTICE)
+        }
+
+        postCommandService.deleteAll(notices)
     }
 }

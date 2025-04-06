@@ -3,7 +3,7 @@ name: yappu-world-prod-cd
 on:
     push:
         branches:
-            - main
+            - prod
 
 jobs:
     build:
@@ -35,12 +35,12 @@ jobs:
                     jwt.secret_key: ${{ secrets.PROD_JWT_SECRET_KEY }}
                     jwt.access_token_expiration_times: ${{ secrets.PROD_ACCESS_TOKEN_EXPIRATION_TIMES }}
                     jwt.refresh_token_expiration_times: ${{ secrets.PROD_REFRESH_TOKEN_EXPIRATION_TIMES }}
-                    fcm.private_key_id: ${{FCM_PRIVATE_KEY_ID}}
-                    fcm.private_key: ${{FCM_PRIVATE_KEY}}
-                    fcm.client_email: ${{FCM_CLIENT_EMAIL}}
-                    fcm.client_id: ${{FCM_CLIENT_ID}}
-                    fcm.client_x509_cert_url: ${{FCM_X509_CERT_URL}}
-                    discord.webhook: ${{DISCORD_WEBHOOK_URL_IN_PROD}}
+                    fcm.private_key_id: ${{secrets.FCM_PRIVATE_KEY_ID}}
+                    fcm.private_key: ${{secrets.FCM_PRIVATE_KEY}}
+                    fcm.client_email: ${{secrets.FCM_CLIENT_EMAIL}}
+                    fcm.client_id: ${{secrets.FCM_CLIENT_ID}}
+                    fcm.client_x509_cert_url: ${{secrets.FCM_X509_CERT_URL}}
+                    discord.webhook: ${{secrets.DISCORD_WEBHOOK_URL_IN_PROD}}
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
 
             -   name: Build with Gradle Wrapper

@@ -1,14 +1,15 @@
 package co.yappuworld.post.client.presentation
 
+import co.yappuworld.global.response.OffsetPageResponse
+import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.post.client.application.AdminNoticeService
 import co.yappuworld.post.client.dto.request.AdminNoticeCreateRequest
+import co.yappuworld.post.client.dto.request.AdminNoticeDeleteRequest
 import co.yappuworld.post.client.dto.request.AdminNoticePageRequest
 import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
-import co.yappuworld.global.response.OffsetPageResponse
-import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.global.security.SecurityUser
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
@@ -41,6 +42,11 @@ class AdminNoticeController(
 
     override fun updateNotice(request: AdminNoticeUpdateRequest): ResponseEntity<Unit> {
         adminNoticeService.updateNotice(request)
+        return ResponseEntity.noContent().build()
+    }
+
+    override fun deleteNotice(request: AdminNoticeDeleteRequest): ResponseEntity<Unit> {
+        adminNoticeService.deleteNotice(request)
         return ResponseEntity.noContent().build()
     }
 }

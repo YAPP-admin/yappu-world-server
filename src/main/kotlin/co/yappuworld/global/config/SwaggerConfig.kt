@@ -1,12 +1,12 @@
 package co.yappuworld.global.config
 
+import co.yappuworld.global.util.SwaggerUtils.customizeResponses
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
-import org.springdoc.core.customizers.OpenApiCustomizer
 import org.springdoc.core.models.GroupedOpenApi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,6 +29,7 @@ class SwaggerConfig {
             .builder()
             .group("App API")
             .pathsToExclude("/admin/**")
+            .addOpenApiCustomizer(customizeResponses)
             .build()
 
     @Bean
@@ -37,20 +38,8 @@ class SwaggerConfig {
             .builder()
             .group("Admin API")
             .pathsToMatch("/admin/**") // 어드민 API만 포함
+            .addOpenApiCustomizer(customizeResponses)
             .build()
-
-    @Bean
-    fun customGlobalResponses(): OpenApiCustomizer =
-        OpenApiCustomizer { openApi ->
-            openApi.paths.values.forEach { item ->
-                item.readOperations().forEach { operation ->
-                    val responses = operation.responses
-                    SwaggerCommonResponses.values.forEach { value ->
-                        responses.addApiResponse(value.code, value.apiResponse)
-                    }
-                }
-            }
-        }
 
     private fun getInfo(): Info =
         Info()

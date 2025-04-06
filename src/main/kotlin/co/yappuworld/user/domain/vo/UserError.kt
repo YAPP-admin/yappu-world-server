@@ -21,6 +21,16 @@ enum class UserError : Error {
         override val code: String = "USR_0003"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
+    ACTIVE_UNIT_IS_ESSENTIAL {
+        override val message: String = "활동 정보는 하나 이상 존재해야 합니다."
+        override val code: String = "USR_0004"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    USER_FIND_ERROR {
+        override val message: String = "유저 조회에 에러가 발생했습니다."
+        override val code: String = "USR_0005"
+        override val type: ErrorType = ErrorType.UNEXPECTED_ERROR
+    },
 
     // 1000번대 - 회원가입 에러
     INVALID_SIGN_UP_CODE {
@@ -38,15 +48,15 @@ enum class UserError : Error {
         override val code: String = "USR_1003"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
-    INVALID_EMAIL {
-        override val message: String = "이메일 형식이 아닙니다."
+    CONTAIN_NOT_EXIST_APPLICATION_ID {
+        override val message: String = "존재하지 않는 가입 신청 ID가 포함되어 있습니다."
         override val code: String = "USR_1004"
-        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
+        override val type: ErrorType = ErrorType.NOT_FOUND
     },
-    DUPLICATE_EMAIL {
-        override val message: String = "중복된 이메일입니다."
+    CONTAIN_ALREADY_PROCESSED_APPLICATION {
+        override val message: String = "이미 처리된 가입 신청이 포함되어 있습니다."
         override val code: String = "USR_1005"
-        override val type: ErrorType = ErrorType.WRONG_STATE
+        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },
     NOT_FOUND_SIGN_UP_APPLICATION {
         override val message: String = "회원가입 신청 내역을 찾을 수 없습니다."
@@ -89,6 +99,11 @@ enum class UserError : Error {
         override val message: String = "회원가입 신청을 한 내역이 없습니다."
         override val code: String = "USR_1122"
         override val type: ErrorType = ErrorType.NOT_FOUND
+    },
+    NO_AUTH_FOR_ADMIN_PAGE {
+        override val message: String = "어드민 페이지에 로그인할 권한이 없습니다."
+        override val code: String = "USR_1190"
+        override val type: ErrorType = ErrorType.FORBIDDEN
     },
 
     // 1200번대 - 회원탈퇴 에러

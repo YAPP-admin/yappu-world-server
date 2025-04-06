@@ -12,9 +12,9 @@ object ScheduleFixture {
         description: String? = "시범 세션이니깐 걱정 마세요",
         place: String? = "공덕 창업 허브",
         date: LocalDate = LocalDate.of(2025, 2, 15),
-        endDate: LocalDate? = null,
-        time: LocalTime? = null,
-        endTime: LocalTime? = null,
+        endDate: LocalDate = LocalDate.of(2025, 2, 15),
+        time: LocalTime = LocalTime.of(14, 0),
+        endTime: LocalTime = LocalTime.of(18, 0),
         generation: Int = 25,
         sessionType: SessionType = SessionType.OFFLINE
     ) = SessionEntity(
@@ -23,6 +23,7 @@ object ScheduleFixture {
         place = place,
         date = date,
         endDate = endDate,
+        isAllDay = false,
         time = time,
         endTime = endTime,
         generation = generation,

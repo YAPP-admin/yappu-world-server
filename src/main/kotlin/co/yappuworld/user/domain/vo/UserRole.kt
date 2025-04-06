@@ -16,5 +16,7 @@ enum class UserRole(
     STAFF("ROLE_STAFF", "운영진", "authenticationCodeStaff"),
     ALUMNI("ROLE_ALUMNI", "정회원", "authenticationCodeAlumni"),
     GRADUATE("ROLE_GRADUATE", "수료회원", "authenticationCodeGraduate"),
-    ACTIVE("ROLE_ACTIVE", "활동회원", "authenticationCodeActive")
+    ACTIVE("ROLE_ACTIVE", "활동회원", "authenticationCodeActive");
+
+    fun canAccessAdminPage(): Boolean = this == ADMIN || this == STAFF
 }

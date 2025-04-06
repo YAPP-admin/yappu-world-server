@@ -14,9 +14,10 @@ class SessionEntity(
     override var description: String?,
     override var place: String?,
     override var date: LocalDate,
-    override var endDate: LocalDate?,
+    override var endDate: LocalDate,
     override var time: LocalTime?,
     override var endTime: LocalTime?,
+    override var isAllDay: Boolean,
     generation: Int,
     sessionType: SessionType
 ) : ScheduleEntity() {
@@ -33,7 +34,7 @@ class SessionEntity(
         description: String?,
         place: String?,
         date: LocalDate,
-        endDate: LocalDate?,
+        endDate: LocalDate,
         time: LocalTime?,
         endTime: LocalTime?,
         generation: Int,
