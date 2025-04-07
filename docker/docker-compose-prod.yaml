@@ -7,6 +7,8 @@ services:
             dockerfile: dockerfile-prod
         ports:
             - '8080:8080'
+        environment:
+            - JAVA_OPTS=-Xms256m -Xmx256m
         deploy:
             resources:
                 limits:

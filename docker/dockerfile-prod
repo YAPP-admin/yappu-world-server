@@ -3,9 +3,6 @@ FROM bellsoft/liberica-openjdk-alpine:21
 # 애플리케이션 디렉토리 설정
 WORKDIR /app
 
-# 메모리 제한
-ENV JAVA_TOOL_OPTIONS="-Xms256m -Xmx256m"
-
 # 빌드된 JAR 파일 복사
 COPY build/libs/yappu-world-prod.jar yappu-world-prod.jar
 
