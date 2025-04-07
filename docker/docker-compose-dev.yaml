@@ -6,4 +6,4 @@ services:
             context: .
             dockerfile: dockerfile-dev
         ports:
-            - '8090:8080'
+            - '8080:8080'
