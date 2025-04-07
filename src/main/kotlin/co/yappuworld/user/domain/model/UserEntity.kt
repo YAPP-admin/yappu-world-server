@@ -3,6 +3,8 @@ package co.yappuworld.user.domain.model
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseJpaEntity
 import co.yappuworld.global.util.EncryptUtils
+import co.yappuworld.global.util.StringUtils.isPhoneNumber
+import co.yappuworld.user.domain.vo.Gender
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import jakarta.persistence.Entity
@@ -32,6 +34,12 @@ class UserEntity(
     var isActive: Boolean = true
         private set
 
+    @Enumerated(EnumType.STRING)
+    var gender: Gender? = null
+        private set
+
+    var phoneNumber: String? = null
+
     fun checkPassword(plainPassword: String) {
         if (!EncryptUtils.isMatch(plainPassword, this.password)) {
             throw BusinessException(UserError.WRONG_LOGIN_USER_INFORMATION)
@@ -54,9 +62,13 @@ class UserEntity(
 
     fun updateDetails(
         name: String,
-        email: String
+        email: String,
+        gender: String?,
+        phoneNumber: String?
     ) {
         this.name = name
         this.email = email
+        gender?.let { this.gender = Gender.fromLabel(it) }
+        phoneNumber.takeIf { it != null && it.isPhoneNumber() }.let { this.phoneNumber = it }
     }
 }

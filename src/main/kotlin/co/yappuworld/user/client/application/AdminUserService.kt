@@ -100,6 +100,7 @@ class AdminUserService(
                 )
             }
 
+    @Transactional
     fun updateUserDetails(request: AdminUserUpdateRequest) {
         updateUser(request)
         handleActivityUnitRequest(request.userId, request.activityUnits)
@@ -155,7 +156,7 @@ class AdminUserService(
         val user = userFindService.findByIdOrNull(request.userId)
             ?: throw BusinessException(UserError.USER_NOT_FOUND)
 
-        user.updateDetails(request.name, request.email)
+        user.updateDetails(request.name, request.email, request.gender, request.phoneNumber)
         userCommandService.save(user)
     }
 

@@ -18,5 +18,9 @@ data class AdminUserUpdateRequest(
     val email: String,
     @Schema(description = "활동내역")
     @field:NotEmpty(message = "유저 활동내역은 필수 입력 값입니다.")
-    val activityUnits: List<AdminActivityUnitUpdateRequest>
+    val activityUnits: List<AdminActivityUnitUpdateRequest>,
+    @Schema(description = "전화번호, 요청 시에는 하이픈을 제외한 형태로", nullable = true)
+    val phoneNumber: String? = null,
+    @Schema(description = "성별", nullable = true, allowableValues = ["남", "여"])
+    val gender: String? = null
 )
