@@ -97,14 +97,6 @@ jobs:
                 run: |
                     aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_PROD_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-            -   name: Update Release
-                uses: release-drafter/release-drafter@v5
-                if: success()
-                with:
-                    config-name: release-drafter-config.yaml
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
             # Discord Notification
             -   name: CD Success Notification
                 uses: sarisia/actions-status-discord@v1
@@ -123,3 +115,17 @@ jobs:
                     webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
                     color: 0xFF0000
                     username: 페페훅
+
+    update_release:
+        needs: build
+        permissions:
+            contents: write
+            pull-requests: write
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Update Release
+                uses: release-drafter/release-drafter@v5
+                with:
+                    config-name: release-drafter-config.yaml
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
