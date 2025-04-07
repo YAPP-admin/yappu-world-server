@@ -12,14 +12,16 @@ CREATE TABLE config
 DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
-    id         binary(16) PRIMARY KEY,
-    created_at datetime(6),
-    updated_at datetime(6),
-    email      varchar(64) NOT NULL,
-    password   varchar(64) NOT NULL,
-    name       varchar(16) NOT NULL,
-    role       varchar(16) NOT NULL,
-    is_active  tinyint(1)  NOT NULL
+    id           binary(16) PRIMARY KEY,
+    created_at   datetime(6),
+    updated_at   datetime(6),
+    email        varchar(64) NOT NULL,
+    password     varchar(64) NOT NULL,
+    name         varchar(16) NOT NULL,
+    role         varchar(16) NOT NULL,
+    gender       varchar(8),
+    phone_number varchar(16),
+    is_active    tinyint(1)  NOT NULL
 );
 
 DROP TABLE IF EXISTS sign_up_application;
