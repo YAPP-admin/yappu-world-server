@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - prod
+            - infra/deployment-limit-resources
 
 jobs:
     build:
