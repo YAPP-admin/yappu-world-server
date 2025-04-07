@@ -4,7 +4,6 @@ on:
     push:
         branches:
             - dev
-            - infra/deployment-limit-resources
 
 jobs:
     build:
