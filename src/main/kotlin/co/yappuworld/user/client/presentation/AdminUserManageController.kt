@@ -1,11 +1,14 @@
 package co.yappuworld.user.client.presentation
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.exception.GlobalError
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
+import co.yappuworld.global.util.StringUtils.isPhoneNumber
 import co.yappuworld.user.client.application.AdminUserService
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
+import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -29,6 +32,10 @@ class AdminUserManageController(
         )
 
     override fun updateUserDetails(request: AdminUserUpdateRequest) {
+        request.phoneNumber?.let {
+            if (it.isPhoneNumber().not()) throw BusinessException(GlobalError.INVALID_REQUEST_ARGUMENT)
+        }
+
         adminUserService.updateUserDetails(request)
     }
 }
