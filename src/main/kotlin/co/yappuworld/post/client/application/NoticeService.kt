@@ -47,7 +47,7 @@ class NoticeService(
 
         return CursorPageResponse(
             data = data,
-            lastCursor = data.last().notice.id,
+            lastCursor = data.lastOrNull()?.notice?.id,
             limit = request.limit,
             hasNext = notices.size > request.limit
         )
