@@ -129,3 +129,26 @@ jobs:
                     config-name: release-drafter-config.yaml
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    dev_rebase_prod:
+        needs: build
+        permissions:
+            contents: write
+            pull-requests: write
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v4
+                with:
+                    ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+            -   name: Set up Git
+                run: |
+                    git config user.name "github-actions[bot]"
+                    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+            -   name: Dev branch rebase prod
+                run: |
+                    git checkout dev
+                    git pull origin dev
+                    git rebase origin/prod
+                    git push origin dev --force-with-lease
