@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.util.UUID
 
-interface ScheduleJpaRepository : JpaRepository<ScheduleEntity, UUID> {
+interface ScheduleRepository : JpaRepository<ScheduleEntity, UUID> {
+
+    fun findAllByIdIn(ids: List<UUID>): List<SessionEntity>
 
     fun findAllSessionEntityByGeneration(generation: Int): List<SessionEntity>
 

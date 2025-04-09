@@ -13,7 +13,7 @@ import kotlin.test.Test
 class ScheduleRepositoryTest {
 
     @Autowired
-    lateinit var scheduleRepository: ScheduleJpaRepository
+    lateinit var scheduleRepository: ScheduleRepository
 
     @Test
     fun `Session 타입의 데이터도 잘 저장이 된다`() {

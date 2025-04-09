@@ -37,7 +37,7 @@ class ScheduleAdminController(
             .let { ResponseEntity.ok(SuccessResponse(it)) }
 
     override fun deleteSession(request: AdminSessionDeleteRequest): ResponseEntity<Unit> {
-        scheduleAdminService.deleteSession(request.id)
+        scheduleAdminService.deleteSession(request)
         return ResponseEntity.noContent().build()
     }
 
