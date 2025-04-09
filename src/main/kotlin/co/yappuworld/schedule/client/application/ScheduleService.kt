@@ -4,7 +4,7 @@ import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
-import co.yappuworld.schedule.infrastructure.ScheduleJpaRepository
+import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Service
 class ScheduleService(
     private val generationRepository: GenerationRepository,
-    private val scheduleJpaRepository: ScheduleJpaRepository
+    private val scheduleRepository: ScheduleRepository
 ) {
 
     @Transactional(readOnly = true)
@@ -21,7 +21,7 @@ class ScheduleService(
         val currentGeneration = generationRepository.getGenerationOrNullByIsActiveIsTrue()
             ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
         return ActiveGenerationSessionsResponse.from(
-            sessions = scheduleJpaRepository.findAllSessionEntityByGeneration(currentGeneration.value),
+            sessions = scheduleRepository.findAllSessionEntityByGeneration(currentGeneration.value),
             now = now
         )
     }
@@ -30,7 +30,7 @@ class ScheduleService(
         request: SchedulePageRequest,
         now: LocalDateTime
     ): SchedulePageResponse {
-        val schedules = scheduleJpaRepository.findScheduleEntitiesByDateBetween(request.from, request.to)
+        val schedules = scheduleRepository.findScheduleEntitiesByDateBetween(request.from, request.to)
         return SchedulePageResponse.from(schedules, request, now)
     }
 }
