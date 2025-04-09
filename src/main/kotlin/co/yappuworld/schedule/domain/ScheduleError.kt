@@ -20,5 +20,10 @@ enum class ScheduleError : Error {
         override val message: String = "세션 타입 수정만 요청 가능합니다."
         override val code: String = "SCH_1003"
         override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    CONTAIN_IMPROPER_ID_FOR_DELETE_SESSION {
+        override val message: String = "삭제할 수 없는 ID가 포함되어 있습니다."
+        override val code: String = "SCH_1004"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     }
 }

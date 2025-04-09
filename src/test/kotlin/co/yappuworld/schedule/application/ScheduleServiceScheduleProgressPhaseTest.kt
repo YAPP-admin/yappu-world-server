@@ -4,7 +4,7 @@ import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
-import co.yappuworld.schedule.infrastructure.ScheduleJpaRepository
+import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.support.fixture.schedule.ScheduleFixture.getSessionFixture
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 class ScheduleServiceScheduleProgressPhaseTest {
 
     private val generationRepository = mockk<GenerationRepository>()
-    private val scheduleRepository = mockk<ScheduleJpaRepository>()
+    private val scheduleRepository = mockk<ScheduleRepository>()
     private val scheduleService = ScheduleService(generationRepository, scheduleRepository)
 
     fun mockScheduleRepository(vararg schedules: ScheduleEntity) {

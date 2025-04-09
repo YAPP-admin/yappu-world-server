@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
 
-@Tag(name = "세션 어드민 API", description = "세션 관리")
+@Tag(name = "어드민 세션 API", description = "세션 관리")
 interface ScheduleAdminApi {
 
     @Operation(summary = "세션 생성")
@@ -160,7 +160,7 @@ interface ScheduleAdminApi {
                 content = [Content()]
             ),
             ApiResponse(
-                responseCode = "404",
+                responseCode = "400",
                 content = [
                     Content(
                         examples = [
@@ -168,8 +168,18 @@ interface ScheduleAdminApi {
                                 name = "ID와 일치하는 세션이 존재하지 않습니다.",
                                 value = """
                                     {
-                                        "message": "세션을 찾지 못했습니다.",
-                                        "errorCode": "SCH_1002",
+                                        "message": "삭제할 수 없는 ID가 포함되어 있습니다.",
+                                        "errorCode": "SCH_1003",
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "요청 ID 리스트가 비어있는 경우",
+                                value = """
+                                    {
+                                        "message": "삭제할 ID는 하나 이상이어야 합니다.",
+                                        "errorCode": "COM_0002",
                                         "isSuccess": false
                                     }
                                 """
@@ -182,7 +192,7 @@ interface ScheduleAdminApi {
     )
     @DeleteMapping("/admin/v1/sessions")
     fun deleteSession(
-        @RequestBody request: AdminSessionDeleteRequest
+        @Valid @RequestBody request: AdminSessionDeleteRequest
     ): ResponseEntity<Unit>
 
     @Operation(summary = "세션 수정")

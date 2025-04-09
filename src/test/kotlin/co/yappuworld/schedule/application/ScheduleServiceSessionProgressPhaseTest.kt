@@ -7,7 +7,7 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
-import co.yappuworld.schedule.infrastructure.ScheduleJpaRepository
+import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.support.fixture.operation.OperationFixture
 import co.yappuworld.support.fixture.schedule.ScheduleFixture
 import io.mockk.every
@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 class ScheduleServiceSessionProgressPhaseTest {
 
     private val generationRepository = mockk<GenerationRepository>()
-    private val scheduleRepository = mockk<ScheduleJpaRepository>()
+    private val scheduleRepository = mockk<ScheduleRepository>()
     private val scheduleService = ScheduleService(generationRepository, scheduleRepository)
 
     private val generation = 2
