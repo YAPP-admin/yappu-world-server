@@ -137,6 +137,5 @@ create table attendances
     updated_at  datetime(6),
     user_id     binary(16) NOT NULL,
     schedule_id binary(16) NOT NULL,
-    checked_at  datetime(6),
     status      varchar(32) NOT NULL
 );

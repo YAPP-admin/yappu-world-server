@@ -17,4 +17,15 @@ object TimeUtils {
     fun LocalDate.isBeforeOrEqual(other: LocalDate): Boolean = this.isBefore(other) || this.isEqual(other)
 
     fun LocalDate.isAfterOrEqualThan(other: LocalDate): Boolean = this.isAfter(other) || this.isEqual(other)
+
+    fun LocalDateTime.isBetween(
+        startInclusive: LocalDateTime,
+        endExclusive: LocalDateTime
+    ): Boolean {
+        if (startInclusive.isAfter(endExclusive)) {
+            throw IllegalArgumentException("시작 시간이 종료 시간보다 늦을 수 없습니다.")
+        }
+
+        return (this.isAfter(startInclusive) || this.isEqual(startInclusive)) && this.isBefore(endExclusive)
+    }
 }
