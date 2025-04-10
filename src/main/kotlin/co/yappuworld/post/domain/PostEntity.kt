@@ -1,6 +1,6 @@
 package co.yappuworld.post.domain
 
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.DiscriminatorColumn
 import jakarta.persistence.DiscriminatorType
 import jakarta.persistence.Entity
@@ -13,7 +13,7 @@ import java.util.UUID
 @Table(name = "posts")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-abstract class PostEntity : BaseJpaEntity() {
+abstract class PostEntity : BaseEntity() {
 
     protected var isActive: Boolean = true
     abstract val title: String

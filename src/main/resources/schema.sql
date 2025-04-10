@@ -127,4 +127,16 @@ CREATE TABLE generations
     start_date date,
     end_date   date,
     is_active  tinyint(1)  NOT NULL
-)
+);
+
+drop table if exists attendances;
+create table attendances
+(
+    id          binary(16) PRIMARY KEY,
+    created_at  datetime(6),
+    updated_at  datetime(6),
+    user_id     binary(16) NOT NULL,
+    schedule_id binary(16) NOT NULL,
+    checked_at  datetime(6),
+    status      varchar(32) NOT NULL
+);

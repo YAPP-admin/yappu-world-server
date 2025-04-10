@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.domain
 
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.DiscriminatorColumn
 import jakarta.persistence.DiscriminatorType
 import jakarta.persistence.Entity
@@ -14,7 +14,7 @@ import java.time.LocalTime
 @Table(name = "schedules")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-abstract class ScheduleEntity : BaseJpaEntity() {
+abstract class ScheduleEntity : BaseEntity() {
 
     var isDeleted: Boolean = false
         protected set

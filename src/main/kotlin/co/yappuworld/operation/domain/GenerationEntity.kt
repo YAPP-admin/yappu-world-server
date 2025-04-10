@@ -1,6 +1,6 @@
 package co.yappuworld.operation.domain
 
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.PostLoad
@@ -59,7 +59,7 @@ class GenerationEntity(
         if (obj is HibernateProxy) {
             obj.hibernateLazyInitializer.identifier as Serializable
         } else {
-            (obj as BaseJpaEntity).id
+            (obj as BaseEntity).id
         }
 
     override fun hashCode() = Objects.hashCode(id)

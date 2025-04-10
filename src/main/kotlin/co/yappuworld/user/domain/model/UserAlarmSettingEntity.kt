@@ -1,6 +1,6 @@
 package co.yappuworld.user.domain.model
 
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import java.util.UUID
@@ -10,7 +10,7 @@ import java.util.UUID
 class UserAlarmSettingEntity(
     val userId: UUID,
     device: Boolean
-) : BaseJpaEntity() {
+) : BaseEntity() {
 
     var device: Boolean = device
         private set

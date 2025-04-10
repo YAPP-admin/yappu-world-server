@@ -1,6 +1,6 @@
 package co.yappuworld.user.domain.model
 
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.user.domain.vo.Position
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -14,7 +14,7 @@ class ActivityUnitEntity(
     generation: Int,
     position: Position,
     val userId: UUID
-) : BaseJpaEntity() {
+) : BaseEntity() {
 
     var generation: Int = generation
         private set

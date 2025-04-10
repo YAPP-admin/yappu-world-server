@@ -2,7 +2,7 @@ package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.ApplicationDetailsConverter
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
@@ -24,7 +24,7 @@ class SignUpApplicationEntity(
     val details: ApplicationDetails,
     status: SignUpApplicationStatus,
     rejectReason: String?
-) : BaseJpaEntity() {
+) : BaseEntity() {
 
     @Enumerated(EnumType.STRING)
     var status: SignUpApplicationStatus = status
