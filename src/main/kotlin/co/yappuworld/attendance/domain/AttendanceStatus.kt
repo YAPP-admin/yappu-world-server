@@ -5,7 +5,7 @@ package co.yappuworld.attendance.domain
  * @property EXCUSED_ABSENCE 출석으로 인정되는 결석
  */
 enum class AttendanceStatus(
-    label: String
+    val label: String
 ) {
     ON_TIME("출석"),
     LATE("지각"),

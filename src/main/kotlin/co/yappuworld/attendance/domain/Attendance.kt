@@ -28,8 +28,8 @@ class Attendance(
             session: SessionEntity
         ): Attendance {
             val status = when {
-                now < session.getLateTimeFrom() -> AttendanceStatus.ON_TIME
-                now in session.getLateRange() -> AttendanceStatus.LATE
+                now < session.lateTimeFrom -> AttendanceStatus.ON_TIME
+                now in session.lateTimeRange -> AttendanceStatus.LATE
                 else -> AttendanceStatus.ABSENT
             }
 

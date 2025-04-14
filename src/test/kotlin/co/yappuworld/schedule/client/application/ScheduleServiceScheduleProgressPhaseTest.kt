@@ -1,11 +1,13 @@
-package co.yappuworld.schedule.application
+package co.yappuworld.schedule.client.application
 
-import co.yappuworld.operation.infrastructure.GenerationRepository
-import co.yappuworld.schedule.client.application.ScheduleService
+import co.yappuworld.attendance.infrastructure.AttendanceFindService
+import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
+import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.user.infrastructure.UserFindService
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -14,9 +16,19 @@ import kotlin.test.assertEquals
 
 class ScheduleServiceScheduleProgressPhaseTest {
 
-    private val generationRepository = mockk<GenerationRepository>()
-    private val scheduleRepository = mockk<ScheduleRepository>()
-    private val scheduleService = ScheduleService(generationRepository, scheduleRepository)
+    val scheduleRepository = mockk<ScheduleRepository>()
+    val userFindService = mockk<UserFindService>()
+    val sessionFindService = mockk<SessionFindService>()
+    val attendanceFindService = mockk<AttendanceFindService>()
+    val generationFindService = mockk<GenerationFindService>()
+
+    val scheduleService = ScheduleService(
+        scheduleRepository = scheduleRepository,
+        userFindService = userFindService,
+        sessionFindService = sessionFindService,
+        attendanceFindService = attendanceFindService,
+        generationFindService = generationFindService
+    )
 
     fun mockScheduleRepository(vararg schedules: ScheduleEntity) {
         every { scheduleRepository.findScheduleEntitiesByDateBetween(any(), any()) } returns schedules.toList()

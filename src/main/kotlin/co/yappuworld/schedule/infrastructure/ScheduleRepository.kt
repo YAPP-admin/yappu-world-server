@@ -2,13 +2,16 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.SessionEntity
+import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.util.UUID
 
-interface ScheduleRepository : JpaRepository<ScheduleEntity, UUID> {
+interface ScheduleRepository :
+    JpaRepository<ScheduleEntity, UUID>,
+    KotlinJdslJpqlExecutor {
 
     fun findAllByIdIn(ids: List<UUID>): List<SessionEntity>
 
