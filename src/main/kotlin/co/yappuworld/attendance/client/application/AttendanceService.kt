@@ -38,13 +38,8 @@ class AttendanceService(
         validateCheckIn(request, userId)
 
         sessionFindService.findSession(request.sessionId)?.let {
-            if (it !is SessionEntity) {
-                logger.warn { "해당 일정(${request.sessionId})는 세션 타입이 아닙니다." }
-                throw BusinessException(AttendanceError.CHECK_IN_ONLY_FOR_SESSION)
-            }
-
             attendanceCommandService.save(
-                Attendance.checkInSession(now = now, userId = userId, session = it)
+                Attendance.checkInSession(now = now, userId = userId, session = it as SessionEntity)
             )
         }
     }
@@ -71,10 +66,10 @@ class AttendanceService(
         }
 
         val attendanceCode = configFindService.findConfig("attendanceCode")?.value
-            ?: {
-                logger.error { "출석 코드가 저장되어 있지 않습니다." }
-                throw BusinessException(AttendanceError.ATTENDANCE_CODE_NOT_FOUND)
-            }
+        if (attendanceCode == null) {
+            logger.error { "출석 코드가 저장되어 있지 않습니다." }
+            throw BusinessException(AttendanceError.ATTENDANCE_CODE_NOT_FOUND)
+        }
 
         if (request.attendanceCode != attendanceCode) {
             logger.warn { "출석 코드가 일치하지 않습니다." }

@@ -1,4 +1,4 @@
-package co.yappuworld.support.fixture.post
+package co.yappuworld.support.fixture
 
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType

@@ -5,7 +5,7 @@ import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
-import co.yappuworld.support.fixture.schedule.ScheduleFixture.getSessionFixture
+import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -26,9 +26,9 @@ class ScheduleServiceScheduleProgressPhaseTest {
     fun `같은 날 2개의 데이터가 있으면 해당 일자 schedules가 하나의 배열로 묶인다`() {
         val targetDate = LocalDate.of(2021, 5, 5)
         mockScheduleRepository(
-            getSessionFixture(date = LocalDate.of(2021, 5, 4)),
-            getSessionFixture(date = targetDate),
-            getSessionFixture(date = targetDate)
+            getSessionEntityFixture(date = LocalDate.of(2021, 5, 4)),
+            getSessionEntityFixture(date = targetDate),
+            getSessionEntityFixture(date = targetDate)
         )
 
         val result = scheduleService.getSchedules(

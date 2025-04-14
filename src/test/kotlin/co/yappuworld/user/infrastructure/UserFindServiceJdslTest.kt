@@ -2,8 +2,8 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTest
-import co.yappuworld.support.fixture.user.UserFixture.getActivityUnit
-import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnit
+import co.yappuworld.support.fixture.UserFixture.getUserFixture
 import co.yappuworld.user.domain.model.ActivityUnitEntity
 import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.Position

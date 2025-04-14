@@ -1,4 +1,4 @@
-package co.yappuworld.support.fixture.property
+package co.yappuworld.support.fixture
 
 import co.yappuworld.global.security.JwtProperty
 
