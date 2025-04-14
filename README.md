@@ -10,7 +10,8 @@
 
 - 특별히 아키텍처라고 할 건 없고, 다음의 사진과 같은 규칙을 따르고 있습니다.
 
-![패키지 아키텍처](https://github.com/user-attachments/assets/2c90c1c8-3590-491e-b566-1c1b318707dd)
+![패키지 아키텍처](https://github.com/user-attachments/assets/b1d8c7b9-60ad-4bba-9d84-89635c323f98)
+
 
 ## ⚙️ 프로젝트 세팅
 
