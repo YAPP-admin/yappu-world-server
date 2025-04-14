@@ -41,5 +41,10 @@ enum class AttendanceError : Error {
         override val message: String = "출석 처리를 위한 기수 정보가 올바르지 않습니다."
         override val code: String = "ATD_2003"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    USER_NOT_ACTIVATE {
+        override val message: String = "활동 유저가 아니라서 출석이 불가합니다."
+        override val code: String = "ATD_2004"
+        override val type: ErrorType = ErrorType.FORBIDDEN
     }
 }

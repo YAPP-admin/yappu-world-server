@@ -10,6 +10,7 @@ import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.infrastructure.SessionFindService
+import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
@@ -61,7 +62,7 @@ class AttendanceService(
         userId: UUID
     ) {
         if (attendanceFindService.hasAlreadyCheckedIn(userId, request.sessionId)) {
-            logger.error { "이미 출석을 완료한 유저($userId)입니다." }
+            logger.warn { "이미 출석을 완료한 유저($userId)입니다." }
             throw BusinessException(AttendanceError.ALREADY_CHECKED_IN)
         }
 
@@ -90,7 +91,7 @@ class AttendanceService(
         }
 
         if (session.generation != generation) {
-            logger.error {
+            logger.warn {
                 """
                 세션의 기수와 활성화된 기수가 일치하지 않습니다.
                 세션 기수: ${session.generation}
@@ -107,8 +108,13 @@ class AttendanceService(
     ) {
         val user = userFindService.findUserWithLastActivityUnit(userId)
 
+        if (user.role != UserRole.ACTIVE) {
+            logger.warn { "유저($userId)는 활동 멤버가 아니라서 출석이 불가합니다." }
+            throw BusinessException(AttendanceError.USER_NOT_ACTIVATE)
+        }
+
         if (user.generation != generation) {
-            logger.error {
+            logger.warn {
                 """
                 유저의 가장 최근 활동 기수와 활성화된 기수가 일치하지 않습니다.
                 유저 기수: ${user.generation}
