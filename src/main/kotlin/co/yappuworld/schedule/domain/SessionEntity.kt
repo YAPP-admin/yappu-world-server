@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.domain
 
-import co.yappuworld.global.util.LocalDateTimeRange
+import co.yappuworld.global.util.TimeUtils.LocalDateTimeRange
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -54,14 +54,29 @@ class SessionEntity(
         this.sessionType = sessionType
     }
 
-    fun getLateTimeFrom(): LocalDateTime = LocalDateTime.of(date, time ?: LocalTime.MIN).plusMinutes(20)
+    val checkInTimeFrom: LocalDateTime
+        get() = LocalDateTime.of(date, time ?: LocalTime.MIN).minusMinutes(20)
 
-    fun getLateTimeUntil(): LocalDateTime = LocalDateTime.of(date, time ?: LocalTime.MIN).plusHours(2).plusMinutes(20)
+    val checkInTimeUntil: LocalDateTime
+        get() = LocalDateTime.of(date, endTime ?: LocalTime.MAX)
 
-    fun getLateRange(): LocalDateTimeRange =
-        LocalDateTimeRange(
-            start = getLateTimeFrom(),
-            endInclusive = getLateTimeUntil(),
+    val checkInRange: LocalDateTimeRange
+        get() = LocalDateTimeRange(
+            start = checkInTimeFrom,
+            endExclusive = checkInTimeUntil,
+            unit = SECONDS
+        )
+
+    val lateTimeFrom: LocalDateTime
+        get() = LocalDateTime.of(date, time ?: LocalTime.MIN).plusMinutes(20)
+
+    val lateTimeUntil: LocalDateTime
+        get() = LocalDateTime.of(date, time ?: LocalTime.MIN).plusHours(2)
+
+    val lateTimeRange: LocalDateTimeRange
+        get() = LocalDateTimeRange(
+            start = lateTimeFrom,
+            endExclusive = lateTimeUntil,
             unit = SECONDS
         )
 }

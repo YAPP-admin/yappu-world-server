@@ -142,7 +142,7 @@ class AttendanceServiceTest :
 
                     scenario("유저의 기수와 활성화된 기수가 일치하지 않으면 예외가 발생한다.") {
                         every { userFindService.findUserWithLastActivityUnit(userId) } returns
-                            UserFixture.getUserWithLastActivityUnit(generation = activeGeneration - 1)
+                            UserFixture.getUserWithLastActivityUnitFixture(generation = activeGeneration - 1)
 
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(request, userId, LocalDateTime.now())
@@ -162,10 +162,15 @@ class AttendanceServiceTest :
                             .shouldBe(AttendanceStatus.ON_TIME)
                     }
 
-                    scenario("세션 시작 20분 후부터 2시간 이하까지는 지각 상태로 설정된다.") {
+                    scenario("세션 시작 20분 후부터 2시간 미만까지는 지각 상태로 설정된다.") {
                         forAll(
                             row(session.time.shouldNotBeNull().plusMinutes(20)),
-                            row(session.time.shouldNotBeNull().plusHours(2))
+                            row(
+                                session.time
+                                    .shouldNotBeNull()
+                                    .plusHours(2)
+                                    .minusNanos(1)
+                            )
                         ) { time ->
                             val now = LocalDateTime.of(session.date, time)
 

@@ -1,15 +1,16 @@
-package co.yappuworld.schedule.application
+package co.yappuworld.schedule.client.application
 
-import co.yappuworld.operation.infrastructure.GenerationRepository
-import co.yappuworld.schedule.client.application.ScheduleService
+import co.yappuworld.attendance.infrastructure.AttendanceFindService
+import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
-import co.yappuworld.support.fixture.OperationFixture
+import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.ScheduleFixture
+import co.yappuworld.user.infrastructure.UserFindService
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -19,19 +20,25 @@ import kotlin.test.assertEquals
 
 class ScheduleServiceSessionProgressPhaseTest {
 
-    private val generationRepository = mockk<GenerationRepository>()
     private val scheduleRepository = mockk<ScheduleRepository>()
-    private val scheduleService = ScheduleService(generationRepository, scheduleRepository)
+    private val userFindService = mockk<UserFindService>()
+    private val sessionFindService = mockk<SessionFindService>()
+    private val attendanceFindService = mockk<AttendanceFindService>()
+    private val generationFindService = mockk<GenerationFindService>()
+    private val scheduleService = ScheduleService(
+        scheduleRepository = scheduleRepository,
+        userFindService = userFindService,
+        sessionFindService = sessionFindService,
+        attendanceFindService = attendanceFindService,
+        generationFindService = generationFindService
+    )
 
     private val generation = 2
     private val now = LocalDate.of(2022, 5, 5)
 
     @BeforeEach
     fun mockGenerationRepository() {
-        every { generationRepository.getGenerationOrNullByIsActiveIsTrue() } returns
-            OperationFixture.getGenerationFixture(
-                value = generation
-            )
+        every { generationFindService.findActiveGeneration() } returns generation
     }
 
     fun mockScheduleRepository(schedules: List<SessionEntity>) {

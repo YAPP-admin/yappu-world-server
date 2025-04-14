@@ -9,7 +9,6 @@ import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
-import com.github.f4b6a3.ulid.UlidCreator
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -65,13 +64,7 @@ object UserFixture {
             userId = userId
         )
 
-    fun getActivityUnits(
-        vararg activityUnits: ActivityUnitEntity = arrayOf(
-            ActivityUnitEntity(1, Position.PM, UlidCreator.getMonotonicUlid().toUuid())
-        )
-    ): List<ActivityUnitEntity> = activityUnits.toList()
-
-    fun getUserWithLastActivityUnit(
+    fun getUserWithLastActivityUnitFixture(
         userId: UUID = UUID.randomUUID(),
         email: String = "email@abc.com",
         name: String = "홍길동",

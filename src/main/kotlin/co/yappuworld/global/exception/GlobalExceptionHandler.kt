@@ -57,7 +57,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
-        logger.error { e.message }
+        logger.error(e) { e.message }
         return getInternalServerErrorResponse()
     }
 
