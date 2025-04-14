@@ -6,7 +6,7 @@ import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.operation.client.application.ConfigInquiryComponent
-import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
+import co.yappuworld.support.fixture.UserFixture.getUserFixture
 import co.yappuworld.user.client.application.SignUpService
 import co.yappuworld.user.client.application.UserAuthService
 import co.yappuworld.user.client.application.UserLoginPermissionChecker

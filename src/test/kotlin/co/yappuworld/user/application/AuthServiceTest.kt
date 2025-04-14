@@ -3,9 +3,9 @@ package co.yappuworld.user.application
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.util.EncryptUtils
-import co.yappuworld.support.fixture.property.PropertyFixture.getJwtProperty
-import co.yappuworld.support.fixture.user.UserDtoFixture.getLoginRequest
-import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
+import co.yappuworld.support.fixture.PropertyFixture.getJwtProperty
+import co.yappuworld.support.fixture.UserDtoFixture.getLoginRequest
+import co.yappuworld.support.fixture.UserFixture.getUserFixture
 import co.yappuworld.user.client.application.UserAuthService
 import co.yappuworld.user.client.application.UserLoginPermissionChecker
 import co.yappuworld.user.infrastructure.UserCommandService

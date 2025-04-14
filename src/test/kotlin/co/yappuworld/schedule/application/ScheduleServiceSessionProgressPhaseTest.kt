@@ -8,8 +8,8 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
-import co.yappuworld.support.fixture.operation.OperationFixture
-import co.yappuworld.support.fixture.schedule.ScheduleFixture
+import co.yappuworld.support.fixture.OperationFixture
+import co.yappuworld.support.fixture.ScheduleFixture
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -42,9 +42,9 @@ class ScheduleServiceSessionProgressPhaseTest {
     fun `지난 건 DONE, 오늘 건 TODAY, 남은 건 PENDING이다`() {
         mockScheduleRepository(
             listOf(
-                ScheduleFixture.getSessionFixture(date = now.minusDays(1)),
-                ScheduleFixture.getSessionFixture(date = now),
-                ScheduleFixture.getSessionFixture(date = now.plusDays(3))
+                ScheduleFixture.getSessionEntityFixture(date = now.minusDays(1)),
+                ScheduleFixture.getSessionEntityFixture(date = now),
+                ScheduleFixture.getSessionEntityFixture(date = now.plusDays(3))
             )
         )
 
@@ -59,10 +59,10 @@ class ScheduleServiceSessionProgressPhaseTest {
     fun `지난 건 DONE, 임박한 건 UPCOMING, 남은 건 PENDING이다`() {
         mockScheduleRepository(
             listOf(
-                ScheduleFixture.getSessionFixture(date = now.minusDays(2)),
-                ScheduleFixture.getSessionFixture(date = now.minusDays(1)),
-                ScheduleFixture.getSessionFixture(date = now.plusDays(1)),
-                ScheduleFixture.getSessionFixture(date = now.plusDays(3))
+                ScheduleFixture.getSessionEntityFixture(date = now.minusDays(2)),
+                ScheduleFixture.getSessionEntityFixture(date = now.minusDays(1)),
+                ScheduleFixture.getSessionEntityFixture(date = now.plusDays(1)),
+                ScheduleFixture.getSessionEntityFixture(date = now.plusDays(3))
             )
         )
 

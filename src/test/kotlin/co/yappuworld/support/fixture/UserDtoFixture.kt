@@ -1,4 +1,4 @@
-package co.yappuworld.support.fixture.user
+package co.yappuworld.support.fixture
 
 import co.yappuworld.user.client.dto.request.LatestSignUpApplicationRequest
 import co.yappuworld.user.client.dto.request.LoginRequest

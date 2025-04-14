@@ -1,7 +1,7 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.global.util.StringUtils.isPhoneNumber
 import co.yappuworld.user.domain.vo.Gender
@@ -19,7 +19,7 @@ class UserEntity(
     password: String,
     name: String,
     role: UserRole
-) : BaseJpaEntity() {
+) : BaseEntity() {
 
     var email: String = email
         private set

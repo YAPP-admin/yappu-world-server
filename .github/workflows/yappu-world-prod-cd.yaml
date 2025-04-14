@@ -148,7 +148,7 @@ jobs:
 
             -   name: Dev branch rebase prod
                 run: |
-                    git checkout dev
-                    git pull origin dev
+                    git fetch
+                    git checkout -b dev origin/dev
                     git rebase origin/prod
                     git push origin dev --force-with-lease

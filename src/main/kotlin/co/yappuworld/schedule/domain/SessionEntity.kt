@@ -1,11 +1,14 @@
 package co.yappuworld.schedule.domain
 
+import co.yappuworld.global.util.LocalDateTimeRange
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.concurrent.TimeUnit.SECONDS
 
 @Entity
 @DiscriminatorValue(value = "SESSION")
@@ -50,4 +53,15 @@ class SessionEntity(
         this.generation = generation
         this.sessionType = sessionType
     }
+
+    fun getLateTimeFrom(): LocalDateTime = LocalDateTime.of(date, time ?: LocalTime.MIN).plusMinutes(20)
+
+    fun getLateTimeUntil(): LocalDateTime = LocalDateTime.of(date, time ?: LocalTime.MIN).plusHours(2).plusMinutes(20)
+
+    fun getLateRange(): LocalDateTimeRange =
+        LocalDateTimeRange(
+            start = getLateTimeFrom(),
+            endInclusive = getLateTimeUntil(),
+            unit = SECONDS
+        )
 }

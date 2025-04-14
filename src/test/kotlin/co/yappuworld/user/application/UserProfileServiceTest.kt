@@ -1,9 +1,9 @@
 package co.yappuworld.user.application
 
 import co.yappuworld.operation.infrastructure.GenerationRepository
-import co.yappuworld.support.fixture.operation.OperationFixture.getGenerationFixture
-import co.yappuworld.support.fixture.user.ActivityUnitFixture.getActivityUnitFixture
-import co.yappuworld.support.fixture.user.UserFixture.getUserFixture
+import co.yappuworld.support.fixture.OperationFixture.getGenerationFixture
+import co.yappuworld.support.fixture.ActivityUnitFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserFixture
 import co.yappuworld.user.client.application.UserProfileService
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.UserRepository

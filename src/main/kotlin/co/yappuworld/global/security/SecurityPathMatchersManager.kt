@@ -34,7 +34,8 @@ object SecurityPathMatchersManager {
         antMatcher(PUT, "/v1/users/fcm"),
         antMatcher(GET, "/v1/alarms"),
         antMatcher(PUT, "/v1/alarms/device"),
-        antMatcher(PATCH, "/v1/alarms/master")
+        antMatcher(PATCH, "/v1/alarms/master"),
+        antMatcher(POST, "/v1/attendances")
     )
 
     val staffOrAdminMatchers: RequestMatcher = RequestMatchers.anyOf(

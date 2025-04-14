@@ -4,9 +4,9 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtProperty
 import co.yappuworld.operation.client.application.ConfigInquiryComponent
-import co.yappuworld.support.fixture.user.UserDtoFixture.getLatestSignUpApplicationApiRequestDtoFixture
-import co.yappuworld.support.fixture.user.UserFixture.getApplicationDetailsFixture
-import co.yappuworld.support.fixture.user.UserFixture.getSignUpApplicationFixture
+import co.yappuworld.support.fixture.UserDtoFixture.getLatestSignUpApplicationApiRequestDtoFixture
+import co.yappuworld.support.fixture.UserFixture.getApplicationDetailsFixture
+import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationFixture
 import co.yappuworld.user.client.application.SignUpService
 import co.yappuworld.user.domain.model.ApplicationDetails
 import co.yappuworld.user.domain.model.SignUpApplicationEntity

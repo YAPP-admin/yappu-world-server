@@ -1,4 +1,4 @@
-package co.yappuworld.support.fixture.user
+package co.yappuworld.support.fixture
 
 import co.yappuworld.user.domain.model.ActivityUnitEntity
 import co.yappuworld.user.domain.vo.Position

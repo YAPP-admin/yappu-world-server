@@ -1,4 +1,4 @@
-package co.yappuworld.support.fixture.operation
+package co.yappuworld.support.fixture
 
 import co.yappuworld.operation.domain.GenerationEntity
 import java.time.LocalDate

@@ -3,7 +3,7 @@ package co.yappuworld.post.infrastructure
 import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.support.environment.CustomDataJpaTest
-import co.yappuworld.support.fixture.post.PostFixture.getNoticeFixture
+import co.yappuworld.support.fixture.PostFixture.getNoticeFixture
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable

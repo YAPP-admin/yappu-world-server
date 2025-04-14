@@ -23,6 +23,10 @@ VALUES ('usageInquiryLink', now(), now(), '이용 문의', 'LINK', 'http://pf.ka
        ('privacyPolicyLink', now(), now(), '개인정보 처리방침', 'LINK',
         'https://yapp-workspace.notion.site/fc24f8ba29c34f9eb30eb945c621c1ca?pvs=4');
 
+-- 출석코드
+INSERT INTO config (name, created_at, updated_at, label, category, value)
+VALUES ('attendanceCode', now(), now(), '출석코드', 'ATTENDANCE_CODE', '0000');
+
 INSERT INTO users (id, created_at, updated_at, email, password, name, role, is_active)
 VALUES (UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), '2025-03-05 03:11:16', now(), 'admin@admin.com',
         '$2a$10$FlqVcwbK6JAnkVx7gEdFdeH3Gb7bF/bzDfu5u0afry0jss.3I71Oe', '홍길동', 'ADMIN', true);

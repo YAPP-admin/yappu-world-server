@@ -1,4 +1,4 @@
-package co.yappuworld.support.fixture.user
+package co.yappuworld.support.fixture
 
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.model.ActivityUnitEntity
@@ -8,7 +8,9 @@ import co.yappuworld.user.domain.model.SignUpApplicationEntity
 import co.yappuworld.user.domain.model.UserEntity
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import com.github.f4b6a3.ulid.UlidCreator
+import java.time.LocalDateTime
 import java.util.UUID
 
 object UserFixture {
@@ -68,4 +70,27 @@ object UserFixture {
             ActivityUnitEntity(1, Position.PM, UlidCreator.getMonotonicUlid().toUuid())
         )
     ): List<ActivityUnitEntity> = activityUnits.toList()
+
+    fun getUserWithLastActivityUnit(
+        userId: UUID = UUID.randomUUID(),
+        email: String = "email@abc.com",
+        name: String = "홍길동",
+        role: UserRole = UserRole.ACTIVE,
+        isActive: Boolean = true,
+        createdAt: LocalDateTime = LocalDateTime.now(),
+        generation: Int = 25,
+        position: Position = Position.PM,
+        activityUnitId: UUID = UUID.randomUUID()
+    ): UserWithLastActivityUnit =
+        UserWithLastActivityUnit(
+            userId = userId,
+            email = email,
+            name = name,
+            role = role,
+            isActive = isActive,
+            createdAt = createdAt,
+            generation = generation,
+            position = position,
+            activityUnitId = activityUnitId
+        )
 }
