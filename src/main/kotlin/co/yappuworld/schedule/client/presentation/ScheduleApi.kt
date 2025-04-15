@@ -166,6 +166,80 @@ interface ScheduleApi {
     ): ResponseEntity<SuccessResponse<SchedulePageResponse>>
 
     @Operation(summary = "임박한 세션의 출석 정보")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "활동 유저가 아니거나 미출석 & 출석 가능한 시간이 아닌 경우",
+                                value = """
+                                    {
+                                        "data": {
+                                            "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                                            "date": "2024-11-01",
+                                            "canCheckIn": false,
+                                            "status": null
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "미출석 & 출석 가능한 시간",
+                                value = """
+                                    {
+                                        "data": {
+                                            "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                                            "date": "2024-11-01",
+                                            "canCheckIn": true,
+                                            "status": null
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "출석한 상태",
+                                value = """
+                                    {
+                                        "data": {
+                                            "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                                            "date": "2024-11-01",
+                                            "canCheckIn": false,
+                                            "status": "출석"
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "활성화 된 기수가 없거나 다음 세션이 없는 경우",
+                                value = """
+                                    {
+                                        "message": "예정된 세션이 존재하지 않습니다.",
+                                        "errorCode": "SCH_1005",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @GetMapping("/v1/sessions/upcoming")
     fun getUpcomingSessionAttendance(
         @AuthenticationPrincipal securityUser: SecurityUser
