@@ -194,7 +194,7 @@ interface AttendanceApi {
             )
         ]
     )
-    @GetMapping("/v1/attendance-statistics")
+    @GetMapping("/v1/attendances/statistics")
     fun getAttendanceStatistics(
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponse>>

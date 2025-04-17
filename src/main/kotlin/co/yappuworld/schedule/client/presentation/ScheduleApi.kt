@@ -70,7 +70,7 @@ interface ScheduleApi {
                                                     "progressPhase": "DONE"
                                                 }
                                             ],
-                                            "upcomingSessionIndex": 2
+                                            "upcomingSessionId": "5523913c-ff12-11ef-ad31-0242ac120002"
                                         },
                                         "isSuccess": true
                                     }

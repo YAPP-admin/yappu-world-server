@@ -24,7 +24,7 @@ data class ActiveGenerationSessionsResponse(
         """,
         nullable = true
     )
-    val upcomingSessionIndex: Int? = null
+    val upcomingSessionId: UUID? = null
 ) {
 
     companion object {
@@ -38,7 +38,7 @@ data class ActiveGenerationSessionsResponse(
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
                     sessions.map { ActiveGenerationSessionResponse(it, DONE) },
-                    sessions.lastIndex
+                    sessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
@@ -49,7 +49,7 @@ data class ActiveGenerationSessionsResponse(
                         else -> ActiveGenerationSessionResponse(session, PENDING)
                     }
                 },
-                upcomingSessionIndex = upcomingSessionIndex
+                upcomingSessionId = sessions[upcomingSessionIndex].id
             )
         }
 
