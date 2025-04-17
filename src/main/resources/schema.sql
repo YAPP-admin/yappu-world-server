@@ -147,5 +147,6 @@ create table late_passes
     created_at datetime(6),
     updated_at datetime(6),
     user_id    binary(16) NOT NULL,
+    generation int NOT NULL,
     reason     varchar(128)
 );

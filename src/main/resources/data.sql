@@ -29,10 +29,10 @@ VALUES ('attendanceCode', now(), now(), '출석코드', 'ATTENDANCE_CODE', '0000
 
 INSERT INTO users (id, created_at, updated_at, email, password, name, role, is_active)
 VALUES (UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), '2025-03-05 03:11:16', now(), 'admin@admin.com',
-        '$2a$10$FlqVcwbK6JAnkVx7gEdFdeH3Gb7bF/bzDfu5u0afry0jss.3I71Oe', '홍길동', 'ADMIN', true);
+        '$2a$10$FlqVcwbK6JAnkVx7gEdFdeH3Gb7bF/bzDfu5u0afry0jss.3I71Oe', '홍길동', 'ACTIVE', true);
 
 INSERT INTO activity_units (id, created_at, updated_at, position, generation, user_id)
-VALUES (UUID_TO_BIN(uuid()), now(), now(), 'PM', 1, UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'));
+VALUES (UUID_TO_BIN(uuid()), now(), now(), 'PM', 25, UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'));
 
 INSERT INTO user_devices (id, created_at, updated_at, user_id, fcm_token)
 VALUES (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), 'fcm_token');
@@ -98,16 +98,43 @@ VALUES (1, null, null, false),
        (22, '2023-04-29', '2023-08-05', false),
        (23, '2023-10-28', '2024-02-24', false),
        (24, '2024-05-11', '2024-09-14', false),
-       (25, '2024-11-16', '2025-03-08', false);
+       (25, '2024-11-16', '2025-03-08', true);
 
-INSERT INTO schedules (id, created_at, updated_at, is_deleted, name, description, place, date, end_date, time, end_time,
-                       is_all_day, generation, type, session_type)
-VALUES (UUID_TO_BIN(uuid()), now(), now(), false, 'OT', '첫 세션이에요',
-        '강북노동자복지관', '2024-11-1', '2024-11-1', '14:00:00', '18:00:00',
-        false, 25, 'SESSION', 'OFFLINE'),
-       (UUID_TO_BIN(uuid()), now(), now(), false, '팀세션', '첫 팀세션',
-        null, '2024-11-1', '2024-11-1', null, null, true, 25, 'SESSION',
-        'TEAM'),
-       (UUID_TO_BIN(uuid()), now(), now(), false, '팀매칭',
-        '팀을 매칭해요', 'SBA 산학센터', '2024-11-3', '2024-11-3',
-        '14:00:00', '18:00:00', false, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c076cadd-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, 'OT', 'OT 진행 & PM·디자이너 팀매칭', '강북노동자복지관', '2024-11-16', '2024-11-16', '14:00:00', '18:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c076ff63-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 매칭', null, 'SBA 산학센터', '2024-11-23', '2024-11-23', '14:00:00', '18:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c0775226-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 세션', null, null, '2024-11-30', '2024-11-30', null, null, FALSE, 25, 'SESSION', 'TEAM');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c0778896-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '관심사 세션', '팀별 자율 진행 (출석 인증 필수)', null, '2024-12-07', '2024-12-07', '14:00:00', '18:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c077c803-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '기획 세션', '기획 & 와이어프레임 발표', null, '2024-12-21', '2024-12-21', '13:00:00', '17:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c077fc61-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '1차 Dev.camp', '1차 UT & 해커톤', '성수 엘리스 랩', '2025-01-04', '2025-01-04', '09:00:00', '21:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c0784091-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 세션', '팀별 자율 진행 (출석 인증 필수)', null, '2025-01-11', '2025-01-11', null, null, FALSE, 25, 'SESSION', 'TEAM');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c0788497-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '2차 Dev.camp', '1차 데모 & 직군 피드백', '공덕창업허브', '2025-01-18', '2025-01-18', '14:00:00', '18:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c078c671-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 세션', '팀별 자율 진행 (출석 인증 필수)', null, '2025-01-25', '2025-01-25', null, null, FALSE, 25, 'SESSION', 'TEAM');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c0791ec0-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 세션', '팀별 자율 진행 (출석 인증 필수)', null, '2025-02-01', '2025-02-01', null, null, FALSE, 25, 'SESSION', 'TEAM');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c0795e0f-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '3차 Dev.camp', '2차 UT & 직군 세션', '공덕창업허브', '2025-02-08', '2025-02-08', '14:00:00', '18:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c079a452-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 세션', '팀별 자율 진행 (출석 인증 필수)', null, '2025-02-15', '2025-02-15', null, null, FALSE, 25, 'SESSION', 'TEAM');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c079db6e-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '데모데이', '연합 데모데이', '공덕창업허브', '2025-02-22', '2025-02-22', '14:00:00', '17:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c07a1f04-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '팀 세션', '팀별 자율 진행 (출석 인증 필수)', null, '2025-03-01', '2025-03-01', null, null, FALSE, 25, 'SESSION', 'TEAM');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c07a6213-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '성과 공유회', null, '서울시공익활동지원센터', '2025-03-08', '2025-03-08', '13:30:00', '17:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c07aa77e-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '가짜 세션1', null, '아몰랑', '2025-04-18', '2025-04-18', '13:30:00', '17:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+INSERT INTO schedules VALUES (UUID_TO_BIN('c07afa8b-1b30-11f0-add0-0242ac140002'), NOW(), NOW(), FALSE, '가짜 세션2', null, '아몰랑', '2025-05-08', '2025-05-08', '13:30:00', '17:00:00', FALSE, 25, 'SESSION', 'OFFLINE');
+
+INSERT INTO attendances (id, created_at, updated_at, user_id, schedule_id, status)
+VALUES (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c076cadd-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c076ff63-1b30-11f0-add0-0242ac140002'), 'LATE'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c0775226-1b30-11f0-add0-0242ac140002'), 'ABSENT'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c0778896-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c077c803-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c077fc61-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c0784091-1b30-11f0-add0-0242ac140002'), 'ABSENT'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c0788497-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c078c671-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c0791ec0-1b30-11f0-add0-0242ac140002'), 'LATE'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c0795e0f-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c079a452-1b30-11f0-add0-0242ac140002'), 'LATE'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c079db6e-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c07a1f04-1b30-11f0-add0-0242ac140002'), 'ON_TIME'),
+       (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), UUID_TO_BIN('c07a6213-1b30-11f0-add0-0242ac140002'), 'ON_TIME');
+
+INSERT INTO late_passes (id, created_at, updated_at, user_id, generation, reason)
+VALUES (UUID_TO_BIN(uuid()), now(), now(), UUID_TO_BIN('01954809-38fd-1268-e0d6-d3fda39f6b4c'), 25, '한 번 봐드림');
+
