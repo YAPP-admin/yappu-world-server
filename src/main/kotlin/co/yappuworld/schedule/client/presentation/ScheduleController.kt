@@ -9,6 +9,7 @@ import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsRespon
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -16,11 +17,13 @@ class ScheduleController(
     private val scheduleService: ScheduleService
 ) : ScheduleApi {
 
-    override fun getSessions(): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>> {
+    override fun getSessions(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>> {
         val now = TimeUtils.getCurrentDateTimeInKST()
         return ResponseEntity.ok(
             SuccessResponse(
-                scheduleService.getCurrentGenerationSessions(now.toLocalDate())
+                scheduleService.getCurrentGenerationSessions(securityUser.userId, now.toLocalDate())
             )
         )
     }
