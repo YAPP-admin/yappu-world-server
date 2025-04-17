@@ -1,10 +1,13 @@
 package co.yappuworld.support.fixture
 
+import co.yappuworld.attendance.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.domain.TaskEntity
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.UUID
 
 object ScheduleFixture {
 
@@ -49,4 +52,31 @@ object ScheduleFixture {
         time = time,
         endTime = endTime
     )
+
+    fun getSessionWithAttendanceFixture(
+        id: UUID = UUID.randomUUID(),
+        name: String = "세션 이름",
+        description: String? = "세션 설명",
+        place: String? = "세션 장소",
+        date: LocalDate = LocalDate.of(2025, 2, 15),
+        endDate: LocalDate = LocalDate.of(2025, 2, 15),
+        time: LocalTime? = LocalTime.of(14, 0),
+        endTime: LocalTime? = LocalTime.of(18, 0),
+        generation: Int = 25,
+        sessionType: SessionType = SessionType.OFFLINE,
+        attendanceStatus: AttendanceStatus? = AttendanceStatus.ON_TIME
+    ): SessionWithAttendance =
+        SessionWithAttendance(
+            id = id,
+            name = name,
+            description = description,
+            place = place,
+            date = date,
+            endDate = endDate,
+            time = time,
+            endTime = endTime,
+            generation = generation,
+            sessionType = sessionType,
+            attendanceStatus = attendanceStatus
+        )
 }

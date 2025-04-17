@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-data class SessionWithAttendanceStatus(
+data class SessionWithAttendance(
     val id: UUID,
     val name: String,
     val description: String?,

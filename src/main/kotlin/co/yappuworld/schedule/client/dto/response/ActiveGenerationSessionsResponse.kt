@@ -8,7 +8,7 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.domain.SessionType
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceStatus
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalTime
@@ -30,7 +30,7 @@ data class ActiveGenerationSessionsResponse(
 
     companion object {
         fun from(
-            sessions: List<SessionWithAttendanceStatus>,
+            sessions: List<SessionWithAttendance>,
             now: LocalDate
         ): ActiveGenerationSessionsResponse {
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
@@ -58,7 +58,7 @@ data class ActiveGenerationSessionsResponse(
         }
 
         private fun getUpcomingSessionIndexAndStatus(
-            orderedSessions: List<SessionWithAttendanceStatus>,
+            orderedSessions: List<SessionWithAttendance>,
             now: LocalDate
         ): Pair<Int, SessionProgressPhase>? {
             val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqual(it.date) }
@@ -99,7 +99,7 @@ data class ActiveGenerationSessionResponse(
     companion object {
 
         fun from(
-            session: SessionWithAttendanceStatus,
+            session: SessionWithAttendance,
             status: SessionProgressPhase
         ): ActiveGenerationSessionResponse {
             val attendanceStatus = if (session.attendanceStatus == null && status == DONE) {

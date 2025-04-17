@@ -2,7 +2,7 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.attendance.domain.Attendance
 import co.yappuworld.schedule.domain.SessionEntity
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceStatus
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -44,10 +44,10 @@ class SessionFindService(
     fun findSessionsWithAttendanceStatus(
         generation: Int,
         userId: UUID
-    ): List<SessionWithAttendanceStatus> =
+    ): List<SessionWithAttendance> =
         scheduleRepository
             .findAll {
-                selectNew<SessionWithAttendanceStatus>(
+                selectNew<SessionWithAttendance>(
                     path(SessionEntity::getId),
                     path(SessionEntity::name),
                     path(SessionEntity::description),
