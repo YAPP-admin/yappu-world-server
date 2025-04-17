@@ -26,7 +26,7 @@ data class UserActivityHistoryResponse(
     val generation: Int,
     @Schema(
         description = "직군",
-        allowableValues = ["PM", "Design", "Web", "Android", "iOS", "Flutter", "Server", "Staff"]
+        allowableValues = ["PM", "Design", "Web", "Android", "iOS", "Flutter", "Server", "운영진"]
     )
     val position: String,
     @Schema(description = "활동 시작일", nullable = true)

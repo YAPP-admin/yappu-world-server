@@ -45,7 +45,8 @@ interface ScheduleApi {
                                                     "time": "14:00:00",
                                                     "endTime": "18:00:00",
                                                     "type": "OFFLINE",
-                                                    "progressPhase": "DONE"
+                                                    "progressPhase": "DONE",
+                                                    "attendanceStatus": "출석"
                                                 },
                                                 {
                                                     "id": "552390a8-ff12-11ef-ad31-0242ac120002",
@@ -56,7 +57,8 @@ interface ScheduleApi {
                                                     "time": null,
                                                     "endTime": null,
                                                     "type": "TEAM",
-                                                    "progressPhase": "DONE"
+                                                    "progressPhase": "DONE",
+                                                    "attendanceStatus": "지각"
                                                 },
                                                 {
                                                     "id": "5523913c-ff12-11ef-ad31-0242ac120002",
@@ -67,7 +69,8 @@ interface ScheduleApi {
                                                     "time": "14:00:00",
                                                     "endTime": "18:00:00",
                                                     "type": "OFFLINE",
-                                                    "progressPhase": "DONE"
+                                                    "progressPhase": "DONE",
+                                                    "attendanceStatus": "결석"
                                                 }
                                             ],
                                             "upcomingSessionId": "5523913c-ff12-11ef-ad31-0242ac120002"
@@ -83,7 +86,9 @@ interface ScheduleApi {
         ]
     )
     @GetMapping("/v1/sessions")
-    fun getSessions(): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>>
+    fun getSessions(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>>
 
     @Operation(summary = "일정 조회")
     @ApiResponses(

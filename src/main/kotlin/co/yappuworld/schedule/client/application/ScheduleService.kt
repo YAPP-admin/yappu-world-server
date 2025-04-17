@@ -27,11 +27,15 @@ class ScheduleService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getCurrentGenerationSessions(now: LocalDate): ActiveGenerationSessionsResponse {
+    fun getCurrentGenerationSessions(
+        userId: UUID,
+        now: LocalDate
+    ): ActiveGenerationSessionsResponse {
         val currentGeneration = generationFindService.findActiveGeneration()
             ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
+        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId)
         return ActiveGenerationSessionsResponse.from(
-            sessions = scheduleRepository.findAllSessionEntityByGeneration(currentGeneration),
+            sessions = sessions,
             now = now
         )
     }

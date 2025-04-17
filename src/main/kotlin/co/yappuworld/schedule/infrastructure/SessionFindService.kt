@@ -1,6 +1,8 @@
 package co.yappuworld.schedule.infrastructure
 
+import co.yappuworld.attendance.domain.Attendance
 import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceStatus
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,5 +39,34 @@ class SessionFindService(
                 select(entity(SessionEntity::class))
                     .from(entity(SessionEntity::class))
                     .where(path(SessionEntity::generation).equal(generation))
+            }.filterNotNull()
+
+    fun findSessionsWithAttendanceStatus(
+        generation: Int,
+        userId: UUID
+    ): List<SessionWithAttendanceStatus> =
+        scheduleRepository
+            .findAll {
+                selectNew<SessionWithAttendanceStatus>(
+                    path(SessionEntity::getId),
+                    path(SessionEntity::name),
+                    path(SessionEntity::description),
+                    path(SessionEntity::place),
+                    path(SessionEntity::date),
+                    path(SessionEntity::endDate),
+                    path(SessionEntity::time),
+                    path(SessionEntity::endTime),
+                    path(SessionEntity::generation),
+                    path(SessionEntity::sessionType),
+                    path(Attendance::status)
+                ).from(
+                    entity(SessionEntity::class),
+                    leftJoin(Attendance::class).on(
+                        and(
+                            path(SessionEntity::getId).equal(path(Attendance::scheduleId)),
+                            path(Attendance::userId).equal(userId)
+                        )
+                    )
+                )
             }.filterNotNull()
 }
