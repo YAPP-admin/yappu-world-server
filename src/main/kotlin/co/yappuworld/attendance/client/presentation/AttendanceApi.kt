@@ -1,16 +1,20 @@
 package co.yappuworld.attendance.client.presentation
 
 import co.yappuworld.attendance.client.dto.request.AttendanceRequest
+import co.yappuworld.attendance.client.dto.response.AttendanceStatisticsResponse
+import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
@@ -92,7 +96,7 @@ interface AttendanceApi {
                                 value = """
                                     {
                                         "errorCode": "ATD_2002",
-                                        "message": "활성화 된 기수가 없다면 출석이 가능한 세션도 없습니다.",
+                                        "message": "활성화 된 기수가 없어서 출석 관련 처리가 불가합니다.",
                                         "isSuccess": false
                                     }
                                 """
@@ -137,4 +141,61 @@ interface AttendanceApi {
         @Valid @RequestBody request: AttendanceRequest,
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<Unit>
+
+    @Operation(summary = "나의 출석 통계")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AttendanceStatisticsResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "출석 통계 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "totalSessionCount": 17,
+                                            "remainingSessionCount": 2,
+                                            "sessionProgressRate": 88,
+                                            "attendancePoint": 40,
+                                            "attendanceCount": 10,
+                                            "lateCount": 3,
+                                            "absenceCount": 2,
+                                            "latePassCount": 1
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "활성화 된 기수가 없어 출석 통계 조회 불가",
+                                value = """
+                                    {
+                                        "errorCode": "ATD_2002",
+                                        "message": "활성화 된 기수가 없어서 출석 통계 조회가 불가합니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v1/attendance-statistics")
+    fun getAttendanceStatistics(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponse>>
 }

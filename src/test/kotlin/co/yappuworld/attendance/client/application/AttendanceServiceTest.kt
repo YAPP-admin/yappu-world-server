@@ -6,6 +6,7 @@ import co.yappuworld.attendance.domain.AttendanceError
 import co.yappuworld.attendance.domain.AttendanceStatus
 import co.yappuworld.attendance.infrastructure.AttendanceCommandService
 import co.yappuworld.attendance.infrastructure.AttendanceFindService
+import co.yappuworld.attendance.infrastructure.LatePassFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
@@ -35,13 +36,15 @@ class AttendanceServiceTest :
         val sessionFindService = mockk<SessionFindService>()
         val generationFindService = mockk<GenerationFindService>()
         val userFindService = mockk<UserFindService>()
+        val latePassFindService = mockk<LatePassFindService>()
         val attendanceService = AttendanceService(
             attendanceFindService = attendanceFindService,
             attendanceCommandService = attendanceCommandService,
             configFindService = configFindService,
             sessionFindService = sessionFindService,
             generationFindService = generationFindService,
-            userFindService = userFindService
+            userFindService = userFindService,
+            latePassFindService = latePassFindService
         )
 
         feature("출석 체크") {
@@ -190,6 +193,17 @@ class AttendanceServiceTest :
                             .shouldBe(AttendanceStatus.ABSENT)
                     }
                 }
+            }
+        }
+
+        feature("출석 통계 조회") {
+
+            scenario("활성화된 기수가 없으면 예외가 발생한다.") {
+                every { generationFindService.findActiveGeneration() } returns null
+
+                shouldThrow<BusinessException> {
+                    attendanceService.getAttendanceStatistics(UUID.randomUUID(), LocalDateTime.now())
+                }.error.shouldBe(AttendanceError.NO_ACTIVE_GENERATION)
             }
         }
     })
