@@ -33,7 +33,7 @@ enum class AttendanceError : Error {
         override val type: ErrorType = ErrorType.BAD_REQUEST
     },
     NO_ACTIVE_GENERATION {
-        override val message: String = "활성화 된 기수가 없다면 출석이 가능한 세션도 없습니다."
+        override val message: String = "활성화 된 기수가 없어서 출석 관련 처리가 불가합니다."
         override val code: String = "ATD_2002"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },

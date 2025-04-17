@@ -20,4 +20,20 @@ class AttendanceFindService(
         userId: UUID,
         sessionId: UUID
     ): Attendance? = attendanceRepository.findByUserIdAndScheduleId(userId, sessionId)
+
+    fun findAttendancesBySchedules(
+        userId: UUID,
+        scheduleIds: List<UUID>
+    ): List<Attendance> =
+        attendanceRepository
+            .findAll {
+                select(entity(Attendance::class))
+                    .from(entity(Attendance::class))
+                    .where(
+                        and(
+                            path(Attendance::userId).equal(userId),
+                            path(Attendance::scheduleId).`in`(scheduleIds)
+                        )
+                    )
+            }.filterNotNull()
 }

@@ -9,6 +9,7 @@ import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceRespo
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -172,6 +173,10 @@ interface ScheduleApi {
                 responseCode = "200",
                 content = [
                     Content(
+                        schema = Schema(
+                            implementation = UpcomingSessionAttendanceResponse::class,
+                            subTypes = [UpcomingSessionAttendanceResponse::class]
+                        ),
                         examples = [
                             ExampleObject(
                                 name = "활동 유저가 아니거나 미출석 & 출석 가능한 시간이 아닌 경우",

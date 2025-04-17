@@ -45,4 +45,8 @@ class Attendance(
     @Enumerated(EnumType.STRING)
     var status: AttendanceStatus = status
         private set
+
+    fun updateStatus(status: AttendanceStatus) {
+        this.status = status
+    }
 }

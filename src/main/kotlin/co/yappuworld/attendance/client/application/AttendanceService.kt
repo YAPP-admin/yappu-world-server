@@ -1,10 +1,12 @@
 package co.yappuworld.attendance.client.application
 
 import co.yappuworld.attendance.client.dto.request.AttendanceRequest
+import co.yappuworld.attendance.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.attendance.domain.Attendance
 import co.yappuworld.attendance.domain.AttendanceError
 import co.yappuworld.attendance.infrastructure.AttendanceCommandService
 import co.yappuworld.attendance.infrastructure.AttendanceFindService
+import co.yappuworld.attendance.infrastructure.LatePassFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
@@ -27,7 +29,8 @@ class AttendanceService(
     private val configFindService: ConfigFindService,
     private val sessionFindService: SessionFindService,
     private val generationFindService: GenerationFindService,
-    private val userFindService: UserFindService
+    private val userFindService: UserFindService,
+    private val latePassFindService: LatePassFindService
 ) {
 
     @Transactional
@@ -43,6 +46,23 @@ class AttendanceService(
                 Attendance.checkInSession(now = now, userId = userId, session = it as SessionEntity)
             )
         }
+    }
+
+    @Transactional(readOnly = true)
+    fun getAttendanceStatistics(
+        userId: UUID,
+        now: LocalDateTime
+    ): AttendanceStatisticsResponse {
+        val activeGeneration = generationFindService.findActiveGeneration()
+            ?: throw BusinessException(AttendanceError.NO_ACTIVE_GENERATION)
+        val thisGenerationSessions = sessionFindService.findCurrentGenerationSessions(activeGeneration)
+        val attendances = attendanceFindService.findAttendancesBySchedules(
+            userId = userId,
+            scheduleIds = thisGenerationSessions.map { it.id }
+        )
+        val latePassCount = latePassFindService.countLatePasses(activeGeneration, userId)
+
+        return AttendanceStatisticsResponse.of(thisGenerationSessions, attendances, now, latePassCount)
     }
 
     private fun validateCheckIn(

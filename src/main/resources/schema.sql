@@ -139,3 +139,13 @@ create table attendances
     schedule_id binary(16) NOT NULL,
     status      varchar(32) NOT NULL
 );
+
+drop table if exists late_passes;
+create table late_passes
+(
+    id         binary(16) PRIMARY KEY,
+    created_at datetime(6),
+    updated_at datetime(6),
+    user_id    binary(16) NOT NULL,
+    reason     varchar(128)
+);
