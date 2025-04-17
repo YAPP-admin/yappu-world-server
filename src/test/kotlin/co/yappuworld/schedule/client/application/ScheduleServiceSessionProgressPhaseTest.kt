@@ -59,7 +59,7 @@ class ScheduleServiceSessionProgressPhaseTest {
         assertEquals(result.sessions[0].progressPhase, DONE)
         assertEquals(result.sessions[1].progressPhase, TODAY)
         assertEquals(result.sessions[2].progressPhase, PENDING)
-        assertEquals(result.upcomingSessionId, 1)
+        assertEquals(result.upcomingSessionId, result.sessions[1].id)
     }
 
     @Test
@@ -78,6 +78,6 @@ class ScheduleServiceSessionProgressPhaseTest {
         assertEquals(result.sessions[1].progressPhase, DONE)
         assertEquals(result.sessions[2].progressPhase, UPCOMING)
         assertEquals(result.sessions[3].progressPhase, PENDING)
-        assertEquals(result.upcomingSessionId, 2)
+        assertEquals(result.upcomingSessionId, result.sessions[2].id)
     }
 }
