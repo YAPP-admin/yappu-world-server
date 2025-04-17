@@ -1,6 +1,5 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.attendance.domain.AttendanceStatus
 import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
@@ -38,19 +37,16 @@ data class ActiveGenerationSessionsResponse(
             val orderedSessions = sessions.sortedBy { it.date }
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
-                    sessions.map { ActiveGenerationSessionResponse.from(it, DONE) },
+                    sessions.map { ActiveGenerationSessionResponse(it, DONE) },
                     sessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
                 sessions = sessions.mapIndexed { index, session ->
                     when {
-                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse.from(session, DONE)
-                        index == upcomingSessionIndex -> ActiveGenerationSessionResponse.from(
-                            session,
-                            upcomingSessionStatus
-                        )
-                        else -> ActiveGenerationSessionResponse.from(session, PENDING)
+                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE)
+                        index == upcomingSessionIndex -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
+                        else -> ActiveGenerationSessionResponse(session, PENDING)
                     }
                 },
                 upcomingSessionId = sessions[upcomingSessionIndex].id
@@ -96,30 +92,19 @@ data class ActiveGenerationSessionResponse(
     val attendanceStatus: String?
 ) {
 
-    companion object {
-
-        fun from(
-            session: SessionWithAttendance,
-            status: SessionProgressPhase
-        ): ActiveGenerationSessionResponse {
-            val attendanceStatus = if (session.attendanceStatus == null && status == DONE) {
-                AttendanceStatus.ABSENT
-            } else {
-                session.attendanceStatus
-            }
-
-            return ActiveGenerationSessionResponse(
-                id = session.id,
-                name = session.name,
-                place = session.place,
-                date = session.date,
-                endDate = session.endDate,
-                time = session.time,
-                endTime = session.endTime,
-                type = session.sessionType,
-                progressPhase = status,
-                attendanceStatus = attendanceStatus?.let { it.label }
-            )
-        }
-    }
+    constructor(
+        session: SessionWithAttendance,
+        status: SessionProgressPhase
+    ) : this(
+        id = session.id,
+        name = session.name,
+        place = session.place,
+        date = session.date,
+        endDate = session.endDate,
+        time = session.time,
+        endTime = session.endTime,
+        type = session.sessionType,
+        progressPhase = status,
+        attendanceStatus = session.attendanceStatus
+    )
 }

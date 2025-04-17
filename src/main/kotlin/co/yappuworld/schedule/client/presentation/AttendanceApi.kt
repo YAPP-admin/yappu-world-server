@@ -1,9 +1,10 @@
-package co.yappuworld.attendance.client.presentation
+package co.yappuworld.schedule.client.presentation
 
-import co.yappuworld.attendance.client.dto.request.AttendanceRequest
-import co.yappuworld.attendance.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
+import co.yappuworld.schedule.client.dto.request.AttendanceRequest
+import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
+import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -198,4 +199,73 @@ interface AttendanceApi {
     fun getAttendanceStatistics(
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponse>>
+
+    @Operation(summary = "출석 내역 조회")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AttendancesHistoryResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "출석 내역 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "histories": [
+                                                {
+                                                    "sessionId": "c076cadd-1b30-11f0-add0-0242ac140002",
+                                                    "name": "OT",
+                                                    "checkedInAt": "2025-04-17T13:18:17",
+                                                    "attendanceStatus": "출석"
+                                                },
+                                                {
+                                                    "sessionId": "c076ff63-1b30-11f0-add0-0242ac140002",
+                                                    "name": "팀 매칭",
+                                                    "checkedInAt": "2025-04-17T13:18:17",
+                                                    "attendanceStatus": "지각"
+                                                },
+                                                {
+                                                    "sessionId": "c0775226-1b30-11f0-add0-0242ac140002",
+                                                    "name": "팀 세션",
+                                                    "checkedInAt": "2025-04-17T13:18:17",
+                                                    "attendanceStatus": "결석"
+                                                }
+                                            ]
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "활성화 된 기수 없음",
+                                value = """
+                                    {
+                                        "errorCode": "ATD_2002",
+                                        "message": "활성화 된 기수가 없어서 출석 관련 처리가 불가합니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v1/attendances/history")
+    fun getAttendancesHistory(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<AttendancesHistoryResponse>>
 }

@@ -1,6 +1,6 @@
-package co.yappuworld.attendance.infrastructure
+package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.attendance.domain.Attendance
+import co.yappuworld.schedule.domain.Attendance
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID

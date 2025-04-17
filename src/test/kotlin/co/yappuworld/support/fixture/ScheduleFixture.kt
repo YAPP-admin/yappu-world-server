@@ -1,6 +1,6 @@
 package co.yappuworld.support.fixture
 
-import co.yappuworld.attendance.domain.AttendanceStatus
+import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.domain.TaskEntity

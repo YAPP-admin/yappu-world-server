@@ -1,6 +1,6 @@
-package co.yappuworld.attendance.infrastructure
+package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.attendance.domain.LatePass
+import co.yappuworld.schedule.domain.LatePass
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 

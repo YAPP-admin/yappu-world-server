@@ -1,6 +1,5 @@
 package co.yappuworld.schedule.client.application
 
-import co.yappuworld.attendance.infrastructure.AttendanceFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
@@ -8,6 +7,7 @@ import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsRespon
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
 import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.user.infrastructure.UserFindService

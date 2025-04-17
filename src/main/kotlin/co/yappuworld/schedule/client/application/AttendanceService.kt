@@ -1,16 +1,17 @@
-package co.yappuworld.attendance.client.application
+package co.yappuworld.schedule.client.application
 
-import co.yappuworld.attendance.client.dto.request.AttendanceRequest
-import co.yappuworld.attendance.client.dto.response.AttendanceStatisticsResponse
-import co.yappuworld.attendance.domain.Attendance
-import co.yappuworld.attendance.domain.AttendanceError
-import co.yappuworld.attendance.infrastructure.AttendanceCommandService
-import co.yappuworld.attendance.infrastructure.AttendanceFindService
-import co.yappuworld.attendance.infrastructure.LatePassFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
+import co.yappuworld.schedule.client.dto.request.AttendanceRequest
+import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
+import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
+import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceError
 import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.infrastructure.AttendanceCommandService
+import co.yappuworld.schedule.infrastructure.AttendanceFindService
+import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
@@ -63,6 +64,22 @@ class AttendanceService(
         val latePassCount = latePassFindService.countLatePasses(activeGeneration, userId)
 
         return AttendanceStatisticsResponse.of(thisGenerationSessions, attendances, now, latePassCount)
+    }
+
+    @Transactional(readOnly = true)
+    fun getAttendancesHistory(
+        userId: UUID,
+        now: LocalDateTime
+    ): AttendancesHistoryResponse {
+        val activeGeneration = generationFindService.findActiveGeneration()
+            ?: throw BusinessException(AttendanceError.NO_ACTIVE_GENERATION)
+        val sessionsWithAttendance = sessionFindService.findAttendancesHistory(
+            generation = activeGeneration,
+            userId = userId,
+            now = now
+        )
+
+        return AttendancesHistoryResponse.of(sessionsWithAttendance)
     }
 
     private fun validateCheckIn(
