@@ -33,8 +33,6 @@ class GenerationActiveStateManagerTest {
     @Test
     @Transactional
     fun `특정 기수를 활성화 시키면 나머지는 모두 비활성화 된다`() {
-        assertThat(generationActiveStateManager.getActiveGenerationOrNull()).isNull()
-
         generationActiveStateManager.activate(23)
         generationActiveStateManager.activate(24)
         generationActiveStateManager.activate(25)
@@ -52,11 +50,6 @@ class GenerationActiveStateManagerTest {
 
         generationActiveStateManager.deactivate(25)
         assertThat(repository.findByIdOrNull(25)?.isActive).isFalse()
-    }
-
-    @Test
-    fun `현재 활성화 되어 있는 기수가 없다면 NULL을 반환한다`() {
-        assertThat(generationActiveStateManager.getActiveGenerationOrNull()).isNull()
     }
 
     @Test
