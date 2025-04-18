@@ -1,6 +1,6 @@
-package co.yappuworld.attendance.infrastructure
+package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.attendance.domain.Attendance
+import co.yappuworld.schedule.domain.Attendance
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID

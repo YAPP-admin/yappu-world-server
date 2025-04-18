@@ -19,14 +19,12 @@ class ScheduleController(
 
     override fun getSessions(
         @AuthenticationPrincipal securityUser: SecurityUser
-    ): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>> {
-        val now = TimeUtils.getCurrentDateTimeInKST()
-        return ResponseEntity.ok(
+    ): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>> =
+        ResponseEntity.ok(
             SuccessResponse(
-                scheduleService.getCurrentGenerationSessions(securityUser.userId, now.toLocalDate())
+                scheduleService.getCurrentGenerationSessions(securityUser.userId, TimeUtils.getCurrentDateTimeInKST())
             )
         )
-    }
 
     override fun getSchedules(request: SchedulePageRequest): ResponseEntity<SuccessResponse<SchedulePageResponse>> {
         val now = TimeUtils.getCurrentDateTimeInKST()

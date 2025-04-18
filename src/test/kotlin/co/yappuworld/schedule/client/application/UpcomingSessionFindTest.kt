@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.application
 
-import co.yappuworld.attendance.domain.AttendanceStatus
-import co.yappuworld.attendance.infrastructure.AttendanceFindService
+import co.yappuworld.schedule.domain.AttendanceStatus
+import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.domain.ScheduleError

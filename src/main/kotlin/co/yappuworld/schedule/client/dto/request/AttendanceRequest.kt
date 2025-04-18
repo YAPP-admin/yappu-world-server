@@ -1,4 +1,4 @@
-package co.yappuworld.attendance.client.dto.request
+package co.yappuworld.schedule.client.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull

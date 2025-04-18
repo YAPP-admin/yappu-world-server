@@ -1,9 +1,9 @@
-package co.yappuworld.attendance.client.dto.response
+package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.attendance.domain.Attendance
-import co.yappuworld.attendance.domain.AttendanceStatus.ABSENT
-import co.yappuworld.attendance.domain.AttendanceStatus.LATE
-import co.yappuworld.attendance.domain.AttendanceStatus.ON_TIME
+import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
+import co.yappuworld.schedule.domain.AttendanceStatus.LATE
+import co.yappuworld.schedule.domain.AttendanceStatus.ON_TIME
 import co.yappuworld.schedule.domain.SessionEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime

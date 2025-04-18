@@ -14,6 +14,12 @@ object TimeUtils {
 
     fun LocalDate.isBeforeOrEqual(other: LocalDate): Boolean = this.isBefore(other) || this.isEqual(other)
 
+    fun LocalDate.isAfterOrEqual(other: LocalDate): Boolean = this.isAfter(other) || this.isEqual(other)
+
+    fun LocalDateTime.isBeforeOrEqual(other: LocalDateTime): Boolean = this.isBefore(other) || this.isEqual(other)
+
+    fun LocalDateTime.isAfterOrEqual(other: LocalDateTime): Boolean = this.isAfter(other) || this.isEqual(other)
+
     fun LocalDate.isBetween(
         startInclusive: LocalDate,
         endExclusive: LocalDate
@@ -55,6 +61,10 @@ object TimeUtils {
         }
 
         operator fun contains(element: LocalDate): Boolean = element.isBetween(start, endExclusive)
+
+        operator fun rangeTo(other: LocalDate): LocalDateRange = LocalDateRange(this.start, other.plusDays(1))
+
+        operator fun rangeUntil(other: LocalDate): LocalDateRange = LocalDateRange(this.start, other)
     }
 
     class LocalDateTimeRange(
@@ -81,6 +91,22 @@ object TimeUtils {
                         }
                     }
                 }
+
+                operator fun rangeTo(other: LocalDateTime): LocalDateTimeRange {
+                    val otherTime = when (unit) {
+                        TimeUnit.NANOSECONDS -> other.plusNanos(1)
+                        TimeUnit.MICROSECONDS -> other.plusNanos(1000)
+                        TimeUnit.MILLISECONDS -> other.plusNanos(1000000)
+                        TimeUnit.SECONDS -> other.plusSeconds(1)
+                        TimeUnit.MINUTES -> other.plusMinutes(1)
+                        TimeUnit.HOURS -> other.plusHours(1)
+                        TimeUnit.DAYS -> other.plusDays(1)
+                    }
+                    return LocalDateTimeRange(this.current, otherTime, unit)
+                }
+
+                operator fun rangeUntil(other: LocalDateTime): LocalDateTimeRange =
+                    LocalDateTimeRange(this.current, other, unit)
             }
         }
 

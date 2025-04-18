@@ -1,7 +1,6 @@
-package co.yappuworld.attendance.domain
+package co.yappuworld.schedule.domain
 
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.schedule.domain.SessionEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

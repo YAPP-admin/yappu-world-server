@@ -1,4 +1,4 @@
-package co.yappuworld.attendance.infrastructure
+package co.yappuworld.schedule.infrastructure
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

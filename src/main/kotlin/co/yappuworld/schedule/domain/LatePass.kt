@@ -1,4 +1,4 @@
-package co.yappuworld.attendance.domain
+package co.yappuworld.schedule.domain
 
 import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.Column

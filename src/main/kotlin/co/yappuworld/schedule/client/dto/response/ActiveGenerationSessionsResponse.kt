@@ -1,7 +1,5 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.attendance.domain.AttendanceStatus
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
@@ -11,6 +9,7 @@ import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -31,26 +30,23 @@ data class ActiveGenerationSessionsResponse(
     companion object {
         fun from(
             sessions: List<SessionWithAttendance>,
-            now: LocalDate
+            now: LocalDateTime
         ): ActiveGenerationSessionsResponse {
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
 
             val orderedSessions = sessions.sortedBy { it.date }
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
-                    sessions.map { ActiveGenerationSessionResponse.from(it, DONE) },
+                    sessions.map { ActiveGenerationSessionResponse(it, DONE) },
                     sessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
                 sessions = sessions.mapIndexed { index, session ->
                     when {
-                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse.from(session, DONE)
-                        index == upcomingSessionIndex -> ActiveGenerationSessionResponse.from(
-                            session,
-                            upcomingSessionStatus
-                        )
-                        else -> ActiveGenerationSessionResponse.from(session, PENDING)
+                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE)
+                        index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING)
+                        else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
                     }
                 },
                 upcomingSessionId = sessions[upcomingSessionIndex].id
@@ -59,14 +55,14 @@ data class ActiveGenerationSessionsResponse(
 
         private fun getUpcomingSessionIndexAndStatus(
             orderedSessions: List<SessionWithAttendance>,
-            now: LocalDate
+            now: LocalDateTime
         ): Pair<Int, SessionProgressPhase>? {
-            val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqual(it.date) }
+            val upcomingSession = orderedSessions.firstOrNull { !it.isFinished(now) }
                 ?: return null
             val upcomingSessionIndex = orderedSessions.indexOf(upcomingSession)
 
             return when {
-                upcomingSession.date.isEqual(now) -> upcomingSessionIndex to TODAY
+                upcomingSession.isToday(now) -> upcomingSessionIndex to TODAY
                 else -> upcomingSessionIndex to UPCOMING
             }
         }
@@ -96,30 +92,19 @@ data class ActiveGenerationSessionResponse(
     val attendanceStatus: String?
 ) {
 
-    companion object {
-
-        fun from(
-            session: SessionWithAttendance,
-            status: SessionProgressPhase
-        ): ActiveGenerationSessionResponse {
-            val attendanceStatus = if (session.attendanceStatus == null && status == DONE) {
-                AttendanceStatus.ABSENT
-            } else {
-                session.attendanceStatus
-            }
-
-            return ActiveGenerationSessionResponse(
-                id = session.id,
-                name = session.name,
-                place = session.place,
-                date = session.date,
-                endDate = session.endDate,
-                time = session.time,
-                endTime = session.endTime,
-                type = session.sessionType,
-                progressPhase = status,
-                attendanceStatus = attendanceStatus?.let { it.label }
-            )
-        }
-    }
+    constructor(
+        session: SessionWithAttendance,
+        status: SessionProgressPhase
+    ) : this(
+        id = session.id,
+        name = session.name,
+        place = session.place,
+        date = session.date,
+        endDate = session.endDate,
+        time = session.time,
+        endTime = session.endTime,
+        type = session.sessionType,
+        progressPhase = status,
+        attendanceStatus = session.attendanceStatus
+    )
 }
