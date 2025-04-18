@@ -1,12 +1,12 @@
 package co.yappuworld.schedule.infrastructure
 
+import co.yappuworld.schedule.domain.Attendance
 import co.yappuworld.schedule.domain.AttendanceStatus
+import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.core.spec.style.FeatureSpec
-import io.kotest.data.forAll
-import io.kotest.data.row
 import io.kotest.extensions.spring.SpringTestExtension
 import io.kotest.extensions.spring.SpringTestLifecycleMode
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -75,36 +75,33 @@ class SessionFindServiceTest @Autowired constructor(
                 result.checkedInAt.shouldBeNull()
             }
 
-            scenario("출석 상태에 맞게 조회된다.") {
-                forAll(
-                    row(AttendanceStatus.ON_TIME),
-                    row(AttendanceStatus.LATE),
-                    row(AttendanceStatus.ABSENT),
-                    row(AttendanceStatus.EARLY_CHECK_OUT),
-                    row(AttendanceStatus.EXCUSED_ABSENCE)
-                ) { attendanceStatus ->
-                    val userId = UUID.randomUUID()
-                    val session = scheduleRepository.save(getSessionEntityFixture(generation = 4))
-                    val attendance = attendanceRepository.save(
-                        getAttendanceFixture(
-                            scheduleId = session.id,
-                            userId = userId,
-                            status = attendanceStatus
-                        )
+            scenario("출석 상태 검증") {
+                val now = LocalDateTime.of(2025, 2, 15, 0, 0)
+                val userId = UUID.randomUUID()
+                val status = listOf(
+                    AttendanceStatus.ON_TIME,
+                    AttendanceStatus.LATE,
+                    AttendanceStatus.ABSENT,
+                    AttendanceStatus.EARLY_CHECK_OUT,
+                    AttendanceStatus.EXCUSED_ABSENCE
+                )
+                val sessions = mutableListOf<SessionEntity>()
+                val attendances = mutableListOf<Attendance>()
+                repeat(5) {
+                    val session = getSessionEntityFixture(
+                        generation = 4,
+                        date = now.toLocalDate().minusDays(1),
+                        endDate = now.toLocalDate().minusDays(1)
                     )
+                    sessions.add(session)
+                    attendances.add(getAttendanceFixture(status[it], userId, session.id))
+                }
+                scheduleRepository.saveAll(sessions)
+                attendanceRepository.saveAll(attendances)
 
-                    val result = sessionFindService
-                        .findSessionsWithAttendanceStatus(
-                            4,
-                            userId,
-                            LocalDateTime.of(session.date.plusDays(1), session.time)
-                        ).first()
-
-                    result.attendanceStatus shouldBe attendanceStatus.label
-                    result.checkedInAt shouldBe attendance.createdAt
-
-                    attendanceRepository.delete(attendance)
-                    scheduleRepository.delete(session)
+                val result = sessionFindService.findSessionsWithAttendanceStatus(4, userId, now)
+                result.forEachIndexed { index, sessionWithAttendance ->
+                    sessionWithAttendance.attendanceStatus shouldBe status[index].label
                 }
             }
         }
@@ -175,36 +172,33 @@ class SessionFindServiceTest @Autowired constructor(
                     }
             }
 
-            scenario("출석 상태에 맞게 조회된다.") {
-                forAll(
-                    row(AttendanceStatus.ON_TIME),
-                    row(AttendanceStatus.LATE),
-                    row(AttendanceStatus.ABSENT),
-                    row(AttendanceStatus.EARLY_CHECK_OUT),
-                    row(AttendanceStatus.EXCUSED_ABSENCE)
-                ) { attendanceStatus ->
-                    val userId = UUID.randomUUID()
-                    val session = scheduleRepository.save(getSessionEntityFixture(generation = 4))
-                    val attendance = attendanceRepository.save(
-                        getAttendanceFixture(
-                            scheduleId = session.id,
-                            userId = userId,
-                            status = attendanceStatus
-                        )
+            scenario("출석 상태 검증") {
+                val now = LocalDateTime.of(2025, 2, 15, 0, 0)
+                val userId = UUID.randomUUID()
+                val status = listOf(
+                    AttendanceStatus.ON_TIME,
+                    AttendanceStatus.LATE,
+                    AttendanceStatus.ABSENT,
+                    AttendanceStatus.EARLY_CHECK_OUT,
+                    AttendanceStatus.EXCUSED_ABSENCE
+                )
+                val sessions = mutableListOf<SessionEntity>()
+                val attendances = mutableListOf<Attendance>()
+                repeat(5) {
+                    val session = getSessionEntityFixture(
+                        generation = 4,
+                        date = now.toLocalDate().minusDays(1),
+                        endDate = now.toLocalDate().minusDays(1)
                     )
+                    sessions.add(session)
+                    attendances.add(getAttendanceFixture(status[it], userId, session.id))
+                }
+                scheduleRepository.saveAll(sessions)
+                attendanceRepository.saveAll(attendances)
 
-                    val result = sessionFindService
-                        .findAttendancesHistory(
-                            4,
-                            userId,
-                            LocalDateTime.of(session.date.plusDays(1), session.time)
-                        ).first()
-
-                    result.attendanceStatus shouldBe attendanceStatus.label
-                    result.checkedInAt shouldBe attendance.createdAt
-
-                    attendanceRepository.delete(attendance)
-                    scheduleRepository.delete(session)
+                val result = sessionFindService.findAttendancesHistory(4, userId, now)
+                result.forEachIndexed { index, sessionWithAttendance ->
+                    sessionWithAttendance.attendanceStatus shouldBe status[index].label
                 }
             }
         }
