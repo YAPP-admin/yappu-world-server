@@ -88,22 +88,6 @@ CREATE TABLE schedules
     session_type varchar(32)
 );
 
-DROP TABLE IF EXISTS boards;
-CREATE TABLE boards
-(
-    id              binary(16) PRIMARY KEY,
-    created_at      datetime(6),
-    updated_at      datetime(6),
-    board_type      varchar(255),
-    notice_type     varchar(255),
-    title           varchar(64),
-    content         varchar(4000),
-    content_summary varchar(255),
-    display_target  varchar(255),
-    writer_id       binary(16) NOT NULL,
-    is_active       tinyint(1)  NOT NULL
-);
-
 DROP TABLE IF EXISTS posts;
 CREATE TABLE posts
 (

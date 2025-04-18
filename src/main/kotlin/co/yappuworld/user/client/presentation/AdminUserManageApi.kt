@@ -110,7 +110,7 @@ interface AdminUserManageApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = AdminUserOverviewResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 목록 조회",

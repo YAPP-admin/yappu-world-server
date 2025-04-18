@@ -14,68 +14,67 @@ object SwaggerUtils {
         OpenApiCustomizer { openApi ->
             openApi.paths.values.forEach { item ->
                 item.readOperations().forEach { operation ->
-                    operation.responses.addCommonResponse()
+                    operation.responses.appendAndOrganizeResponse()
                 }
             }
         }
 
-    private fun ApiResponses.addCommonResponse() {
+    private fun ApiResponses.appendAndOrganizeResponse() {
+        // API에 명시된 응답을 순회
         for ((status, response) in this) {
             if (response.content == null) {
                 continue
             }
 
-            val commonResponse = SwaggerCommonResponses.v[status]
-            when (commonResponse == null) {
-                true -> {
-                    val examples = mutableMapOf<String, Example>().apply {
-                        response.content.values.forEach { mediaType ->
-                            mediaType.examples?.let { putAll(it) }
-                            mediaType.example?.let {
-                                put("성공", Example().apply { value = it })
-                            }
-                        }
-                    }
-
-                    val content = Content().apply {
-                        addMediaType(
-                            "application/json",
-                            MediaType().apply { setExamples(examples) }
-                        )
-                    }
-
-                    response.content = content
-                }
-                false -> response.combineContent(commonResponse)
+            when (SwaggerCommonResponses.hasErrorResponse(status)) {
+                true -> response.addCommonErrorResponse(status)
+                false -> response.refineResponse()
             }
         }
 
-        for ((status, response) in SwaggerCommonResponses.v) {
+        // Error를 순회하며 추가되지 않은 공통 에러 응답을 추가
+        for ((status, response) in SwaggerCommonResponses.errorResponses) {
             if (this[status] == null) {
                 this.addApiResponse(status, response)
             }
         }
     }
 
-    private fun ApiResponse.combineContent(response: ApiResponse): ApiResponse {
-        val examples = mutableMapOf<String, Example>()
-        this.content.values.forEach { value ->
-            if (value.examples != null) {
-                examples.putAll(value.examples)
-            }
+    private fun ApiResponse.addCommonErrorResponse(status: String): ApiResponse {
+        val newExamples = mutableMapOf<String, Example>()
+
+        this.content.values.forEach { mediaType ->
+            mediaType.example?.let { newExamples["성공"] = Example().apply { value = it } }
+            mediaType.examples?.let { newExamples.putAll(it) }
         }
-        response.content.values.forEach {
-            if (it.examples != null) {
-                examples.putAll(it.examples)
+
+        SwaggerCommonResponses.errorResponses[status]?.let { errorResponse ->
+            errorResponse.content.values.forEach { mediaType ->
+                mediaType.examples?.let { newExamples.putAll(it) }
             }
         }
 
+        replaceWith(newExamples)
+
+        return this
+    }
+
+    private fun ApiResponse.refineResponse() =
+        replaceWith(
+            mutableMapOf<String, Example>().apply {
+                content.values.forEach { mediaType ->
+                    mediaType.examples?.let { putAll(it) }
+                    mediaType.example?.let { put("성공", Example().apply { value = it }) }
+                }
+            }
+        )
+
+    private fun ApiResponse.replaceWith(examples: Map<String, Example>) {
         this.content = Content().apply {
             addMediaType(
                 "application/json",
                 MediaType().apply { setExamples(examples) }
             )
         }
-        return this
     }
 }
