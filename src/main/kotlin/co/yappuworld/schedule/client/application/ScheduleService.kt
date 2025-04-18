@@ -13,7 +13,6 @@ import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -29,11 +28,11 @@ class ScheduleService(
     @Transactional(readOnly = true)
     fun getCurrentGenerationSessions(
         userId: UUID,
-        now: LocalDate
+        now: LocalDateTime
     ): ActiveGenerationSessionsResponse {
         val currentGeneration = generationFindService.findActiveGeneration()
             ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
-        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId)
+        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
         return ActiveGenerationSessionsResponse.from(
             sessions = sessions,
             now = now

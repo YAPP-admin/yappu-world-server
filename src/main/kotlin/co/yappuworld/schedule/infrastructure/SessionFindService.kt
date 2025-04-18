@@ -43,7 +43,8 @@ class SessionFindService(
 
     fun findSessionsWithAttendanceStatus(
         generation: Int,
-        userId: UUID
+        userId: UUID,
+        now: LocalDateTime
     ): List<SessionWithAttendance> =
         scheduleRepository
             .findAll {
@@ -64,13 +65,13 @@ class SessionFindService(
                     entity(SessionEntity::class),
                     leftJoin(Attendance::class).on(
                         and(
-                            path(SessionEntity::generation).equal(generation),
                             path(SessionEntity::getId).equal(path(Attendance::scheduleId)),
                             path(Attendance::userId).equal(userId)
                         )
                     )
-                )
+                ).where(path(SessionEntity::generation).equal(generation))
             }.filterNotNull()
+            .apply { forEach { it.resolveAttendanceStatusOfPastSessions(now) } }
 
     fun findAttendancesHistory(
         generation: Int,
@@ -96,19 +97,22 @@ class SessionFindService(
                     entity(SessionEntity::class),
                     leftJoin(Attendance::class).on(
                         and(
-                            path(SessionEntity::generation).equal(generation),
                             path(SessionEntity::getId).equal(path(Attendance::scheduleId)),
                             path(Attendance::userId).equal(userId)
                         )
                     )
                 ).where(
-                    or(
-                        path(SessionEntity::date).lessThan(now.toLocalDate()),
-                        and(
-                            path(SessionEntity::date).equal(now.toLocalDate()),
-                            path(SessionEntity::time).lessThan(now.toLocalTime())
+                    and(
+                        path(SessionEntity::generation).equal(generation),
+                        or(
+                            path(SessionEntity::endDate).lessThan(now.toLocalDate()),
+                            and(
+                                path(SessionEntity::endDate).equal(now.toLocalDate()),
+                                path(SessionEntity::endTime).lessThan(now.toLocalTime())
+                            )
                         )
                     )
                 )
             }.filterNotNull()
+            .apply { forEach { it.resolveAttendanceStatusOfPastSessions(now) } }
 }

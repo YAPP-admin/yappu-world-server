@@ -1,6 +1,5 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
@@ -10,6 +9,7 @@ import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -30,7 +30,7 @@ data class ActiveGenerationSessionsResponse(
     companion object {
         fun from(
             sessions: List<SessionWithAttendance>,
-            now: LocalDate
+            now: LocalDateTime
         ): ActiveGenerationSessionsResponse {
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
 
@@ -45,8 +45,8 @@ data class ActiveGenerationSessionsResponse(
                 sessions = sessions.mapIndexed { index, session ->
                     when {
                         index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE)
-                        index == upcomingSessionIndex -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
-                        else -> ActiveGenerationSessionResponse(session, PENDING)
+                        index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING)
+                        else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
                     }
                 },
                 upcomingSessionId = sessions[upcomingSessionIndex].id
@@ -55,14 +55,14 @@ data class ActiveGenerationSessionsResponse(
 
         private fun getUpcomingSessionIndexAndStatus(
             orderedSessions: List<SessionWithAttendance>,
-            now: LocalDate
+            now: LocalDateTime
         ): Pair<Int, SessionProgressPhase>? {
-            val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqual(it.date) }
+            val upcomingSession = orderedSessions.firstOrNull { !it.isFinished(now) }
                 ?: return null
             val upcomingSessionIndex = orderedSessions.indexOf(upcomingSession)
 
             return when {
-                upcomingSession.date.isEqual(now) -> upcomingSessionIndex to TODAY
+                upcomingSession.isToday(now) -> upcomingSessionIndex to TODAY
                 else -> upcomingSessionIndex to UPCOMING
             }
         }

@@ -1,4 +1,4 @@
-package co.yappuworld.attendance.client.dto.response
+package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT

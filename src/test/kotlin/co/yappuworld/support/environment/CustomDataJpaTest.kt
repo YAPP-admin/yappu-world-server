@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-@DataJpaTest
 @Import(KotlinJdslAutoConfiguration::class)
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 annotation class CustomDataJpaTest

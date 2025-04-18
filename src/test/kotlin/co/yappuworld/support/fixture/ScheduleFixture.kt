@@ -6,6 +6,7 @@ import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.domain.TaskEntity
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -64,7 +65,8 @@ object ScheduleFixture {
         endTime: LocalTime? = LocalTime.of(18, 0),
         generation: Int = 25,
         sessionType: SessionType = SessionType.OFFLINE,
-        attendanceStatus: AttendanceStatus? = AttendanceStatus.ON_TIME
+        attendanceStatus: AttendanceStatus? = AttendanceStatus.ON_TIME,
+        checkedInAt: LocalDateTime? = LocalDateTime.of(2025, 2, 15, 14, 0)
     ): SessionWithAttendance =
         SessionWithAttendance(
             id = id,
@@ -77,6 +79,7 @@ object ScheduleFixture {
             endTime = endTime,
             generation = generation,
             sessionType = sessionType,
-            attendanceStatus = attendanceStatus
+            attendanceStatus = attendanceStatus,
+            checkedInAt = checkedInAt
         )
 }
