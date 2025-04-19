@@ -22,6 +22,36 @@ import org.springframework.web.bind.annotation.GetMapping
 interface OperationApi {
 
     @Operation(summary = "직군 정보")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "직군 정보 조회 성공",
+                                value = """
+                                    {
+                                        "data": {
+                                            "positions": [
+                                                {
+                                                    "name": "PM",
+                                                    "label": "PM"
+                                                }
+                                            ]
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @GetMapping("/v1/operations/positions")
     fun getPositions(): ResponseEntity<SuccessResponse<PositionsResponse>>
 
@@ -29,12 +59,10 @@ interface OperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "강제 업데이트 필요",
@@ -65,7 +93,6 @@ interface OperationApi {
             ApiResponse(
                 description = "잘못된 포맷 요청",
                 responseCode = "400",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -95,12 +122,10 @@ interface OperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활동 중일 때",
@@ -136,14 +161,89 @@ interface OperationApi {
     fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationResponse>>
 
     @Operation(summary = "이용 문의 링크")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "이용 문의 링크 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "link": "https://yapp.co.kr"
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @GetMapping("/v1/operations/links/usage-inquiry")
     fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 
     @Operation(summary = "이용 약관 링크")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "이용 약관 링크 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "link": "https://yapp.co.kr"
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @GetMapping("/v1/operations/links/terms-of-service")
     fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 
     @Operation(summary = "개인정보 처리방침 링크")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "개인정보 처리방침 링크 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "link": "https://yapp.co.kr"
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
     @GetMapping("/v1/operations/links/privacy-policy")
     fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 }

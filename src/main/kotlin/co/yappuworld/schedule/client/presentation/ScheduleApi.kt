@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
@@ -27,6 +28,7 @@ interface ScheduleApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -95,6 +97,7 @@ interface ScheduleApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -176,12 +179,9 @@ interface ScheduleApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(
-                            implementation = UpcomingSessionAttendanceResponse::class,
-                            subTypes = [UpcomingSessionAttendanceResponse::class]
-                        ),
                         examples = [
                             ExampleObject(
                                 name = "활동 유저가 아니거나 미출석 & 출석 가능한 시간이 아닌 경우",
@@ -233,6 +233,7 @@ interface ScheduleApi {
                 responseCode = "404",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활성화 된 기수가 없거나 다음 세션이 없는 경우",

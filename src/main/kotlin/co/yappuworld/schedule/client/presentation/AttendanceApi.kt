@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
@@ -33,6 +34,7 @@ interface AttendanceApi {
                 responseCode = "400",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "출석코드 오류",
@@ -62,6 +64,7 @@ interface AttendanceApi {
                 responseCode = "404",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "출석 대상 세션 오류",
@@ -81,6 +84,7 @@ interface AttendanceApi {
                 responseCode = "409",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "이미 출석을 완료",
@@ -120,6 +124,7 @@ interface AttendanceApi {
                 responseCode = "500",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "출석 코드 설정 에러",
@@ -148,9 +153,9 @@ interface AttendanceApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = AttendanceStatisticsResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "출석 통계 조회",
@@ -178,6 +183,7 @@ interface AttendanceApi {
                 responseCode = "404",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활성화 된 기수가 없어 출석 통계 조회 불가",
@@ -205,9 +211,9 @@ interface AttendanceApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = AttendancesHistoryResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "출석 내역 조회",
@@ -247,6 +253,7 @@ interface AttendanceApi {
                 responseCode = "409",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활성화 된 기수 없음",

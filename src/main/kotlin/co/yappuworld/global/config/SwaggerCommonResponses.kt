@@ -1,17 +1,21 @@
 package co.yappuworld.global.config
 
+import io.swagger.v3.oas.models.SpecVersion
 import io.swagger.v3.oas.models.examples.Example
 import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
+import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.responses.ApiResponse
 
-data class SwaggerCommonResponse(
-    val code: String,
-    val apiResponse: ApiResponse
-)
-
 object SwaggerCommonResponses {
-    val v = mapOf(
+
+    private val errorResponseSchema = Schema<String>(SpecVersion.V30).apply {
+        `$ref` = "#/components/schemas/ErrorResponse"
+    }
+
+    fun hasErrorResponse(status: String) = errorResponses.containsKey(status)
+
+    val errorResponses = mapOf(
         "400" to ApiResponse().apply {
             description = "Bad Request"
             content = Content().apply {
@@ -29,6 +33,7 @@ object SwaggerCommonResponses {
                                 """.trimIndent()
                             }
                         )
+                        schema = errorResponseSchema
                     }
                 )
             }
@@ -59,6 +64,7 @@ object SwaggerCommonResponses {
                                 """.trimIndent()
                             }
                         )
+                        schema = errorResponseSchema
                     }
                 )
             }
@@ -80,6 +86,7 @@ object SwaggerCommonResponses {
                                 """.trimIndent()
                             }
                         )
+                        schema = errorResponseSchema
                     }
                 )
             }

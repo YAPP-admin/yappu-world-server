@@ -4,12 +4,12 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
-import co.yappuworld.user.client.dto.response.AdminSignUpApplicationOverviewResponse
-import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.client.dto.request.UserRoleUpdateRequest
+import co.yappuworld.user.client.dto.response.AdminSignUpApplicationOverviewResponse
 import co.yappuworld.user.client.dto.response.AdminSignUpApplicationResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -39,7 +39,6 @@ interface UserAuthAdminApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "로그인 성공",
@@ -59,7 +58,6 @@ interface UserAuthAdminApi {
             ),
             ApiResponse(
                 responseCode = "401",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -80,7 +78,6 @@ interface UserAuthAdminApi {
             ),
             ApiResponse(
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -101,7 +98,6 @@ interface UserAuthAdminApi {
             ),
             ApiResponse(
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -154,7 +150,6 @@ interface UserAuthAdminApi {
             ApiResponse(
                 description = "성공",
                 responseCode = "204",
-                useReturnTypeSchema = true,
                 content = [Content()]
             )
         ]
@@ -176,13 +171,11 @@ interface UserAuthAdminApi {
             ApiResponse(
                 description = "성공",
                 responseCode = "204",
-                useReturnTypeSchema = true,
                 content = [Content()]
             ),
             ApiResponse(
                 description = "리소스를 찾을 수 없음",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -219,7 +212,6 @@ interface UserAuthAdminApi {
             ApiResponse(
                 description = "리소스를 찾을 수 없음",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -249,8 +241,8 @@ interface UserAuthAdminApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -295,8 +287,8 @@ interface UserAuthAdminApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
