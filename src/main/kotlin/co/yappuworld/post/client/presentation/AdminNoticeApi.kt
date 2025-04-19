@@ -1,5 +1,6 @@
 package co.yappuworld.post.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
@@ -51,6 +52,14 @@ interface AdminNoticeApi {
     ): ResponseEntity<Unit>
 
     @Operation(summary = "공지사항 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            )
+        ]
+    )
     @PutMapping("/admin/v1/notices")
     fun updateNotice(
         @Valid @RequestBody request: AdminNoticeUpdateRequest
@@ -67,7 +76,7 @@ interface AdminNoticeApi {
                 responseCode = "404",
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "존재하지 않는 공지사항이 요청에 포함",

@@ -31,11 +31,13 @@ class AdminUserManageController(
             SuccessResponse(adminUserService.getUserOverviews(request))
         )
 
-    override fun updateUserDetails(request: AdminUserUpdateRequest) {
+    override fun updateUserDetails(request: AdminUserUpdateRequest): ResponseEntity<Unit> {
         request.phoneNumber?.let {
             if (it.isPhoneNumber().not()) throw BusinessException(GlobalError.INVALID_REQUEST_ARGUMENT)
         }
 
         adminUserService.updateUserDetails(request)
+
+        return ResponseEntity.noContent().build()
     }
 }

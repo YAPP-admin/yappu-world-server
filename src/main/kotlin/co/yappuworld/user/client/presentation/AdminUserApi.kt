@@ -25,7 +25,6 @@ interface AdminUserApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 목록 조회",
@@ -47,7 +46,6 @@ interface AdminUserApi {
             ),
             ApiResponse(
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -68,7 +66,6 @@ interface AdminUserApi {
             ),
             ApiResponse(
                 responseCode = "500",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),

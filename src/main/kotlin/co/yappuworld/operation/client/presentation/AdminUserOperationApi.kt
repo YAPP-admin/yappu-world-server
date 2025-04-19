@@ -1,11 +1,12 @@
 package co.yappuworld.operation.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationActiveUpdateRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
+import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
 import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
@@ -33,12 +34,10 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = OffsetPageResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "직군 데이터 조회",
@@ -85,7 +84,6 @@ interface AdminUserOperationApi {
             ApiResponse(
                 description = "성공",
                 responseCode = "201",
-                useReturnTypeSchema = true,
                 content = [Content()]
             )
         ]
@@ -99,7 +97,6 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "OK",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -146,11 +143,10 @@ interface AdminUserOperationApi {
                 ]
             ),
             ApiResponse(
-                description = "Not Found",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "존재하지 않는 기수",
@@ -167,11 +163,10 @@ interface AdminUserOperationApi {
                 ]
             ),
             ApiResponse(
-                description = "Conflict",
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활성화 정합성 오류",
@@ -198,8 +193,8 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -261,7 +256,6 @@ interface AdminUserOperationApi {
     @Operation(summary = "인증번호 수정")
     @ApiResponse(
         responseCode = "204",
-        description = "No Content",
         content = [Content()]
     )
     @PatchMapping("/admin/v1/auth/authentication-codes")
@@ -272,7 +266,6 @@ interface AdminUserOperationApi {
     @Operation(summary = "인증번호 삭제")
     @ApiResponse(
         responseCode = "204",
-        description = "No Content",
         content = [Content()]
     )
     @DeleteMapping("/admin/v1/auth/authentication-codes")
