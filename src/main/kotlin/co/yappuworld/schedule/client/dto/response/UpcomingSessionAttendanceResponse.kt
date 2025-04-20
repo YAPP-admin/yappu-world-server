@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
@@ -34,7 +34,7 @@ data class UpcomingSessionAttendanceResponse(
             user: UserWithLastActivityUnit,
             activeGeneration: Int,
             session: SessionEntity,
-            attendance: Attendance?,
+            attendance: AttendanceEntity?,
             now: LocalDateTime
         ): UpcomingSessionAttendanceResponse {
             val canCheckIn = now in session.checkInRange &&

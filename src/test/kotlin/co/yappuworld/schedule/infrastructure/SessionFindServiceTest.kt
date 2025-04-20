@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTest
@@ -86,7 +86,7 @@ class SessionFindServiceTest @Autowired constructor(
                     AttendanceStatus.EXCUSED_ABSENCE
                 )
                 val sessions = mutableListOf<SessionEntity>()
-                val attendances = mutableListOf<Attendance>()
+                val attendances = mutableListOf<AttendanceEntity>()
                 repeat(5) {
                     val session = getSessionEntityFixture(
                         generation = 4,
@@ -183,7 +183,7 @@ class SessionFindServiceTest @Autowired constructor(
                     AttendanceStatus.EXCUSED_ABSENCE
                 )
                 val sessions = mutableListOf<SessionEntity>()
-                val attendances = mutableListOf<Attendance>()
+                val attendances = mutableListOf<AttendanceEntity>()
                 repeat(5) {
                     val session = getSessionEntityFixture(
                         generation = 4,

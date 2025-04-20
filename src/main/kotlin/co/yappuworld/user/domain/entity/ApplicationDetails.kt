@@ -1,4 +1,4 @@
-package co.yappuworld.user.domain.model
+package co.yappuworld.user.domain.entity
 
 import co.yappuworld.user.domain.vo.UserRole
 

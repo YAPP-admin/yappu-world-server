@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import io.swagger.v3.oas.annotations.media.Schema

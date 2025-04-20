@@ -1,7 +1,7 @@
 package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.post.domain.NoticeType
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 

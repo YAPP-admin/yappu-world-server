@@ -4,7 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.user.client.dto.request.UpdateDeviceAlarmRequest
 import co.yappuworld.user.client.dto.response.MasterAlarmToggleResponse
 import co.yappuworld.user.client.dto.response.UserAlarmStatusResponse
-import co.yappuworld.user.domain.model.UserAlarmSettingEntity
+import co.yappuworld.user.domain.entity.UserAlarmSettingEntity
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
 import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository

@@ -1,11 +1,14 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.ActivityUnitEntity
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.ActivityUnitEntity
+import co.yappuworld.user.domain.entity.UserEntity
+import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
+import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.jpql
@@ -79,6 +82,33 @@ class UserFindService(
                     it.content.filterNotNull(),
                     it.pageable,
                     it.totalElements
+                )
+            }
+
+    fun findUserWithActivities(userId: UUID): UserWithActivityUnits =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(ActivityUnitEntity::class)
+                        .on(path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)))
+                ).where(path(UserEntity::getId).equal(userId))
+                    .orderBy(path(ActivityUnitEntity::generation).desc())
+            }.filterNotNull()
+            .let { result ->
+                UserWithActivityUnits(
+                    userId = result.first().userId,
+                    email = result.first().email,
+                    name = result.first().name,
+                    role = result.first().role,
+                    activityUnits = result.map { ActivityUnit(it.generation, it.position, it.userId) }
                 )
             }
 

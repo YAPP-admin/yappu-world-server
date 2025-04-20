@@ -3,7 +3,7 @@ package co.yappuworld.user.infrastructure
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.UserFixture.getApplicationDetailsFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationFixture
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat

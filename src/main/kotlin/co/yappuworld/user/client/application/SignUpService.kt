@@ -11,10 +11,10 @@ import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.client.dto.request.UserSignUpRequest
 import co.yappuworld.user.client.dto.response.LatestSignUpApplicationResponse
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
-import co.yappuworld.user.domain.model.UserAlarmSettingEntity
-import co.yappuworld.user.domain.model.UserDeviceEntity
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.UserAlarmSettingEntity
+import co.yappuworld.user.domain.entity.UserDeviceEntity
+import co.yappuworld.user.domain.entity.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole

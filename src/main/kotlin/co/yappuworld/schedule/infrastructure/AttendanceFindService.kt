@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -19,20 +19,20 @@ class AttendanceFindService(
     fun findSessionAttendance(
         userId: UUID,
         sessionId: UUID
-    ): Attendance? = attendanceRepository.findByUserIdAndScheduleId(userId, sessionId)
+    ): AttendanceEntity? = attendanceRepository.findByUserIdAndScheduleId(userId, sessionId)
 
     fun findAttendancesBySchedules(
         userId: UUID,
         scheduleIds: List<UUID>
-    ): List<Attendance> =
+    ): List<AttendanceEntity> =
         attendanceRepository
             .findAll {
-                select(entity(Attendance::class))
-                    .from(entity(Attendance::class))
+                select(entity(AttendanceEntity::class))
+                    .from(entity(AttendanceEntity::class))
                     .where(
                         and(
-                            path(Attendance::userId).equal(userId),
-                            path(Attendance::scheduleId).`in`(scheduleIds)
+                            path(AttendanceEntity::userId).equal(userId),
+                            path(AttendanceEntity::scheduleId).`in`(scheduleIds)
                         )
                     )
             }.filterNotNull()

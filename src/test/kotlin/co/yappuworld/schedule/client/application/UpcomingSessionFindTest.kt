@@ -5,6 +5,7 @@ import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
@@ -33,13 +34,15 @@ class UpcomingSessionFindTest :
         val sessionFindService = mockk<SessionFindService>()
         val attendanceFindService = mockk<AttendanceFindService>()
         val generationFindService = mockk<GenerationFindService>()
+        val scheduleFindService = mockk<ScheduleFindService>()
 
         val scheduleService = ScheduleService(
             scheduleRepository = scheduleRepository,
             userFindService = userFindService,
             sessionFindService = sessionFindService,
             attendanceFindService = attendanceFindService,
-            generationFindService = generationFindService
+            generationFindService = generationFindService,
+            scheduleFindService = scheduleFindService
         )
 
         feature("가장 인접한 세션을 조회할 때") {

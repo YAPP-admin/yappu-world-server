@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure.jpa
 
-import co.yappuworld.user.domain.model.UserAlarmSettingEntity
+import co.yappuworld.user.domain.entity.UserAlarmSettingEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 

@@ -6,6 +6,7 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
+import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
@@ -26,12 +27,14 @@ class ScheduleServiceSessionProgressPhaseTest {
     private val sessionFindService = mockk<SessionFindService>()
     private val attendanceFindService = mockk<AttendanceFindService>()
     private val generationFindService = mockk<GenerationFindService>()
+    private val scheduleFindService = mockk<ScheduleFindService>()
     private val scheduleService = ScheduleService(
         scheduleRepository = scheduleRepository,
         userFindService = userFindService,
         sessionFindService = sessionFindService,
         attendanceFindService = attendanceFindService,
-        generationFindService = generationFindService
+        generationFindService = generationFindService,
+        scheduleFindService = scheduleFindService
     )
 
     private val generation = 2
