@@ -15,5 +15,5 @@ data class SchedulePageRequest(
 ) {
 
     val from: LocalDate = LocalDate.of(year, month, 1)
-    val to: LocalDate = from.plusMonths(1).minusDays(1)
+    val toInclusive: LocalDate = from.plusMonths(1).minusDays(1)
 }

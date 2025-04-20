@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.domain.AttendanceStatus.LATE
 import co.yappuworld.schedule.domain.AttendanceStatus.ON_TIME
@@ -30,7 +30,7 @@ data class AttendanceStatisticsResponse(
     companion object {
         fun of(
             sessions: List<SessionEntity>,
-            attendances: List<Attendance>,
+            attendances: List<AttendanceEntity>,
             now: LocalDateTime,
             latePassCount: Int
         ): AttendanceStatisticsResponse {

@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import org.springframework.data.repository.findByIdOrNull
@@ -59,14 +59,14 @@ class SessionFindService(
                     path(SessionEntity::endTime),
                     path(SessionEntity::generation),
                     path(SessionEntity::sessionType),
-                    path(Attendance::createdAt),
-                    path(Attendance::status)
+                    path(AttendanceEntity::createdAt),
+                    path(AttendanceEntity::status)
                 ).from(
                     entity(SessionEntity::class),
-                    leftJoin(Attendance::class).on(
+                    leftJoin(AttendanceEntity::class).on(
                         and(
-                            path(SessionEntity::getId).equal(path(Attendance::scheduleId)),
-                            path(Attendance::userId).equal(userId)
+                            path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
+                            path(AttendanceEntity::userId).equal(userId)
                         )
                     )
                 ).where(path(SessionEntity::generation).equal(generation))
@@ -91,14 +91,14 @@ class SessionFindService(
                     path(SessionEntity::endTime),
                     path(SessionEntity::generation),
                     path(SessionEntity::sessionType),
-                    path(Attendance::createdAt),
-                    path(Attendance::status)
+                    path(AttendanceEntity::createdAt),
+                    path(AttendanceEntity::status)
                 ).from(
                     entity(SessionEntity::class),
-                    leftJoin(Attendance::class).on(
+                    leftJoin(AttendanceEntity::class).on(
                         and(
-                            path(SessionEntity::getId).equal(path(Attendance::scheduleId)),
-                            path(Attendance::userId).equal(userId)
+                            path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
+                            path(AttendanceEntity::userId).equal(userId)
                         )
                     )
                 ).where(

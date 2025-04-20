@@ -6,7 +6,7 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceError
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
@@ -44,7 +44,7 @@ class AttendanceService(
 
         sessionFindService.findSession(request.sessionId)?.let {
             attendanceCommandService.save(
-                Attendance.checkInSession(now = now, userId = userId, session = it as SessionEntity)
+                AttendanceEntity.checkInSession(now = now, userId = userId, session = it as SessionEntity)
             )
         }
     }

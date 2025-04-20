@@ -79,4 +79,8 @@ class SessionEntity(
             endExclusive = lateTimeUntil,
             unit = SECONDS
         )
+
+    fun isFinished(now: LocalDateTime): Boolean =
+        endDate.isBefore(now.toLocalDate()) ||
+            (endDate.isEqual(now.toLocalDate()) && (endTime?.isBefore(now.toLocalTime()) == true))
 }

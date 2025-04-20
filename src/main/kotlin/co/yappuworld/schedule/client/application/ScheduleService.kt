@@ -7,7 +7,9 @@ import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsRespon
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
 import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
+import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.user.infrastructure.UserFindService
@@ -20,6 +22,7 @@ import java.util.UUID
 class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
     private val userFindService: UserFindService,
+    private val scheduleFindService: ScheduleFindService,
     private val sessionFindService: SessionFindService,
     private val attendanceFindService: AttendanceFindService,
     private val generationFindService: GenerationFindService
@@ -39,12 +42,18 @@ class ScheduleService(
         )
     }
 
+    @Transactional(readOnly = true)
     fun getSchedules(
         request: SchedulePageRequest,
+        userId: UUID,
         now: LocalDateTime
     ): SchedulePageResponse {
-        val schedules = scheduleRepository.findScheduleEntitiesByDateBetween(request.from, request.to)
-        return SchedulePageResponse.from(schedules, request, now)
+        val schedules = scheduleFindService.findSchedulesBetween(request.from, request.toInclusive)
+        val attendances = attendanceFindService.findAttendancesBySchedules(
+            userId,
+            schedules.filterIsInstance<SessionEntity>().map { it.id }
+        )
+        return SchedulePageResponse.from(schedules, attendances, request, now)
     }
 
     @Transactional(readOnly = true)

@@ -1,12 +1,12 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 
 interface AttendanceRepository :
-    JpaRepository<Attendance, UUID>,
+    JpaRepository<AttendanceEntity, UUID>,
     KotlinJdslJpqlExecutor {
 
     fun existsAttendanceByUserIdAndScheduleId(
@@ -17,5 +17,5 @@ interface AttendanceRepository :
     fun findByUserIdAndScheduleId(
         userId: UUID,
         scheduleId: UUID
-    ): Attendance?
+    ): AttendanceEntity?
 }

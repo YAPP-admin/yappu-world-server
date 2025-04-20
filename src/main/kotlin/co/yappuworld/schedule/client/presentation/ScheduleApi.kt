@@ -153,7 +153,8 @@ interface ScheduleApi {
                                                             "endTime": "18:00:00",
                                                             "scheduleType": "SESSION",
                                                             "sessionType": "OFFLINE",
-                                                            "scheduleProgressPhase": "DONE"
+                                                            "scheduleProgressPhase": "DONE",
+                                                            "attendanceStatus": "결석"
                                                         }
                                                     ]
                                                 }
@@ -171,7 +172,8 @@ interface ScheduleApi {
     )
     @GetMapping("/v1/schedules")
     fun getSchedules(
-        @Valid @ParameterObject request: SchedulePageRequest
+        @Valid @ParameterObject request: SchedulePageRequest,
+        @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<SchedulePageResponse>>
 
     @Operation(summary = "임박한 세션의 출석 정보")

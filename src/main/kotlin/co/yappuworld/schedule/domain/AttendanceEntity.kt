@@ -11,7 +11,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "attendances")
-class Attendance(
+class AttendanceEntity(
     status: AttendanceStatus,
     @Column(name = "user_id", nullable = false)
     val userId: UUID,
@@ -25,14 +25,14 @@ class Attendance(
             now: LocalDateTime,
             userId: UUID,
             session: SessionEntity
-        ): Attendance {
+        ): AttendanceEntity {
             val status = when {
                 now < session.lateTimeFrom -> AttendanceStatus.ON_TIME
                 now in session.lateTimeRange -> AttendanceStatus.LATE
                 else -> AttendanceStatus.ABSENT
             }
 
-            return Attendance(
+            return AttendanceEntity(
                 status = status,
                 userId = userId,
                 scheduleId = session.id

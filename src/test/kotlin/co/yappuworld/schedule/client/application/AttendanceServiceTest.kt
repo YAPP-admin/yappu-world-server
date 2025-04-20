@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.application
 
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceError
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
@@ -159,7 +159,7 @@ class AttendanceServiceTest :
                     scenario("지각 시간 이전에 출석을 했다면, 상태가 정상으로 생성된다.") {
                         val now = LocalDateTime.of(session.date, session.time).plusMinutes(20).minusNanos(1)
 
-                        Attendance
+                        AttendanceEntity
                             .checkInSession(now = now, userId = userId, session = session)
                             .status
                             .shouldBe(AttendanceStatus.ON_TIME)
@@ -177,7 +177,7 @@ class AttendanceServiceTest :
                         ) { time ->
                             val now = LocalDateTime.of(session.date, time)
 
-                            Attendance
+                            AttendanceEntity
                                 .checkInSession(now = now, userId = userId, session = session)
                                 .status
                                 .shouldBe(AttendanceStatus.LATE)
@@ -187,7 +187,7 @@ class AttendanceServiceTest :
                     scenario("2시간을 초과하면 결석 상태로 설정된다.") {
                         val now = LocalDateTime.of(session.date, session.time).plusHours(2).plusNanos(1)
 
-                        Attendance
+                        AttendanceEntity
                             .checkInSession(now = now, userId = userId, session = session)
                             .status
                             .shouldBe(AttendanceStatus.ABSENT)

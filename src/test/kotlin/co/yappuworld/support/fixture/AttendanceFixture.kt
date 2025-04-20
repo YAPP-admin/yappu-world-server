@@ -1,7 +1,7 @@
 package co.yappuworld.support.fixture
 
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
-import co.yappuworld.schedule.domain.Attendance
+import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus
 import java.util.UUID
 
@@ -20,7 +20,7 @@ object AttendanceFixture {
         status: AttendanceStatus = AttendanceStatus.ON_TIME,
         userId: UUID = UUID.randomUUID(),
         scheduleId: UUID = UUID.randomUUID()
-    ) = Attendance(
+    ) = AttendanceEntity(
         status = status,
         userId = userId,
         scheduleId = scheduleId

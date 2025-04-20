@@ -2,6 +2,8 @@ package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.TimeUtils.LocalDateRange
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
+import co.yappuworld.schedule.domain.AttendanceEntity
+import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.ScheduleType
@@ -23,16 +25,19 @@ data class SchedulePageResponse(
     companion object {
         fun from(
             schedules: List<ScheduleEntity>,
+            attendances: List<AttendanceEntity>,
             request: SchedulePageRequest,
             now: LocalDateTime
         ): SchedulePageResponse {
-            val scheduleByDate = schedules.groupBy { it.date }
+            val attendanceBySessionId = attendances.associateBy { it.scheduleId }
+            val scheduleWithAttendance = schedules.map { Pair(it, attendanceBySessionId[it.id]) }
+            val scheduleByDate = scheduleWithAttendance.groupBy { (schedule, _) -> schedule.date }
 
-            return LocalDateRange(request.from, request.to)
+            return LocalDateRange(request.from, request.toInclusive.plusDays(1))
                 .map { date ->
                     DateGroupedScheduleResponse(
                         date = date,
-                        schedules = scheduleByDate[date] ?: emptyList(),
+                        scheduleWithAttendance = scheduleByDate[date] ?: emptyList(),
                         now = now
                     )
                 }.let { SchedulePageResponse(it) }
@@ -47,9 +52,13 @@ data class DateGroupedScheduleResponse(
     val schedules: List<SimpleScheduleResponse>
 ) {
 
-    constructor(date: LocalDate, schedules: List<ScheduleEntity>, now: LocalDateTime) : this(
+    constructor(
+        date: LocalDate,
+        scheduleWithAttendance: List<Pair<ScheduleEntity, AttendanceEntity?>>,
+        now: LocalDateTime
+    ) : this(
         date = date,
-        schedules = schedules.map { SimpleScheduleResponse.from(it, now) }
+        schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, now) }
     )
 }
 
@@ -73,35 +82,41 @@ data class SimpleScheduleResponse(
     @Schema(description = "세션 종류", nullable = true)
     val sessionType: SessionType?,
     @Schema(description = "일정 진행 상태")
-    val scheduleProgressPhase: ScheduleProgressPhase
+    val scheduleProgressPhase: ScheduleProgressPhase,
+    @Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
+    val attendanceStatus: String?
 ) {
 
     companion object {
         fun from(
-            schedule: ScheduleEntity,
+            scheduleWithAttendance: Pair<ScheduleEntity, AttendanceEntity?>,
             now: LocalDateTime
         ): SimpleScheduleResponse =
-            when (schedule) {
-                is SessionEntity -> convertSession(schedule, now)
+            when (scheduleWithAttendance.first) {
+                is SessionEntity -> convertSession(scheduleWithAttendance, now)
                 is TaskEntity -> TODO()
                 else -> TODO()
             }
 
         private fun convertSession(
-            session: SessionEntity,
+            sessionWithAttendance: Pair<ScheduleEntity, AttendanceEntity?>,
             now: LocalDateTime
         ): SimpleScheduleResponse =
-            SimpleScheduleResponse(
-                id = session.id,
-                name = session.name,
-                place = session.place,
-                date = session.date,
-                endDate = session.endDate,
-                time = session.time,
-                endTime = session.endTime,
-                scheduleType = ScheduleType.SESSION,
-                sessionType = session.sessionType,
-                scheduleProgressPhase = session.getProgressPhase(now)
-            )
+            sessionWithAttendance.let { (s, attendance) ->
+                val session = s as SessionEntity
+                SimpleScheduleResponse(
+                    id = session.id,
+                    name = session.name,
+                    place = session.place,
+                    date = session.date,
+                    endDate = session.endDate,
+                    time = session.time,
+                    endTime = session.endTime,
+                    scheduleType = ScheduleType.SESSION,
+                    sessionType = session.sessionType,
+                    scheduleProgressPhase = session.getProgressPhase(now),
+                    attendanceStatus = ABSENT.label.takeIf { attendance == null && session.isFinished(now) }
+                )
+            }
     }
 }
