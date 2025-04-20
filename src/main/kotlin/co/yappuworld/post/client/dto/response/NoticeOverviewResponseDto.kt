@@ -9,7 +9,9 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class NoticeOverviewResponse(
+    @Schema(description = "공지사항 정보")
     val notice: NoticeSimpleResponse,
+    @Schema(description = "작성자 정보")
     val writer: NoticeOverviewWriterResponse
 ) {
 

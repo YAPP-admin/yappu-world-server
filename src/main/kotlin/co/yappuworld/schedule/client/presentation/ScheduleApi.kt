@@ -179,9 +179,9 @@ interface ScheduleApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = UpcomingSessionAttendanceResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활동 유저가 아니거나 미출석 & 출석 가능한 시간이 아닌 경우",

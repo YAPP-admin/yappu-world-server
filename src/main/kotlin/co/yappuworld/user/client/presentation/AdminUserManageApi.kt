@@ -31,9 +31,9 @@ interface AdminUserManageApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = AdminUserDetailResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 상세 조회",

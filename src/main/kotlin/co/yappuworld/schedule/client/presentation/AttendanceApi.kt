@@ -211,9 +211,9 @@ interface AttendanceApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = AttendancesHistoryResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "출석 내역 조회",

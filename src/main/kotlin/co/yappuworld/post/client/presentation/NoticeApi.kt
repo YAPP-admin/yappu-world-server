@@ -81,9 +81,9 @@ interface NoticeApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = NoticeResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "공지사항 상세 조회",

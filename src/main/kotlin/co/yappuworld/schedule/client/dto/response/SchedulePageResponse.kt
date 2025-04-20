@@ -9,12 +9,14 @@ import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.domain.TaskEntity
 import co.yappuworld.schedule.domain.getProgressPhase
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
 data class SchedulePageResponse(
+    @Schema(description = "날짜 목록")
     val dates: List<DateGroupedScheduleResponse>
 ) {
 
@@ -39,7 +41,9 @@ data class SchedulePageResponse(
 }
 
 data class DateGroupedScheduleResponse(
+    @Schema(description = "날짜")
     val date: LocalDate,
+    @Schema(description = "일정 목록")
     val schedules: List<SimpleScheduleResponse>
 ) {
 
@@ -50,15 +54,25 @@ data class DateGroupedScheduleResponse(
 }
 
 data class SimpleScheduleResponse(
+    @Schema(description = "일정 ID")
     val id: UUID,
+    @Schema(description = "일정 이름")
     val name: String,
+    @Schema(description = "일정 장소", nullable = true)
     val place: String?,
+    @Schema(description = "일정 날짜")
     val date: LocalDate,
-    val endDate: LocalDate?,
+    @Schema(description = "일정 종료 날짜")
+    val endDate: LocalDate,
+    @Schema(description = "일정 시작 시간", nullable = true)
     val time: LocalTime?,
+    @Schema(description = "일정 종료 시간", nullable = true)
     val endTime: LocalTime?,
+    @Schema(description = "일정 종류")
     val scheduleType: ScheduleType,
+    @Schema(description = "세션 종류", nullable = true)
     val sessionType: SessionType?,
+    @Schema(description = "일정 진행 상태")
     val scheduleProgressPhase: ScheduleProgressPhase
 ) {
 

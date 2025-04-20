@@ -23,7 +23,7 @@ data class AttendanceHistoryResponse(
     val name: String,
     @Schema(description = "출석 시간", nullable = true)
     val checkedInAt: LocalDateTime?,
-    @Schema(description = "출석 상태", allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
+    @Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
     val attendanceStatus: String?
 ) {
 
