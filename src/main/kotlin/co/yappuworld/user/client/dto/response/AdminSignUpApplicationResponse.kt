@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus.APPROVED
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus.REJECTED
 import io.swagger.v3.oas.annotations.media.Schema

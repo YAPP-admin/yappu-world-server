@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure.jpa
 
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID

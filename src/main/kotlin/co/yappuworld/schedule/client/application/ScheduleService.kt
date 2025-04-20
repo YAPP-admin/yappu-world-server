@@ -48,12 +48,17 @@ class ScheduleService(
         userId: UUID,
         now: LocalDateTime
     ): SchedulePageResponse {
+        val userWithActivityUnits = userFindService.findUserWithActivities(userId)
         val schedules = scheduleFindService.findSchedulesBetween(request.from, request.toInclusive)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId,
-            schedules.filterIsInstance<SessionEntity>().map { it.id }
+            schedules
+                .filterIsInstance<SessionEntity>()
+                .filter { it.generation in userWithActivityUnits.activityGenerations }
+                .map { it.id }
         )
-        return SchedulePageResponse.from(schedules, attendances, request, now)
+
+        return SchedulePageResponse.from(userWithActivityUnits, schedules, attendances, request, now)
     }
 
     @Transactional(readOnly = true)

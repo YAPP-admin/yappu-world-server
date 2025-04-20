@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.application
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository

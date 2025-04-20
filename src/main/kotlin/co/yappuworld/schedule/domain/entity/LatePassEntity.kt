@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.domain.entity
 
 import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.Column
@@ -8,7 +8,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "late_passes")
-class LatePass(
+class LatePassEntity(
     val userId: UUID,
     val generation: Int,
     reason: String? = null

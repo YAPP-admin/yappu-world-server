@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.UserAlarmSettingEntity
+import co.yappuworld.user.domain.entity.UserAlarmSettingEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class UserAlarmStatusResponse(

@@ -1,13 +1,15 @@
 package co.yappuworld.schedule.client.application
 
-import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.ScheduleEntity
+import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.user.domain.model.UserWithActivityUnits
+import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
 import io.mockk.every
 import io.mockk.mockk
@@ -41,6 +43,13 @@ class ScheduleServiceScheduleProgressPhaseTest {
     @Test
     fun `같은 날 2개의 데이터가 있으면 해당 일자 schedules가 하나의 배열로 묶인다`() {
         val targetDate = LocalDate.of(2021, 5, 5)
+        every { userFindService.findUserWithActivities(any()) } returns UserWithActivityUnits(
+            userId = UUID.randomUUID(),
+            "email",
+            "name",
+            UserRole.ACTIVE,
+            emptyList()
+        )
         every {
             scheduleFindService.findSchedulesBetween(
                 LocalDate.of(2021, 5, 1),

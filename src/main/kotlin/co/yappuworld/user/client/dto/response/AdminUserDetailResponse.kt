@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.domain.model.ActivityUnitEntity
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.ActivityUnitEntity
+import co.yappuworld.user.domain.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID

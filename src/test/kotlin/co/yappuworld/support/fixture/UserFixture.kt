@@ -1,11 +1,11 @@
 package co.yappuworld.support.fixture
 
 import co.yappuworld.global.util.EncryptUtils
-import co.yappuworld.user.domain.model.ActivityUnitEntity
-import co.yappuworld.user.domain.model.ActivityUnitParam
-import co.yappuworld.user.domain.model.ApplicationDetails
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.entity.ActivityUnitEntity
+import co.yappuworld.user.domain.entity.ActivityUnitParam
+import co.yappuworld.user.domain.entity.ApplicationDetails
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.UserEntity
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit

@@ -8,8 +8,8 @@ import co.yappuworld.support.fixture.UserDtoFixture.getLatestSignUpApplicationAp
 import co.yappuworld.support.fixture.UserFixture.getApplicationDetailsFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationFixture
 import co.yappuworld.user.client.application.SignUpService
-import co.yappuworld.user.domain.model.ApplicationDetails
-import co.yappuworld.user.domain.model.SignUpApplicationEntity
+import co.yappuworld.user.domain.entity.ApplicationDetails
+import co.yappuworld.user.domain.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.UserCommandService

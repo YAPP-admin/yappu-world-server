@@ -11,6 +11,7 @@ import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import co.yappuworld.schedule.domain.TaskEntity
 import co.yappuworld.schedule.domain.getProgressPhase
+import co.yappuworld.user.domain.model.UserWithActivityUnits
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -24,6 +25,7 @@ data class SchedulePageResponse(
 
     companion object {
         fun from(
+            userWithActivityUnits: UserWithActivityUnits,
             schedules: List<ScheduleEntity>,
             attendances: List<AttendanceEntity>,
             request: SchedulePageRequest,
@@ -37,6 +39,7 @@ data class SchedulePageResponse(
                 .map { date ->
                     DateGroupedScheduleResponse(
                         date = date,
+                        userWithActivityUnits = userWithActivityUnits,
                         scheduleWithAttendance = scheduleByDate[date] ?: emptyList(),
                         now = now
                     )
@@ -54,11 +57,12 @@ data class DateGroupedScheduleResponse(
 
     constructor(
         date: LocalDate,
+        userWithActivityUnits: UserWithActivityUnits,
         scheduleWithAttendance: List<Pair<ScheduleEntity, AttendanceEntity?>>,
         now: LocalDateTime
     ) : this(
         date = date,
-        schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, now) }
+        schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, userWithActivityUnits, now) }
     )
 }
 
@@ -90,16 +94,18 @@ data class SimpleScheduleResponse(
     companion object {
         fun from(
             scheduleWithAttendance: Pair<ScheduleEntity, AttendanceEntity?>,
+            userWithActivityUnits: UserWithActivityUnits,
             now: LocalDateTime
         ): SimpleScheduleResponse =
             when (scheduleWithAttendance.first) {
-                is SessionEntity -> convertSession(scheduleWithAttendance, now)
+                is SessionEntity -> convertSession(scheduleWithAttendance, userWithActivityUnits, now)
                 is TaskEntity -> TODO()
                 else -> TODO()
             }
 
         private fun convertSession(
             sessionWithAttendance: Pair<ScheduleEntity, AttendanceEntity?>,
+            userWithActivityUnits: UserWithActivityUnits,
             now: LocalDateTime
         ): SimpleScheduleResponse =
             sessionWithAttendance.let { (s, attendance) ->
@@ -115,7 +121,11 @@ data class SimpleScheduleResponse(
                     scheduleType = ScheduleType.SESSION,
                     sessionType = session.sessionType,
                     scheduleProgressPhase = session.getProgressPhase(now),
-                    attendanceStatus = ABSENT.label.takeIf { attendance == null && session.isFinished(now) }
+                    attendanceStatus = ABSENT.label.takeIf {
+                        attendance == null &&
+                            session.isFinished(now) &&
+                            session.generation in userWithActivityUnits.activityUnits.map { it.generation }
+                    }
                 )
             }
     }

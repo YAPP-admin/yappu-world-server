@@ -1,4 +1,4 @@
-package co.yappuworld.user.domain.model
+package co.yappuworld.user.domain.entity
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
