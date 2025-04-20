@@ -33,9 +33,10 @@ interface UserAuthApi {
             ApiResponse(
                 description = "가입 코드를 통해 별도 신청 절차 없이 가입 처리",
                 responseCode = "200",
-                useReturnTypeSchema = true,
+//                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(ref = "#/components/schemas/SuccessResponseToken"),
                         examples = [
                             ExampleObject(
                                 value = """
@@ -317,9 +318,9 @@ interface UserAuthApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = LatestSignUpApplicationResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "최근의 가입 신청이 보류",

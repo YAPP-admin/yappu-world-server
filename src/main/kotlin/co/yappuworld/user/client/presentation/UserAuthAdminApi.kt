@@ -36,9 +36,9 @@ interface UserAuthAdminApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = Token::class),
                         examples = [
                             ExampleObject(
                                 name = "로그인 성공",

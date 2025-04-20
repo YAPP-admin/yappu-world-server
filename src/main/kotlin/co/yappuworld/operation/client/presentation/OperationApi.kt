@@ -63,9 +63,11 @@ interface OperationApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = ForceUpdateResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "강제 업데이트 필요",
+//                                ref = "#/components/schemas/SuccessResponseForceUpdateResponse",
                                 value = """
                                     {
                                         "isSuccess": "true",
