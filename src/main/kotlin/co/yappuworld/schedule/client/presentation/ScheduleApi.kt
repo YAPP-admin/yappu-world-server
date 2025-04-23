@@ -109,6 +109,7 @@ interface ScheduleApi {
                                             "dates": [
                                                 {
                                                     "date": "2024-11-01",
+                                                    "isToday": true,
                                                     "schedules": [
                                                         {
                                                             "id": "552390a8-ff12-11ef-ad31-0242ac120002",
@@ -142,6 +143,7 @@ interface ScheduleApi {
                                                 },
                                                 {
                                                     "date": "2024-11-03",
+                                                    "isToday": false,
                                                     "schedules": [
                                                         {
                                                             "id": "5523913c-ff12-11ef-ad31-0242ac120002",

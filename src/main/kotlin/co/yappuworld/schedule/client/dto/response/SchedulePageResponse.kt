@@ -51,6 +51,8 @@ data class SchedulePageResponse(
 data class DateGroupedScheduleResponse(
     @Schema(description = "날짜")
     val date: LocalDate,
+    @Schema(description = "당일 여부")
+    val isToday: Boolean,
     @Schema(description = "일정 목록")
     val schedules: List<SimpleScheduleResponse>
 ) {
@@ -62,6 +64,7 @@ data class DateGroupedScheduleResponse(
         now: LocalDateTime
     ) : this(
         date = date,
+        isToday = date.isEqual(now.toLocalDate()),
         schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, userWithActivityUnits, now) }
     )
 }
