@@ -7,13 +7,18 @@ import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.UUID
 
 data class UpcomingSessionAttendanceResponse(
     @Schema(description = "세션 식별자")
     val sessionId: UUID,
+    @Schema(description = "세션 이름")
+    val name: String,
     @Schema(description = "세션 일자")
     val date: LocalDate,
+    @Schema(description = "세션 시간")
+    val time: LocalTime?,
     @Schema(
         description = """
             현재 출석이 가능한지 여부
@@ -44,7 +49,9 @@ data class UpcomingSessionAttendanceResponse(
 
             return UpcomingSessionAttendanceResponse(
                 sessionId = session.id,
+                name = session.name,
                 date = session.date,
+                time = session.time,
                 canCheckIn = canCheckIn,
                 status = attendance?.status?.label
             )

@@ -197,7 +197,9 @@ interface ScheduleApi {
                                     {
                                         "data": {
                                             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                                            "name": "OT",
                                             "date": "2024-11-01",
+                                            "time": "14:00:00",
                                             "canCheckIn": false,
                                             "status": null
                                         },
@@ -211,7 +213,9 @@ interface ScheduleApi {
                                     {
                                         "data": {
                                             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                                            "name": "OT",
                                             "date": "2024-11-01",
+                                            "time": "14:00:00",
                                             "canCheckIn": true,
                                             "status": null
                                         },
@@ -225,7 +229,9 @@ interface ScheduleApi {
                                     {
                                         "data": {
                                             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                                            "name": "OT",
                                             "date": "2024-11-01",
+                                            "time": "14:00:00",
                                             "canCheckIn": false,
                                             "status": "출석"
                                         },
@@ -244,11 +250,31 @@ interface ScheduleApi {
                         schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "활성화 된 기수가 없거나 다음 세션이 없는 경우",
+                                name = "다음 세션이 없는 경우",
                                 value = """
                                     {
                                         "message": "예정된 세션이 존재하지 않습니다.",
                                         "errorCode": "SCH_1005",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "활성화 된 기수가 없는 경우",
+                                value = """
+                                    {
+                                        "message": "활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다.",
+                                        "errorCode": "SCH_1006",
                                         "isSuccess": false
                                     }
                                 """
