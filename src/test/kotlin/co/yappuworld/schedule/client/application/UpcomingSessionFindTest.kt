@@ -81,7 +81,7 @@ class UpcomingSessionFindTest :
 
                 shouldThrowExactly<BusinessException> {
                     scheduleService.getUpcomingSessionAttendance(userId, now)
-                }.error shouldBe ScheduleError.NO_UPCOMING_SESSION
+                }.error shouldBe ScheduleError.NO_SESSION_IN_BREAK_PERIOD
             }
 
             scenario("세션이 존재하지 않으면 예외가 발생한다.") {
