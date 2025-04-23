@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.TimeUtils.LocalDateRange
+import co.yappuworld.global.util.TimeUtils.korean
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
@@ -51,6 +52,8 @@ data class SchedulePageResponse(
 data class DateGroupedScheduleResponse(
     @Schema(description = "날짜")
     val date: LocalDate,
+    @Schema(description = "요일")
+    val dayOfTheWeek: String,
     @Schema(description = "당일 여부")
     val isToday: Boolean,
     @Schema(description = "일정 목록")
@@ -65,6 +68,7 @@ data class DateGroupedScheduleResponse(
     ) : this(
         date = date,
         isToday = date.isEqual(now.toLocalDate()),
+        dayOfTheWeek = date.dayOfWeek.korean(),
         schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, userWithActivityUnits, now) }
     )
 }

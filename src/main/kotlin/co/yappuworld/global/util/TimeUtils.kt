@@ -1,5 +1,6 @@
 package co.yappuworld.global.util
 
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -112,4 +113,15 @@ object TimeUtils {
 
         operator fun contains(element: LocalDateTime): Boolean = element.isBetween(start, endExclusive)
     }
+
+    fun DayOfWeek.korean() =
+        when (this) {
+            DayOfWeek.MONDAY -> "월"
+            DayOfWeek.TUESDAY -> "화"
+            DayOfWeek.WEDNESDAY -> "수"
+            DayOfWeek.THURSDAY -> "목"
+            DayOfWeek.FRIDAY -> "금"
+            DayOfWeek.SATURDAY -> "토"
+            DayOfWeek.SUNDAY -> "일"
+        }
 }
