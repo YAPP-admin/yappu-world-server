@@ -2,8 +2,8 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTest
-import co.yappuworld.support.fixture.UserFixture.getActivityUnit
-import co.yappuworld.support.fixture.UserFixture.getUserFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
+import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import co.yappuworld.user.domain.entity.ActivityUnitEntity
 import co.yappuworld.user.domain.entity.UserEntity
 import co.yappuworld.user.domain.vo.Position
@@ -59,11 +59,11 @@ class UserFindServiceJdslTest {
 
         generationAndPosition.forEach { (generation, position) ->
             val user = userRepository
-                .save(getUserFixture())
+                .save(getUserEntityFixture())
                 .also { users.add(it) }
             activityUnits.add(
                 activityUnitRepository.save(
-                    getActivityUnit(generation = generation, position = position, userId = user.id)
+                    getActivityUnitEntityFixture(generation = generation, position = position, userId = user.id)
                 )
             )
         }
@@ -78,17 +78,18 @@ class UserFindServiceJdslTest {
     @Test
     @Transactional
     fun `가장 최근의 활동 내역이 조회된다`() {
-        val user = userRepository.save(getUserFixture())
-        val lastActivityUnit = getActivityUnit(generation = 25, position = Position.ANDROID, userId = user.id)
+        val user = userRepository.save(getUserEntityFixture())
+        val lastActivityUnit =
+            getActivityUnitEntityFixture(generation = 25, position = Position.ANDROID, userId = user.id)
         activityUnitRepository.saveAll(
             listOf(
-                getActivityUnit(generation = 24, position = Position.SERVER, userId = user.id),
+                getActivityUnitEntityFixture(generation = 24, position = Position.SERVER, userId = user.id),
                 lastActivityUnit
             )
         )
 
         val userWithActivityUnit = assertNotNull(userFindService.findUserWithLastActivityUnit(user.id))
-        assertEquals(userWithActivityUnit.generation, lastActivityUnit.generation)
+        assertEquals(userWithActivityUnit.lastActiveGeneration, lastActivityUnit.generation)
     }
 
     @Test
@@ -96,10 +97,10 @@ class UserFindServiceJdslTest {
     fun `여러 명의 최근 활동 내역도 정상적으로 조회된다`() {
         userFindService
             .findAllUserWithLastActivityUnit(PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "id")))
-            .sortedByDescending { it.generation }
+            .sortedByDescending { it.lastActiveGeneration }
             .forEachIndexed { index, userWithLastActivityUnit ->
-                assertEquals(userWithLastActivityUnit.generation, generationAndPosition[index].first)
-                assertEquals(userWithLastActivityUnit.position, generationAndPosition[index].second)
+                assertEquals(userWithLastActivityUnit.lastActiveGeneration, generationAndPosition[index].first)
+                assertEquals(userWithLastActivityUnit.lastActivePosition, generationAndPosition[index].second)
             }
     }
 
@@ -108,10 +109,10 @@ class UserFindServiceJdslTest {
     fun `몇 명의 유저가 지정된 경우 해당 유저들의 정보가 조회된다`() {
         userFindService
             .findAllUserWithLastActivityUnit(users.map { it.id })
-            .sortedByDescending { it.generation }
+            .sortedByDescending { it.lastActiveGeneration }
             .forEachIndexed { index, userWithLastActivityUnit ->
-                assertEquals(userWithLastActivityUnit.generation, generationAndPosition[index].first)
-                assertEquals(userWithLastActivityUnit.position, generationAndPosition[index].second)
+                assertEquals(userWithLastActivityUnit.lastActiveGeneration, generationAndPosition[index].first)
+                assertEquals(userWithLastActivityUnit.lastActivePosition, generationAndPosition[index].second)
             }
     }
 

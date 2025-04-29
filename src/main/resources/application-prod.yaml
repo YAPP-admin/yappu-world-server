@@ -52,3 +52,6 @@ management:
 logging:
     level:
         p6spy: WARN
+
+admin:
+    domain: ${PROD_DOMAIN_ADMIN}

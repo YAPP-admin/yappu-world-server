@@ -49,6 +49,7 @@ jobs:
                     fcm.client_x509_cert_url: ${{ secrets.FCM_X509_CERT_URL }}
                     discord.webhook: ${{ secrets.DISCORD_WEBHOOK_URL_IN_DEV }}
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
+                    admin.domain: ${{ secrets.DEV_ADMIN_DOMAIN }}
 
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build

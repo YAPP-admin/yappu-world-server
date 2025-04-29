@@ -43,7 +43,7 @@ class SignUpApplicationEntity(
         this.status = SignUpApplicationStatus.APPROVED
     }
 
-    fun reject(reason: String) {
+    fun reject(reason: String? = null) {
         this.status = SignUpApplicationStatus.REJECTED
         this.rejectReason = reason
     }
@@ -64,4 +64,8 @@ class SignUpApplicationEntity(
     fun getFcmToken(): String = details.fcmToken
 
     fun getDeviceAlarmToggle(): Boolean = this.details.deviceAlarmToggle
+
+    fun isProcessed(): Boolean = this.status != SignUpApplicationStatus.PENDING
+
+    fun getApplicantName(): String = this.details.name
 }

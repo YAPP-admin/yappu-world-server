@@ -44,7 +44,7 @@ data class UpcomingSessionAttendanceResponse(
         ): UpcomingSessionAttendanceResponse {
             val canCheckIn = now in session.checkInRange &&
                 attendance == null &&
-                user.generation == activeGeneration &&
+                user.lastActiveGeneration == activeGeneration &&
                 user.role == UserRole.ACTIVE
 
             return UpcomingSessionAttendanceResponse(

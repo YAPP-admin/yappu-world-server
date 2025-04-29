@@ -38,13 +38,20 @@ class UserFindService(
     private val context: JpqlRenderContext
 ) {
 
-    fun existsByEmail(email: String): Boolean = userRepository.existsUserByEmail(email)
+    fun existsEmail(email: String): Boolean = userRepository.existsUserByEmail(email)
 
-    fun findByIdOrNull(id: UUID): UserEntity? = userRepository.findByIdOrNull(id)
+    fun findUserOrNull(id: UUID): UserEntity? = userRepository.findByIdOrNull(id)
 
-    fun findByEmailOrNull(email: String): UserEntity? = userRepository.findUserOrNullByEmail(email)
+    fun findUser(id: UUID): UserEntity =
+        userRepository.findByIdOrNull(id)
+            ?: throw BusinessException(UserError.USER_NOT_FOUND)
 
-    fun findAllByIdIn(ids: List<UUID>): List<UserEntity> = userRepository.findAllByIdIn(ids)
+    fun findUserOrNull(email: String): UserEntity? = userRepository.findUserOrNullByEmail(email)
+
+    fun findAllByIdIn(ids: List<UUID>): List<UserEntity> {
+        require(ids.isNotEmpty()) { "유저 조회 요청에 들어오는 ID는 최소 하나 이상이어야 합니다." }
+        return userRepository.findAllByIdIn(ids)
+    }
 
     fun findUserWithLastActivityUnit(userId: UUID): UserWithLastActivityUnit =
         jpql {
@@ -64,13 +71,15 @@ class UserFindService(
             }
         }
 
-    fun findAllUserWithLastActivityUnit(userIds: Collection<UUID>): List<UserWithLastActivityUnit> =
-        userRepository
+    fun findAllUserWithLastActivityUnit(userIds: Collection<UUID>): List<UserWithLastActivityUnit> {
+        require(userIds.isNotEmpty()) { "유저 조회 요청에 들어오는 ID는 최소 하나 이상이어야 합니다." }
+        return userRepository
             .findAll {
                 selectUserWithLastActivityUnit()
                     .where(path(UserEntity::getId).`in`(userIds))
                     .orderBy(path(UserEntity::getId).desc())
             }.filterNotNull()
+    }
 
     fun findAllUserWithLastActivityUnit(pageable: Pageable): Page<UserWithLastActivityUnit> =
         userRepository
@@ -85,8 +94,8 @@ class UserFindService(
                 )
             }
 
-    fun findUserWithActivities(userId: UUID): UserWithActivityUnits =
-        userRepository
+    fun findUserWithActivities(userId: UUID): UserWithActivityUnits {
+        val result = userRepository
             .findAll {
                 selectNew<UserWithActivityUnit>(
                     path(UserEntity::getId),
@@ -102,15 +111,21 @@ class UserFindService(
                 ).where(path(UserEntity::getId).equal(userId))
                     .orderBy(path(ActivityUnitEntity::generation).desc())
             }.filterNotNull()
-            .let { result ->
-                UserWithActivityUnits(
-                    userId = result.first().userId,
-                    email = result.first().email,
-                    name = result.first().name,
-                    role = result.first().role,
-                    activityUnits = result.map { ActivityUnit(it.generation, it.position, it.userId) }
-                )
-            }
+
+        if (result.isEmpty()) throw BusinessException(UserError.USER_NOT_FOUND)
+
+        return result.let {
+            UserWithActivityUnits(
+                userId = it.first().userId,
+                email = it.first().email,
+                name = it.first().name,
+                role = it.first().role,
+                activityUnits = it
+                    .map { au -> ActivityUnit(au.generation, au.position, au.userId) }
+                    .sortedByDescending { au -> au.generation }
+            )
+        }
+    }
 
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null

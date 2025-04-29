@@ -71,4 +71,10 @@ class UserEntity(
         gender?.let { this.gender = Gender.fromLabel(it) }
         phoneNumber.takeIf { it != null && it.isPhoneNumber() }.let { this.phoneNumber = it }
     }
+
+    fun checkAdminAccessibility() {
+        if (!this.role.canAccessAdminPage()) {
+            throw BusinessException(UserError.NO_AUTH_FOR_ADMIN_PAGE)
+        }
+    }
 }

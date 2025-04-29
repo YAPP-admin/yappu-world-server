@@ -5,7 +5,7 @@ import co.yappuworld.user.client.dto.request.LoginRequest
 
 object UserDtoFixture {
 
-    fun getLatestSignUpApplicationApiRequestDtoFixture(
+    fun getLatestSignUpApplicationApiRequestFixture(
         email: String = "abc@abc.com",
         password: String = "abcabcabC!!"
     ): LatestSignUpApplicationRequest =

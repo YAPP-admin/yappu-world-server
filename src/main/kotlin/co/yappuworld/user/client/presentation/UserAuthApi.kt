@@ -326,7 +326,7 @@ interface UserAuthApi {
                                 name = "최근의 가입 신청이 보류",
                                 value = """
                                     {
-                                        "isSuccess": "true",
+                                         "isSuccess": "true",
                                         "data": {
                                             "status": "PENDING",
                                             "reason": null
