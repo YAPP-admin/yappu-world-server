@@ -17,7 +17,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException::class)
     fun handleBusinessException(e: BusinessException): ResponseEntity<ErrorResponse> {
-        logger.error { e.message }
+        logger.warn { e.message }
         return ResponseEntity
             .status(getHttpStatusBy(e.error.type))
             .body(ErrorResponse.of(e.error))
@@ -25,7 +25,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        logger.error { e.message }
+        logger.warn { e.message }
         return e.bindingResult.fieldErrors[0].defaultMessage?.let {
             ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -42,7 +42,7 @@ class GlobalExceptionHandler {
     fun handleMethodArgumentTypeMismatchException(
         e: MethodArgumentTypeMismatchException
     ): ResponseEntity<ErrorResponse> {
-        logger.error { e.message }
+        logger.warn { e.message }
 
         generateSequence(e.cause) { it.cause }
             .filterIsInstance<BusinessException>()

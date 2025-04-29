@@ -9,7 +9,10 @@ data class UserActivityHistoriesResponse(
     val activityUnits: List<UserActivityHistoryResponse>
 ) {
 
-    constructor(activityUnits: List<ActivityUnitEntity>, generationByValue: Map<Int, GenerationEntity>) : this(
+    constructor(
+        activityUnits: List<ActivityUnitEntity>,
+        generationByValue: Map<Int, GenerationEntity>
+    ) : this(
         activityUnits
             .sortedByDescending { it.generation }
             .map {

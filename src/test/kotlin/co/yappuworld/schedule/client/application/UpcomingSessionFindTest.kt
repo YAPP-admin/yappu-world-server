@@ -95,7 +95,8 @@ class UpcomingSessionFindTest :
 
             scenario("활성화 된 기수의 유저가 아니면 출석을 누를 수 없다.") {
                 setCheckInPossibleCircumstance()
-                every { userFindService.findUserWithLastActivityUnit(any()) } returns user.copy(generation = 24)
+                every { userFindService.findUserWithLastActivityUnit(any()) } returns
+                    user.copy(lastActiveGeneration = 24)
 
                 scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
             }

@@ -33,7 +33,7 @@ data class UserSignUpRequest(
     val deviceAlarmToggle: Boolean
 ) {
 
-    fun toDomain(): SignUpApplicationEntity =
+    fun toSignUpApplication(): SignUpApplicationEntity =
         SignUpApplicationEntity(
             ApplicationDetails(
                 this.email,

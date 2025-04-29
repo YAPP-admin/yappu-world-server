@@ -57,7 +57,7 @@ data class NoticeOverviewWriterResponse(
     constructor(writer: UserWithLastActivityUnit) : this(
         id = writer.userId,
         name = writer.name,
-        activityUnitGeneration = writer.generation,
-        activityUnitPosition = PositionResponse(writer.position)
+        activityUnitGeneration = writer.lastActiveGeneration,
+        activityUnitPosition = PositionResponse(writer.lastActivePosition)
     )
 }

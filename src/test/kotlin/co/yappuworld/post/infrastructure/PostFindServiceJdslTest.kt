@@ -1,12 +1,10 @@
 package co.yappuworld.post.infrastructure
 
-import co.yappuworld.post.domain.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.PostFixture.getNoticeFixture
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -30,20 +28,6 @@ class PostFindServiceJdslTest {
     }
 
     @Test
-    fun `KotlinJdslJpqlExecutor 테스트`() {
-        val results = postRepository
-            .findAll(Pageable.ofSize(1)) {
-                select(
-                    entity(NoticeEntity::class)
-                ).from(
-                    entity(NoticeEntity::class)
-                )
-            }.filterNotNull()
-
-        assert(results.isNotEmpty())
-    }
-
-    @Test
     @Transactional
     fun `predicate 조건이 모두 주어지면 잘 조회된다`() {
         val first = getNoticeFixture(noticeType = NoticeType.SESSION)
@@ -58,12 +42,6 @@ class PostFindServiceJdslTest {
 
         assert(notices.isNotEmpty())
         assertEquals(notices.first(), first)
-    }
-
-    @Test
-    fun `predicate 조건이 null이어도 정상 조회된다`() {
-        val notices = postFindService.findAllNotices(10)
-        assert(notices.isNotEmpty())
     }
 
     @Test

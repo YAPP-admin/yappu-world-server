@@ -21,6 +21,6 @@ data class AdminUserProfileResponse(
         id = userWithLastActivityUnit.userId,
         name = userWithLastActivityUnit.name,
         role = userWithLastActivityUnit.role.label,
-        position = userWithLastActivityUnit.position.label
+        position = userWithLastActivityUnit.lastActivePosition.label
     )
 }

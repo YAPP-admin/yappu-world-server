@@ -5,10 +5,13 @@ import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
+import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
+import co.yappuworld.user.client.dto.request.LatestSignUpApplicationRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.ReissueTokenRequest
+import co.yappuworld.user.client.dto.response.LatestSignUpApplicationResponse
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.UserCommandService
+import co.yappuworld.user.infrastructure.SignUpApplicationFindService
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,24 +20,38 @@ import java.util.UUID
 
 @Service
 class UserAuthService(
-    private val userFindService: UserFindService,
-    private val userCommandService: UserCommandService,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
+    private val userFindService: UserFindService,
+    private val signUpApplicationFindService: SignUpApplicationFindService,
     private val userLoginPermissionChecker: UserLoginPermissionChecker
 ) {
+
+    @Transactional(readOnly = true)
+    fun findLatestSignUpApplication(request: LatestSignUpApplicationRequest): LatestSignUpApplicationResponse {
+        val signUpApplication = signUpApplicationFindService.findLatestSignUpApplication(request.email)
+            ?: throw BusinessException(UserError.NO_SIGN_UP_APPLICATION)
+
+        signUpApplication.checkPassword(request.password)
+
+        return LatestSignUpApplicationResponse(signUpApplication)
+    }
 
     @Transactional
     fun login(
         request: LoginRequest,
         now: LocalDateTime
-    ): Token {
-        val user = userFindService
-            .findByEmailOrNull(request.email)
-            .let { userLoginPermissionChecker.checkPermissionAndGetUser(it, request.email, request.password) }
-
-        return jwtGenerator.generateToken(SecurityUser.from(user), now)
-    }
+    ): Token =
+        userFindService
+            .findUserOrNull(request.email)
+            .let { userOrNull ->
+                userLoginPermissionChecker.checkLoginAvailability(
+                    userOrNull,
+                    request.email,
+                    request.password
+                )
+                checkNotNull(userOrNull)
+            }.let { user -> jwtGenerator.generateToken(SecurityUser.from(user), now) }
 
     @Transactional
     fun reissueToken(
@@ -42,7 +59,7 @@ class UserAuthService(
         now: LocalDateTime
     ): Token {
         val userId = jwtResolver.extractUserIdFrom(request.accessToken)
-        val user = userFindService.findByIdOrNull(userId)
+        val user = userFindService.findUserOrNull(userId)
             ?: throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
 
         if (!user.isActive) {
@@ -55,9 +72,7 @@ class UserAuthService(
     @Transactional
     fun withdrawUser(userId: UUID) {
         userFindService
-            .findByIdOrNull(userId)
-            ?.apply { withdraw() }
-            ?.let(userCommandService::save)
-            ?: throw BusinessException(UserError.USER_NOT_FOUND)
+            .findUser(userId)
+            .apply { withdraw() }
     }
 }

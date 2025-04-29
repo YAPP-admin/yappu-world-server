@@ -54,7 +54,7 @@ class AdminNoticeService(
         val notice = postFindService.findByIdOrNull(noticeId)?.let { it as NoticeEntity }
             ?: throw BusinessException(PostError.NOTICE_NOT_FOUND)
 
-        val writer = userFindService.findByIdOrNull(notice.writerId)
+        val writer = userFindService.findUserOrNull(notice.writerId)
             ?: throw BusinessException(PostError.NOTICE_WRITER_NOT_FOUND)
 
         return AdminNoticeDetailResponse(

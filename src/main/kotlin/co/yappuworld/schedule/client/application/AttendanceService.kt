@@ -150,11 +150,11 @@ class AttendanceService(
             throw BusinessException(AttendanceError.USER_NOT_ACTIVATE)
         }
 
-        if (user.generation != generation) {
+        if (user.lastActiveGeneration != generation) {
             logger.warn {
                 """
                 유저의 가장 최근 활동 기수와 활성화된 기수가 일치하지 않습니다.
-                유저 기수: ${user.generation}
+                유저 기수: ${user.lastActiveGeneration}
                 활성화 되어 있는 기수: $generation
                 """.trimIndent()
             }
