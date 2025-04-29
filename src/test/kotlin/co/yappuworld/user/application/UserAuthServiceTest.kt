@@ -23,7 +23,7 @@ class UserAuthServiceTest :
     FeatureSpec({
 
         val jwtProperty = JwtProperty(
-            secretKey = "secretKey",
+            secretKey = "thisisforlocalsfjweifjweifiewfuwefewmkcewocfweklocalsecretkeyonlyusinginlocalenvironment",
             accessTokenExpirationTimes = 1000, // 1초
             refreshTokenExpirationTimes = 2000
         )
