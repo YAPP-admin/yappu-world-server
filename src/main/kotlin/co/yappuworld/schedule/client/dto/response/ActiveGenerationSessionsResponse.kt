@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
+import co.yappuworld.global.util.TimeUtils.korean
 import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 data class ActiveGenerationSessionsResponse(
@@ -37,16 +39,16 @@ data class ActiveGenerationSessionsResponse(
             val orderedSessions = sessions.sortedBy { it.date }
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
-                    sessions.map { ActiveGenerationSessionResponse(it, DONE) },
+                    sessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
                     sessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
                 sessions = sessions.mapIndexed { index, session ->
                     when {
-                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE)
-                        index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING)
-                        else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
+                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE, now)
+                        index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING, now)
+                        else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus, now)
                     }
                 },
                 upcomingSessionId = sessions[upcomingSessionIndex].id
@@ -76,10 +78,23 @@ data class ActiveGenerationSessionResponse(
     val name: String,
     @Schema(description = "세션 장소", nullable = true)
     val place: String?,
-    @Schema(description = "세션 시작일", nullable = true)
+    @Schema(description = "세션 시작일")
     val date: LocalDate,
+    @Schema(description = "세션 시작 요일")
+    val startDayOfWeek: String,
     @Schema(description = "세션 종료일", nullable = true)
     val endDate: LocalDate?,
+    @Schema(description = "세션 종료 요일", nullable = true)
+    val endDayOfWeek: String?,
+    @Schema(
+        description = """
+            세션 시작일 기준 상대 날짜. D-N 혹은 D+N 으로 표시되는 값.
+            ex) -2(D-2): 세션 시작일 기준 2일 전
+            ex) 0(D-0, D+0): 세션 당일
+            ex) +3(D+3): 세션 시작일 기준 3일 후
+        """
+    )
+    val relativeDays: Int,
     @Schema(description = "세션 시작 시간", nullable = true)
     val time: LocalTime?,
     @Schema(description = "세션 종료 시간", nullable = true)
@@ -94,13 +109,17 @@ data class ActiveGenerationSessionResponse(
 
     constructor(
         session: SessionWithAttendance,
-        status: SessionProgressPhase
+        status: SessionProgressPhase,
+        now: LocalDateTime
     ) : this(
         id = session.id,
         name = session.name,
         place = session.place,
         date = session.date,
+        startDayOfWeek = session.date.dayOfWeek.korean(),
         endDate = session.endDate,
+        endDayOfWeek = session.endDate.dayOfWeek?.korean(),
+        relativeDays = ChronoUnit.DAYS.between(session.date, now.toLocalDate()).toInt(),
         time = session.time,
         endTime = session.endTime,
         type = session.sessionType,

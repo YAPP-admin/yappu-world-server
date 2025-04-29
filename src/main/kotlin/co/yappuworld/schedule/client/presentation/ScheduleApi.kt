@@ -33,49 +33,58 @@ interface ScheduleApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "활동 중인 기수의 세션 목록 (길이상 일부 생략)",
+                                name = "활동 중인 기수의 세션 목록 (25년 4월 29일 기준)",
                                 value = """
                                     {
                                         "data": {
                                             "sessions": [
                                                 {
-                                                    "id": "55238f62-ff12-11ef-ad31-0242ac120002",
-                                                    "name": "OT",
-                                                    "place": "강북노동자복지관",
-                                                    "date": "2024-11-01",
-                                                    "endDate": null,
-                                                    "time": "14:00:00",
-                                                    "endTime": "18:00:00",
-                                                    "type": "OFFLINE",
-                                                    "progressPhase": "DONE",
-                                                    "attendanceStatus": "출석"
-                                                },
-                                                {
-                                                    "id": "552390a8-ff12-11ef-ad31-0242ac120002",
-                                                    "name": "팀세션",
-                                                    "place": null,
-                                                    "date": "2024-11-01",
-                                                    "endDate": null,
-                                                    "time": null,
-                                                    "endTime": null,
-                                                    "type": "TEAM",
-                                                    "progressPhase": "DONE",
-                                                    "attendanceStatus": "지각"
-                                                },
-                                                {
-                                                    "id": "5523913c-ff12-11ef-ad31-0242ac120002",
-                                                    "name": "팀매칭",
-                                                    "place": "SBA 산학센터",
-                                                    "date": "2024-11-03",
-                                                    "endDate": null,
-                                                    "time": "14:00:00",
-                                                    "endTime": "18:00:00",
+                                                    "id": "c07aa77e-1b30-11f0-add0-0242ac140002",
+                                                    "name": "가짜 세션1",
+                                                    "place": "아몰랑",
+                                                    "date": "2025-04-18",
+                                                    "startDayOfWeek": "금",
+                                                    "endDate": "2025-04-18",
+                                                    "endDayOfWeek": "금",
+                                                    "relativeDays": 11,
+                                                    "time": "13:30:00",
+                                                    "endTime": "17:00:00",
                                                     "type": "OFFLINE",
                                                     "progressPhase": "DONE",
                                                     "attendanceStatus": "결석"
+                                                },
+                                                {
+                                                    "id": "c07afa8b-1b30-11f0-add0-0242ac140002",
+                                                    "name": "가짜 세션2",
+                                                    "place": "아몰랑",
+                                                    "date": "2025-05-08",
+                                                    "startDayOfWeek": "목",
+                                                    "endDate": "2025-05-08",
+                                                    "endDayOfWeek": "목",
+                                                    "relativeDays": -9,
+                                                    "time": "13:30:00",
+                                                    "endTime": "17:00:00",
+                                                    "type": "OFFLINE",
+                                                    "progressPhase": "UPCOMING",
+                                                    "attendanceStatus": null
+                                                },
+                                                {
+                                                    "id": "c07afa8b-1b30-11f0-add0-0242ac140003",
+                                                    "name": "가짜 세션3",
+                                                    "place": "아몰랑",
+                                                    "date": "2025-05-11",
+                                                    "startDayOfWeek": "일",
+                                                    "endDate": "2025-05-11",
+                                                    "endDayOfWeek": "일",
+                                                    "relativeDays": -12,
+                                                    "time": "13:30:00",
+                                                    "endTime": "17:00:00",
+                                                    "type": "OFFLINE",
+                                                    "progressPhase": "PENDING",
+                                                    "attendanceStatus": null
                                                 }
                                             ],
-                                            "upcomingSessionId": "5523913c-ff12-11ef-ad31-0242ac120002"
+                                            "upcomingSessionId": "c07afa8b-1b30-11f0-add0-0242ac140002"
                                         },
                                         "isSuccess": true
                                     }
@@ -198,8 +207,14 @@ interface ScheduleApi {
                                         "data": {
                                             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
                                             "name": "OT",
-                                            "date": "2024-11-01",
-                                            "time": "14:00:00",
+                                            "startDate": "2025-05-08",
+                                            "startDayOfWeek": "목",
+                                            "endDate": "2025-05-08",
+                                            "endDayOfWeek": "목",
+                                            "startTime": "13:30:00",
+                                            "endTime": "17:00:00",
+                                            "place": "아몰랑",
+                                            "relativeDays": -1,
                                             "canCheckIn": false,
                                             "status": null
                                         },
@@ -214,8 +229,14 @@ interface ScheduleApi {
                                         "data": {
                                             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
                                             "name": "OT",
-                                            "date": "2024-11-01",
-                                            "time": "14:00:00",
+                                            "startDate": "2025-05-08",
+                                            "startDayOfWeek": "목",
+                                            "endDate": "2025-05-08",
+                                            "endDayOfWeek": "목",
+                                            "startTime": "13:30:00",
+                                            "endTime": "17:00:00",
+                                            "place": "아몰랑",
+                                            "relativeDays": 0,
                                             "canCheckIn": true,
                                             "status": null
                                         },
@@ -230,8 +251,14 @@ interface ScheduleApi {
                                         "data": {
                                             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
                                             "name": "OT",
-                                            "date": "2024-11-01",
-                                            "time": "14:00:00",
+                                            "startDate": "2025-05-08",
+                                            "startDayOfWeek": "목",
+                                            "endDate": "2025-05-08",
+                                            "endDayOfWeek": "목",
+                                            "startTime": "13:30:00",
+                                            "endTime": "17:00:00",
+                                            "place": "아몰랑",
+                                            "relativeDays": 0,
                                             "canCheckIn": false,
                                             "status": "출석"
                                         },
