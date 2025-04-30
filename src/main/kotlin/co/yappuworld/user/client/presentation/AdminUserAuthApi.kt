@@ -4,6 +4,7 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
+import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
@@ -142,6 +143,11 @@ interface AdminUserAuthApi {
     @PostMapping("/admin/v1/auth/login")
     fun login(
         @Valid @RequestBody request: LoginRequest
+    ): ResponseEntity<SuccessResponse<Token>>
+
+    @PostMapping("/admin/v1/auth/reissue-token")
+    fun reissueToken(
+        @RequestBody request: AdminReissueTokenRequest
     ): ResponseEntity<SuccessResponse<Token>>
 
     @Operation(summary = "유저 역할 변경")
