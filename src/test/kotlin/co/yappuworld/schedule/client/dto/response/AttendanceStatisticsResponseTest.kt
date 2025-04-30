@@ -2,8 +2,7 @@ package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
-import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture
 import io.kotest.core.spec.style.FeatureSpec
@@ -35,7 +34,7 @@ class AttendanceStatisticsResponseTest :
             )
 
             scenario("일자, 시간에 따른 잔여 세션 수와 진행률 검증") {
-                val attendances = sessions.map { getAttendanceFixture(scheduleId = it.id) }
+                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id) }
                 AttendanceStatisticsResponse.of(sessions, attendances, datetime, 0).let {
                     it.totalSessionCount shouldBe 5
                     it.remainingSessionCount shouldBe 3
@@ -44,7 +43,7 @@ class AttendanceStatisticsResponseTest :
             }
 
             scenario("datetime 기준으로 조회를 진행") {
-                val attendances = sessions.map { getAttendanceFixture(scheduleId = it.id) }
+                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id) }
                 AttendanceStatisticsResponse
                     .of(
                         sessions = sessions,
@@ -66,7 +65,7 @@ class AttendanceStatisticsResponseTest :
                 AttendanceStatisticsResponse
                     .of(
                         sessions = sessions,
-                        attendances = sessions.map { getAttendanceFixture(scheduleId = it.id) },
+                        attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id) },
                         now = datetime,
                         latePassCount = 0
                     ).let {
@@ -81,7 +80,7 @@ class AttendanceStatisticsResponseTest :
             }
 
             scenario("지각 횟수당 10점씩 깎인다.") {
-                val attendances = sessions.map { getAttendanceFixture(scheduleId = it.id) }
+                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id) }
                 repeat(2) { r ->
                     attendances[r].updateStatus(AttendanceStatus.LATE)
                     AttendanceStatisticsResponse.of(sessions, attendances, datetime, 0).let {
@@ -93,7 +92,7 @@ class AttendanceStatisticsResponseTest :
             }
 
             scenario("결석 횟수당 20점씩 깎인다.") {
-                val attendances = sessions.map { getAttendanceFixture(scheduleId = it.id) }
+                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id) }
                 repeat(2) { r ->
                     attendances[r].updateStatus(ABSENT)
                     AttendanceStatisticsResponse.of(sessions, attendances, datetime, 0).let {
@@ -105,7 +104,7 @@ class AttendanceStatisticsResponseTest :
             }
 
             scenario("지각 면제권 1회당 10점씩 추가된다.") {
-                val attendances = sessions.map { getAttendanceFixture(scheduleId = it.id, status = ABSENT) }
+                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id, status = ABSENT) }
                 repeat(3) { latePassCount ->
                     AttendanceStatisticsResponse.of(sessions, attendances, datetime, latePassCount).let {
                         it.latePassCount shouldBe latePassCount

@@ -33,7 +33,7 @@ class SessionFindService(
                     ).orderBy(path(SessionEntity::date).asc())
             }.singleOrNull()
 
-    fun findCurrentGenerationSessions(generation: Int): List<SessionEntity> =
+    fun findSessionsInGeneration(generation: Int): List<SessionEntity> =
         scheduleRepository
             .findAll {
                 select(entity(SessionEntity::class))

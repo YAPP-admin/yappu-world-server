@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.domain.AttendanceEntity
+import co.yappuworld.schedule.domain.SessionEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -34,6 +35,22 @@ class AttendanceFindService(
                             path(AttendanceEntity::userId).equal(userId),
                             path(AttendanceEntity::scheduleId).`in`(scheduleIds)
                         )
+                    )
+            }.filterNotNull()
+
+    fun findAttendancesOfGeneration(generation: Int): List<AttendanceEntity> =
+        attendanceRepository
+            .findAll {
+                select(entity(AttendanceEntity::class))
+                    .from(
+                        entity(AttendanceEntity::class),
+                        join(entity(SessionEntity::class))
+                            .on(
+                                and(
+                                    path(SessionEntity::generation).equal(generation),
+                                    path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId))
+                                )
+                            )
                     )
             }.filterNotNull()
 }

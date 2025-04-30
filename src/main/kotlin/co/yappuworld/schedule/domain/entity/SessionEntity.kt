@@ -18,8 +18,8 @@ class SessionEntity(
     override var place: String?,
     override var date: LocalDate,
     override var endDate: LocalDate,
-    override var time: LocalTime?,
-    override var endTime: LocalTime?,
+    override var time: LocalTime,
+    override var endTime: LocalTime,
     override var isAllDay: Boolean,
     generation: Int,
     sessionType: SessionType
@@ -38,8 +38,8 @@ class SessionEntity(
         place: String?,
         date: LocalDate,
         endDate: LocalDate,
-        time: LocalTime?,
-        endTime: LocalTime?,
+        time: LocalTime,
+        endTime: LocalTime,
         generation: Int,
         sessionType: SessionType
     ) {

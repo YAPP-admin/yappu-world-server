@@ -33,7 +33,7 @@ class ScheduleService(
         userId: UUID,
         now: LocalDateTime
     ): ActiveGenerationSessionsResponse {
-        val currentGeneration = generationFindService.findActiveGeneration()
+        val currentGeneration = generationFindService.findActiveGenerationOrNull()
             ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
         val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
         return ActiveGenerationSessionsResponse.from(
@@ -67,8 +67,8 @@ class ScheduleService(
         now: LocalDateTime
     ): UpcomingSessionAttendanceResponse {
         val user = userFindService.findUserWithLastActivityUnit(userId)
-        val activeGeneration = generationFindService.findActiveGeneration()
-            ?: throw BusinessException(ScheduleError.NO_SESSION_IN_BREAK_PERIOD)
+        val activeGeneration = generationFindService.findActiveGenerationOrNull()
+            ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
         val session = sessionFindService.findUpcomingSession(activeGeneration, now)
             ?: throw BusinessException(ScheduleError.NO_UPCOMING_SESSION)
         val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)

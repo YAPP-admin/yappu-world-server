@@ -21,9 +21,9 @@ data class AdminSessionUpdateRequest(
     @Schema(description = "세션 종료일", example = "2025-02-25")
     val endDate: LocalDate,
     @Schema(description = "시작 시간", example = "14:00:00")
-    val time: LocalTime?,
+    val time: LocalTime,
     @Schema(description = "종료 시간", example = "17:00:00")
-    val endTime: LocalTime?,
+    val endTime: LocalTime,
     @Schema(description = "세션 종류", example = "OFFLINE")
     val sessionType: SessionType
 ) {

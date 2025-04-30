@@ -4,7 +4,7 @@ import co.yappuworld.schedule.domain.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTest
-import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.extensions.spring.SpringTestExtension
@@ -94,7 +94,7 @@ class SessionFindServiceTest @Autowired constructor(
                         endDate = now.toLocalDate().minusDays(1)
                     )
                     sessions.add(session)
-                    attendances.add(getAttendanceFixture(status[it], userId, session.id))
+                    attendances.add(getAttendanceEntityFixture(status[it], userId, session.id))
                 }
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)
@@ -191,7 +191,7 @@ class SessionFindServiceTest @Autowired constructor(
                         endDate = now.toLocalDate().minusDays(1)
                     )
                     sessions.add(session)
-                    attendances.add(getAttendanceFixture(status[it], userId, session.id))
+                    attendances.add(getAttendanceEntityFixture(status[it], userId, session.id))
                 }
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)

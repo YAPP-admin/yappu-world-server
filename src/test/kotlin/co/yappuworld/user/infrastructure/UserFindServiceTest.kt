@@ -318,4 +318,43 @@ class UserFindServiceTest @Autowired constructor(
                 result.activityGenerations shouldContainInOrder listOf(25, 24)
             }
         }
+
+        feature("특정 기수에 활동한 모든 유저를 조회한다.") {
+
+            scenario("해당 기수에 활동한 유저가 없다면 빈 리스트를 반환한다.") {
+                userFindService.findUsersActiveOfGeneration(99).shouldBeEmpty()
+            }
+
+            scenario("특정 기수에 활동한 기록이 있는 모든 유저를 조회한다.") {
+                val user1 = getUserEntityFixture().also {
+                    userRepository.saveAndFlush(it)
+                    activityUnitRepository.saveAllAndFlush(
+                        listOf(
+                            getActivityUnitEntityFixture(generation = 99, position = Position.PM, userId = it.id),
+                            getActivityUnitEntityFixture(generation = 98, position = Position.PM, userId = it.id)
+                        )
+                    )
+                }
+                val user2 = getUserEntityFixture().also {
+                    userRepository.saveAndFlush(it)
+                    activityUnitRepository.saveAllAndFlush(
+                        listOf(
+                            getActivityUnitEntityFixture(generation = 99, position = Position.SERVER, userId = it.id),
+                            getActivityUnitEntityFixture(generation = 100, position = Position.SERVER, userId = it.id)
+                        )
+                    )
+                }
+
+                val userIds = listOf(user1.id, user2.id).sorted()
+                val result = userFindService
+                    .findUsersActiveOfGeneration(99)
+                val resultByUserId = result.associateBy { it.userId }
+
+                result.shouldHaveSize(2)
+                userIds.forEach { userId ->
+                    val userWithActivityUnit = resultByUserId[userId].shouldNotBeNull()
+                    userWithActivityUnit.generation shouldBe 99
+                }
+            }
+        }
     })

@@ -11,6 +11,7 @@ import co.yappuworld.user.domain.entity.UserEntity
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import java.time.LocalDateTime
 import java.util.UUID
@@ -131,5 +132,22 @@ object UserFixture {
         UserDeviceEntity(
             userId = userId,
             fcmToken = fcmToken
+        )
+
+    fun getUserWithActivityUnitFixture(
+        userId: UUID = UUID.randomUUID(),
+        email: String = "email@abc.com",
+        name: String = "홍길동",
+        role: UserRole = UserRole.ACTIVE,
+        generation: Int = 25,
+        position: Position = Position.SERVER
+    ): UserWithActivityUnit =
+        UserWithActivityUnit(
+            userId = userId,
+            email = email,
+            name = name,
+            role = role,
+            generation = generation,
+            position = position
         )
 }

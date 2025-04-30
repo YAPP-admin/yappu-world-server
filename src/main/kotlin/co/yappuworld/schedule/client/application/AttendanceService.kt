@@ -55,8 +55,7 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendanceStatisticsResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-            ?: throw BusinessException(AttendanceError.NO_ACTIVE_GENERATION)
-        val thisGenerationSessions = sessionFindService.findCurrentGenerationSessions(activeGeneration)
+        val thisGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId = userId,
             scheduleIds = thisGenerationSessions.map { it.id }
@@ -72,7 +71,6 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendancesHistoryResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-            ?: throw BusinessException(AttendanceError.NO_ACTIVE_GENERATION)
         val sessionsWithAttendance = sessionFindService.findAttendancesHistory(
             generation = activeGeneration,
             userId = userId,
@@ -87,7 +85,6 @@ class AttendanceService(
         userId: UUID
     ) {
         val generation = generationFindService.findActiveGeneration()
-            ?: throw BusinessException(AttendanceError.NO_ACTIVE_GENERATION)
 
         validateAttendance(request, userId)
         validateSession(request.sessionId, generation)

@@ -42,7 +42,7 @@ class ScheduleServiceSessionProgressPhaseTest {
 
     @BeforeEach
     fun mockGenerationRepository() {
-        every { generationFindService.findActiveGeneration() } returns generation
+        every { generationFindService.findActiveGenerationOrNull() } returns generation
     }
 
     fun mockScheduleRepository(schedules: List<SessionWithAttendance>) {

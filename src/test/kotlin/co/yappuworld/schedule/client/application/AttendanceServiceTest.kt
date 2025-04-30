@@ -49,7 +49,7 @@ class AttendanceServiceTest :
 
         feature("출석 체크") {
             scenario("활성화 된 기수가 없으면 예외가 발생한다.") {
-                every { generationFindService.findActiveGeneration() } returns null
+                every { generationFindService.findActiveGenerationOrNull() } returns null
 
                 shouldThrow<BusinessException> {
                     attendanceService.checkIn(
@@ -69,7 +69,7 @@ class AttendanceServiceTest :
                     sessionId = sessionId
                 )
                 val activeGeneration = 25
-                every { generationFindService.findActiveGeneration() } returns activeGeneration
+                every { generationFindService.findActiveGenerationOrNull() } returns activeGeneration
 
                 feature("출석 관련 검증을 진행한다.") {
                     scenario("이미 출석을 완료한 유저면 예외가 발생한다.") {
@@ -199,7 +199,7 @@ class AttendanceServiceTest :
         feature("출석 통계 조회") {
 
             scenario("활성화된 기수가 없으면 예외가 발생한다.") {
-                every { generationFindService.findActiveGeneration() } returns null
+                every { generationFindService.findActiveGenerationOrNull() } returns null
 
                 shouldThrow<BusinessException> {
                     attendanceService.getAttendanceStatistics(UUID.randomUUID(), LocalDateTime.now())

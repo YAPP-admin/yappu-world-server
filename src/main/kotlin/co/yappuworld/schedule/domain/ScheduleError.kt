@@ -31,7 +31,7 @@ enum class ScheduleError : Error {
         override val code: String = "SCH_1005"
         override val type: ErrorType = ErrorType.NOT_FOUND
     },
-    NO_SESSION_IN_BREAK_PERIOD {
+    NO_SESSION_WITHOUT_ACTIVE_GENERATION {
         override val message: String = "활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다."
         override val code: String = "SCH_1006"
         override val type: ErrorType = ErrorType.WRONG_STATE
