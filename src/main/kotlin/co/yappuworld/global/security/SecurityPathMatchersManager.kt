@@ -24,7 +24,8 @@ object SecurityPathMatchersManager {
         antMatcher(GET, "/v1/positions"),
         antMatcher(GET, "/v1/operations/**"),
         // admin
-        antMatcher(POST, "/admin/**/login")
+        antMatcher(POST, "/admin/**/auth/login"),
+        antMatcher(POST, "/admin/**/auth/reissue-token")
     )
 
     val userMatchers: RequestMatcher = RequestMatchers.anyOf(

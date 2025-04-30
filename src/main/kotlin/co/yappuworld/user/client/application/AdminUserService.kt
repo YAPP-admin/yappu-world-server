@@ -3,6 +3,7 @@ package co.yappuworld.user.client.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.security.JwtGenerator
+import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
@@ -12,6 +13,7 @@ import co.yappuworld.operation.domain.ConfigError
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
+import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
@@ -20,11 +22,10 @@ import co.yappuworld.user.client.dto.request.UserRoleUpdateRequest
 import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
 import co.yappuworld.user.client.dto.response.AdminUserProfileResponse
+import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitCommandService
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
-import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserFindService
-import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,12 +35,11 @@ import java.util.UUID
 @Service
 class AdminUserService(
     private val userFindService: UserFindService,
-    private val userCommandService: UserCommandService,
     private val activityUnitFindService: ActivityUnitFindService,
     private val activityUnitCommandService: ActivityUnitCommandService,
-    private val activityUnitRepository: ActivityUnitRepository,
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
+    private val jwtResolver: JwtResolver,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
     private val generationActiveStateManager: GenerationActiveStateManager
 ) {
@@ -55,6 +55,21 @@ class AdminUserService(
                 userLoginPermissionChecker.checkLoginAvailability(this, request.email, request.password)
                 checkNotNull(this)
             }.also { it.checkAdminAccessibility() }
+
+        return jwtGenerator.generateToken(SecurityUser.from(user), now)
+    }
+
+    fun reissueToken(
+        request: AdminReissueTokenRequest,
+        now: LocalDateTime
+    ): Token {
+        val userId = jwtResolver.extractUserIdFrom(request.accessToken)
+        val user = userFindService.findUserOrNull(userId)
+            ?: throw BusinessException(UserError.FAIL_LOGIN_NOT_FOUND_USER)
+
+        if (!user.isActive) {
+            throw BusinessException(UserError.WITHDRAWN_USER)
+        }
 
         return jwtGenerator.generateToken(SecurityUser.from(user), now)
     }

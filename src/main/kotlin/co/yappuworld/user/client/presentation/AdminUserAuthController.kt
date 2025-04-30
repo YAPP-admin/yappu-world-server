@@ -6,6 +6,7 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.user.client.application.AdminSignUpService
 import co.yappuworld.user.client.application.AdminUserService
+import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
@@ -26,6 +27,11 @@ class AdminUserAuthController(
     override fun login(request: LoginRequest): ResponseEntity<SuccessResponse<Token>> =
         ResponseEntity.ok(
             SuccessResponse(adminUserService.login(request, getCurrentDateTimeInKST()))
+        )
+
+    override fun reissueToken(request: AdminReissueTokenRequest): ResponseEntity<SuccessResponse<Token>> =
+        ResponseEntity.ok(
+            SuccessResponse(adminUserService.reissueToken(request, getCurrentDateTimeInKST()))
         )
 
     override fun updateUserRole(request: UserRoleUpdateRequest): ResponseEntity<Unit> {
