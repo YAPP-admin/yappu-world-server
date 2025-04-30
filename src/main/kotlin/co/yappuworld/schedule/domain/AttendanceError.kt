@@ -46,5 +46,12 @@ enum class AttendanceError : Error {
         override val message: String = "활동 유저가 아니라서 출석이 불가합니다."
         override val code: String = "ATD_2004"
         override val type: ErrorType = ErrorType.FORBIDDEN
+    },
+
+    // 4000번대 - 어드민
+    CANNOT_UPDATE_STATUS {
+        override val message: String = "출석 상태를 변경할 수 없습니다."
+        override val code: String = "ATD_4000"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }

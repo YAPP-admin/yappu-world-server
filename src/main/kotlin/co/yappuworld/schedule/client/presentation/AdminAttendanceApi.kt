@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 
 @Tag(name = "어드민 출석 API", description = "_")
 interface AdminAttendanceApi {
@@ -104,4 +107,36 @@ interface AdminAttendanceApi {
     )
     @GetMapping("/admin/v1/attendances")
     fun getActiveGenerationAttendances(): ResponseEntity<SuccessResponse<AdminAttendancesResponse>>
+
+    @Operation(summary = "출석 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "errorCode": "ATD_4000",
+                                        "message": "출석 상태를 변경할 수 없습니다."
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @PutMapping("/admin/v1/attendances")
+    fun updateAttendances(
+        @RequestBody request: AdminAttendanceUpdateRequest
+    ): ResponseEntity<Unit>
 }

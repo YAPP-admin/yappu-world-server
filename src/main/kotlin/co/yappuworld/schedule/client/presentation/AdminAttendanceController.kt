@@ -3,6 +3,7 @@ package co.yappuworld.schedule.client.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.schedule.client.application.AdminAttendanceService
+import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -16,4 +17,9 @@ class AdminAttendanceController(
         ResponseEntity.ok(
             SuccessResponse(adminAttendanceService.findAttendances(getCurrentDateTimeInKST()))
         )
+
+    override fun updateAttendances(request: AdminAttendanceUpdateRequest): ResponseEntity<Unit> {
+        adminAttendanceService.updateAttendance(request)
+        return ResponseEntity.noContent().build()
+    }
 }
