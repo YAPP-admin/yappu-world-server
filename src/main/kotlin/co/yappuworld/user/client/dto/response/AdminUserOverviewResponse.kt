@@ -23,8 +23,7 @@ data class AdminUserOverviewResponse(
             id = response.activityUnitId,
             generation = response.lastActiveGeneration,
             position = response.lastActivePosition.label,
-            // todo : isActive 값 할당
-            isActive = false
+            isActive = response.isActive
         )
     )
 }

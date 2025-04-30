@@ -16,7 +16,7 @@ object AttendanceFixture {
             sessionId = sessionId
         )
 
-    fun getAttendanceFixture(
+    fun getAttendanceEntityFixture(
         status: AttendanceStatus = AttendanceStatus.ON_TIME,
         userId: UUID = UUID.randomUUID(),
         scheduleId: UUID = UUID.randomUUID()

@@ -127,6 +127,28 @@ class UserFindService(
         }
     }
 
+    fun findUsersActiveOfGeneration(generation: Int): List<UserWithActivityUnit> =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(ActivityUnitEntity::class),
+                    innerJoin(entity(UserEntity::class))
+                        .on(
+                            and(
+                                path(ActivityUnitEntity::userId).equal(path(UserEntity::getId)),
+                                path(ActivityUnitEntity::generation).equal(generation)
+                            )
+                        )
+                )
+            }.filterNotNull()
+
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null
     ): JpqlQueryable<SelectQuery<UserWithLastActivityUnit>> =

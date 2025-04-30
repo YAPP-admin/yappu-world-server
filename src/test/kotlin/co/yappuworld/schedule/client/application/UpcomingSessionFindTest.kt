@@ -65,7 +65,7 @@ class UpcomingSessionFindTest :
                         userId = userId,
                         generation = 25
                     )
-                every { generationFindService.findActiveGeneration() } returns generation
+                every { generationFindService.findActiveGenerationOrNull() } returns generation
                 every { sessionFindService.findUpcomingSession(any(), any()) } returns session
                 every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             }
@@ -77,11 +77,11 @@ class UpcomingSessionFindTest :
 
             scenario("활성화 된 기수가 없으면 예외가 발생한다.") {
                 setCheckInPossibleCircumstance()
-                every { generationFindService.findActiveGeneration() } returns null
+                every { generationFindService.findActiveGenerationOrNull() } returns null
 
                 shouldThrowExactly<BusinessException> {
                     scheduleService.getUpcomingSessionAttendance(userId, now)
-                }.error shouldBe ScheduleError.NO_SESSION_IN_BREAK_PERIOD
+                }.error shouldBe ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION
             }
 
             scenario("세션이 존재하지 않으면 예외가 발생한다.") {
@@ -126,7 +126,7 @@ class UpcomingSessionFindTest :
                     row(AttendanceStatus.EXCUSED_ABSENCE)
                 ) { status ->
                     every { attendanceFindService.findSessionAttendance(any(), any()) } returns
-                        AttendanceFixture.getAttendanceFixture(
+                        AttendanceFixture.getAttendanceEntityFixture(
                             userId = userId,
                             scheduleId = session.id,
                             status = status
