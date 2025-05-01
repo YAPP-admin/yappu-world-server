@@ -263,7 +263,7 @@ interface AdminUserOperationApi {
         @Valid @RequestBody request: AdminSignUpCodeUpdateRequest
     ): ResponseEntity<Unit>
 
-    @Operation(summary = "인증번호 삭제")
+    @Operation(summary = "인증번호 초기화")
     @ApiResponse(
         responseCode = "204",
         content = [Content()]

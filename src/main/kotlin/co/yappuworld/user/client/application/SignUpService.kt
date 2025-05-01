@@ -1,15 +1,12 @@
 package co.yappuworld.user.client.application
 
-import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.operation.client.application.ConfigInquiryComponent
+import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.user.client.application.usecase.SignUpApplicationExecutor
 import co.yappuworld.user.client.dto.request.CheckingEmailAvailabilityRequest
 import co.yappuworld.user.client.dto.request.UserSignUpRequest
-import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserSystemNotifier
 import org.springframework.stereotype.Service
@@ -21,7 +18,7 @@ class SignUpService(
     private val userCommandService: UserCommandService,
     private val signUpApplicationExecutor: SignUpApplicationExecutor,
     private val jwtGenerator: JwtGenerator,
-    private val configInquiryComponent: ConfigInquiryComponent,
+    private val configFindService: ConfigFindService,
     private val userSystemNotifier: UserSystemNotifier
 ) {
 
@@ -47,20 +44,11 @@ class SignUpService(
         return userCommandService
             .signUp(
                 application = request.toSignUpApplication(),
-                role = getUserRoleWithSignUpCode(request.signUpCode!!)
+                role = configFindService.findSignUpCodeBook().decideRole(checkNotNull(request.signUpCode))
             ).let { user -> jwtGenerator.generateToken(SecurityUser.from(user), now) }
     }
 
     @Transactional(readOnly = true)
     fun checkEmailAvailability(request: CheckingEmailAvailabilityRequest) =
         signUpApplicationExecutor.checkEmailAvailability(request.email)
-
-    private fun getUserRoleWithSignUpCode(signUpCode: String): UserRole {
-        val config = configInquiryComponent
-            .findConfigsBy(UserRole.entries.map { it.signUpCodeKey })
-            .singleOrNull { it.value == signUpCode }
-            ?: throw BusinessException(UserError.INVALID_SIGN_UP_CODE)
-
-        return UserRole.entries.single { it.signUpCodeKey == config.id }
-    }
 }
