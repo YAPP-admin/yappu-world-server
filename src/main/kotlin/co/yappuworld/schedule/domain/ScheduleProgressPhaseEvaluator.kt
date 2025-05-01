@@ -4,6 +4,7 @@ import co.yappuworld.schedule.domain.ScheduleProgressPhase.DONE
 import co.yappuworld.schedule.domain.ScheduleProgressPhase.ONGOING
 import co.yappuworld.schedule.domain.ScheduleProgressPhase.PENDING
 import co.yappuworld.schedule.domain.ScheduleProgressPhase.TODAY
+import co.yappuworld.schedule.domain.entity.ScheduleEntity
 import java.time.LocalDateTime
 
 fun ScheduleEntity.getProgressPhase(now: LocalDateTime): ScheduleProgressPhase =

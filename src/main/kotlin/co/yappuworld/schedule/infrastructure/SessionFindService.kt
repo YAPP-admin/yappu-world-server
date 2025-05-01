@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.AttendanceEntity
-import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.domain.entity.AttendanceEntity
+import co.yappuworld.schedule.domain.entity.SessionEntity
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

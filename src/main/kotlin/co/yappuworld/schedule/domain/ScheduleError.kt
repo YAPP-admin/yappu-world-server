@@ -35,5 +35,12 @@ enum class ScheduleError : Error {
         override val message: String = "활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다."
         override val code: String = "SCH_1006"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+
+    // 4000번대 - 일정 공통
+    START_DATETIME_AFTER_END_DATETIME {
+        override val message: String = "시작 시간이 종료 시간보다 늦을 수 없습니다."
+        override val code: String = "SCH_4000"
+        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     }
 }

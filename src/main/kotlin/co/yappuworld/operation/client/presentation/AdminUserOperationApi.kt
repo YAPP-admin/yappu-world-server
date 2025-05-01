@@ -254,9 +254,73 @@ interface AdminUserOperationApi {
     fun getSignUpAuthenticationCode(): ResponseEntity<SuccessResponse<AdminSignUpCodesResponse>>
 
     @Operation(summary = "인증번호 수정")
-    @ApiResponse(
-        responseCode = "204",
-        content = [Content()]
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "기존에 존재하는 가입코드이므로 변경할 수 없습니다.",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2003",
+                                        "message": "기존에 존재하는 가입코드이므로 변경할 수 없습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "가입코드 미등록",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2000",
+                                        "message": "가입코드가 등록되지 않았습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "요청 가입코드의 형식 오류",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2001",
+                                        "message": "가입코드가 형식에 맞지 않습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "가입코드 중복 오류",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2002",
+                                        "message": "가입코드가 중복되었습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
     )
     @PatchMapping("/admin/v1/auth/authentication-codes")
     fun updateSignUpAuthenticationCode(

@@ -6,9 +6,9 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
-import co.yappuworld.schedule.domain.AttendanceEntity
+import co.yappuworld.schedule.domain.entity.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceError
-import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.domain.entity.SessionEntity
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService

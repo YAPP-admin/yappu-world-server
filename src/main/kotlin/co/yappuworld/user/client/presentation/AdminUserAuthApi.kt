@@ -145,6 +145,7 @@ interface AdminUserAuthApi {
         @Valid @RequestBody request: LoginRequest
     ): ResponseEntity<SuccessResponse<Token>>
 
+    @Operation(summary = "토큰 재발급")
     @PostMapping("/admin/v1/auth/reissue-token")
     fun reissueToken(
         @RequestBody request: AdminReissueTokenRequest

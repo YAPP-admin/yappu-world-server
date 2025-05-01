@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.application
 
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
-import co.yappuworld.schedule.domain.AttendanceEntity
+import co.yappuworld.schedule.domain.entity.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceError
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService

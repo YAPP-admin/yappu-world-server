@@ -36,6 +36,26 @@ interface ScheduleAdminApi {
             ApiResponse(
                 responseCode = "201",
                 content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "세션 시작 일시가 종료 일시보다 늦을 수 없음",
+                                value = """
+                                    {
+                                        "message": "시작 시간이 종료 시간보다 늦을 수 없습니다.",
+                                        "errorCode": "SCH_4000",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     )
@@ -86,6 +106,26 @@ interface ScheduleAdminApi {
                                             "size": 2
                                         },
                                         "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "세션 시작 일시가 종료 일시보다 늦을 수 없음",
+                                value = """
+                                    {
+                                        "message": "시작 시간이 종료 시간보다 늦을 수 없습니다.",
+                                        "errorCode": "SCH_4000",
+                                        "isSuccess": false
                                     }
                                 """
                             )
