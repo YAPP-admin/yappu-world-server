@@ -36,7 +36,7 @@ data class AttendanceStatisticsResponse(
         ): AttendanceStatisticsResponse {
             val finishedSessions = sessions.filter {
                 it.date.isBefore(now.toLocalDate()) ||
-                    (it.date.isEqual(now.toLocalDate()) && it.endTime?.isBefore(now.toLocalTime()) ?: false)
+                    (it.date.isEqual(now.toLocalDate()) && it.endTime.isBefore(now.toLocalTime()) ?: false)
             }
 
             val attendanceBySession = attendances.associateBy { it.scheduleId }

@@ -9,7 +9,8 @@ import co.yappuworld.global.security.Token
 import co.yappuworld.global.util.ifNotEmpty
 import co.yappuworld.operation.client.application.GenerationActiveStateManager
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
-import co.yappuworld.operation.domain.ConfigError
+import co.yappuworld.operation.infrastructure.ConfigCommandService
+import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
@@ -26,7 +27,6 @@ import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitCommandService
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
 import co.yappuworld.user.infrastructure.UserFindService
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -41,7 +41,9 @@ class AdminUserService(
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
-    private val generationActiveStateManager: GenerationActiveStateManager
+    private val generationActiveStateManager: GenerationActiveStateManager,
+    private val configFindService: ConfigFindService,
+    private val configCommandService: ConfigCommandService
 ) {
 
     @Transactional
@@ -104,16 +106,18 @@ class AdminUserService(
 
     @Transactional
     fun updateSignUpCode(request: AdminSignUpCodeUpdateRequest) {
-        configRepository
-            .findByIdOrNull(request.role.signUpCodeKey)
-            ?.apply { update(request.getPaddedCode()) }
-            ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
+        configFindService
+            .findSignUpCodeBook()
+            .apply { updateSignUpCode(request.role, request.getPaddedCode()) }
+            .also { configCommandService.update(it) }
     }
 
     @Transactional
     fun deleteSignupCode(request: AdminSignupCodeDeleteRequest) {
-        configRepository.findByIdOrNull(request.role.signUpCodeKey)?.apply { update(null) }
-            ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
+        configFindService
+            .findSignUpCodeBook()
+            .apply { initializeSignUpCode(request.role) }
+            .also { configCommandService.update(it) }
     }
 
     @Transactional(readOnly = true)
