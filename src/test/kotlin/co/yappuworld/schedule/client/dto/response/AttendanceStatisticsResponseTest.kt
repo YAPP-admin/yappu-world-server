@@ -4,7 +4,6 @@ import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.UserFixture
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
@@ -13,24 +12,34 @@ class AttendanceStatisticsResponseTest :
     FeatureSpec({
 
         feature("데이터 검증") {
-            val activeGeneration = 25
-            val user = UserFixture.getUserWithLastActivityUnitFixture(generation = activeGeneration)
             val datetime = LocalDateTime.of(2025, 3, 4, 8, 0, 0)
             val sessions = listOf(
-                getSessionEntityFixture(date = datetime.toLocalDate().minusDays(1)),
+                getSessionEntityFixture(
+                    date = datetime.toLocalDate().minusDays(1),
+                    endDate = datetime.toLocalDate().minusDays(1)
+                ),
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
+                    endDate = datetime.toLocalDate(),
+                    time = datetime.toLocalTime().minusMinutes(10),
                     endTime = datetime.toLocalTime().minusMinutes(10)
                 ),
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
+                    endDate = datetime.toLocalDate(),
+                    time = datetime.toLocalTime(),
                     endTime = datetime.toLocalTime()
                 ),
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
+                    endDate = datetime.toLocalDate(),
+                    time = datetime.toLocalTime().plusMinutes(10),
                     endTime = datetime.toLocalTime().plusMinutes(10)
                 ),
-                getSessionEntityFixture(date = datetime.toLocalDate().plusDays(1))
+                getSessionEntityFixture(
+                    date = datetime.toLocalDate().plusDays(1),
+                    endDate = datetime.toLocalDate().plusDays(1)
+                )
             )
 
             scenario("일자, 시간에 따른 잔여 세션 수와 진행률 검증") {

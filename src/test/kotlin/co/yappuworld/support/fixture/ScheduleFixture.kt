@@ -32,7 +32,7 @@ object ScheduleFixture {
         time = time,
         endTime = endTime,
         generation = generation,
-        sessionType = SessionType.OFFLINE
+        sessionType = sessionType
     )
 
     fun getTaskEntityFixture(
