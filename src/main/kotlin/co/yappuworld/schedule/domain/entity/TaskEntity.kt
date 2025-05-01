@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.domain.entity
 
 import java.time.LocalDate
 import java.time.LocalTime
@@ -9,7 +9,12 @@ class TaskEntity(
     override var place: String?,
     override var date: LocalDate,
     override var endDate: LocalDate,
-    override var time: LocalTime?,
-    override var endTime: LocalTime?,
+    override var time: LocalTime,
+    override var endTime: LocalTime,
     override var isAllDay: Boolean
-) : ScheduleEntity()
+) : ScheduleEntity() {
+
+    init {
+        checkDatetime()
+    }
+}

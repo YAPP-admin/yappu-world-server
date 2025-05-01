@@ -1,8 +1,8 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.TimeUtils.korean
-import co.yappuworld.schedule.domain.AttendanceEntity
-import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.domain.entity.AttendanceEntity
+import co.yappuworld.schedule.domain.entity.SessionEntity
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema

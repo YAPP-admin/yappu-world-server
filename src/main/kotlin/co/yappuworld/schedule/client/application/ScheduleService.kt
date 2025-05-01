@@ -7,7 +7,7 @@ import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsRespon
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
 import co.yappuworld.schedule.domain.ScheduleError
-import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.domain.entity.SessionEntity
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
