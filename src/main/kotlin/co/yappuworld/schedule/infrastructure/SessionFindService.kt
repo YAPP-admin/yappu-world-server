@@ -2,9 +2,12 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +20,9 @@ class SessionFindService(
     private val scheduleRepository: ScheduleRepository
 ) {
 
-    fun findSession(id: UUID) = scheduleRepository.findByIdOrNull(id)
+    fun findSession(id: UUID): SessionEntity =
+        scheduleRepository.findByIdOrNull(id) as? SessionEntity
+            ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
 
     fun findUpcomingSession(
         activeGeneration: Int,
@@ -117,5 +122,29 @@ class SessionFindService(
                     )
                 )
             }.filterNotNull()
-            .apply { forEach { it.resolveAttendanceStatusOfPastSessions(now) } }
+            .onEach { it.resolveAttendanceStatusOfPastSessions(now) }
+
+    fun findSessions(ids: List<UUID>): List<SessionEntity> = scheduleRepository.findAllByIdIn(ids)
+
+    fun findSessions(pageRequest: PageRequest): Page<SessionEntity> {
+        val result = scheduleRepository.findPage(pageRequest) {
+            select(entity(SessionEntity::class))
+                .from(entity(SessionEntity::class))
+        }
+
+        return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
+    }
+
+    fun findSessionsInGeneration(
+        pageRequest: PageRequest,
+        generation: Int
+    ): Page<SessionEntity> {
+        val result = scheduleRepository.findPage(pageRequest) {
+            select(entity(SessionEntity::class))
+                .from(entity(SessionEntity::class))
+                .where(path(SessionEntity::generation).equal(generation))
+        }
+
+        return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
+    }
 }

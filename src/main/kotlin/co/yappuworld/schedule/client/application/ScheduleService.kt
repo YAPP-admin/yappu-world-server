@@ -10,7 +10,6 @@ import co.yappuworld.schedule.domain.ScheduleError
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
-import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
@@ -21,7 +20,6 @@ import java.util.UUID
 
 @Service
 class ScheduleService(
-    private val scheduleRepository: ScheduleRepository,
     private val userFindService: UserFindService,
     private val scheduleFindService: ScheduleFindService,
     private val sessionFindService: SessionFindService,
