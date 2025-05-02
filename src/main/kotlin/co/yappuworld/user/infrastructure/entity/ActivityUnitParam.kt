@@ -1,4 +1,4 @@
-package co.yappuworld.user.domain.entity
+package co.yappuworld.user.infrastructure.entity
 
 import co.yappuworld.user.domain.vo.Position
 import java.util.UUID

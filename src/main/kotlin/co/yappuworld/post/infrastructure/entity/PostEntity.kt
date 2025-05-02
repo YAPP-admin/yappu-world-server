@@ -1,4 +1,4 @@
-package co.yappuworld.post.domain
+package co.yappuworld.post.infrastructure.entity
 
 import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.DiscriminatorColumn

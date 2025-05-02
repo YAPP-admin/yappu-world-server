@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

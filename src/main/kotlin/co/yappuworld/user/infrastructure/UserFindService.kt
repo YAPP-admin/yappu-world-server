@@ -1,8 +1,8 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.entity.ActivityUnitEntity
-import co.yappuworld.user.domain.entity.UserEntity
+import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError

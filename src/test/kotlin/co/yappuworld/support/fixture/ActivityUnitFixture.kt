@@ -1,6 +1,6 @@
 package co.yappuworld.support.fixture
 
-import co.yappuworld.user.domain.entity.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.domain.vo.Position
 import java.util.UUID
 

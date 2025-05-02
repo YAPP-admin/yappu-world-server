@@ -1,6 +1,6 @@
 package co.yappuworld.support.fixture
 
-import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import com.github.f4b6a3.ulid.UlidCreator
 import java.util.UUID

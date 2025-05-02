@@ -1,6 +1,6 @@
 package co.yappuworld.global.persistence
 
-import co.yappuworld.user.domain.entity.ApplicationDetails
+import co.yappuworld.user.infrastructure.entity.ApplicationDetails
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter

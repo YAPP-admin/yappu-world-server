@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.domain.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 
 interface UserSystemNotifier {
 

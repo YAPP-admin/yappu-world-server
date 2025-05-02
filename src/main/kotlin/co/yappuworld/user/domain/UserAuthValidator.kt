@@ -1,8 +1,8 @@
 package co.yappuworld.user.domain
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.entity.SignUpApplicationEntity
-import co.yappuworld.user.domain.entity.UserEntity
+import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import io.github.oshai.kotlinlogging.KotlinLogging

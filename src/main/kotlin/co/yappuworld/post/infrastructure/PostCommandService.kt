@@ -1,6 +1,6 @@
 package co.yappuworld.post.infrastructure
 
-import co.yappuworld.post.domain.PostEntity
+import co.yappuworld.post.infrastructure.entity.PostEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
