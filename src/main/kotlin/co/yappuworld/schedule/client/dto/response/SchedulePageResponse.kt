@@ -1,16 +1,16 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.global.util.TimeUtils.LocalDateRange
+import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.global.util.TimeUtils.korean
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
-import co.yappuworld.schedule.domain.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.domain.entity.ScheduleEntity
+import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.ScheduleType
-import co.yappuworld.schedule.domain.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
-import co.yappuworld.schedule.domain.entity.TaskEntity
+import co.yappuworld.schedule.infrastructure.entity.TaskEntity
 import co.yappuworld.schedule.domain.getProgressPhase
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import io.swagger.v3.oas.annotations.media.Schema

@@ -1,6 +1,6 @@
-package co.yappuworld.schedule.domain.entity
+package co.yappuworld.schedule.infrastructure.entity
 
-import co.yappuworld.global.util.TimeUtils.LocalDateTimeRange
+import co.yappuworld.global.util.LocalDateTimeRange
 import co.yappuworld.schedule.domain.SessionType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity

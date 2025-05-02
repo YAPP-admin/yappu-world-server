@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

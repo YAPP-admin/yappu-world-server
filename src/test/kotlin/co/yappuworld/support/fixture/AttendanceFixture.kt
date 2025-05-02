@@ -1,7 +1,7 @@
 package co.yappuworld.support.fixture
 
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
-import co.yappuworld.schedule.domain.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceStatus
 import java.util.UUID
 

@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.entity.LatePassEntity
+import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 

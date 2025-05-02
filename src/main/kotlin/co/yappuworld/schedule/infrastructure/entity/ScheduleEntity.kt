@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain.entity
+package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
