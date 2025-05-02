@@ -42,8 +42,8 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_2003"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
-    USER_NOT_ACTIVATE {
-        override val message: String = "활동 유저가 아니라서 출석이 불가합니다."
+    UNAUTHORIZED_CHECK_IN {
+        override val message: String = "출석할 수 있는 권한이 없습니다."
         override val code: String = "ATD_2004"
         override val type: ErrorType = ErrorType.FORBIDDEN
     },

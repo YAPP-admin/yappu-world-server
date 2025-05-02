@@ -5,8 +5,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
-object TimeUtils {
+object DatetimeUtils {
 
     fun getCurrentZonedTimeInKST(): ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
 
@@ -30,4 +31,6 @@ object TimeUtils {
             DayOfWeek.SATURDAY -> "토"
             DayOfWeek.SUNDAY -> "일"
         }
+
+    fun LocalDate.dDayFrom(other: LocalDate): Long = ChronoUnit.DAYS.between(this, other)
 }

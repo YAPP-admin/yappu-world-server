@@ -3,7 +3,7 @@ package co.yappuworld.user.client.presentation
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.security.Token
-import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
+import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.user.client.application.SignUpService
 import co.yappuworld.user.client.application.UserAuthService
 import co.yappuworld.user.client.dto.request.CheckingEmailAvailabilityRequest

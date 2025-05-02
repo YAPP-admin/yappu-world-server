@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
+import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.AttendanceStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

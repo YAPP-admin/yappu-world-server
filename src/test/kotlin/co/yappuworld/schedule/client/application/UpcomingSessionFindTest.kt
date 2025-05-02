@@ -1,10 +1,10 @@
 package co.yappuworld.schedule.client.application
 
-import co.yappuworld.schedule.domain.AttendanceStatus
-import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
+import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
@@ -82,15 +82,6 @@ class UpcomingSessionFindTest :
                 shouldThrowExactly<BusinessException> {
                     scheduleService.getUpcomingSessionAttendance(userId, now)
                 }.error shouldBe ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION
-            }
-
-            scenario("세션이 존재하지 않으면 예외가 발생한다.") {
-                setCheckInPossibleCircumstance()
-                every { sessionFindService.findUpcomingSession(any(), any()) } returns null
-
-                shouldThrowExactly<BusinessException> {
-                    scheduleService.getUpcomingSessionAttendance(userId, now)
-                }.error shouldBe ScheduleError.NO_UPCOMING_SESSION
             }
 
             scenario("활성화 된 기수의 유저가 아니면 출석을 누를 수 없다.") {

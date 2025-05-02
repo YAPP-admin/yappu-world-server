@@ -1,5 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.schedule.domain.ScheduleError
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
@@ -20,7 +22,7 @@ class SessionFindService(
     fun findUpcomingSession(
         activeGeneration: Int,
         now: LocalDateTime
-    ): SessionEntity? =
+    ): SessionEntity =
         scheduleRepository
             .findAll(limit = 1) {
                 select(entity(SessionEntity::class))
@@ -32,6 +34,7 @@ class SessionFindService(
                         )
                     ).orderBy(path(SessionEntity::date).asc())
             }.singleOrNull()
+            ?: throw BusinessException(ScheduleError.NO_UPCOMING_SESSION)
 
     fun findSessionsInGeneration(generation: Int): List<SessionEntity> =
         scheduleRepository

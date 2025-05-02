@@ -7,11 +7,12 @@ import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsRespon
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
 import co.yappuworld.schedule.domain.ScheduleError
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -66,13 +67,19 @@ class ScheduleService(
         userId: UUID,
         now: LocalDateTime
     ): UpcomingSessionAttendanceResponse {
-        val user = userFindService.findUserWithLastActivityUnit(userId)
         val activeGeneration = generationFindService.findActiveGenerationOrNull()
             ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
+        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
         val session = sessionFindService.findUpcomingSession(activeGeneration, now)
-            ?: throw BusinessException(ScheduleError.NO_UPCOMING_SESSION)
         val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)
 
-        return UpcomingSessionAttendanceResponse.of(user, activeGeneration, session, attendanceOrNull, now)
+        return UpcomingSessionAttendanceResponse.of(
+            sessionAttendance = SessionAttendance.from(
+                user = user,
+                session = session,
+                attendance = attendanceOrNull
+            ),
+            now = now
+        )
     }
 }

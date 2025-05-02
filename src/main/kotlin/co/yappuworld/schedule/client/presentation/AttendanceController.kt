@@ -2,7 +2,7 @@ package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
-import co.yappuworld.global.util.TimeUtils
+import co.yappuworld.global.util.DatetimeUtils
 import co.yappuworld.schedule.client.application.AttendanceService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
@@ -21,7 +21,7 @@ class AttendanceController(
         request: AttendanceRequest,
         securityUser: SecurityUser
     ): ResponseEntity<Unit> {
-        attendanceService.checkIn(request, securityUser.userId, TimeUtils.getCurrentDateTimeInKST())
+        attendanceService.checkIn(request, securityUser.userId, DatetimeUtils.getCurrentDateTimeInKST())
         return ResponseEntity.created(URI("")).build()
     }
 
@@ -39,7 +39,7 @@ class AttendanceController(
     ): ResponseEntity<SuccessResponse<AttendancesHistoryResponse>> =
         ResponseEntity.ok(
             SuccessResponse(
-                attendanceService.getAttendancesHistory(securityUser.userId, TimeUtils.getCurrentDateTimeInKST())
+                attendanceService.getAttendancesHistory(securityUser.userId, DatetimeUtils.getCurrentDateTimeInKST())
             )
         )
 }

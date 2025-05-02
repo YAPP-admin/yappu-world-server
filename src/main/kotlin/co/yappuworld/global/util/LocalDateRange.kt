@@ -1,6 +1,6 @@
 package co.yappuworld.global.util
 
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
+import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import java.time.LocalDate
 
 class LocalDateRange(

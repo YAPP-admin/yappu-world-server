@@ -144,7 +144,7 @@ class AttendanceService(
 
         if (user.role != UserRole.ACTIVE) {
             logger.warn { "유저($userId)는 활동 멤버가 아니라서 출석이 불가합니다." }
-            throw BusinessException(AttendanceError.USER_NOT_ACTIVATE)
+            throw BusinessException(AttendanceError.UNAUTHORIZED_CHECK_IN)
         }
 
         if (user.lastActiveGeneration != generation) {

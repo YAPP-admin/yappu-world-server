@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
+import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.schedule.client.application.AdminAttendanceService
 import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse

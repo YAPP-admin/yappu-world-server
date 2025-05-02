@@ -2,7 +2,7 @@ package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
-import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
+import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse

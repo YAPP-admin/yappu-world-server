@@ -1,11 +1,11 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
-import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
@@ -148,6 +148,32 @@ class UserFindService(
                         )
                 )
             }.filterNotNull()
+
+    fun findUserWithActivityUnitOfGeneration(
+        userId: UUID,
+        generation: Int
+    ): UserWithActivityUnit =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(entity(ActivityUnitEntity::class))
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(ActivityUnitEntity::generation).equal(generation)
+                            )
+                        )
+                )
+            }.singleOrNull()
+            ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
 
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null
