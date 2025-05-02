@@ -1,6 +1,6 @@
 package co.yappuworld.external.discord.dto
 
-import co.yappuworld.global.util.TimeUtils.getCurrentZonedTimeInKST
+import co.yappuworld.global.util.DatetimeUtils.getCurrentZonedTimeInKST
 import java.time.format.DateTimeFormatter
 
 /**

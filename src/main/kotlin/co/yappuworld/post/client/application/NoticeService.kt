@@ -5,7 +5,7 @@ import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.post.client.dto.request.NoticePageRequest
 import co.yappuworld.post.client.dto.response.NoticeOverviewResponse
 import co.yappuworld.post.client.dto.response.NoticeResponse
-import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.infrastructure.PostFindService
 import co.yappuworld.user.infrastructure.UserFindService

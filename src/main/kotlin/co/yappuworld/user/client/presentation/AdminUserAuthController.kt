@@ -3,7 +3,7 @@ package co.yappuworld.user.client.presentation
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
-import co.yappuworld.global.util.TimeUtils.getCurrentDateTimeInKST
+import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.user.client.application.AdminSignUpService
 import co.yappuworld.user.client.application.AdminUserService
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest

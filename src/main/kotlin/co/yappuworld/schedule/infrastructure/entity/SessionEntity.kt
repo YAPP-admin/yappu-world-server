@@ -1,6 +1,8 @@
-package co.yappuworld.schedule.domain.entity
+package co.yappuworld.schedule.infrastructure.entity
 
-import co.yappuworld.global.util.TimeUtils.LocalDateTimeRange
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.schedule.domain.AttendanceError
+import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
@@ -9,7 +11,6 @@ import jakarta.persistence.Enumerated
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.concurrent.TimeUnit.SECONDS
 
 @Entity
 @DiscriminatorValue(value = "SESSION")
@@ -65,27 +66,21 @@ class SessionEntity(
     val checkInTimeUntil: LocalDateTime
         get() = LocalDateTime.of(date, endTime)
 
-    val checkInRange: LocalDateTimeRange
-        get() = LocalDateTimeRange(
-            start = checkInTimeFrom,
-            endExclusive = checkInTimeUntil,
-            unit = SECONDS
-        )
-
     val lateTimeFrom: LocalDateTime
         get() = LocalDateTime.of(date, time).plusMinutes(20)
 
     val lateTimeUntil: LocalDateTime
         get() = LocalDateTime.of(date, time).plusHours(2)
 
-    val lateTimeRange: LocalDateTimeRange
-        get() = LocalDateTimeRange(
-            start = lateTimeFrom,
-            endExclusive = lateTimeUntil,
-            unit = SECONDS
-        )
-
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
             (endDate.isEqual(now.toLocalDate()) && (endTime?.isBefore(now.toLocalTime()) == true))
+
+    fun decideCheckInStatus(now: LocalDateTime): AttendanceStatus =
+        when {
+            now.isBefore(checkInTimeFrom) -> throw BusinessException(AttendanceError.NOT_CHECK_IN_TIME)
+            now.isBefore(lateTimeFrom) -> AttendanceStatus.ON_TIME
+            now.isBefore(lateTimeUntil) -> AttendanceStatus.LATE
+            else -> AttendanceStatus.ABSENT
+        }
 }

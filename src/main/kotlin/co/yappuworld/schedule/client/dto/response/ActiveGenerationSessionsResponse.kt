@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.global.util.TimeUtils.korean
+import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING

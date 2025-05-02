@@ -31,6 +31,11 @@ enum class UserError : Error {
         override val code: String = "USR_0005"
         override val type: ErrorType = ErrorType.UNEXPECTED_ERROR
     },
+    USER_NOT_FOUND_WITH_GENERATION_ACTIVITY {
+        override val message: String = "해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다."
+        override val code: String = "USR_0006"
+        override val type: ErrorType = ErrorType.NOT_FOUND
+    },
 
     // 1000번대 - 회원가입 에러
     WRONG_SIGN_UP_CODE {

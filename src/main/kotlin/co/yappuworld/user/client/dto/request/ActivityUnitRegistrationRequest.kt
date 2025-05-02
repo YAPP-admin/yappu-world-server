@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.request
 
-import co.yappuworld.user.domain.entity.ActivityUnitParam
+import co.yappuworld.user.infrastructure.entity.ActivityUnitParam
 import co.yappuworld.user.domain.vo.Position
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min

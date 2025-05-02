@@ -3,17 +3,14 @@ package co.yappuworld.schedule.client.application
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
-import co.yappuworld.schedule.domain.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.user.infrastructure.UserFindService
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-
-private val logger = KotlinLogging.logger { }
 
 @Service
 class AdminAttendanceService(

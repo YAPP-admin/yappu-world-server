@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate

@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.entity.AttendanceEntity
+import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,8 +11,8 @@ class AttendanceCommandService(
     private val attendanceRepository: AttendanceRepository
 ) {
 
-    fun save(attendance: AttendanceEntity) {
-        attendanceRepository.save(attendance)
+    fun save(sessionAttendance: SessionAttendance) {
+        attendanceRepository.save(sessionAttendance.getNewAttendance())
     }
 
     fun saveAll(attendances: List<AttendanceEntity>) {

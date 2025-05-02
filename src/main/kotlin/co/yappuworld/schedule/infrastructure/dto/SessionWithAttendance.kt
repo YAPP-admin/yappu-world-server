@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure.dto
 
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
+import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionType
 import java.time.LocalDate

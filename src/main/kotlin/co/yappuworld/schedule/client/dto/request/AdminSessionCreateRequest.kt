@@ -2,8 +2,8 @@ package co.yappuworld.schedule.client.dto.request
 
 import co.yappuworld.schedule.domain.ScheduleType
 import co.yappuworld.schedule.domain.SessionType
-import co.yappuworld.schedule.domain.entity.ScheduleEntity
-import co.yappuworld.schedule.domain.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull

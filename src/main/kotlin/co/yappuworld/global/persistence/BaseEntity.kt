@@ -1,6 +1,6 @@
 package co.yappuworld.global.persistence
 
-import co.yappuworld.global.util.TimeUtils
+import co.yappuworld.global.util.DatetimeUtils
 import com.github.f4b6a3.ulid.UlidCreator
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
@@ -27,11 +27,11 @@ abstract class BaseEntity : Persistable<UUID> {
     private val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
 
     @CreatedDate
-    open var createdAt: LocalDateTime = TimeUtils.getCurrentDateTimeInKST()
+    open var createdAt: LocalDateTime = DatetimeUtils.getCurrentDateTimeInKST()
         protected set
 
     @LastModifiedDate
-    open var updatedAt: LocalDateTime = TimeUtils.getCurrentDateTimeInKST()
+    open var updatedAt: LocalDateTime = DatetimeUtils.getCurrentDateTimeInKST()
         protected set
 
     @Transient

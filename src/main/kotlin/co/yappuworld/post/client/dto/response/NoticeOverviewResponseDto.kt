@@ -1,7 +1,7 @@
 package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.operation.client.dto.response.PositionResponse
-import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema

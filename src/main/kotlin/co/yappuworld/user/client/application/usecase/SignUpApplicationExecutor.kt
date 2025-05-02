@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.application.usecase
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.SignUpApplicationCommandService

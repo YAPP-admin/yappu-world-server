@@ -1,15 +1,10 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.global.util.TimeUtils.korean
-import co.yappuworld.schedule.domain.entity.AttendanceEntity
-import co.yappuworld.schedule.domain.entity.SessionEntity
-import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
+import co.yappuworld.schedule.domain.SessionAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 data class UpcomingSessionAttendanceResponse(
@@ -57,31 +52,24 @@ data class UpcomingSessionAttendanceResponse(
     companion object {
 
         fun of(
-            user: UserWithLastActivityUnit,
-            activeGeneration: Int,
-            session: SessionEntity,
-            attendance: AttendanceEntity?,
+            sessionAttendance: SessionAttendance,
             now: LocalDateTime
-        ): UpcomingSessionAttendanceResponse {
-            val canCheckIn = now in session.checkInRange &&
-                attendance == null &&
-                user.lastActiveGeneration == activeGeneration &&
-                user.role == UserRole.ACTIVE
-
-            return UpcomingSessionAttendanceResponse(
-                sessionId = session.id,
-                name = session.name,
-                startDate = session.date,
-                startDayOfWeek = session.date.dayOfWeek.korean(),
-                endDate = session.endDate,
-                endDayOfWeek = session.endDate.dayOfWeek.korean(),
-                startTime = session.time,
-                endTime = session.endTime,
-                place = session.place,
-                relativeDays = ChronoUnit.DAYS.between(session.date, now.toLocalDate()).toInt(),
-                canCheckIn = canCheckIn,
-                status = attendance?.status?.label
-            )
-        }
+        ): UpcomingSessionAttendanceResponse =
+            sessionAttendance.let {
+                UpcomingSessionAttendanceResponse(
+                    sessionId = it.sessionId,
+                    name = it.sessionName,
+                    startDate = it.sessionStartDate,
+                    startDayOfWeek = it.sessionStartDayOfWeek,
+                    endDate = it.sessionEndDate,
+                    endDayOfWeek = it.sessionEndDayOfWeek,
+                    startTime = it.sessionStartTime,
+                    endTime = it.sessionEndTime,
+                    place = it.sessionPlace,
+                    relativeDays = it.getRelativeDays(now.toLocalDate()),
+                    canCheckIn = it.canCheckIn(now),
+                    status = it.getAttendanceStatus(now)
+                )
+            }
     }
 }

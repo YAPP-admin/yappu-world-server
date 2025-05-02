@@ -357,4 +357,40 @@ class UserFindServiceTest @Autowired constructor(
                 }
             }
         }
+
+        feature("유저의 특정 기수 활동 기록을 조회한다.") {
+
+            scenario("유저가 존재하지 않으면 예외가 발생한다.") {
+                shouldThrowExactly<BusinessException> {
+                    userFindService.findUserWithActivityUnitOfGeneration(UUID.randomUUID(), 24)
+                }.error shouldBe UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY
+            }
+
+            scenario("해당 기수의 활동 내역이 없으면 예외가 발생한다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+
+                val activityUnit = getActivityUnitEntityFixture(generation = 25, userId = user.id)
+                activityUnitRepository.save(activityUnit)
+
+                shouldThrowExactly<BusinessException> {
+                    userFindService.findUserWithActivityUnitOfGeneration(user.id, activityUnit.generation + 1)
+                }.error shouldBe UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY
+            }
+
+            scenario("해당 기수 활동 내역이 있으면 정상 조회된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+
+                val activityUnit = getActivityUnitEntityFixture(generation = 25, userId = user.id)
+                activityUnitRepository.save(activityUnit)
+
+                shouldNotThrowAny {
+                    userFindService.findUserWithActivityUnitOfGeneration(user.id, activityUnit.generation)
+                }.let {
+                    it.generation shouldBe activityUnit.generation
+                    it.userId shouldBe user.id
+                }
+            }
+        }
     })
