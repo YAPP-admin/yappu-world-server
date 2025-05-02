@@ -2,15 +2,15 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
+import co.yappuworld.schedule.domain.AttendanceError
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
-import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.ScheduleFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithLastActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -29,7 +29,6 @@ import java.util.UUID
 class UpcomingSessionFindTest :
     FeatureSpec({
 
-        val scheduleRepository = mockk<ScheduleRepository>()
         val userFindService = mockk<UserFindService>()
         val sessionFindService = mockk<SessionFindService>()
         val attendanceFindService = mockk<AttendanceFindService>()
@@ -37,7 +36,6 @@ class UpcomingSessionFindTest :
         val scheduleFindService = mockk<ScheduleFindService>()
 
         val scheduleService = ScheduleService(
-            scheduleRepository = scheduleRepository,
             userFindService = userFindService,
             sessionFindService = sessionFindService,
             attendanceFindService = attendanceFindService,
@@ -49,7 +47,7 @@ class UpcomingSessionFindTest :
 
             val userId = UUID.randomUUID()
             val now = LocalDateTime.of(2024, 10, 22, 14, 0)
-            val user = getUserWithLastActivityUnitFixture(userId = userId, generation = 25)
+            val user = getUserWithActivityUnitFixture(userId = userId, generation = 25)
             val generation = 25
             val session = ScheduleFixture.getSessionEntityFixture(
                 date = now.toLocalDate(),
@@ -60,12 +58,12 @@ class UpcomingSessionFindTest :
             )
 
             fun setCheckInPossibleCircumstance() {
-                every { userFindService.findUserWithLastActivityUnit(any()) } returns
-                    getUserWithLastActivityUnitFixture(
-                        userId = userId,
-                        generation = 25
-                    )
                 every { generationFindService.findActiveGenerationOrNull() } returns generation
+                every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns
+                    getUserWithActivityUnitFixture(
+                        userId = userId,
+                        generation = generation
+                    )
                 every { sessionFindService.findUpcomingSession(any(), any()) } returns session
                 every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             }
@@ -86,10 +84,12 @@ class UpcomingSessionFindTest :
 
             scenario("활성화 된 기수의 유저가 아니면 출석을 누를 수 없다.") {
                 setCheckInPossibleCircumstance()
-                every { userFindService.findUserWithLastActivityUnit(any()) } returns
-                    user.copy(lastActiveGeneration = 24)
+                every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns
+                    user.copy(generation = 24)
 
-                scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
+                shouldThrowExactly<BusinessException> {
+                    scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
+                }.error shouldBe AttendanceError.GENERATION_NOT_MATCH
             }
 
             scenario("유저의 권한이 활동 중인 상태가 아니라면 출석이 불가하다.") {
@@ -101,7 +101,10 @@ class UpcomingSessionFindTest :
                     row(UserRole.ADMIN),
                     row(UserRole.STAFF)
                 ) { role ->
-                    every { userFindService.findUserWithLastActivityUnit(any()) } returns user.copy(role = role)
+                    every {
+                        userFindService.findUserWithActivityUnitOfGeneration(any(), any())
+                    } returns user.copy(role = role)
+
                     scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
                 }
             }
@@ -133,10 +136,10 @@ class UpcomingSessionFindTest :
                     row(
                         LocalDateTime.of(
                             session.date,
-                            session.time?.minusMinutes(20)?.minusNanos(1) ?: LocalTime.MIN
+                            session.time.minusMinutes(20)?.minusNanos(1) ?: LocalTime.MIN
                         )
                     ),
-                    row(LocalDateTime.of(session.endDate, session.endTime ?: LocalTime.MAX))
+                    row(LocalDateTime.of(session.endDate, session.endTime))
                 ) { now ->
                     scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
                 }
@@ -145,8 +148,8 @@ class UpcomingSessionFindTest :
             scenario("세션 시작 20분 전부터 세션 종료 전까지 출석 버튼을 누를 수 있다.") {
                 setCheckInPossibleCircumstance()
                 forAll(
-                    row(LocalDateTime.of(session.date, session.time?.minusMinutes(20) ?: LocalTime.MIN)),
-                    row(LocalDateTime.of(session.endDate, session.endTime?.minusNanos(1) ?: LocalTime.MAX))
+                    row(LocalDateTime.of(session.date, session.time.minusMinutes(20) ?: LocalTime.MIN)),
+                    row(LocalDateTime.of(session.endDate, session.endTime.minusNanos(1) ?: LocalTime.MAX))
                 ) { now ->
                     scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeTrue()
                 }

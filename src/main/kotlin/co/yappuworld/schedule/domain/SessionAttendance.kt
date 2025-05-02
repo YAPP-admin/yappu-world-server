@@ -57,7 +57,7 @@ class SessionAttendance(
     fun getRelativeDays(now: LocalDate): Int = sessionStartDate.dDayFrom(now).toInt()
 
     fun canCheckIn(now: LocalDateTime): Boolean =
-        isBetweenCheckInTime(now) && isAlreadyCheckedId && hasCheckInAuthority(user.role)
+        isBetweenCheckInTime(now) && notCheckedIn && hasCheckInAuthority(user.role)
 
     fun getAttendanceStatus(now: LocalDateTime): String? =
         when {
@@ -67,9 +67,9 @@ class SessionAttendance(
         }
 
     private fun isBetweenCheckInTime(now: LocalDateTime): Boolean =
-        session.checkInTimeFrom.isBeforeOrEqual(now) && now.isBeforeOrEqual(session.checkInTimeUntil)
+        session.checkInTimeFrom.isBeforeOrEqual(now) && now.isBefore(session.checkInTimeUntil)
 
-    private val isAlreadyCheckedId: Boolean = attendance != null
+    private val notCheckedIn: Boolean = attendance == null
 
     private fun hasCheckInAuthority(role: UserRole): Boolean = role in listOf(UserRole.ACTIVE)
 }

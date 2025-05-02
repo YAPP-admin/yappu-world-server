@@ -7,7 +7,6 @@ import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
-import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import co.yappuworld.support.fixture.ScheduleFixture
@@ -22,14 +21,12 @@ import kotlin.test.assertEquals
 
 class ScheduleServiceSessionProgressPhaseTest {
 
-    private val scheduleRepository = mockk<ScheduleRepository>()
     private val userFindService = mockk<UserFindService>()
     private val sessionFindService = mockk<SessionFindService>()
     private val attendanceFindService = mockk<AttendanceFindService>()
     private val generationFindService = mockk<GenerationFindService>()
     private val scheduleFindService = mockk<ScheduleFindService>()
     private val scheduleService = ScheduleService(
-        scheduleRepository = scheduleRepository,
         userFindService = userFindService,
         sessionFindService = sessionFindService,
         attendanceFindService = attendanceFindService,

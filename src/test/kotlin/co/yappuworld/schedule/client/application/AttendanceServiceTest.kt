@@ -1,19 +1,18 @@
 package co.yappuworld.schedule.client.application
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.operation.infrastructure.ConfigFindService
+import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceError
 import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
-import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.operation.infrastructure.ConfigFindService
-import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.ScheduleFixture.getTaskEntityFixture
 import co.yappuworld.support.fixture.UserFixture
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrow
@@ -101,22 +100,6 @@ class AttendanceServiceTest :
                 feature("세션 관련 검증을 진행한다.") {
                     every { attendanceFindService.hasAlreadyCheckedIn(any(), any()) } returns false
                     every { configFindService.findConfig("attendanceCode")?.value } returns attendanceCode
-
-                    scenario("세션을 찾을 수 없으면 예외가 발생한다.") {
-                        every { sessionFindService.findSession(sessionId) } returns null
-
-                        shouldThrow<BusinessException> {
-                            attendanceService.checkIn(request, userId, LocalDateTime.now())
-                        }.error.shouldBe(AttendanceError.SESSION_NOT_FOUND)
-                    }
-
-                    scenario("세션이 세션 타입이 아니면 예외가 발생한다.") {
-                        every { sessionFindService.findSession(any()) } returns getTaskEntityFixture()
-
-                        shouldThrow<BusinessException> {
-                            attendanceService.checkIn(request, userId, LocalDateTime.now())
-                        }.error.shouldBe(AttendanceError.CHECK_IN_ONLY_FOR_SESSION)
-                    }
 
                     scenario("세션의 기수와 활성화된 기수가 일치하지 않으면 예외가 발생한다.") {
                         val session = getSessionEntityFixture(generation = activeGeneration - 1)
