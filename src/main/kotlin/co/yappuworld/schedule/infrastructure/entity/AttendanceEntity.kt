@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.persistence.BaseEntity
+import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.AttendanceStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -27,9 +28,12 @@ class AttendanceEntity(
             userId: UUID,
             session: SessionEntity
         ): AttendanceEntity {
+            val isNowBetweenLateTimeRange =
+                session.lateTimeFrom.isBeforeOrEqual(now) && now.isBeforeOrEqual(session.lateTimeUntil)
+
             val status = when {
                 now < session.lateTimeFrom -> AttendanceStatus.ON_TIME
-                now in session.lateTimeRange -> AttendanceStatus.LATE
+                isNowBetweenLateTimeRange -> AttendanceStatus.LATE
                 else -> AttendanceStatus.ABSENT
             }
 

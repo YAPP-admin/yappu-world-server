@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
+import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
 import co.yappuworld.global.util.TimeUtils.korean
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
@@ -63,7 +64,8 @@ data class UpcomingSessionAttendanceResponse(
             attendance: AttendanceEntity?,
             now: LocalDateTime
         ): UpcomingSessionAttendanceResponse {
-            val canCheckIn = now in session.checkInRange &&
+            val canCheckIn = session.checkInTimeFrom.isBeforeOrEqual(now) &&
+                now.isBeforeOrEqual(session.checkInTimeUntil) &&
                 attendance == null &&
                 user.lastActiveGeneration == activeGeneration &&
                 user.role == UserRole.ACTIVE

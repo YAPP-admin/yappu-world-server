@@ -1,6 +1,5 @@
 package co.yappuworld.schedule.infrastructure.entity
 
-import co.yappuworld.global.util.LocalDateTimeRange
 import co.yappuworld.schedule.domain.SessionType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
@@ -9,7 +8,6 @@ import jakarta.persistence.Enumerated
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.concurrent.TimeUnit.SECONDS
 
 @Entity
 @DiscriminatorValue(value = "SESSION")
@@ -65,25 +63,11 @@ class SessionEntity(
     val checkInTimeUntil: LocalDateTime
         get() = LocalDateTime.of(date, endTime)
 
-    val checkInRange: LocalDateTimeRange
-        get() = LocalDateTimeRange(
-            start = checkInTimeFrom,
-            endExclusive = checkInTimeUntil,
-            unit = SECONDS
-        )
-
     val lateTimeFrom: LocalDateTime
         get() = LocalDateTime.of(date, time).plusMinutes(20)
 
     val lateTimeUntil: LocalDateTime
         get() = LocalDateTime.of(date, time).plusHours(2)
-
-    val lateTimeRange: LocalDateTimeRange
-        get() = LocalDateTimeRange(
-            start = lateTimeFrom,
-            endExclusive = lateTimeUntil,
-            unit = SECONDS
-        )
 
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
