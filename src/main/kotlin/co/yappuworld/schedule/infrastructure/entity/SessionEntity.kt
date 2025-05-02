@@ -1,5 +1,8 @@
 package co.yappuworld.schedule.infrastructure.entity
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.schedule.domain.AttendanceError
+import co.yappuworld.schedule.domain.AttendanceStatus
 import co.yappuworld.schedule.domain.SessionType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
@@ -72,4 +75,12 @@ class SessionEntity(
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
             (endDate.isEqual(now.toLocalDate()) && (endTime?.isBefore(now.toLocalTime()) == true))
+
+    fun decideCheckInStatus(now: LocalDateTime): AttendanceStatus =
+        when {
+            now.isBefore(checkInTimeFrom) -> throw BusinessException(AttendanceError.NOT_CHECK_IN_TIME)
+            now.isBefore(lateTimeFrom) -> AttendanceStatus.ON_TIME
+            now.isBefore(lateTimeUntil) -> AttendanceStatus.LATE
+            else -> AttendanceStatus.ABSENT
+        }
 }

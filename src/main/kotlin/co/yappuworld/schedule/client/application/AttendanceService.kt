@@ -6,14 +6,12 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.domain.AttendanceError
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
-import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
@@ -40,13 +38,13 @@ class AttendanceService(
         userId: UUID,
         now: LocalDateTime
     ) {
-        validateCheckIn(request, userId)
+        val sessionAttendance = getSessionAttendance(userId, request.sessionId)
+            .also { it.validateCheckInAvailability(now) }
 
-        sessionFindService.findSession(request.sessionId)?.let {
-            attendanceCommandService.save(
-                AttendanceEntity.checkInSession(now = now, userId = userId, session = it as SessionEntity)
-            )
-        }
+        checkAttendanceCode(request.attendanceCode)
+        sessionAttendance.checkIn(now)
+
+        attendanceCommandService.save(sessionAttendance)
     }
 
     @Transactional(readOnly = true)
@@ -80,82 +78,29 @@ class AttendanceService(
         return AttendancesHistoryResponse.of(sessionsWithAttendance)
     }
 
-    private fun validateCheckIn(
-        request: AttendanceRequest,
-        userId: UUID
-    ) {
+    private fun getSessionAttendance(
+        userId: UUID,
+        sessionId: UUID
+    ): SessionAttendance {
         val generation = generationFindService.findActiveGeneration()
+        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, generation)
+        val session = sessionFindService.findSession(sessionId)
+        val attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
 
-        validateAttendance(request, userId)
-        validateSession(request.sessionId, generation)
-        validateAttendee(userId, generation)
+        return SessionAttendance(user = user, session = session, attendance = attendance)
     }
 
-    private fun validateAttendance(
-        request: AttendanceRequest,
-        userId: UUID
-    ) {
-        if (attendanceFindService.hasAlreadyCheckedIn(userId, request.sessionId)) {
-            logger.warn { "이미 출석을 완료한 유저($userId)입니다." }
-            throw BusinessException(AttendanceError.ALREADY_CHECKED_IN)
+    private fun checkAttendanceCode(attendanceCode: String) {
+        val value = configFindService.findAttendanceCode()
+
+        if (value == null) {
+            logger.error { "출석 코드가 등록되지 않았습니다." }
+            throw BusinessException(AttendanceError.UNREGISTERED_ATTENDANCE_CODE)
         }
 
-        val attendanceCode = configFindService.findConfig("attendanceCode")?.value
-        if (attendanceCode == null) {
-            logger.error { "출석 코드가 저장되어 있지 않습니다." }
-            throw BusinessException(AttendanceError.ATTENDANCE_CODE_NOT_FOUND)
-        }
-
-        if (request.attendanceCode != attendanceCode) {
+        if (attendanceCode != value) {
             logger.warn { "출석 코드가 일치하지 않습니다." }
             throw BusinessException(AttendanceError.ATTENDANCE_CODE_NOT_MATCH)
-        }
-    }
-
-    private fun validateSession(
-        sessionId: UUID,
-        generation: Int
-    ) {
-        val session = sessionFindService.findSession(sessionId)
-            ?: throw BusinessException(AttendanceError.SESSION_NOT_FOUND)
-
-        if (session !is SessionEntity) {
-            logger.warn { "해당 일정($sessionId)는 세션 타입이 아닙니다." }
-            throw BusinessException(AttendanceError.CHECK_IN_ONLY_FOR_SESSION)
-        }
-
-        if (session.generation != generation) {
-            logger.warn {
-                """
-                세션의 기수와 활성화된 기수가 일치하지 않습니다.
-                세션 기수: ${session.generation}
-                활성화 되어 있는 기수: $generation
-                """.trimIndent()
-            }
-            throw BusinessException(AttendanceError.GENERATION_NOT_MATCH)
-        }
-    }
-
-    private fun validateAttendee(
-        userId: UUID,
-        generation: Int
-    ) {
-        val user = userFindService.findUserWithLastActivityUnit(userId)
-
-        if (user.role != UserRole.ACTIVE) {
-            logger.warn { "유저($userId)는 활동 멤버가 아니라서 출석이 불가합니다." }
-            throw BusinessException(AttendanceError.UNAUTHORIZED_CHECK_IN)
-        }
-
-        if (user.lastActiveGeneration != generation) {
-            logger.warn {
-                """
-                유저의 가장 최근 활동 기수와 활성화된 기수가 일치하지 않습니다.
-                유저 기수: ${user.lastActiveGeneration}
-                활성화 되어 있는 기수: $generation
-                """.trimIndent()
-            }
-            throw BusinessException(AttendanceError.GENERATION_NOT_MATCH)
         }
     }
 }

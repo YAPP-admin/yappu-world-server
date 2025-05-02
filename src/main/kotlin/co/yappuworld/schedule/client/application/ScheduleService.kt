@@ -72,7 +72,7 @@ class ScheduleService(
         val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)
 
         return UpcomingSessionAttendanceResponse.of(
-            sessionAttendance = SessionAttendance.from(
+            sessionAttendance = SessionAttendance(
                 user = user,
                 session = session,
                 attendance = attendanceOrNull

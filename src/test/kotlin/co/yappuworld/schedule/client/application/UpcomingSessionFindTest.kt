@@ -105,7 +105,9 @@ class UpcomingSessionFindTest :
                         userFindService.findUserWithActivityUnitOfGeneration(any(), any())
                     } returns user.copy(role = role)
 
-                    scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
+                    shouldThrowExactly<BusinessException> {
+                        scheduleService.getUpcomingSessionAttendance(userId, now)
+                    }.error shouldBe AttendanceError.UNAUTHORIZED_CHECK_IN
                 }
             }
 

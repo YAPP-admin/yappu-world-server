@@ -10,6 +10,7 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_0001"
         override val type: ErrorType = ErrorType.UNEXPECTED_ERROR
     },
+
     ALREADY_CHECKED_IN {
         override val message: String = "이미 출석 체크를 하였습니다."
         override val code: String = "ATD_1000"
@@ -19,6 +20,21 @@ enum class AttendanceError : Error {
         override val message: String = "출석 코드가 일치하지 않습니다."
         override val code: String = "ATD_1001"
         override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    NOT_CHECK_IN_TIME {
+        override val message: String = "출석 체크를 할 수 있는 시간이 아닙니다."
+        override val code: String = "ATD_1002"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    NO_ATTENDANCE_TO_CHECK_IN {
+        override val message: String = "출석이 불가합니다. 개발자에게 문의해주세요."
+        override val code: String = "ATD_1003"
+        override val type: ErrorType = ErrorType.UNEXPECTED_ERROR
+    },
+    UNREGISTERED_ATTENDANCE_CODE {
+        override val message: String = "출석코드가 등록되지 않았습니다."
+        override val code: String = "ATD_1004"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     },
 
     // 외부 도메인 에러
