@@ -1,9 +1,9 @@
 package co.yappuworld.schedule.client.dto.request
 
-import co.yappuworld.schedule.domain.ScheduleEntity
 import co.yappuworld.schedule.domain.ScheduleType
-import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -22,9 +22,9 @@ data class AdminSessionCreateRequest(
     val date: LocalDate,
     @Schema(description = "종료일", nullable = false, example = "2025-02-27")
     var endDate: LocalDate,
-    @Schema(description = "시작 시간", nullable = false, example = "14:00:00")
+    @Schema(description = "시작 시간", nullable = false, example = "14:00:00", type = "string")
     var time: LocalTime,
-    @Schema(description = "종료 시간", nullable = false, example = "18:00:00")
+    @Schema(description = "종료 시간", nullable = false, example = "18:00:00", type = "string")
     var endTime: LocalTime,
     @Schema(description = "기수(세션, 태스크의 경우 필수)", nullable = false, example = "25")
     var generation: Int,

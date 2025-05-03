@@ -21,10 +21,9 @@ data class AdminUserOverviewResponse(
         registrationDate = response.createdAt.toLocalDate(),
         lastActivityUnit = AdminActivityUnitResponse(
             id = response.activityUnitId,
-            generation = response.generation,
-            position = response.position.label,
-            // todo : isActive 값 할당
-            isActive = false
+            generation = response.lastActiveGeneration,
+            position = response.lastActivePosition.label,
+            isActive = response.isActive
         )
     )
 }

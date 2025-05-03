@@ -1,11 +1,12 @@
 package co.yappuworld.operation.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationActiveUpdateRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
+import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
 import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
@@ -33,12 +34,10 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = OffsetPageResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "직군 데이터 조회",
@@ -85,7 +84,6 @@ interface AdminUserOperationApi {
             ApiResponse(
                 description = "성공",
                 responseCode = "201",
-                useReturnTypeSchema = true,
                 content = [Content()]
             )
         ]
@@ -99,7 +97,6 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "OK",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
@@ -146,11 +143,10 @@ interface AdminUserOperationApi {
                 ]
             ),
             ApiResponse(
-                description = "Not Found",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "존재하지 않는 기수",
@@ -167,11 +163,10 @@ interface AdminUserOperationApi {
                 ]
             ),
             ApiResponse(
-                description = "Conflict",
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "활성화 정합성 오류",
@@ -198,8 +193,8 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -259,20 +254,82 @@ interface AdminUserOperationApi {
     fun getSignUpAuthenticationCode(): ResponseEntity<SuccessResponse<AdminSignUpCodesResponse>>
 
     @Operation(summary = "인증번호 수정")
-    @ApiResponse(
-        responseCode = "204",
-        description = "No Content",
-        content = [Content()]
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "기존에 존재하는 가입코드이므로 변경할 수 없습니다.",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2003",
+                                        "message": "기존에 존재하는 가입코드이므로 변경할 수 없습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "가입코드 미등록",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2000",
+                                        "message": "가입코드가 등록되지 않았습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "요청 가입코드의 형식 오류",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2001",
+                                        "message": "가입코드가 형식에 맞지 않습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "가입코드 중복 오류",
+                                value = """
+                                    {
+                                        "errorCode": "USR_2002",
+                                        "message": "가입코드가 중복되었습니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
     )
     @PatchMapping("/admin/v1/auth/authentication-codes")
     fun updateSignUpAuthenticationCode(
         @Valid @RequestBody request: AdminSignUpCodeUpdateRequest
     ): ResponseEntity<Unit>
 
-    @Operation(summary = "인증번호 삭제")
+    @Operation(summary = "인증번호 초기화")
     @ApiResponse(
         responseCode = "204",
-        description = "No Content",
         content = [Content()]
     )
     @DeleteMapping("/admin/v1/auth/authentication-codes")

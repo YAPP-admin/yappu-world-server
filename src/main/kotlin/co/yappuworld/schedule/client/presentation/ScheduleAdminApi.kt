@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
@@ -11,6 +12,7 @@ import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -34,6 +36,26 @@ interface ScheduleAdminApi {
             ApiResponse(
                 responseCode = "201",
                 content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "세션 시작 일시가 종료 일시보다 늦을 수 없음",
+                                value = """
+                                    {
+                                        "message": "시작 시간이 종료 시간보다 늦을 수 없습니다.",
+                                        "errorCode": "SCH_4000",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     )
@@ -47,6 +69,7 @@ interface ScheduleAdminApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -89,6 +112,26 @@ interface ScheduleAdminApi {
                         ]
                     )
                 ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "세션 시작 일시가 종료 일시보다 늦을 수 없음",
+                                value = """
+                                    {
+                                        "message": "시작 시간이 종료 시간보다 늦을 수 없습니다.",
+                                        "errorCode": "SCH_4000",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     )
@@ -102,6 +145,7 @@ interface ScheduleAdminApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
                         examples = [
@@ -130,6 +174,7 @@ interface ScheduleAdminApi {
                 responseCode = "404",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "ID와 일치하는 세션이 존재하지 않습니다.",
@@ -163,6 +208,7 @@ interface ScheduleAdminApi {
                 responseCode = "400",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "ID와 일치하는 세션이 존재하지 않습니다.",
@@ -206,6 +252,7 @@ interface ScheduleAdminApi {
                 responseCode = "400",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "세션 타입이 아닌 일정에 대한 수정 요청",
@@ -225,6 +272,7 @@ interface ScheduleAdminApi {
                 responseCode = "404",
                 content = [
                     Content(
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "ID와 일치하는 세션이 존재하지 않습니다.",

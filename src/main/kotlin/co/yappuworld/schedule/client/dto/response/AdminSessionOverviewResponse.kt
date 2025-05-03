@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -20,8 +20,10 @@ data class AdminSessionOverviewResponse(
     val place: String?,
     @Schema(description = "날짜")
     val date: LocalDate,
+    @Schema(description = "종료 날짜")
+    val endDate: LocalDate,
     @Schema(description = "시작 시간")
-    val time: LocalTime?,
+    val time: LocalTime,
     @Schema(description = "종료 시간")
     val endTime: LocalTime?
 ) {
@@ -33,6 +35,7 @@ data class AdminSessionOverviewResponse(
         title = session.name,
         place = session.place,
         date = session.date,
+        endDate = session.endDate,
         time = session.time,
         endTime = session.endTime
     )

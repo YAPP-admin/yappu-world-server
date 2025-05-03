@@ -66,7 +66,7 @@ interface UserProfileApi {
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<UserProfileResponse>>
 
-    @Operation(summary = "활동이력 조회")
+    @Operation(summary = "활동 이력 조회")
     @ApiResponses(
         value = [
             ApiResponse(

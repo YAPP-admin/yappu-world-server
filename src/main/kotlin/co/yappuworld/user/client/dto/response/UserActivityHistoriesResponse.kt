@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.dto.response
 
 import co.yappuworld.operation.domain.GenerationEntity
-import co.yappuworld.user.domain.model.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
@@ -9,7 +9,10 @@ data class UserActivityHistoriesResponse(
     val activityUnits: List<UserActivityHistoryResponse>
 ) {
 
-    constructor(activityUnits: List<ActivityUnitEntity>, generationByValue: Map<Int, GenerationEntity>) : this(
+    constructor(
+        activityUnits: List<ActivityUnitEntity>,
+        generationByValue: Map<Int, GenerationEntity>
+    ) : this(
         activityUnits
             .sortedByDescending { it.generation }
             .map {
@@ -26,7 +29,7 @@ data class UserActivityHistoryResponse(
     val generation: Int,
     @Schema(
         description = "직군",
-        allowableValues = ["PM", "Design", "Web", "Android", "iOS", "Flutter", "Server", "Staff"]
+        allowableValues = ["PM", "Design", "Web", "Android", "iOS", "Flutter", "Server", "운영진"]
     )
     val position: String,
     @Schema(description = "활동 시작일", nullable = true)

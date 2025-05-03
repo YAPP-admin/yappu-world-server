@@ -1,6 +1,6 @@
 package co.yappuworld.operation.domain
 
-import co.yappuworld.global.persistence.BaseJpaEntity
+import co.yappuworld.global.persistence.BaseEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -66,7 +66,7 @@ class ConfigEntity(
         if (obj is HibernateProxy) {
             obj.hibernateLazyInitializer.identifier as Serializable
         } else {
-            (obj as BaseJpaEntity).id
+            (obj as BaseEntity).id
         }
 
     override fun hashCode() = Objects.hashCode(name)

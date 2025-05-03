@@ -1,18 +1,17 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.domain.ScheduleEntity
-import co.yappuworld.schedule.domain.SessionEntity
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 import java.util.UUID
 
-interface ScheduleRepository : JpaRepository<ScheduleEntity, UUID> {
+interface ScheduleRepository :
+    JpaRepository<ScheduleEntity, UUID>,
+    KotlinJdslJpqlExecutor {
 
     fun findAllByIdIn(ids: List<UUID>): List<SessionEntity>
-
-    fun findAllSessionEntityByGeneration(generation: Int): List<SessionEntity>
 
     /**
      * @param from Inclusive
@@ -22,9 +21,4 @@ interface ScheduleRepository : JpaRepository<ScheduleEntity, UUID> {
         from: LocalDate,
         to: LocalDate
     ): List<ScheduleEntity>
-
-    fun findAllByGeneration(
-        pageable: Pageable,
-        generation: Int
-    ): Page<SessionEntity>
 }

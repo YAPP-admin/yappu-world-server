@@ -1,11 +1,14 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.ActivityUnitEntity
-import co.yappuworld.user.domain.model.UserEntity
+import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
+import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.jpql
@@ -35,13 +38,20 @@ class UserFindService(
     private val context: JpqlRenderContext
 ) {
 
-    fun existsByEmail(email: String): Boolean = userRepository.existsUserByEmail(email)
+    fun existsEmail(email: String): Boolean = userRepository.existsUserByEmail(email)
 
-    fun findByIdOrNull(id: UUID): UserEntity? = userRepository.findByIdOrNull(id)
+    fun findUserOrNull(id: UUID): UserEntity? = userRepository.findByIdOrNull(id)
 
-    fun findByEmailOrNull(email: String): UserEntity? = userRepository.findUserOrNullByEmail(email)
+    fun findUser(id: UUID): UserEntity =
+        userRepository.findByIdOrNull(id)
+            ?: throw BusinessException(UserError.USER_NOT_FOUND)
 
-    fun findAllByIdIn(ids: List<UUID>): List<UserEntity> = userRepository.findAllByIdIn(ids)
+    fun findUserOrNull(email: String): UserEntity? = userRepository.findUserOrNullByEmail(email)
+
+    fun findAllByIdIn(ids: List<UUID>): List<UserEntity> {
+        require(ids.isNotEmpty()) { "유저 조회 요청에 들어오는 ID는 최소 하나 이상이어야 합니다." }
+        return userRepository.findAllByIdIn(ids)
+    }
 
     fun findUserWithLastActivityUnit(userId: UUID): UserWithLastActivityUnit =
         jpql {
@@ -61,13 +71,15 @@ class UserFindService(
             }
         }
 
-    fun findAllUserWithLastActivityUnit(userIds: Collection<UUID>): List<UserWithLastActivityUnit> =
-        userRepository
+    fun findAllUserWithLastActivityUnit(userIds: Collection<UUID>): List<UserWithLastActivityUnit> {
+        require(userIds.isNotEmpty()) { "유저 조회 요청에 들어오는 ID는 최소 하나 이상이어야 합니다." }
+        return userRepository
             .findAll {
                 selectUserWithLastActivityUnit()
                     .where(path(UserEntity::getId).`in`(userIds))
                     .orderBy(path(UserEntity::getId).desc())
             }.filterNotNull()
+    }
 
     fun findAllUserWithLastActivityUnit(pageable: Pageable): Page<UserWithLastActivityUnit> =
         userRepository
@@ -81,6 +93,88 @@ class UserFindService(
                     it.totalElements
                 )
             }
+
+    fun findUserWithActivities(userId: UUID): UserWithActivityUnits {
+        val result = userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(ActivityUnitEntity::class)
+                        .on(path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)))
+                ).where(path(UserEntity::getId).equal(userId))
+                    .orderBy(path(ActivityUnitEntity::generation).desc())
+            }.filterNotNull()
+
+        if (result.isEmpty()) throw BusinessException(UserError.USER_NOT_FOUND)
+
+        return result.let {
+            UserWithActivityUnits(
+                userId = it.first().userId,
+                email = it.first().email,
+                name = it.first().name,
+                role = it.first().role,
+                activityUnits = it
+                    .map { au -> ActivityUnit(au.generation, au.position, au.userId) }
+                    .sortedByDescending { au -> au.generation }
+            )
+        }
+    }
+
+    fun findUsersActiveOfGeneration(generation: Int): List<UserWithActivityUnit> =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(ActivityUnitEntity::class),
+                    innerJoin(entity(UserEntity::class))
+                        .on(
+                            and(
+                                path(ActivityUnitEntity::userId).equal(path(UserEntity::getId)),
+                                path(ActivityUnitEntity::generation).equal(generation)
+                            )
+                        )
+                )
+            }.filterNotNull()
+
+    fun findUserWithActivityUnitOfGeneration(
+        userId: UUID,
+        generation: Int
+    ): UserWithActivityUnit =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(entity(ActivityUnitEntity::class))
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(UserEntity::getId).equal(userId),
+                                path(ActivityUnitEntity::generation).equal(generation)
+                            )
+                        )
+                )
+            }.singleOrNull()
+            ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
 
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null

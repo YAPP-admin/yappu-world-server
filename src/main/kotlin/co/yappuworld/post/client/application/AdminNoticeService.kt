@@ -9,7 +9,7 @@ import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailWriterResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
-import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.infrastructure.PostCommandService
 import co.yappuworld.post.infrastructure.PostFindService
@@ -54,7 +54,7 @@ class AdminNoticeService(
         val notice = postFindService.findByIdOrNull(noticeId)?.let { it as NoticeEntity }
             ?: throw BusinessException(PostError.NOTICE_NOT_FOUND)
 
-        val writer = userFindService.findByIdOrNull(notice.writerId)
+        val writer = userFindService.findUserOrNull(notice.writerId)
             ?: throw BusinessException(PostError.NOTICE_WRITER_NOT_FOUND)
 
         return AdminNoticeDetailResponse(

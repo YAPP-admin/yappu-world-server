@@ -16,7 +16,7 @@ data class UserWithLastActivityUnit(
     val role: UserRole,
     val isActive: Boolean,
     val createdAt: LocalDateTime,
-    val generation: Int,
-    val position: Position,
+    val lastActiveGeneration: Int,
+    val lastActivePosition: Position,
     val activityUnitId: UUID
 )

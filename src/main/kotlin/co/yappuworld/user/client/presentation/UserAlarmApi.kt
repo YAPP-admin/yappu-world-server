@@ -8,7 +8,6 @@ import co.yappuworld.user.client.dto.response.UserAlarmStatusResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -30,7 +29,6 @@ interface UserAlarmApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 알림 설정 상태",
@@ -73,7 +71,6 @@ interface UserAlarmApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 마스터 알림 On",

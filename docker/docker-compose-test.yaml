@@ -1,6 +1,5 @@
 services:
     mysql:
-        container_name: yappu_world_mysql
         image: mysql:8.1
         environment:
             MYSQL_DATABASE: yappu_world

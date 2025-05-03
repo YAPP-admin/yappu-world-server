@@ -3,25 +3,30 @@ spring:
         hidden-method:
             filter:
                 enabled: true
+
     docker:
         compose:
-            file: docker/docker-compose-local.yaml
+            service: yappu-world-server
             enabled: true
             lifecycle-management: start_only
-#            stop:
-#                command: down
-#                timeout: 1m
+            #            stop:
+            #                command: down
+            #                timeout: 1m
             skip:
                 in-tests: false
+            file: docker/docker-compose-local.yaml
+
     datasource:
         url: jdbc:mysql://localhost:3306/yappu_world
         username: yapp
         password: yapp
+
     sql:
         init:
             schema-locations: classpath:schema.sql
             data-locations: classpath:data.sql
             mode: always
+
     jpa:
         open-in-view: false
 
@@ -33,3 +38,9 @@ jwt:
     secret_key: thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocalenvironment
     access_token_expiration_times: 3600000 # 1hour = 1000(=1s) * 60 * 60
     refresh_token_expiration_times: 1209600000 # 2weeks = 1000(=1s) * 60 * 60 * 24 * 14
+
+management:
+    endpoints:
+        web:
+            exposure:
+                exclude: "*"

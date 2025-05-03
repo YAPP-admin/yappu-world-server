@@ -49,3 +49,6 @@ sentry:
     logging:
         minimum-event-level: warn
         minimum-breadcrumb-level: info
+
+admin:
+    domain: ${DEV_ADMIN_DOMAIN}

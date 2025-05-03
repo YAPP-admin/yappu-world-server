@@ -1,0 +1,16 @@
+package co.yappuworld.user.infrastructure.entity
+
+import co.yappuworld.user.domain.vo.Position
+import java.util.UUID
+
+data class ActivityUnitParam(
+    val generation: Int,
+    val position: Position
+) {
+    fun toActivityUnit(userId: UUID): ActivityUnitEntity =
+        ActivityUnitEntity(
+            generation,
+            position,
+            userId
+        )
+}

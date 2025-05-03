@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class ErrorResponse(
     @Schema(description = "메세지")
     val message: String,
-    @Schema(description = "에러코드")
+    @Schema(description = "에러 코드", nullable = true)
     val errorCode: String?
 ) : Response() {
 

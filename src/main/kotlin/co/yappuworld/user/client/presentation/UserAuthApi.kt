@@ -33,10 +33,10 @@ interface UserAuthApi {
             ApiResponse(
                 description = "가입 코드를 통해 별도 신청 절차 없이 가입 처리",
                 responseCode = "200",
-                useReturnTypeSchema = true,
+//                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(ref = "#/components/schemas/SuccessResponseToken"),
                         examples = [
                             ExampleObject(
                                 value = """
@@ -56,7 +56,6 @@ interface UserAuthApi {
             ApiResponse(
                 description = "가입 코드를 입력하지 않는 경우, 가입 신청 처리",
                 responseCode = "201",
-                useReturnTypeSchema = true,
                 content = [Content()]
             ),
             ApiResponse(
@@ -124,7 +123,6 @@ interface UserAuthApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "로그인 성공",
@@ -144,7 +142,6 @@ interface UserAuthApi {
             ),
             ApiResponse(
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -165,7 +162,6 @@ interface UserAuthApi {
             ),
             ApiResponse(
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -220,7 +216,6 @@ interface UserAuthApi {
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 value = """
@@ -239,7 +234,6 @@ interface UserAuthApi {
             ),
             ApiResponse(
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -260,7 +254,6 @@ interface UserAuthApi {
             ),
             ApiResponse(
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -291,12 +284,10 @@ interface UserAuthApi {
         value = [
             ApiResponse(
                 responseCode = "204",
-                useReturnTypeSchema = true,
                 content = [Content()]
             ),
             ApiResponse(
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -327,16 +318,15 @@ interface UserAuthApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = LatestSignUpApplicationResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "최근의 가입 신청이 보류",
                                 value = """
                                     {
-                                        "isSuccess": "true",
+                                         "isSuccess": "true",
                                         "data": {
                                             "status": "PENDING",
                                             "reason": null
@@ -374,7 +364,6 @@ interface UserAuthApi {
             ),
             ApiResponse(
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -396,7 +385,6 @@ interface UserAuthApi {
             ApiResponse(
                 description = "회원가입 신청을 한 내역이 없습니다.",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -431,7 +419,6 @@ interface UserAuthApi {
             ),
             ApiResponse(
                 responseCode = "409",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),

@@ -1,6 +1,7 @@
 package co.yappuworld.post.client.presentation
 
 import co.yappuworld.global.response.CursorPageResponse
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.post.client.dto.request.NoticePageRequest
 import co.yappuworld.post.client.dto.response.NoticeOverviewResponse
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,9 +28,9 @@ interface NoticeApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "공지사항 리스트 조회 결과",
@@ -71,7 +73,7 @@ interface NoticeApi {
     )
     @GetMapping("/v1/posts/notices")
     fun getNotices(
-        @ParameterObject request: NoticePageRequest
+        @Valid @ParameterObject request: NoticePageRequest
     ): ResponseEntity<SuccessResponse<CursorPageResponse<NoticeOverviewResponse, UUID>>>
 
     @Operation(summary = "공지사항 상세 조회")
@@ -81,7 +83,7 @@ interface NoticeApi {
                 responseCode = "200",
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = NoticeResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "공지사항 상세 조회",
@@ -117,7 +119,7 @@ interface NoticeApi {
                 responseCode = "404",
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "해당 게시물이 존재하지 않습니다.",

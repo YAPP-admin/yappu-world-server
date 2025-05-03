@@ -1,14 +1,13 @@
 package co.yappuworld.operation.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.operation.client.dto.request.AdminOperationLinkUpdateRequest
-import co.yappuworld.operation.client.dto.response.AdminOperationLinksResponse
 import co.yappuworld.operation.client.dto.request.AdminMinSupportVersionUpdateRequest
+import co.yappuworld.operation.client.dto.request.AdminOperationLinkUpdateRequest
 import co.yappuworld.operation.client.dto.response.AdminMinSupportVersionResponse
+import co.yappuworld.operation.client.dto.response.AdminOperationLinksResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -25,10 +24,9 @@ interface AdminOperationApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        mediaType = "application/json",
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 value = """
@@ -77,10 +75,9 @@ interface AdminOperationApi {
         value = [
             ApiResponse(
                 responseCode = "200",
+                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        mediaType = "application/json",
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 value = """

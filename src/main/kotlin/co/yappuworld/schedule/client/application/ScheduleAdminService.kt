@@ -9,65 +9,56 @@ import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import co.yappuworld.schedule.domain.ScheduleError
-import co.yappuworld.schedule.domain.SessionEntity
-import co.yappuworld.schedule.infrastructure.ScheduleRepository
-import org.springframework.data.repository.findByIdOrNull
+import co.yappuworld.schedule.infrastructure.ScheduleCommandService
+import co.yappuworld.schedule.infrastructure.SessionFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
 class ScheduleAdminService(
-    private val scheduleRepository: ScheduleRepository
+    private val sessionFindService: SessionFindService,
+    private val scheduleCommandService: ScheduleCommandService
 ) {
 
     @Transactional
     fun createSchedule(request: AdminSessionCreateRequest): UUID {
-        val schedule = scheduleRepository.save(request.toDomain())
+        val schedule = request
+            .toDomain()
+            .also { scheduleCommandService.save(it) }
+
         return schedule.id
     }
 
     @Transactional(readOnly = true)
     fun getSessions(request: AdminSessionPageRequest): OffsetPageResponse<AdminSessionOverviewResponse> =
         when (request.generation != null) {
-            true -> scheduleRepository.findAllByGeneration(request.toPageRequest(), request.generation)
-            false -> scheduleRepository.findAll(request.toPageRequest())
-        }.let {
-            OffsetPageResponse(
-                data = it.content.map { session -> AdminSessionOverviewResponse(session as SessionEntity) },
-                totalCount = it.totalElements,
-                totalPages = it.totalPages,
-                page = request.page,
-                size = request.size
-            )
-        }
+            true -> sessionFindService.findSessionsInGeneration(request.toPageRequest(), request.generation)
+            false -> sessionFindService.findSessions(request.toPageRequest())
+        }.let { OffsetPageResponse.from(it) { session -> AdminSessionOverviewResponse(session) } }
 
     @Transactional(readOnly = true)
     fun getSession(id: UUID): AdminSessionDetailResponse =
-        scheduleRepository
-            .findByIdOrNull(id)
-            ?.let { AdminSessionDetailResponse(it as SessionEntity) }
-            ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
+        AdminSessionDetailResponse(sessionFindService.findSession(id))
 
     /**
      * 어드민에서 요청하는 세션 삭제라, hard delete 구현
      */
     @Transactional
     fun deleteSession(request: AdminSessionDeleteRequest) {
-        val sessions = scheduleRepository.findAllByIdIn(request.ids)
+        val sessions = sessionFindService.findSessions(request.ids)
 
         if (sessions.size != request.ids.size) {
             throw BusinessException(ScheduleError.CONTAIN_IMPROPER_ID_FOR_DELETE_SESSION)
         }
 
-        scheduleRepository.deleteAll(sessions)
+        scheduleCommandService.deleteAll(sessions)
     }
 
     @Transactional
     fun updateSession(request: AdminSessionUpdateRequest) {
-        val schedule = scheduleRepository.findByIdOrNull(request.id)
-            ?: throw BusinessException(ScheduleError.UPDATE_FAIL_NOT_SESSION_TYPE)
-
-        (schedule as SessionEntity).apply { request.applyTo(this) }
+        sessionFindService
+            .findSession(request.id)
+            .apply { request.applyTo(this) }
     }
 }

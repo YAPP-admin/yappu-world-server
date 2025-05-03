@@ -1,10 +1,11 @@
 package co.yappuworld.user.client.presentation
 
+import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
+import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -29,12 +30,10 @@ interface AdminUserManageApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = AdminUserDetailResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 상세 조회",
@@ -75,10 +74,9 @@ interface AdminUserManageApi {
             ApiResponse(
                 description = "리소스를 찾을 수 없습니다.",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저가 존재하지 않습니다.",
@@ -105,12 +103,10 @@ interface AdminUserManageApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "200",
                 useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저 목록 조회",
@@ -162,12 +158,15 @@ interface AdminUserManageApi {
     @ApiResponses(
         value = [
             ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
                 description = "리소스를 찾을 수 없습니다.",
                 responseCode = "404",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(implementation = SuccessResponse::class),
+                        schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "유저가 존재하지 않습니다.",
@@ -188,5 +187,5 @@ interface AdminUserManageApi {
     @PutMapping("/admin/v1/users")
     fun updateUserDetails(
         @Valid @RequestBody request: AdminUserUpdateRequest
-    )
+    ): ResponseEntity<Unit>
 }

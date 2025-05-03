@@ -12,6 +12,8 @@ import org.springframework.security.web.util.matcher.RequestMatchers
 object SecurityPathMatchersManager {
     val anyoneMatchers: RequestMatcher = RequestMatchers.anyOf(
         antMatcher("/health"),
+        antMatcher("/actuator"),
+        antMatcher("/actuator/**"),
         // swagger
         antMatcher("/swagger-ui/**"),
         antMatcher("/v3/api-docs/**"),
@@ -24,7 +26,8 @@ object SecurityPathMatchersManager {
         antMatcher(GET, "/v1/positions"),
         antMatcher(GET, "/v1/operations/**"),
         // admin
-        antMatcher(POST, "/admin/**/login")
+        antMatcher(POST, "/admin/**/auth/login"),
+        antMatcher(POST, "/admin/**/auth/reissue-token")
     )
 
     val userMatchers: RequestMatcher = RequestMatchers.anyOf(
@@ -34,7 +37,9 @@ object SecurityPathMatchersManager {
         antMatcher(PUT, "/v1/users/fcm"),
         antMatcher(GET, "/v1/alarms"),
         antMatcher(PUT, "/v1/alarms/device"),
-        antMatcher(PATCH, "/v1/alarms/master")
+        antMatcher(PATCH, "/v1/alarms/master"),
+        antMatcher(POST, "/v1/attendances"),
+        antMatcher(GET, "/v1/sessions/**")
     )
 
     val staffOrAdminMatchers: RequestMatcher = RequestMatchers.anyOf(

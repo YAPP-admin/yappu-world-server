@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.dto.request
 
-import co.yappuworld.schedule.domain.SessionEntity
 import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalTime
@@ -20,10 +20,10 @@ data class AdminSessionUpdateRequest(
     val date: LocalDate,
     @Schema(description = "세션 종료일", example = "2025-02-25")
     val endDate: LocalDate,
-    @Schema(description = "시작 시간", example = "14:00:00")
-    val time: LocalTime?,
-    @Schema(description = "종료 시간", example = "17:00:00")
-    val endTime: LocalTime?,
+    @Schema(description = "시작 시간", example = "14:00:00", type = "string")
+    val time: LocalTime,
+    @Schema(description = "종료 시간", example = "17:00:00", type = "string")
+    val endTime: LocalTime,
     @Schema(description = "세션 종류", example = "OFFLINE")
     val sessionType: SessionType
 ) {

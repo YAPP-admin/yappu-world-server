@@ -1,11 +1,8 @@
 package co.yappuworld.user.infrastructure
 
-import java.util.UUID
+import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 
 interface UserSystemNotifier {
 
-    fun notifySignUpRequestReceived(
-        applicationId: UUID,
-        applicantName: String
-    )
+    fun notifySignUpRequestReceived(signUpApplication: SignUpApplicationEntity)
 }

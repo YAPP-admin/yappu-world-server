@@ -1,7 +1,7 @@
 package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.operation.client.dto.response.PositionResponse
-import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
@@ -9,7 +9,9 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class NoticeOverviewResponse(
+    @Schema(description = "공지사항 정보")
     val notice: NoticeSimpleResponse,
+    @Schema(description = "작성자 정보")
     val writer: NoticeOverviewWriterResponse
 ) {
 
@@ -55,7 +57,7 @@ data class NoticeOverviewWriterResponse(
     constructor(writer: UserWithLastActivityUnit) : this(
         id = writer.userId,
         name = writer.name,
-        activityUnitGeneration = writer.generation,
-        activityUnitPosition = PositionResponse(writer.position)
+        activityUnitGeneration = writer.lastActiveGeneration,
+        activityUnitPosition = PositionResponse(writer.lastActivePosition)
     )
 }

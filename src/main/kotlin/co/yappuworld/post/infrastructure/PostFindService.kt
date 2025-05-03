@@ -1,8 +1,8 @@
 package co.yappuworld.post.infrastructure
 
-import co.yappuworld.post.domain.NoticeEntity
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
-import co.yappuworld.post.domain.PostEntity
+import co.yappuworld.post.infrastructure.entity.PostEntity
 import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

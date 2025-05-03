@@ -31,9 +31,14 @@ enum class UserError : Error {
         override val code: String = "USR_0005"
         override val type: ErrorType = ErrorType.UNEXPECTED_ERROR
     },
+    USER_NOT_FOUND_WITH_GENERATION_ACTIVITY {
+        override val message: String = "해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다."
+        override val code: String = "USR_0006"
+        override val type: ErrorType = ErrorType.NOT_FOUND
+    },
 
     // 1000번대 - 회원가입 에러
-    INVALID_SIGN_UP_CODE {
+    WRONG_SIGN_UP_CODE {
         override val message: String = "잘못된 가입코드입니다."
         override val code: String = "USR_1001"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
@@ -111,5 +116,27 @@ enum class UserError : Error {
         override val message: String = "이미 탈퇴한 계정입니다."
         override val code: String = "USR_1201"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+
+    // 2000번대 - 가입 코드
+    SIGN_UP_CODE_UNREGISTERED {
+        override val message: String = "가입코드가 등록되지 않았습니다."
+        override val code: String = "USR_2000"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    INVALID_SIGN_UP_CODE {
+        override val message: String = "가입코드가 형식에 맞지 않습니다."
+        override val code: String = "USR_2001"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    SIGN_UP_CODE_DUPLICATED {
+        override val message: String = "가입코드가 중복되었습니다."
+        override val code: String = "USR_2002"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    CANNOT_UPDATE_EXISTS_SIGN_UP_CODE {
+        override val message: String = "기존에 존재하는 가입코드이므로 변경할 수 없습니다."
+        override val code: String = "USR_2003"
+        override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     }
 }

@@ -1,16 +1,18 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.global.util.TimeUtils.isBeforeOrEqual
-import co.yappuworld.schedule.domain.SessionEntity
+import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.SessionProgressPhase
 import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
 import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 data class ActiveGenerationSessionsResponse(
@@ -24,45 +26,45 @@ data class ActiveGenerationSessionsResponse(
         """,
         nullable = true
     )
-    val upcomingSessionIndex: Int? = null
+    val upcomingSessionId: UUID? = null
 ) {
 
     companion object {
         fun from(
-            sessions: List<SessionEntity>,
-            now: LocalDate
+            sessions: List<SessionWithAttendance>,
+            now: LocalDateTime
         ): ActiveGenerationSessionsResponse {
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
 
             val orderedSessions = sessions.sortedBy { it.date }
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
-                    sessions.map { ActiveGenerationSessionResponse(it, DONE) },
-                    sessions.lastIndex
+                    sessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
+                    sessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
                 sessions = sessions.mapIndexed { index, session ->
                     when {
-                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE)
-                        index == upcomingSessionIndex -> ActiveGenerationSessionResponse(session, upcomingSessionStatus)
-                        else -> ActiveGenerationSessionResponse(session, PENDING)
+                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE, now)
+                        index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING, now)
+                        else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus, now)
                     }
                 },
-                upcomingSessionIndex = upcomingSessionIndex
+                upcomingSessionId = sessions[upcomingSessionIndex].id
             )
         }
 
         private fun getUpcomingSessionIndexAndStatus(
-            orderedSessions: List<SessionEntity>,
-            now: LocalDate
+            orderedSessions: List<SessionWithAttendance>,
+            now: LocalDateTime
         ): Pair<Int, SessionProgressPhase>? {
-            val upcomingSession = orderedSessions.firstOrNull { now.isBeforeOrEqual(it.date) }
+            val upcomingSession = orderedSessions.firstOrNull { !it.isFinished(now) }
                 ?: return null
             val upcomingSessionIndex = orderedSessions.indexOf(upcomingSession)
 
             return when {
-                upcomingSession.date.isEqual(now) -> upcomingSessionIndex to TODAY
+                upcomingSession.isToday(now) -> upcomingSessionIndex to TODAY
                 else -> upcomingSessionIndex to UPCOMING
             }
         }
@@ -70,26 +72,58 @@ data class ActiveGenerationSessionsResponse(
 }
 
 data class ActiveGenerationSessionResponse(
+    @Schema(description = "세션 식별자")
     val id: UUID,
+    @Schema(description = "세션 이름")
     val name: String,
+    @Schema(description = "세션 장소", nullable = true)
     val place: String?,
+    @Schema(description = "세션 시작일")
     val date: LocalDate,
+    @Schema(description = "세션 시작 요일")
+    val startDayOfWeek: String,
+    @Schema(description = "세션 종료일", nullable = true)
     val endDate: LocalDate?,
+    @Schema(description = "세션 종료 요일", nullable = true)
+    val endDayOfWeek: String?,
+    @Schema(
+        description = """
+            세션 시작일 기준 상대 날짜. D-N 혹은 D+N 으로 표시되는 값.
+            ex) -2(D-2): 세션 시작일 기준 2일 전
+            ex) 0(D-0, D+0): 세션 당일
+            ex) +3(D+3): 세션 시작일 기준 3일 후
+        """
+    )
+    val relativeDays: Int,
+    @Schema(description = "세션 시작 시간", nullable = true)
     val time: LocalTime?,
+    @Schema(description = "세션 종료 시간", nullable = true)
     val endTime: LocalTime?,
+    @Schema(description = "세션 타입")
     val type: SessionType,
-    val progressPhase: SessionProgressPhase
+    @Schema(description = "세션 진행 상태")
+    val progressPhase: SessionProgressPhase,
+    @Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
+    val attendanceStatus: String?
 ) {
 
-    constructor(session: SessionEntity, status: SessionProgressPhase) : this(
+    constructor(
+        session: SessionWithAttendance,
+        status: SessionProgressPhase,
+        now: LocalDateTime
+    ) : this(
         id = session.id,
         name = session.name,
         place = session.place,
         date = session.date,
+        startDayOfWeek = session.date.dayOfWeek.korean(),
         endDate = session.endDate,
+        endDayOfWeek = session.endDate.dayOfWeek?.korean(),
+        relativeDays = ChronoUnit.DAYS.between(session.date, now.toLocalDate()).toInt(),
         time = session.time,
         endTime = session.endTime,
         type = session.sessionType,
-        progressPhase = status
+        progressPhase = status,
+        attendanceStatus = session.attendanceStatus
     )
 }
