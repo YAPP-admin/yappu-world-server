@@ -12,6 +12,8 @@ import org.springframework.security.web.util.matcher.RequestMatchers
 object SecurityPathMatchersManager {
     val anyoneMatchers: RequestMatcher = RequestMatchers.anyOf(
         antMatcher("/health"),
+        antMatcher("/actuator"),
+        antMatcher("/actuator/**"),
         // swagger
         antMatcher("/swagger-ui/**"),
         antMatcher("/v3/api-docs/**"),

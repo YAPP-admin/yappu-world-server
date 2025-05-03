@@ -36,8 +36,9 @@ class SecurityConfig(
                     .hasAnyRole("ADMIN", "STAFF", "ALUMNI", "GRADUATE", "ACTIVE")
                     .requestMatchers(staffOrAdminMatchers)
                     .hasAnyRole("ADMIN", "STAFF")
-            }.authorizeHttpRequests { it.anyRequest().permitAll() }
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
+                    .anyRequest()
+                    .permitAll()
+            }.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
 
     private fun getCorsConfigureSource(): CorsConfigurationSource =
