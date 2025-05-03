@@ -168,6 +168,7 @@ class UserFindService(
                         .on(
                             and(
                                 path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(UserEntity::getId).equal(userId),
                                 path(ActivityUnitEntity::generation).equal(generation)
                             )
                         )
