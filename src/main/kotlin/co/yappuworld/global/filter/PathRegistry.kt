@@ -17,7 +17,8 @@ class PathRegistry(
     private val customRegisteredPaths = setOf(
         "/swagger-ui/**",
         "/health",
-        "/v3/api-docs/**"
+        "/v3/api-docs/**",
+        "/actuator/**"
     )
 
     @PostConstruct
