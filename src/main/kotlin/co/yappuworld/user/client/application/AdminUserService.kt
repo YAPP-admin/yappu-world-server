@@ -99,7 +99,7 @@ class AdminUserService(
     fun updateUserDetails(request: AdminUserUpdateRequest) {
         userFindService
             .findUser(request.userId)
-            .apply { updateDetails(request.name, request.email, request.gender, request.phoneNumber) }
+            .apply { updateDetails(request.name, request.role, request.email, request.gender, request.phoneNumber) }
 
         handleActivityUnitRequest(request.userId, request.activityUnits)
     }
