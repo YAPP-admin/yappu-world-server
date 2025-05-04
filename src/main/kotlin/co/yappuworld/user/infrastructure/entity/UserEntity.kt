@@ -62,12 +62,14 @@ class UserEntity(
 
     fun updateDetails(
         name: String,
+        role: UserRole,
         email: String,
         gender: String?,
         phoneNumber: String?
     ) {
         this.name = name
         this.email = email
+        this.role = role
         gender?.let { this.gender = Gender.fromLabel(it) }
         phoneNumber.takeIf { it != null && it.isPhoneNumber() }.let { this.phoneNumber = it }
     }
