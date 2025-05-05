@@ -3,8 +3,10 @@ package co.yappuworld.schedule.client.application
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
+import co.yappuworld.schedule.domain.AttendanceBook
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
+import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.user.infrastructure.UserFindService
@@ -18,21 +20,22 @@ class AdminAttendanceService(
     private val attendanceCommandService: AttendanceCommandService,
     private val userFindService: UserFindService,
     private val sessionFindService: SessionFindService,
-    private val generationFindService: GenerationFindService
+    private val generationFindService: GenerationFindService,
+    private val latePassFindService: LatePassFindService
 ) {
 
     @Transactional(readOnly = true)
     fun findAttendances(now: LocalDateTime): AdminAttendancesResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val sessions = sessionFindService.findSessionsInGeneration(activeGeneration)
-        val users = userFindService.findUsersActiveOfGeneration(activeGeneration)
-        val attendances = attendanceFindService.findAttendancesOfGeneration(activeGeneration)
-
         return AdminAttendancesResponse.from(
-            sessions = sessions,
-            users = users,
-            attendances = attendances,
-            now = now
+            AttendanceBook(
+                generation = activeGeneration,
+                users = userFindService.findUsersActiveOfGeneration(activeGeneration),
+                sessions = sessionFindService.findSessionsInGeneration(activeGeneration),
+                attendanceEntities = attendanceFindService.findAttendancesOfGeneration(activeGeneration),
+                latePasses = latePassFindService.findLatePasses(activeGeneration),
+                now = now
+            )
         )
     }
 

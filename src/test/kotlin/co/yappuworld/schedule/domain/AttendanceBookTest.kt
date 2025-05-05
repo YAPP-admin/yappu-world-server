@@ -72,9 +72,9 @@ class AttendanceBookTest :
                     AttendanceBook(
                         generation = generation,
                         users = users,
-                        sessionEntities = sessions,
+                        sessions = sessions,
                         attendanceEntities = attendances,
-                        latePassEntities = latePassEntities,
+                        latePasses = latePassEntities,
                         now = now
                     )
                 }
@@ -84,9 +84,9 @@ class AttendanceBookTest :
                 val attendanceBook = AttendanceBook(
                     generation = generation,
                     users = users,
-                    sessionEntities = sessions,
+                    sessions = sessions,
                     attendanceEntities = attendances,
-                    latePassEntities = latePassEntities,
+                    latePasses = latePassEntities,
                     now = now
                 )
 
@@ -134,9 +134,9 @@ class AttendanceBookTest :
                 val attendanceBook = AttendanceBook(
                     generation = generation,
                     users = users,
-                    sessionEntities = sessions,
+                    sessions = sessions,
                     attendanceEntities = attendances,
-                    latePassEntities = latePassEntities,
+                    latePasses = latePassEntities,
                     now = now
                 )
 
@@ -172,9 +172,9 @@ class AttendanceBookTest :
                 val attendanceBook = AttendanceBook(
                     generation = generation,
                     users = users,
-                    sessionEntities = sessions,
+                    sessions = sessions,
                     attendanceEntities = attendances,
-                    latePassEntities = listOf(
+                    latePasses = listOf(
                         LatePassEntity(
                             userId = users[0].userId,
                             generation = generation
@@ -194,9 +194,9 @@ class AttendanceBookTest :
                 val attendanceBook = AttendanceBook(
                     generation = generation,
                     users = users,
-                    sessionEntities = sessions,
+                    sessions = sessions,
                     attendanceEntities = attendances,
-                    latePassEntities = latePassEntities,
+                    latePasses = latePassEntities,
                     now = now
                 )
 

@@ -12,10 +12,10 @@ import java.util.UUID
 
 class AttendanceBook(
     val generation: Int,
-    users: List<UserWithActivityUnit>,
-    sessionEntities: List<SessionEntity>,
+    val users: List<UserWithActivityUnit>,
+    val sessions: List<SessionEntity>,
     attendanceEntities: List<AttendanceEntity>,
-    latePassEntities: List<LatePassEntity>,
+    val latePasses: List<LatePassEntity>,
     private val now: LocalDateTime
 ) {
 
@@ -26,15 +26,15 @@ class AttendanceBook(
     private val byUser: Map<UUID, Map<UUID, AttendanceStatus?>>
 
     // userId to latePass
-    private val latePassByUserId = latePassEntities.groupBy { it.userId }
+    private val latePassByUserId = latePasses.groupBy { it.userId }
 
     init {
-        require(users.all { it.generation == generation } || sessionEntities.all { it.generation == generation })
+        require(users.all { it.generation == generation } || sessions.all { it.generation == generation })
 
         // (userId to sessionId) to AttendanceStatus
         val attendanceMatrix = attendanceEntities.associate { (it.userId to it.scheduleId) to it.status }
 
-        this.bySession = sessionEntities.associate { session ->
+        this.bySession = sessions.associate { session ->
             session.id to users.associate { user ->
                 val status = attendanceMatrix[user.userId to session.id]
                     ?: if (session.isFinished(now)) AttendanceStatus.ABSENT else null
@@ -43,13 +43,16 @@ class AttendanceBook(
         }
 
         this.byUser = users.associate { user ->
-            user.userId to sessionEntities.associate { session ->
+            user.userId to sessions.associate { session ->
                 val status = attendanceMatrix[user.userId to session.id]
                     ?: if (session.isFinished(now)) AttendanceStatus.ABSENT else null
                 session.id to status
             }
         }
     }
+
+    fun getSessionStatuses(sessionId: UUID): Map<UUID, AttendanceStatus?> =
+        bySession[sessionId] ?: throw BusinessException(AttendanceError.SESSION_NOT_FOUND)
 
     fun getStatus(
         sessionId: UUID,

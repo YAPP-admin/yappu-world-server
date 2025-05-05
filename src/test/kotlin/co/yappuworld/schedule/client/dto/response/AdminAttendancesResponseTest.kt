@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
+import co.yappuworld.schedule.domain.AttendanceBook
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.LATE
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
@@ -41,10 +42,14 @@ class AdminAttendancesResponseTest :
 
             scenario("세션, 유저, 출석 정보를 기반으로 AdminAttendancesResponse를 생성한다.") {
                 val response = AdminAttendancesResponse.from(
-                    sessions = sessions,
-                    users = users,
-                    attendances = attendances,
-                    now = now
+                    AttendanceBook(
+                        generation = generation,
+                        users = users,
+                        sessions = sessions,
+                        attendanceEntities = attendances,
+                        latePasses = emptyList(),
+                        now = now
+                    )
                 )
 
                 response.users shouldHaveSize 3
