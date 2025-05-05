@@ -2,7 +2,7 @@ package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.domain.vo.ScheduleError
 import jakarta.persistence.DiscriminatorColumn
 import jakarta.persistence.DiscriminatorType
 import jakarta.persistence.Entity

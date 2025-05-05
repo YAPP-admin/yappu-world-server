@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.AttendanceStatus
-import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.core.spec.style.FeatureSpec

@@ -1,10 +1,10 @@
 package co.yappuworld.schedule.client.application
 
 import co.yappuworld.operation.infrastructure.GenerationFindService
-import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
-import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
-import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
-import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.DONE
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.PENDING
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.TODAY
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService

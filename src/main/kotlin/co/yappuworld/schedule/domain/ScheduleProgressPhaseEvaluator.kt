@@ -1,8 +1,9 @@
 package co.yappuworld.schedule.domain
 
-import co.yappuworld.schedule.domain.ScheduleProgressPhase.DONE
-import co.yappuworld.schedule.domain.ScheduleProgressPhase.ONGOING
-import co.yappuworld.schedule.domain.ScheduleProgressPhase.PENDING
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.DONE
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.ONGOING
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.PENDING
 import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import java.time.LocalDateTime
 

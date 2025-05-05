@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.domain.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture

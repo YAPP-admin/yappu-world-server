@@ -1,8 +1,8 @@
 package co.yappuworld.support.fixture
 
-import co.yappuworld.schedule.domain.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.entity.TaskEntity
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import java.time.LocalDate

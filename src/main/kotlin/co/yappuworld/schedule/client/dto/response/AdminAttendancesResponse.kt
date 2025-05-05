@@ -1,10 +1,13 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
+import co.yappuworld.schedule.domain.AttendanceBook
+import co.yappuworld.schedule.domain.SessionAttendanceStatistics
+import co.yappuworld.schedule.domain.UserAttendanceStatistics
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -23,29 +26,21 @@ data class AdminAttendancesResponse(
 
     companion object {
 
-        fun from(
-            sessions: List<SessionEntity>,
-            users: List<UserWithActivityUnit>,
-            attendances: List<AttendanceEntity>,
-            now: LocalDateTime
-        ): AdminAttendancesResponse {
-            val sortedSessions = sessions.sortedBy { it.date }
-
-            return AdminAttendancesResponse(
-                sessions = sortedSessions.map { AdminAttendanceSessionResponse(it) },
-                users = users
-                    .map { AdminAttendanceUserResponse(it) }
-                    .sortedBy { Position.valueOf(it.position).ordinal },
-                attendancesGroupedBySession = sortedSessions.map { session ->
+        fun from(attendanceBook: AttendanceBook): AdminAttendancesResponse =
+            AdminAttendancesResponse(
+                sessions = attendanceBook.sessions.map {
+                    AdminAttendanceSessionResponse(it, attendanceBook.sessionAttendanceStatistics(it.id))
+                },
+                users = attendanceBook.users.map {
+                    AdminAttendanceUserResponse(it, attendanceBook.userAttendanceStatistics(it.userId))
+                },
+                attendancesGroupedBySession = attendanceBook.sessions.map { session ->
                     AdminSessionAttendanceGroupResponse.from(
-                        session = session,
-                        users = users,
-                        attendances = attendances,
-                        now = now
+                        sessionId = session.id,
+                        attendanceByUserId = attendanceBook.getSessionStatuses(session.id)
                     )
                 }
             )
-        }
     }
 }
 
@@ -65,10 +60,22 @@ data class AdminAttendanceSessionResponse(
     @Schema(description = "세션 시작 시간")
     val startTime: LocalTime,
     @Schema(description = "세션 종료 시간")
-    val endTime: LocalTime
+    val endTime: LocalTime,
+    @Schema(description = "총 인원")
+    val totalPersonCount: Int,
+    @Schema(description = "출석 인원")
+    val totalOnTimeCount: Int,
+    @Schema(description = "지각 인원")
+    val totalLateCount: Int,
+    @Schema(description = "결석 인원")
+    val totalAbsentCount: Int,
+    @Schema(description = "조퇴 인원")
+    val totalEarlyCheckOutCount: Int,
+    @Schema(description = "공결 인원")
+    val totalExcusedAbsenceCount: Int
 ) {
 
-    constructor(session: SessionEntity) : this(
+    constructor(session: SessionEntity, statistics: SessionAttendanceStatistics) : this(
         sessionId = session.id,
         name = session.name,
         startDate = session.date,
@@ -76,7 +83,13 @@ data class AdminAttendanceSessionResponse(
         endDate = session.endDate,
         endDayOfWeek = session.endDate.dayOfWeek.korean(),
         startTime = session.time,
-        endTime = session.endTime
+        endTime = session.endTime,
+        totalPersonCount = statistics.totalPersonCount,
+        totalOnTimeCount = statistics.totalOnTimeCount,
+        totalLateCount = statistics.totalLateCount,
+        totalAbsentCount = statistics.totalAbsentCount,
+        totalEarlyCheckOutCount = statistics.totalEarlyCheckOutCount,
+        totalExcusedAbsenceCount = statistics.totalExcusedAbsenceCount
     )
 }
 
@@ -86,13 +99,43 @@ data class AdminAttendanceUserResponse(
     @Schema(description = "이름")
     val name: String,
     @Schema(description = "직군", allowableValues = ["PM", "Design", "Web", "Android", "iOS", "Flutter", "Server", "운영진"])
-    val position: String
+    val position: String,
+    @Schema(description = "출석 횟수")
+    val onTimeCount: Int,
+    @Schema(description = "지각 횟수")
+    val lateCount: Int,
+    @Schema(description = "결석 횟수")
+    val absentCount: Int,
+    @Schema(description = "조퇴 횟수")
+    val earlyCheckOutCount: Int,
+    @Schema(description = "공결 횟수")
+    val excusedAbsenceCount: Int,
+    @Schema(description = "지각 면제권 개수")
+    val latePassCount: Int,
+    @Schema(description = "총점, 100점이 최대")
+    val totalPoint: Int,
+    @Schema(description = "감점")
+    val penaltyPoint: Int,
+    @Schema(description = "가점")
+    val bonusPoint: Int
 ) {
 
-    constructor(user: UserWithActivityUnit) : this(
+    constructor(
+        user: UserWithActivityUnit,
+        statistics: UserAttendanceStatistics
+    ) : this(
         userId = user.userId,
         name = user.name,
-        position = user.position.name
+        position = user.position.name,
+        onTimeCount = statistics.onTimeCount,
+        lateCount = statistics.lateCount,
+        absentCount = statistics.absentCount,
+        earlyCheckOutCount = statistics.earlyCheckOutCount,
+        excusedAbsenceCount = statistics.excusedAbsenceCount,
+        latePassCount = statistics.latePassCount,
+        totalPoint = statistics.totalPoint,
+        penaltyPoint = statistics.penaltyPoint,
+        bonusPoint = statistics.bonusPoint
     )
 }
 
@@ -127,6 +170,20 @@ data class AdminSessionAttendanceGroupResponse(
                 }
             )
         }
+
+        fun from(
+            sessionId: UUID,
+            attendanceByUserId: Map<UUID, AttendanceStatus?>
+        ): AdminSessionAttendanceGroupResponse =
+            AdminSessionAttendanceGroupResponse(
+                sessionId = sessionId,
+                attendances = attendanceByUserId.map { (userId, status) ->
+                    AdminUserAttendanceResponse(
+                        userId = userId,
+                        status = status?.label
+                    )
+                }
+            )
     }
 }
 

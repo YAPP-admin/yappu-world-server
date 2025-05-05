@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.domain.vo
 
 import co.yappuworld.global.exception.Error
 import co.yappuworld.global.exception.ErrorType
@@ -62,6 +62,11 @@ enum class AttendanceError : Error {
         override val message: String = "출석할 수 있는 권한이 없습니다."
         override val code: String = "ATD_2004"
         override val type: ErrorType = ErrorType.FORBIDDEN
+    },
+    USER_NOT_FOUND {
+        override val message: String = "유저의 출석 정보를 찾을 수 없습니다."
+        override val code: String = "ATD_2005"
+        override val type: ErrorType = ErrorType.NOT_FOUND
     },
 
     // 4000번대 - 어드민

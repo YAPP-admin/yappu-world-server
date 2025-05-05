@@ -41,7 +41,13 @@ interface AdminAttendanceApi {
                                                     "endDate": "2025-04-18",
                                                     "endDayOfWeek": "금",
                                                     "startTime": "13:30:00",
-                                                    "endTime": "17:00:00"
+                                                    "endTime": "17:00:00",
+                                                    "totalPersonCount": 2,
+                                                    "totalOnTimeCount": 1,
+                                                    "totalLateCount": 0,
+                                                    "totalAbsentCount": 1,
+                                                    "totalEarlyCheckOutCount": 0,
+                                                    "totalExcusedAbsenceCount": 0
                                                 },
                                                 {
                                                     "sessionId": "c07afa8b-1b30-11f0-add0-0242ac140002",
@@ -51,19 +57,43 @@ interface AdminAttendanceApi {
                                                     "endDate": "2025-05-08",
                                                     "endDayOfWeek": "목",
                                                     "startTime": "13:30:00",
-                                                    "endTime": "17:00:00"
+                                                    "endTime": "17:00:00",
+                                                    "totalPersonCount": 2,
+                                                    "totalOnTimeCount": 0,
+                                                    "totalLateCount": 0,
+                                                    "totalAbsentCount": 0,
+                                                    "totalEarlyCheckOutCount": 0,
+                                                    "totalExcusedAbsenceCount": 0
                                                 }
                                             ],
                                             "users": [
                                                 {
                                                     "userId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
                                                     "name": "홍길동",
-                                                    "position": "PM"
+                                                    "position": "PM",
+                                                    "onTimeCount": 1,
+                                                    "lateCount": 0,
+                                                    "absentCount": 0,
+                                                    "earlyCheckOutCount": 0,
+                                                    "excusedAbsenceCount": 0,
+                                                    "latePassCount": 0,
+                                                    "totalPoint": 100,
+                                                    "penaltyPoint": 0,
+                                                    "bonusPoint": 0
                                                 },
                                                 {
                                                     "userId": "12954809-38fd-1268-e0d6-d3fda39f6b4c",
                                                     "name": "임꺽정",
-                                                    "position": "Server"
+                                                    "position": "Server",
+                                                    "onTimeCount": 0,
+                                                    "lateCount": 0,
+                                                    "absentCount": 1,
+                                                    "earlyCheckOutCount": 0,
+                                                    "excusedAbsenceCount": 0,
+                                                    "latePassCount": 1,
+                                                    "totalPoint": 90,
+                                                    "penaltyPoint": 20,
+                                                    "bonusPoint": 10
                                                 }
                                             ],
                                             "attendancesGroupedBySession": [

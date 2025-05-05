@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.domain.vo
 
 enum class ScheduleProgressPhase(
     private val label: String

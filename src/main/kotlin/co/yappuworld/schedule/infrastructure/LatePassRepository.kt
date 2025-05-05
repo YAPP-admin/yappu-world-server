@@ -10,4 +10,6 @@ interface LatePassRepository : JpaRepository<LatePassEntity, Long> {
         generation: Int,
         userId: UUID
     ): Int
+
+    fun findAllByGeneration(generation: Int): List<LatePassEntity>
 }

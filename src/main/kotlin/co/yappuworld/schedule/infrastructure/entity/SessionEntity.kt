@@ -1,9 +1,9 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.domain.AttendanceError
-import co.yappuworld.schedule.domain.AttendanceStatus
-import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.domain.vo.AttendanceError
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.SessionType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

@@ -2,7 +2,7 @@ package co.yappuworld.operation.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.domain.GenerationEntity
-import co.yappuworld.schedule.domain.AttendanceError
+import co.yappuworld.schedule.domain.vo.AttendanceError
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
