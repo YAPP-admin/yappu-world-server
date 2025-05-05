@@ -8,7 +8,7 @@ import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
-import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import org.springframework.stereotype.Service

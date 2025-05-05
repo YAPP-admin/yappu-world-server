@@ -1,12 +1,12 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
-import co.yappuworld.schedule.domain.SessionProgressPhase
-import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
-import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
-import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
-import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
-import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.DONE
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.PENDING
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.TODAY
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.UPCOMING
+import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate

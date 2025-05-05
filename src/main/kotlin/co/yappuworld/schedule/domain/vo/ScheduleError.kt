@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.domain.vo
 
 import co.yappuworld.global.exception.Error
 import co.yappuworld.global.exception.ErrorType

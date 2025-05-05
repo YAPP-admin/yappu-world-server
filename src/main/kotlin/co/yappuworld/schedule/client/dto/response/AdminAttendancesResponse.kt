@@ -2,7 +2,7 @@ package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit

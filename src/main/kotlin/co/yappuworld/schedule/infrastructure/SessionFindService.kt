@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity

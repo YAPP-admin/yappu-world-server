@@ -1,8 +1,8 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.domain.AttendanceStatus.LATE
-import co.yappuworld.schedule.domain.AttendanceStatus.ON_TIME
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.LATE
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture

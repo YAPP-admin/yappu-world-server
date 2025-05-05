@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.request
 
-import co.yappuworld.schedule.domain.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
