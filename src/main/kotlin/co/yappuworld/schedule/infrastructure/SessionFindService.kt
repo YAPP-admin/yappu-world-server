@@ -36,9 +36,9 @@ class SessionFindService(
                         and(
                             path(SessionEntity::generation).equal(activeGeneration),
                             or(
-                                path(SessionEntity::date).greaterThan(now.toLocalDate()),
+                                path(SessionEntity::endDate).greaterThan(now.toLocalDate()),
                                 and(
-                                    path(SessionEntity::date).equal(now.toLocalDate()),
+                                    path(SessionEntity::endDate).equal(now.toLocalDate()),
                                     path(SessionEntity::endTime).greaterThan(now.toLocalTime())
                                 )
                             )
