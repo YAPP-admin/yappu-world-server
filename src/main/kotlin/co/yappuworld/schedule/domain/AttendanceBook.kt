@@ -25,6 +25,8 @@ class AttendanceBook(
     // userId to sessionId to AttendanceStatus
     private val byUser: Map<UUID, Map<UUID, AttendanceStatus?>>
 
+    val finishedSessionCount = sessions.count { it.isFinished(now) }
+
     init {
         require(users.all { it.generation == generation } || sessions.all { it.generation == generation })
 
@@ -86,7 +88,11 @@ class AttendanceBook(
 
     fun getUserAttendanceStatistics(userId: UUID): UserAttendanceStatistics {
         val userAttendances = byUser[userId] ?: throw BusinessException(AttendanceError.USER_NOT_FOUND)
-        return UserAttendanceStatistics.from(userAttendances.map { it.value }, latePassCountByUserId[userId] ?: 0)
+        return UserAttendanceStatistics.from(
+            userAttendances.map { it.value },
+            finishedSessionCount,
+            latePassCountByUserId[userId] ?: 0
+        )
     }
 
     fun getSessionAttendanceStatistics(sessionId: UUID): SessionAttendanceStatistics {
