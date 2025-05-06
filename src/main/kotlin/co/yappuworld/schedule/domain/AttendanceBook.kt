@@ -25,17 +25,22 @@ class AttendanceBook(
     // userId to sessionId to AttendanceStatus
     private val byUser: Map<UUID, Map<UUID, AttendanceStatus?>>
 
+    val finishedSessionCount = sessions.count { it.isFinished(now) }
+
     init {
         require(users.all { it.generation == generation } || sessions.all { it.generation == generation })
 
         // (userId to sessionId) to AttendanceStatus
         val attendanceMatrix = attendances.associate { (it.userId to it.scheduleId) to it.status }
-        val decideStatus: (UserWithActivityUnit, SessionEntity) -> AttendanceStatus? = { user, session ->
+
+        fun decideStatus(
+            user: UserWithActivityUnit,
+            session: SessionEntity
+        ): AttendanceStatus? =
             when (session.isFinished(now)) {
                 true -> attendanceMatrix[user.userId to session.id] ?: AttendanceStatus.ABSENT
-                false -> attendanceMatrix[user.userId to session.id].also { require(it == null) }
+                false -> attendanceMatrix[user.userId to session.id]
             }
-        }
 
         this.bySession = sessions.associate { session ->
             session.id to users.associate { user ->
@@ -83,7 +88,11 @@ class AttendanceBook(
 
     fun getUserAttendanceStatistics(userId: UUID): UserAttendanceStatistics {
         val userAttendances = byUser[userId] ?: throw BusinessException(AttendanceError.USER_NOT_FOUND)
-        return UserAttendanceStatistics.from(userAttendances.map { it.value }, latePassCountByUserId[userId] ?: 0)
+        return UserAttendanceStatistics.from(
+            userAttendances.map { it.value },
+            finishedSessionCount,
+            latePassCountByUserId[userId] ?: 0
+        )
     }
 
     fun getSessionAttendanceStatistics(sessionId: UUID): SessionAttendanceStatistics {

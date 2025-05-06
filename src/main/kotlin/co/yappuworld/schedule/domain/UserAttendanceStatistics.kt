@@ -24,10 +24,11 @@ data class UserAttendanceStatistics(
     companion object {
         fun from(
             attendances: List<AttendanceStatus?>,
+            finishedSessionCount: Int,
             latePassCount: Int
         ): UserAttendanceStatistics {
             val totalSessionCount = attendances.size
-            val leftSessionCount = attendances.count { it == null }
+            val leftSessionCount = totalSessionCount - finishedSessionCount
             val onTimeCount = attendances.count { it == AttendanceStatus.ON_TIME }
             val lateCount = attendances.count { it == AttendanceStatus.LATE }
             val absentCount = attendances.count { it == AttendanceStatus.ABSENT }
