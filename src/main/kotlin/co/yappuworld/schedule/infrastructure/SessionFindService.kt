@@ -35,7 +35,13 @@ class SessionFindService(
                     .where(
                         and(
                             path(SessionEntity::generation).equal(activeGeneration),
-                            path(SessionEntity::date).greaterThanOrEqualTo(now.toLocalDate())
+                            or(
+                                path(SessionEntity::date).greaterThan(now.toLocalDate()),
+                                and(
+                                    path(SessionEntity::date).equal(now.toLocalDate()),
+                                    path(SessionEntity::endTime).greaterThan(now.toLocalTime())
+                                )
+                            )
                         )
                     ).orderBy(path(SessionEntity::date).asc())
             }.singleOrNull()
