@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
-class SessionWithAttendance(
+class SessionWithAttendanceDto(
     val id: UUID,
     val name: String,
     val description: String?,

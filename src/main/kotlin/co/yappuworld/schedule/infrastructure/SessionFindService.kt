@@ -2,7 +2,7 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.ScheduleError
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import org.springframework.data.domain.Page
@@ -59,10 +59,10 @@ class SessionFindService(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
-    ): List<SessionWithAttendance> =
+    ): List<SessionWithAttendanceDto> =
         scheduleRepository
             .findAll {
-                selectNew<SessionWithAttendance>(
+                selectNew<SessionWithAttendanceDto>(
                     path(SessionEntity::getId),
                     path(SessionEntity::name),
                     path(SessionEntity::description),
@@ -91,10 +91,10 @@ class SessionFindService(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
-    ): List<SessionWithAttendance> =
+    ): List<SessionWithAttendanceDto> =
         scheduleRepository
             .findAll {
-                selectNew<SessionWithAttendance>(
+                selectNew<SessionWithAttendanceDto>(
                     path(SessionEntity::getId),
                     path(SessionEntity::name),
                     path(SessionEntity::description),
