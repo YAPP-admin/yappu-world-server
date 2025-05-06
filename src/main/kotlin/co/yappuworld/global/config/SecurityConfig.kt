@@ -49,6 +49,7 @@ class SecurityConfig(
                     allowedHeaders = listOf("*")
                     allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                     allowedOriginPatterns = listOf("*")
+                    exposedHeaders = listOf("Location")
                 }
             )
         }
