@@ -9,6 +9,7 @@ import kotlin.math.min
 
 data class UserAttendanceStatistics(
     val totalSessionCount: Int,
+    val leftSessionCount: Int,
     val onTimeCount: Int,
     val lateCount: Int,
     val absentCount: Int,
@@ -26,6 +27,7 @@ data class UserAttendanceStatistics(
             latePassCount: Int
         ): UserAttendanceStatistics {
             val totalSessionCount = attendances.size
+            val leftSessionCount = attendances.count { it == null }
             val onTimeCount = attendances.count { it == AttendanceStatus.ON_TIME }
             val lateCount = attendances.count { it == AttendanceStatus.LATE }
             val absentCount = attendances.count { it == AttendanceStatus.ABSENT }
@@ -38,6 +40,7 @@ data class UserAttendanceStatistics(
 
             return UserAttendanceStatistics(
                 totalSessionCount = totalSessionCount,
+                leftSessionCount = leftSessionCount,
                 onTimeCount = onTimeCount,
                 lateCount = lateCount,
                 absentCount = absentCount,

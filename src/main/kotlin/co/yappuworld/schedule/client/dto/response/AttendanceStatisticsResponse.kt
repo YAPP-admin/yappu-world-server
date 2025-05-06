@@ -1,12 +1,7 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.domain.vo.AttendanceStatus.LATE
-import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDateTime
 
 data class AttendanceStatisticsResponse(
     @Schema(description = "전체 세션 수")
@@ -28,36 +23,18 @@ data class AttendanceStatisticsResponse(
 ) {
 
     companion object {
-        fun of(
-            sessions: List<SessionEntity>,
-            attendances: List<AttendanceEntity>,
-            now: LocalDateTime,
-            latePassCount: Int
-        ): AttendanceStatisticsResponse {
-            val finishedSessions = sessions.filter {
-                it.date.isBefore(now.toLocalDate()) ||
-                    (it.date.isEqual(now.toLocalDate()) && it.endTime.isBefore(now.toLocalTime()) ?: false)
+        fun from(userAttendanceStatistics: UserAttendanceStatistics): AttendanceStatisticsResponse =
+            userAttendanceStatistics.let {
+                AttendanceStatisticsResponse(
+                    totalSessionCount = it.totalSessionCount,
+                    remainingSessionCount = it.leftSessionCount,
+                    sessionProgressRate = (it.totalSessionCount - it.leftSessionCount) * 100 / it.totalSessionCount,
+                    attendancePoint = it.totalPoint,
+                    attendanceCount = it.onTimeCount,
+                    lateCount = it.lateCount,
+                    absenceCount = it.absentCount,
+                    latePassCount = it.latePassCount
+                )
             }
-
-            val attendanceBySession = attendances.associateBy { it.scheduleId }
-
-            val defaultPoint = 100
-            val attendanceCount = finishedSessions.count { attendanceBySession[it.id]?.status == ON_TIME }
-            val lateCount = finishedSessions.count { attendanceBySession[it.id]?.status == LATE }
-            val absenceCount = finishedSessions.count { attendanceBySession[it.id]?.status == ABSENT }
-
-            val attendancePoint = defaultPoint - lateCount * 10 - absenceCount * 20 + latePassCount * 10
-
-            return AttendanceStatisticsResponse(
-                totalSessionCount = sessions.size,
-                remainingSessionCount = sessions.size - finishedSessions.size,
-                sessionProgressRate = finishedSessions.size * 100 / sessions.size,
-                attendancePoint = attendancePoint,
-                attendanceCount = attendanceCount,
-                lateCount = lateCount,
-                absenceCount = absenceCount,
-                latePassCount = latePassCount
-            )
-        }
     }
 }

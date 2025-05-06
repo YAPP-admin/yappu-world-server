@@ -73,7 +73,7 @@ class AttendanceBookTest :
                         generation = generation,
                         users = users,
                         sessions = sessions,
-                        attendanceEntities = attendances,
+                        attendances = attendances,
                         latePasses = latePassEntities,
                         now = now
                     )
@@ -85,12 +85,12 @@ class AttendanceBookTest :
                     generation = generation,
                     users = users,
                     sessions = sessions,
-                    attendanceEntities = attendances,
+                    attendances = attendances,
                     latePasses = latePassEntities,
                     now = now
                 )
 
-                attendanceBook.userAttendanceStatistics(users[0].userId).let {
+                attendanceBook.getUserAttendanceStatistics(users[0].userId).let {
                     it.totalSessionCount shouldBe 3
                     it.onTimeCount shouldBe 1
                     it.lateCount shouldBe 1
@@ -103,7 +103,7 @@ class AttendanceBookTest :
                     it.bonusPoint shouldBe 10
                 }
 
-                attendanceBook.userAttendanceStatistics(users[1].userId).let {
+                attendanceBook.getUserAttendanceStatistics(users[1].userId).let {
                     it.totalSessionCount shouldBe 3
                     it.onTimeCount shouldBe 0
                     it.lateCount shouldBe 0
@@ -116,7 +116,7 @@ class AttendanceBookTest :
                     it.bonusPoint shouldBe 0
                 }
 
-                attendanceBook.userAttendanceStatistics(users[2].userId).let {
+                attendanceBook.getUserAttendanceStatistics(users[2].userId).let {
                     it.totalSessionCount shouldBe 3
                     it.onTimeCount shouldBe 0
                     it.lateCount shouldBe 1
@@ -135,12 +135,12 @@ class AttendanceBookTest :
                     generation = generation,
                     users = users,
                     sessions = sessions,
-                    attendanceEntities = attendances,
+                    attendances = attendances,
                     latePasses = latePassEntities,
                     now = now
                 )
 
-                attendanceBook.sessionAttendanceStatistics(sessions[0].id).let {
+                attendanceBook.getSessionAttendanceStatistics(sessions[0].id).let {
                     it.totalPersonCount shouldBe 3
                     it.totalOnTimeCount shouldBe 1
                     it.totalLateCount shouldBe 0
@@ -149,7 +149,7 @@ class AttendanceBookTest :
                     it.totalExcusedAbsenceCount shouldBe 0
                 }
 
-                attendanceBook.sessionAttendanceStatistics(sessions[1].id).let {
+                attendanceBook.getSessionAttendanceStatistics(sessions[1].id).let {
                     it.totalPersonCount shouldBe 3
                     it.totalOnTimeCount shouldBe 0
                     it.totalLateCount shouldBe 2
@@ -158,7 +158,7 @@ class AttendanceBookTest :
                     it.totalExcusedAbsenceCount shouldBe 0
                 }
 
-                attendanceBook.sessionAttendanceStatistics(sessions[2].id).let {
+                attendanceBook.getSessionAttendanceStatistics(sessions[2].id).let {
                     it.totalPersonCount shouldBe 3
                     it.totalOnTimeCount shouldBe 0
                     it.totalLateCount shouldBe 0
@@ -173,7 +173,7 @@ class AttendanceBookTest :
                     generation = generation,
                     users = users,
                     sessions = sessions,
-                    attendanceEntities = attendances,
+                    attendances = attendances,
                     latePasses = listOf(
                         LatePassEntity(
                             userId = users[0].userId,
@@ -187,7 +187,7 @@ class AttendanceBookTest :
                     now = now
                 )
 
-                attendanceBook.userAttendanceStatistics(users[0].userId).totalPoint shouldBe 100
+                attendanceBook.getUserAttendanceStatistics(users[0].userId).totalPoint shouldBe 100
             }
 
             scenario("출석 데이터가 정상적으로 생성된다.") {
@@ -195,7 +195,7 @@ class AttendanceBookTest :
                     generation = generation,
                     users = users,
                     sessions = sessions,
-                    attendanceEntities = attendances,
+                    attendances = attendances,
                     latePasses = latePassEntities,
                     now = now
                 )

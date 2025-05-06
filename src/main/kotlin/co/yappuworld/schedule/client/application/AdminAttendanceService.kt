@@ -32,7 +32,7 @@ class AdminAttendanceService(
                 generation = activeGeneration,
                 users = userFindService.findUsersActiveOfGeneration(activeGeneration),
                 sessions = sessionFindService.findSessionsInGeneration(activeGeneration),
-                attendanceEntities = attendanceFindService.findAttendancesOfGeneration(activeGeneration),
+                attendances = attendanceFindService.findAttendancesOfGeneration(activeGeneration),
                 latePasses = latePassFindService.findLatePasses(activeGeneration),
                 now = now
             )

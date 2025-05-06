@@ -46,7 +46,7 @@ class AdminAttendancesResponseTest :
                         generation = generation,
                         users = users,
                         sessions = sessions,
-                        attendanceEntities = attendances,
+                        attendances = attendances,
                         latePasses = emptyList(),
                         now = now
                     )

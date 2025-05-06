@@ -15,8 +15,8 @@ class SessionWithAttendance(
     val place: String?,
     val date: LocalDate,
     val endDate: LocalDate,
-    val time: LocalTime?,
-    val endTime: LocalTime?,
+    val time: LocalTime,
+    val endTime: LocalTime,
     val generation: Int,
     val sessionType: SessionType,
     val checkedInAt: LocalDateTime?,
@@ -34,7 +34,7 @@ class SessionWithAttendance(
 
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
-            (endDate.isEqual(now.toLocalDate()) && (endTime?.isBefore(now.toLocalTime()) == true))
+            (endDate.isEqual(now.toLocalDate()) && (endTime.isBefore(now.toLocalTime()) == true))
 
     fun isToday(now: LocalDateTime): Boolean =
         date.isBeforeOrEqual(now.toLocalDate()) && now.toLocalDate().isBeforeOrEqual(endDate)
