@@ -8,7 +8,7 @@ import co.yappuworld.schedule.domain.vo.SessionProgressPhase.UPCOMING
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.support.fixture.ScheduleFixture
 import co.yappuworld.user.infrastructure.UserFindService
 import io.mockk.every
@@ -42,7 +42,7 @@ class ScheduleServiceSessionProgressPhaseTest {
         every { generationFindService.findActiveGenerationOrNull() } returns generation
     }
 
-    fun mockScheduleRepository(schedules: List<SessionWithAttendance>) {
+    fun mockScheduleRepository(schedules: List<SessionWithAttendanceDto>) {
         every { sessionFindService.findSessionsWithAttendanceStatus(generation, any(), any()) } returns schedules
     }
 

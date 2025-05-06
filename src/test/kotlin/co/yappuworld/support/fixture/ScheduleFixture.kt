@@ -4,7 +4,7 @@ import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.entity.TaskEntity
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -67,8 +67,8 @@ object ScheduleFixture {
         sessionType: SessionType = SessionType.OFFLINE,
         attendanceStatus: AttendanceStatus? = AttendanceStatus.ON_TIME,
         checkedInAt: LocalDateTime? = LocalDateTime.of(2025, 2, 15, 14, 0)
-    ): SessionWithAttendance =
-        SessionWithAttendance(
+    ): SessionWithAttendanceDto =
+        SessionWithAttendanceDto(
             id = id,
             name = name,
             description = description,
