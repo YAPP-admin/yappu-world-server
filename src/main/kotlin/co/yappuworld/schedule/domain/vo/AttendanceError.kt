@@ -68,6 +68,11 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_2005"
         override val type: ErrorType = ErrorType.NOT_FOUND
     },
+    CANNOT_EXISTS_ATTENDANCE_FUTURE_SESSION {
+        override val message: String = "미래 세션에 출석할 수 없습니다."
+        override val code: String = "ATD_2006"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
 
     // 4000번대 - 어드민
     CANNOT_UPDATE_STATUS {

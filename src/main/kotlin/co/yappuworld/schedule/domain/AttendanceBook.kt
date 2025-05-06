@@ -30,12 +30,15 @@ class AttendanceBook(
 
         // (userId to sessionId) to AttendanceStatus
         val attendanceMatrix = attendances.associate { (it.userId to it.scheduleId) to it.status }
-        val decideStatus: (UserWithActivityUnit, SessionEntity) -> AttendanceStatus? = { user, session ->
+
+        fun decideStatus(
+            user: UserWithActivityUnit,
+            session: SessionEntity
+        ): AttendanceStatus? =
             when (session.isFinished(now)) {
                 true -> attendanceMatrix[user.userId to session.id] ?: AttendanceStatus.ABSENT
-                false -> attendanceMatrix[user.userId to session.id].also { require(it == null) }
+                false -> attendanceMatrix[user.userId to session.id]
             }
-        }
 
         this.bySession = sessions.associate { session ->
             session.id to users.associate { user ->
