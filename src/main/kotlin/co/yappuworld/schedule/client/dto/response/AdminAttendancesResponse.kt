@@ -29,10 +29,10 @@ data class AdminAttendancesResponse(
         fun from(attendanceBook: AttendanceBook): AdminAttendancesResponse =
             AdminAttendancesResponse(
                 sessions = attendanceBook.sessions.map {
-                    AdminAttendanceSessionResponse(it, attendanceBook.sessionAttendanceStatistics(it.id))
+                    AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id))
                 },
                 users = attendanceBook.users.map {
-                    AdminAttendanceUserResponse(it, attendanceBook.userAttendanceStatistics(it.userId))
+                    AdminAttendanceUserResponse(it, attendanceBook.getUserAttendanceStatistics(it.userId))
                 },
                 attendancesGroupedBySession = attendanceBook.sessions.map { session ->
                     AdminSessionAttendanceGroupResponse.from(

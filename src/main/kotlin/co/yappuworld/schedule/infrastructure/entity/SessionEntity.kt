@@ -74,7 +74,7 @@ class SessionEntity(
 
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
-            (endDate.isEqual(now.toLocalDate()) && (endTime?.isBefore(now.toLocalTime()) == true))
+            (endDate.isEqual(now.toLocalDate()) && (endTime.isBefore(now.toLocalTime()) == true))
 
     fun decideCheckInStatus(now: LocalDateTime): AttendanceStatus =
         when {
