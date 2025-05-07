@@ -34,7 +34,7 @@ class SessionWithAttendanceDto(
 
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
-            (endDate.isEqual(now.toLocalDate()) && (endTime.isBefore(now.toLocalTime()) == true))
+            (endDate.isEqual(now.toLocalDate()) && endTime.isBefore(now.toLocalTime()))
 
     fun isToday(now: LocalDateTime): Boolean =
         date.isBeforeOrEqual(now.toLocalDate()) && now.toLocalDate().isBeforeOrEqual(endDate)

@@ -36,22 +36,22 @@ data class ActiveGenerationSessionsResponse(
         ): ActiveGenerationSessionsResponse {
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
 
-            val orderedSessions = sessions.sortedBy { it.date }
+            val orderedSessions = sessions.sortedWith(compareBy({ it.date }, { it.time }))
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
-                    sessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
-                    sessions.last().id
+                    orderedSessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
+                    orderedSessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
-                sessions = sessions.mapIndexed { index, session ->
+                sessions = orderedSessions.mapIndexed { index, session ->
                     when {
                         index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE, now)
                         index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING, now)
                         else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus, now)
                     }
                 },
-                upcomingSessionId = sessions[upcomingSessionIndex].id
+                upcomingSessionId = orderedSessions[upcomingSessionIndex].id
             )
         }
 
