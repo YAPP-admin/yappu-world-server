@@ -2,7 +2,7 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class AttendanceFindServiceTest @Autowired constructor(
     private val sessionRepository: ScheduleRepository,
     private val attendanceRepository: AttendanceRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val attendanceFindService = AttendanceFindService(attendanceRepository)
 

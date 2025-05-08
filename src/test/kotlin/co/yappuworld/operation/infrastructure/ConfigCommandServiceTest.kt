@@ -1,6 +1,6 @@
 package co.yappuworld.operation.infrastructure
 
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.user.domain.model.SignUpCodeBook
 import co.yappuworld.user.domain.vo.UserRole
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class ConfigCommandServiceTest @Autowired constructor(
     private val configRepository: ConfigRepository,
     private val entityManager: EntityManager
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val configCommandService = ConfigCommandService(configRepository)
 

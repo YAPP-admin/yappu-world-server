@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.ActivityUnitFixture.getActivityUnitFixture
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
@@ -13,7 +13,7 @@ import java.util.UUID
 
 class ActivityUnitCommandServiceTest @Autowired constructor(
     private val activityUnitRepository: ActivityUnitRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val activityUnitCommandService = ActivityUnitCommandService(activityUnitRepository)
 

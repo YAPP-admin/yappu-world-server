@@ -1,6 +1,9 @@
 package co.yappuworld.support.fixture
 
 import co.yappuworld.global.util.EncryptUtils
+import co.yappuworld.user.domain.vo.Position
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
+import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.ActivityUnitParam
 import co.yappuworld.user.infrastructure.entity.ApplicationDetails
@@ -8,9 +11,6 @@ import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.infrastructure.entity.UserAlarmSettingEntity
 import co.yappuworld.user.infrastructure.entity.UserDeviceEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
-import co.yappuworld.user.domain.vo.Position
-import co.yappuworld.user.domain.vo.SignUpApplicationStatus
-import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import java.time.LocalDateTime
@@ -38,7 +38,7 @@ object UserFixture {
         email: String = "email@email.com",
         plainPassword: String = "abcabC!!",
         name: String = "name",
-        activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams(),
+        activityUnitParams: List<ActivityUnitParam> = getActivityUnitParamsFixture(),
         fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1",
         masterAlarmToggle: Boolean = true,
         status: SignUpApplicationStatus = SignUpApplicationStatus.PENDING,
@@ -62,7 +62,7 @@ object UserFixture {
         email: String = "email@email.com",
         plainPassword: String = "abcabC!!",
         name: String = "name",
-        activityUnitParams: List<ActivityUnitParam> = getActivityUnitParams(),
+        activityUnitParams: List<ActivityUnitParam> = getActivityUnitParamsFixture(),
         fcmToken: String = "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1",
         masterAlarmToggle: Boolean = true
     ): ApplicationDetails =
@@ -75,7 +75,7 @@ object UserFixture {
             masterAlarmToggle
         )
 
-    fun getActivityUnitParams(
+    fun getActivityUnitParamsFixture(
         vararg activityUnitParams: ActivityUnitParam = arrayOf(
             ActivityUnitParam(1, Position.PM)
         )
@@ -147,6 +147,15 @@ object UserFixture {
             email = email,
             name = name,
             role = role,
+            generation = generation,
+            position = position
+        )
+
+    fun getActivityUnitParamFixture(
+        generation: Int = 25,
+        position: Position = Position.SERVER
+    ): ActivityUnitParam =
+        ActivityUnitParam(
             generation = generation,
             position = position
         )
