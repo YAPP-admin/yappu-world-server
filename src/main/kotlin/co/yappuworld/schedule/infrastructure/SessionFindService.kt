@@ -115,15 +115,13 @@ class SessionFindService(
                             path(AttendanceEntity::userId).equal(userId)
                         )
                     )
-                ).where(
-                    and(
-                        path(SessionEntity::generation).equal(generation),
-                        or(
-                            path(SessionEntity::endDate).lessThan(now.toLocalDate()),
-                            and(
-                                path(SessionEntity::endDate).equal(now.toLocalDate()),
-                                path(SessionEntity::endTime).lessThan(now.toLocalTime())
-                            )
+                ).whereAnd(
+                    path(SessionEntity::generation).equal(generation),
+                    or(
+                        path(SessionEntity::endDate).lessThan(now.toLocalDate()),
+                        and(
+                            path(SessionEntity::endDate).equal(now.toLocalDate()),
+                            path(SessionEntity::endTime).lessThan(now.toLocalTime())
                         )
                     )
                 )
@@ -136,6 +134,12 @@ class SessionFindService(
         val result = scheduleRepository.findPage(pageRequest) {
             select(entity(SessionEntity::class))
                 .from(entity(SessionEntity::class))
+                .orderBy(
+                    path(SessionEntity::date).desc(),
+                    path(SessionEntity::time).desc(),
+                    path(SessionEntity::endDate).desc(),
+                    path(SessionEntity::endTime).desc()
+                )
         }
 
         return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
@@ -149,6 +153,12 @@ class SessionFindService(
             select(entity(SessionEntity::class))
                 .from(entity(SessionEntity::class))
                 .where(path(SessionEntity::generation).equal(generation))
+                .orderBy(
+                    path(SessionEntity::date).desc(),
+                    path(SessionEntity::time).desc(),
+                    path(SessionEntity::endDate).desc(),
+                    path(SessionEntity::endTime).desc()
+                )
         }
 
         return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
