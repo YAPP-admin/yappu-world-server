@@ -67,4 +67,12 @@ class AttendanceFindService(
                     .from(entity(AttendanceEntity::class))
                     .where(or(*predicates.toTypedArray()))
             }.filterNotNull()
+
+    fun findAttendances(sessionId: UUID): List<AttendanceEntity> =
+        attendanceRepository
+            .findAll {
+                select(entity(AttendanceEntity::class))
+                    .from(entity(AttendanceEntity::class))
+                    .where(path(AttendanceEntity::scheduleId).equal(sessionId))
+            }.filterNotNull()
 }

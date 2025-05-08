@@ -5,7 +5,7 @@ import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -21,7 +21,7 @@ import java.util.UUID
 class SessionFindServiceTest @Autowired constructor(
     private val scheduleRepository: ScheduleRepository,
     private val attendanceRepository: AttendanceRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val sessionFindService = SessionFindService(scheduleRepository)
 

@@ -1,7 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getUserDeviceEntityFixture
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
@@ -12,7 +12,7 @@ import java.util.UUID
 
 class UserDeviceFindServiceTest @Autowired constructor(
     private val userDeviceRepository: UserDeviceRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val userDeviceFindService = UserDeviceFindService(userDeviceRepository)
 

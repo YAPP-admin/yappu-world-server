@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
@@ -18,7 +18,7 @@ class UserCommandServiceTest @Autowired constructor(
     private val activityUnitRepository: ActivityUnitRepository,
     private val userAlarmSettingRepository: UserAlarmSettingRepository,
     private val userDeviceRepository: UserDeviceRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val userCommandService = UserCommandService(
             userRepository = userRepository,

@@ -2,6 +2,7 @@ package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "어드민 출석 API", description = "_")
+@Tag(name = "어드민 일정 API", description = "일정 및 출석 관리")
 interface AdminAttendanceApi {
 
     @Operation(summary = "활성화 된 기수의 출석 목록 조회")
@@ -168,5 +169,36 @@ interface AdminAttendanceApi {
     @PutMapping("/admin/v1/attendances")
     fun updateAttendances(
         @RequestBody request: AdminAttendanceUpdateRequest
+    ): ResponseEntity<Unit>
+
+    @Operation(summary = "특정 세션의 출석 일괄 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "errorCode": "ATD_4000",
+                                        "message": "출석 상태를 변경할 수 없습니다."
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun updateSessionAttendances(
+        @RequestBody request: AdminSessionAttendanceUpdateRequest
     ): ResponseEntity<Unit>
 }
