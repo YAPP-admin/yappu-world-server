@@ -28,7 +28,7 @@ data class AttendanceStatisticsResponse(
                 AttendanceStatisticsResponse(
                     totalSessionCount = it.totalSessionCount,
                     remainingSessionCount = it.leftSessionCount,
-                    sessionProgressRate = (it.totalSessionCount - it.leftSessionCount) * 100 / it.totalSessionCount,
+                    sessionProgressRate = ((it.totalSessionCount - it.leftSessionCount) / it.totalSessionCount) * 100,
                     attendancePoint = it.totalPoint,
                     attendanceCount = it.onTimeCount,
                     lateCount = it.lateCount,
