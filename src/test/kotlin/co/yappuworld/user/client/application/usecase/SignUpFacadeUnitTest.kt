@@ -1,6 +1,7 @@
 package co.yappuworld.user.client.application.usecase
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.security.JwtGenerator
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
@@ -24,18 +25,20 @@ import io.mockk.mockk
 import io.mockk.verify
 import java.util.UUID
 
-class SignUpApplicationExecutorTest :
+class SignUpFacadeUnitTest :
     FeatureSpec({
         val userFindService = mockk<UserFindService>()
         val userCommandService = mockk<UserCommandService>()
         val signUpApplicationFindService = mockk<SignUpApplicationFindService>()
         val signUpApplicationCommandService = mockk<SignUpApplicationCommandService>()
+        val jwtGenerator = mockk<JwtGenerator>()
 
-        val executor = SignUpApplicationExecutor(
+        val executor = SignUpExecutor(
             userFindService,
             userCommandService,
             signUpApplicationFindService,
-            signUpApplicationCommandService
+            signUpApplicationCommandService,
+            jwtGenerator
         )
 
         feature("가입 신청서 제출") {
