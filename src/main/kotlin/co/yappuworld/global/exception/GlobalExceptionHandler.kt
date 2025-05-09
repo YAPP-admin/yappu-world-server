@@ -16,12 +16,10 @@ private val logger = KotlinLogging.logger { }
 class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException::class)
-    fun handleBusinessException(e: BusinessException): ResponseEntity<ErrorResponse> {
-        logger.warn { e.message }
-        return ResponseEntity
+    fun handleBusinessException(e: BusinessException): ResponseEntity<ErrorResponse> =
+        ResponseEntity
             .status(getHttpStatusBy(e.error.type))
             .body(ErrorResponse.of(e.error))
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {

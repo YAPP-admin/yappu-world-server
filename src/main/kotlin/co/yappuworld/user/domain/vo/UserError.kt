@@ -63,6 +63,11 @@ enum class UserError : Error {
         override val code: String = "USR_1005"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },
+    ALREADY_PROCESSED_EMAIL {
+        override val message: String = "이미 처리 중인 이메일입니다."
+        override val code: String = "USR_1098"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
     NOT_FOUND_SIGN_UP_APPLICATION {
         override val message: String = "회원가입 신청 내역을 찾을 수 없습니다."
         override val code: String = "USR_1099"

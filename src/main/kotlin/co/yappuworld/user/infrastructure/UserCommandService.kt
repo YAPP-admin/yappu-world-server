@@ -31,4 +31,8 @@ class UserCommandService(
             userAlarmSettingRepository.save(UserAlarmSettingEntity(user.id, application.getDeviceAlarmToggle()))
             userDeviceRepository.save(UserDeviceEntity(user.id, application.getFcmToken()))
         }
+
+    fun getLock(email: String): Int? = userRepository.getLock(email)
+
+    fun releaseLock(email: String): Int? = userRepository.releaseLock(email)
 }
