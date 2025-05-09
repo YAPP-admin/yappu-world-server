@@ -43,6 +43,8 @@ class SignUpFacadeUnitTest :
 
         feature("가입 신청서 제출") {
 
+            every { signUpApplicationCommandService.getLock(any()) } returns 1
+
             scenario("이미 사용 중인 이메일이면 제출할 수 없다.") {
                 every { userFindService.existsEmail(any()) } returns true
                 shouldThrowExactly<BusinessException> {
