@@ -1,7 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import co.yappuworld.user.domain.vo.Position
@@ -30,7 +30,7 @@ class UserFindServiceTest @Autowired constructor(
     private val entityManager: EntityManager,
     private val context: JpqlRenderContext,
     private val activityUnitRepository: ActivityUnitRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
 
         val userFindService = UserFindService(userRepository, entityManager, context)
 

@@ -1,13 +1,13 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
-import co.yappuworld.schedule.domain.SessionProgressPhase
-import co.yappuworld.schedule.domain.SessionProgressPhase.DONE
-import co.yappuworld.schedule.domain.SessionProgressPhase.PENDING
-import co.yappuworld.schedule.domain.SessionProgressPhase.TODAY
-import co.yappuworld.schedule.domain.SessionProgressPhase.UPCOMING
-import co.yappuworld.schedule.domain.SessionType
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.DONE
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.PENDING
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.TODAY
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase.UPCOMING
+import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -31,32 +31,32 @@ data class ActiveGenerationSessionsResponse(
 
     companion object {
         fun from(
-            sessions: List<SessionWithAttendance>,
+            sessions: List<SessionWithAttendanceDto>,
             now: LocalDateTime
         ): ActiveGenerationSessionsResponse {
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
 
-            val orderedSessions = sessions.sortedBy { it.date }
+            val orderedSessions = sessions.sortedWith(compareBy({ it.date }, { it.time }))
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponse(
-                    sessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
-                    sessions.last().id
+                    orderedSessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
+                    orderedSessions.last().id
                 )
 
             return ActiveGenerationSessionsResponse(
-                sessions = sessions.mapIndexed { index, session ->
+                sessions = orderedSessions.mapIndexed { index, session ->
                     when {
                         index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE, now)
                         index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING, now)
                         else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus, now)
                     }
                 },
-                upcomingSessionId = sessions[upcomingSessionIndex].id
+                upcomingSessionId = orderedSessions[upcomingSessionIndex].id
             )
         }
 
         private fun getUpcomingSessionIndexAndStatus(
-            orderedSessions: List<SessionWithAttendance>,
+            orderedSessions: List<SessionWithAttendanceDto>,
             now: LocalDateTime
         ): Pair<Int, SessionProgressPhase>? {
             val upcomingSession = orderedSessions.firstOrNull { !it.isFinished(now) }
@@ -108,7 +108,7 @@ data class ActiveGenerationSessionResponse(
 ) {
 
     constructor(
-        session: SessionWithAttendance,
+        session: SessionWithAttendanceDto,
         status: SessionProgressPhase,
         now: LocalDateTime
     ) : this(

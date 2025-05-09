@@ -1,5 +1,6 @@
 package co.yappuworld.user.client.dto.request
 
+import co.yappuworld.user.domain.vo.UserRole
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
@@ -16,6 +17,8 @@ data class AdminUserUpdateRequest(
     @Schema(description = "이메일")
     @field:NotBlank(message = "유저 이메일은 필수 입력 값입니다.")
     val email: String,
+    @Schema(description = "역할")
+    val role: UserRole,
     @Schema(description = "활동내역")
     @field:NotEmpty(message = "유저 활동내역은 필수 입력 값입니다.")
     val activityUnits: List<AdminActivityUnitUpdateRequest>,

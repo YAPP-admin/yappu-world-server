@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "출석 API", description = "_")
+@Tag(name = "스케줄 API", description = "일정 및 출석")
 interface AttendanceApi {
 
     @Operation(summary = "출석")

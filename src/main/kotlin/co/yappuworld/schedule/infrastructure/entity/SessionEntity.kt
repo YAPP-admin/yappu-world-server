@@ -1,9 +1,12 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.domain.AttendanceError
-import co.yappuworld.schedule.domain.AttendanceStatus
-import co.yappuworld.schedule.domain.SessionType
+import co.yappuworld.schedule.domain.AttendancePolicy.ABSENT_AFTER_SESSION_START_HOURS
+import co.yappuworld.schedule.domain.AttendancePolicy.CHECK_IN_AVAILABLE_BEFORE_SESSION_START_MINUTES
+import co.yappuworld.schedule.domain.AttendancePolicy.LATE_AFTER_SESSION_START_MINUTES
+import co.yappuworld.schedule.domain.vo.AttendanceError
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.SessionType
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -61,20 +64,20 @@ class SessionEntity(
     }
 
     val checkInTimeFrom: LocalDateTime
-        get() = LocalDateTime.of(date, time).minusMinutes(20)
+        get() = LocalDateTime.of(date, time).minusMinutes(CHECK_IN_AVAILABLE_BEFORE_SESSION_START_MINUTES)
 
     val checkInTimeUntil: LocalDateTime
-        get() = LocalDateTime.of(date, endTime)
+        get() = LocalDateTime.of(endDate, endTime)
 
     val lateTimeFrom: LocalDateTime
-        get() = LocalDateTime.of(date, time).plusMinutes(20)
+        get() = LocalDateTime.of(date, time).plusMinutes(LATE_AFTER_SESSION_START_MINUTES)
 
     val lateTimeUntil: LocalDateTime
-        get() = LocalDateTime.of(date, time).plusHours(2)
+        get() = LocalDateTime.of(date, time).plusHours(ABSENT_AFTER_SESSION_START_HOURS)
 
     fun isFinished(now: LocalDateTime): Boolean =
         endDate.isBefore(now.toLocalDate()) ||
-            (endDate.isEqual(now.toLocalDate()) && (endTime?.isBefore(now.toLocalTime()) == true))
+            (endDate.isEqual(now.toLocalDate()) && endTime.isBefore(now.toLocalTime()))
 
     fun decideCheckInStatus(now: LocalDateTime): AttendanceStatus =
         when {

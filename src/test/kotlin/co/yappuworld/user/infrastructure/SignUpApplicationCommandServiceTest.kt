@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.support.environment.CustomDataJpaFeatureSpec
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -9,7 +9,7 @@ import org.springframework.data.repository.findByIdOrNull
 
 class SignUpApplicationCommandServiceTest @Autowired constructor(
     private val signUpApplicationRepository: SignUpApplicationRepository
-) : CustomDataJpaFeatureSpec({
+) : CustomDataJpaTestFeatureSpec({
         val signUpApplicationCommandService = SignUpApplicationCommandService(signUpApplicationRepository)
 
         feature("회원 가입 신청서 제출") {

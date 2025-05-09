@@ -18,4 +18,6 @@ interface AttendanceRepository :
         userId: UUID,
         scheduleId: UUID
     ): AttendanceEntity?
+
+    fun findAllByScheduleId(scheduleId: UUID): List<AttendanceEntity>
 }

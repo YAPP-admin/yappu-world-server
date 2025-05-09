@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.domain
+package co.yappuworld.schedule.domain.vo
 
 /**
  * @property ON_TIME 제 시간에 정상적으로 출석

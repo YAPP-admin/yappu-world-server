@@ -6,8 +6,9 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
-import co.yappuworld.schedule.domain.AttendanceError
+import co.yappuworld.schedule.domain.AttendanceBook
 import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
@@ -53,6 +54,7 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendanceStatisticsResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
+        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
         val thisGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId = userId,
@@ -60,7 +62,16 @@ class AttendanceService(
         )
         val latePassCount = latePassFindService.countLatePasses(activeGeneration, userId)
 
-        return AttendanceStatisticsResponse.of(thisGenerationSessions, attendances, now, latePassCount)
+        val attendanceBook = AttendanceBook(
+            generation = activeGeneration,
+            users = listOf(user),
+            sessions = thisGenerationSessions,
+            attendances = attendances,
+            latePassCountByUserId = mapOf(userId to latePassCount),
+            now = now
+        )
+
+        return AttendanceStatisticsResponse.from(attendanceBook.getUserAttendanceStatistics(userId))
     }
 
     @Transactional(readOnly = true)

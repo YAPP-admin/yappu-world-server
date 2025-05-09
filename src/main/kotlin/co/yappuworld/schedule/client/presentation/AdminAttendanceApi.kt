@@ -2,6 +2,7 @@ package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "어드민 출석 API", description = "_")
+@Tag(name = "어드민 일정 API", description = "일정 및 출석 관리")
 interface AdminAttendanceApi {
 
     @Operation(summary = "활성화 된 기수의 출석 목록 조회")
@@ -41,7 +42,13 @@ interface AdminAttendanceApi {
                                                     "endDate": "2025-04-18",
                                                     "endDayOfWeek": "금",
                                                     "startTime": "13:30:00",
-                                                    "endTime": "17:00:00"
+                                                    "endTime": "17:00:00",
+                                                    "totalPersonCount": 2,
+                                                    "totalOnTimeCount": 1,
+                                                    "totalLateCount": 0,
+                                                    "totalAbsentCount": 1,
+                                                    "totalEarlyCheckOutCount": 0,
+                                                    "totalExcusedAbsenceCount": 0
                                                 },
                                                 {
                                                     "sessionId": "c07afa8b-1b30-11f0-add0-0242ac140002",
@@ -51,19 +58,43 @@ interface AdminAttendanceApi {
                                                     "endDate": "2025-05-08",
                                                     "endDayOfWeek": "목",
                                                     "startTime": "13:30:00",
-                                                    "endTime": "17:00:00"
+                                                    "endTime": "17:00:00",
+                                                    "totalPersonCount": 2,
+                                                    "totalOnTimeCount": 0,
+                                                    "totalLateCount": 0,
+                                                    "totalAbsentCount": 0,
+                                                    "totalEarlyCheckOutCount": 0,
+                                                    "totalExcusedAbsenceCount": 0
                                                 }
                                             ],
                                             "users": [
                                                 {
                                                     "userId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
                                                     "name": "홍길동",
-                                                    "position": "PM"
+                                                    "position": "PM",
+                                                    "onTimeCount": 1,
+                                                    "lateCount": 0,
+                                                    "absentCount": 0,
+                                                    "earlyCheckOutCount": 0,
+                                                    "excusedAbsenceCount": 0,
+                                                    "latePassCount": 0,
+                                                    "totalPoint": 100,
+                                                    "penaltyPoint": 0,
+                                                    "bonusPoint": 0
                                                 },
                                                 {
                                                     "userId": "12954809-38fd-1268-e0d6-d3fda39f6b4c",
                                                     "name": "임꺽정",
-                                                    "position": "Server"
+                                                    "position": "Server",
+                                                    "onTimeCount": 0,
+                                                    "lateCount": 0,
+                                                    "absentCount": 1,
+                                                    "earlyCheckOutCount": 0,
+                                                    "excusedAbsenceCount": 0,
+                                                    "latePassCount": 1,
+                                                    "totalPoint": 90,
+                                                    "penaltyPoint": 20,
+                                                    "bonusPoint": 10
                                                 }
                                             ],
                                             "attendancesGroupedBySession": [
@@ -138,5 +169,36 @@ interface AdminAttendanceApi {
     @PutMapping("/admin/v1/attendances")
     fun updateAttendances(
         @RequestBody request: AdminAttendanceUpdateRequest
+    ): ResponseEntity<Unit>
+
+    @Operation(summary = "특정 세션의 출석 일괄 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "errorCode": "ATD_4000",
+                                        "message": "출석 상태를 변경할 수 없습니다."
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    fun updateSessionAttendances(
+        @RequestBody request: AdminSessionAttendanceUpdateRequest
     ): ResponseEntity<Unit>
 }

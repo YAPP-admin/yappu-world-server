@@ -1,8 +1,8 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.domain.ScheduleError
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendance
+import co.yappuworld.schedule.domain.vo.ScheduleError
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import org.springframework.data.domain.Page
@@ -35,7 +35,13 @@ class SessionFindService(
                     .where(
                         and(
                             path(SessionEntity::generation).equal(activeGeneration),
-                            path(SessionEntity::date).greaterThanOrEqualTo(now.toLocalDate())
+                            or(
+                                path(SessionEntity::endDate).greaterThan(now.toLocalDate()),
+                                and(
+                                    path(SessionEntity::endDate).equal(now.toLocalDate()),
+                                    path(SessionEntity::endTime).greaterThan(now.toLocalTime())
+                                )
+                            )
                         )
                     ).orderBy(path(SessionEntity::date).asc())
             }.singleOrNull()
@@ -53,10 +59,10 @@ class SessionFindService(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
-    ): List<SessionWithAttendance> =
+    ): List<SessionWithAttendanceDto> =
         scheduleRepository
             .findAll {
-                selectNew<SessionWithAttendance>(
+                selectNew<SessionWithAttendanceDto>(
                     path(SessionEntity::getId),
                     path(SessionEntity::name),
                     path(SessionEntity::description),
@@ -85,10 +91,10 @@ class SessionFindService(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
-    ): List<SessionWithAttendance> =
+    ): List<SessionWithAttendanceDto> =
         scheduleRepository
             .findAll {
-                selectNew<SessionWithAttendance>(
+                selectNew<SessionWithAttendanceDto>(
                     path(SessionEntity::getId),
                     path(SessionEntity::name),
                     path(SessionEntity::description),
@@ -109,15 +115,13 @@ class SessionFindService(
                             path(AttendanceEntity::userId).equal(userId)
                         )
                     )
-                ).where(
-                    and(
-                        path(SessionEntity::generation).equal(generation),
-                        or(
-                            path(SessionEntity::endDate).lessThan(now.toLocalDate()),
-                            and(
-                                path(SessionEntity::endDate).equal(now.toLocalDate()),
-                                path(SessionEntity::endTime).lessThan(now.toLocalTime())
-                            )
+                ).whereAnd(
+                    path(SessionEntity::generation).equal(generation),
+                    or(
+                        path(SessionEntity::endDate).lessThan(now.toLocalDate()),
+                        and(
+                            path(SessionEntity::endDate).equal(now.toLocalDate()),
+                            path(SessionEntity::endTime).lessThan(now.toLocalTime())
                         )
                     )
                 )
@@ -130,6 +134,12 @@ class SessionFindService(
         val result = scheduleRepository.findPage(pageRequest) {
             select(entity(SessionEntity::class))
                 .from(entity(SessionEntity::class))
+                .orderBy(
+                    path(SessionEntity::date).desc(),
+                    path(SessionEntity::time).desc(),
+                    path(SessionEntity::endDate).desc(),
+                    path(SessionEntity::endTime).desc()
+                )
         }
 
         return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
@@ -143,6 +153,12 @@ class SessionFindService(
             select(entity(SessionEntity::class))
                 .from(entity(SessionEntity::class))
                 .where(path(SessionEntity::generation).equal(generation))
+                .orderBy(
+                    path(SessionEntity::date).desc(),
+                    path(SessionEntity::time).desc(),
+                    path(SessionEntity::endDate).desc(),
+                    path(SessionEntity::endTime).desc()
+                )
         }
 
         return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)

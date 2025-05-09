@@ -1,7 +1,7 @@
 package co.yappuworld.user.client.application
 
 import co.yappuworld.global.response.OffsetPageResponse
-import co.yappuworld.user.client.application.usecase.SignUpApplicationExecutor
+import co.yappuworld.user.client.application.usecase.SignUpExecutor
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
@@ -16,7 +16,7 @@ import java.util.UUID
 
 @Service
 class AdminSignUpService(
-    private val signUpApplicationExecutor: SignUpApplicationExecutor,
+    private val signUpExecutor: SignUpExecutor,
     private val userFindService: UserFindService,
     private val signUpApplicationFindService: SignUpApplicationFindService
 ) {
@@ -45,11 +45,11 @@ class AdminSignUpService(
 
     @Transactional
     fun approveSignUpApplication(request: SignUpApplicationApproveRequest) {
-        signUpApplicationExecutor.approve(request.applicationIds, request.role)
+        signUpExecutor.approve(request.applicationIds, request.role)
     }
 
     @Transactional
     fun rejectSignUpApplication(request: SignUpApplicationRejectRequest) {
-        signUpApplicationExecutor.reject(request.applicationIds, request.reason)
+        signUpExecutor.reject(request.applicationIds, request.reason)
     }
 }

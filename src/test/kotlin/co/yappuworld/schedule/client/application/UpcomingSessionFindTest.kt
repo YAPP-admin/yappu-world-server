@@ -2,9 +2,9 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
-import co.yappuworld.schedule.domain.AttendanceError
-import co.yappuworld.schedule.domain.AttendanceStatus
-import co.yappuworld.schedule.domain.ScheduleError
+import co.yappuworld.schedule.domain.vo.AttendanceError
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService

@@ -33,10 +33,9 @@ interface UserAuthApi {
             ApiResponse(
                 description = "가입 코드를 통해 별도 신청 절차 없이 가입 처리",
                 responseCode = "200",
-//                useReturnTypeSchema = true,
                 content = [
                     Content(
-                        schema = Schema(ref = "#/components/schemas/SuccessResponseToken"),
+                        schema = Schema(implementation = Token::class),
                         examples = [
                             ExampleObject(
                                 value = """
@@ -71,6 +70,16 @@ interface UserAuthApi {
                                         "isSuccess": "false",
                                         "errorCode": "USR_1001",
                                         "message": "잘못된 가입코드입니다."
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "회원가입 중복 요청 오류",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "errorCode": "USR_1098",
+                                        "message": "이미 처리 중인 이메일입니다."
                                     }
                                 """
                             )

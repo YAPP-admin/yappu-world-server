@@ -151,5 +151,5 @@ jobs:
                 run: |
                     git fetch
                     git checkout -b dev origin/dev
-                    git rebase origin/prod
+                    git merge origin/prod --no-edit
                     git push origin dev --force-with-lease
