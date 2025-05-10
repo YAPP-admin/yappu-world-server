@@ -13,7 +13,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 @SpringBootTest
-class SignUpFacadeConcurrencyTest @Autowired constructor(
+class SignUpExecutorConcurrencyTest @Autowired constructor(
     private val signUpExecutor: SignUpExecutor,
     private val userRepository: UserRepository,
     private val signUpApplicationRepository: SignUpApplicationRepository
