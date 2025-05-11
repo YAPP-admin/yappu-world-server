@@ -92,14 +92,12 @@ class AttendanceService(
     private fun getSessionAttendance(
         userId: UUID,
         sessionId: UUID
-    ): SessionAttendance {
-        val generation = generationFindService.findActiveGeneration()
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, generation)
-        val session = sessionFindService.findSession(sessionId)
-        val attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
-
-        return SessionAttendance(attendee = user, session = session, attendance = attendance)
-    }
+    ): SessionAttendance =
+        SessionAttendance(
+            attendee = userFindService.findUserWithActivityUnits(userId),
+            session = sessionFindService.findSession(sessionId),
+            attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
+        )
 
     private fun checkAttendanceCode(attendanceCode: String) {
         val value = configFindService.findAttendanceCode()

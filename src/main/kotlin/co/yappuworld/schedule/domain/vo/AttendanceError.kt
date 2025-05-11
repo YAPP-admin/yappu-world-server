@@ -53,11 +53,6 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_2002"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
-    GENERATION_NOT_MATCH {
-        override val message: String = "출석 처리를 위한 기수 정보가 올바르지 않습니다."
-        override val code: String = "ATD_2003"
-        override val type: ErrorType = ErrorType.WRONG_STATE
-    },
     UNAUTHORIZED_CHECK_IN {
         override val message: String = "출석할 수 있는 권한이 없습니다."
         override val code: String = "ATD_2004"

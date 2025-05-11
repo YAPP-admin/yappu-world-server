@@ -8,6 +8,8 @@ import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
+import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.time.LocalDateTime
 import java.util.UUID
@@ -15,7 +17,7 @@ import java.util.UUID
 object AttendanceFixture {
 
     fun getSessionAttendanceFixture(
-        user: UserWithActivityUnit = getUserWithActivityUnitFixture(),
+        user: UserWithActivityUnits = getUserWithActivityUnitsFixture(),
         session: SessionEntity = getSessionEntityFixture(),
         attendance: AttendanceEntity? = null
     ): SessionAttendance =
