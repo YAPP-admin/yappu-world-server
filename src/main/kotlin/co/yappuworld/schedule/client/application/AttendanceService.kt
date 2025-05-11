@@ -94,7 +94,7 @@ class AttendanceService(
         sessionId: UUID
     ): SessionAttendance =
         SessionAttendance(
-            attendee = userFindService.findUserWithActivityUnits(userId),
+            attendee = userFindService.findUserWithActivities(userId),
             session = sessionFindService.findSession(sessionId),
             attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
         )

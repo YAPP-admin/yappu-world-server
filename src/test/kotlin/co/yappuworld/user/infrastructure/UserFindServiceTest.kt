@@ -290,7 +290,7 @@ class UserFindServiceTest @Autowired constructor(
 
                 shouldThrowExactly<BusinessException> {
                     userFindService.findUserWithActivities(user.id)
-                }.error shouldBe UserError.USER_NOT_FOUND
+                }.error shouldBe UserError.NO_ACTIVITY_UNIT
             }
 
             scenario("활동 기록이 하나만 있는 경우") {

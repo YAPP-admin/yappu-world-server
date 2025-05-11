@@ -57,7 +57,7 @@ class AttendanceServiceTest :
 
         fun successConditionMocking() {
             every { generationFindService.findActiveGeneration() } returns activeGeneration
-            every { userFindService.findUserWithActivityUnits(any()) } returns user
+            every { userFindService.findUserWithActivities(any()) } returns user
             every { sessionFindService.findSession(any()) } returns session
             every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             every { configFindService.findAttendanceCode() } returns attendanceCode

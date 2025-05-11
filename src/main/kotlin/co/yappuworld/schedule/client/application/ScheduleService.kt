@@ -6,8 +6,8 @@ import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
-import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
@@ -67,7 +67,7 @@ class ScheduleService(
     ): UpcomingSessionAttendanceResponse {
         val activeGeneration = generationFindService.findActiveGenerationOrNull()
             ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
-        val attendee = userFindService.findUserWithActivityUnits(userId)
+        val attendee = userFindService.findUserWithActivities(userId)
         val session = sessionFindService.findUpcomingSession(activeGeneration, now)
         val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)
 

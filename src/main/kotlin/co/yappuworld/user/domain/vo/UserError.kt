@@ -155,5 +155,10 @@ enum class UserError : Error {
         override val message: String = "잘못된 전화번호 형식입니다."
         override val code: String = "USR_3001"
         override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    NO_ACTIVITY_UNIT {
+        override val message: String = "활동 정보가 존재하지 않습니다."
+        override val code: String = "USR_3002"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }

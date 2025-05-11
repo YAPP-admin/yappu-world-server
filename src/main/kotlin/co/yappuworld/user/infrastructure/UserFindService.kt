@@ -1,7 +1,6 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
@@ -107,23 +106,22 @@ class UserFindService(
                 ).from(
                     entity(UserEntity::class),
                     innerJoin(ActivityUnitEntity::class)
-                        .on(path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)))
-                ).where(path(UserEntity::getId).equal(userId))
-                    .orderBy(path(ActivityUnitEntity::generation).desc())
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(UserEntity::getId).equal(userId)
+                            )
+                        )
+                )
             }.filterNotNull()
 
-        if (result.isEmpty()) throw BusinessException(UserError.USER_NOT_FOUND)
+        if (result.isNotEmpty()) {
+            return result.let { UserWithActivityUnits.of(it) }
+        }
 
-        return result.let {
-            UserWithActivityUnits(
-                userId = it.first().userId,
-                email = it.first().email,
-                name = it.first().name,
-                role = it.first().role,
-                activityUnits = it
-                    .map { au -> ActivityUnit(au.generation, au.position, au.userId) }
-                    .sortedByDescending { au -> au.generation }
-            )
+        when (userRepository.existsById(userId)) {
+            true -> throw BusinessException(UserError.NO_ACTIVITY_UNIT)
+            false -> throw BusinessException(UserError.USER_NOT_FOUND)
         }
     }
 
@@ -175,29 +173,6 @@ class UserFindService(
                 )
             }.singleOrNull()
             ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
-
-    fun findUserWithActivityUnits(userId: UUID): UserWithActivityUnits =
-        userRepository
-            .findAll {
-                selectNew<UserWithActivityUnit>(
-                    path(UserEntity::getId),
-                    path(UserEntity::email),
-                    path(UserEntity::name),
-                    path(UserEntity::role),
-                    path(ActivityUnitEntity::generation),
-                    path(ActivityUnitEntity::position)
-                ).from(
-                    entity(UserEntity::class),
-                    innerJoin(entity(ActivityUnitEntity::class))
-                        .on(
-                            and(
-                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
-                                path(UserEntity::getId).equal(userId)
-                            )
-                        )
-                )
-            }.filterNotNull()
-            .let { UserWithActivityUnits.of(it) }
 
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null
