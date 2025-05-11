@@ -44,8 +44,16 @@ class SignUpExecutor(
         executeWithLockReturning(application.applicantEmail) {
             checkEmailAvailability(application.applicantEmail)
             val user = userCommandService.signUp(application, role)
+            rejectPendingSignUpApplication(application.applicantEmail)
             jwtGenerator.generateToken(SecurityUser.from(user), now)
         }
+
+    private fun rejectPendingSignUpApplication(applicantEmail: String) {
+        signUpApplicationFindService
+            .findPendingApplicationOrNull(applicantEmail)
+            ?.apply { reject(reason = "가입 코드를 통해 회원가입을 완료하였습니다.") }
+            ?.also { signUpApplicationCommandService.update(it) }
+    }
 
     fun approve(
         applicationIds: List<UUID>,
