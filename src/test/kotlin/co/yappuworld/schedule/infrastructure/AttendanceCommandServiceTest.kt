@@ -21,7 +21,7 @@ class AttendanceCommandServiceTest @Autowired constructor(
 
             scenario("출석 정보가 없으면 예외가 발생한다.") {
                 shouldThrowExactly<BusinessException> {
-                    attendanceCommandService.save(getSessionAttendanceFixture())
+                    attendanceCommandService.checkIn(getSessionAttendanceFixture())
                 }.error shouldBe AttendanceError.NO_ATTENDANCE_TO_CHECK_IN
             }
 
@@ -29,7 +29,7 @@ class AttendanceCommandServiceTest @Autowired constructor(
                 val attendance = getAttendanceEntityFixture()
 
                 shouldNotThrowAny {
-                    attendanceCommandService.save(
+                    attendanceCommandService.checkIn(
                         getSessionAttendanceFixture(attendance = attendance)
                     )
                 }

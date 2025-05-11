@@ -67,13 +67,13 @@ class ScheduleService(
     ): UpcomingSessionAttendanceResponse {
         val activeGeneration = generationFindService.findActiveGenerationOrNull()
             ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
+        val attendee = userFindService.findUserWithActivityUnits(userId)
         val session = sessionFindService.findUpcomingSession(activeGeneration, now)
         val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)
 
         return UpcomingSessionAttendanceResponse.of(
             sessionAttendance = SessionAttendance(
-                user = user,
+                attendee = attendee,
                 session = session,
                 attendance = attendanceOrNull
             ),

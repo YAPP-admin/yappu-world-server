@@ -176,6 +176,29 @@ class UserFindService(
             }.singleOrNull()
             ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
 
+    fun findUserWithActivityUnits(userId: UUID): UserWithActivityUnits =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(entity(ActivityUnitEntity::class))
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(UserEntity::getId).equal(userId)
+                            )
+                        )
+                )
+            }.filterNotNull()
+            .let { UserWithActivityUnits.of(it) }
+
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null
     ): JpqlQueryable<SelectQuery<UserWithLastActivityUnit>> =

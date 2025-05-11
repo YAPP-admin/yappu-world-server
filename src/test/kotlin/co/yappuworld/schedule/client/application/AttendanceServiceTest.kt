@@ -12,7 +12,8 @@ import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FeatureSpec
@@ -45,7 +46,9 @@ class AttendanceServiceTest :
 
         val activeGeneration = 25
         val attendanceCode = "1234"
-        val user = getUserWithActivityUnitFixture()
+        val user = getUserWithActivityUnitsFixture(
+            activityUnits = listOf(getActivityUnitFixture(generation = activeGeneration))
+        )
         val session = getSessionEntityFixture()
         val request = AttendanceFixture.getAttendRequestFixture(
             attendanceCode = attendanceCode,
@@ -54,11 +57,11 @@ class AttendanceServiceTest :
 
         fun successConditionMocking() {
             every { generationFindService.findActiveGeneration() } returns activeGeneration
-            every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns user
+            every { userFindService.findUserWithActivityUnits(any()) } returns user
             every { sessionFindService.findSession(any()) } returns session
             every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             every { configFindService.findAttendanceCode() } returns attendanceCode
-            justRun { attendanceCommandService.save(any()) }
+            justRun { attendanceCommandService.checkIn(any()) }
         }
 
         feature("출석 체크") {
@@ -103,41 +106,6 @@ class AttendanceServiceTest :
                                 now = LocalDateTime.of(session.date, session.time)
                             )
                         }.error.shouldBe(AttendanceError.ATTENDANCE_CODE_NOT_MATCH)
-                    }
-                }
-
-                feature("세션 관련 검증을 진행한다.") {
-
-                    scenario("세션의 기수와 활성화된 기수가 일치하지 않으면 예외가 발생한다.") {
-                        successConditionMocking()
-
-                        val lastGenerationSession = getSessionEntityFixture(generation = activeGeneration - 1)
-                        every { sessionFindService.findSession(any()) } returns lastGenerationSession
-
-                        shouldThrow<BusinessException> {
-                            attendanceService.checkIn(
-                                request = request,
-                                userId = user.userId,
-                                now = LocalDateTime.of(session.date, session.time)
-                            )
-                        }.error.shouldBe(AttendanceError.GENERATION_NOT_MATCH)
-                    }
-                }
-
-                feature("유저 관련 검증을 진행한다.") {
-
-                    scenario("유저의 기수와 활성화된 기수가 일치하지 않으면 예외가 발생한다.") {
-                        successConditionMocking()
-                        every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns
-                            getUserWithActivityUnitFixture(generation = activeGeneration - 1)
-
-                        shouldThrow<BusinessException> {
-                            attendanceService.checkIn(
-                                request = request,
-                                userId = user.userId,
-                                now = LocalDateTime.of(session.date, session.time)
-                            )
-                        }.error.shouldBe(AttendanceError.GENERATION_NOT_MATCH)
                     }
                 }
             }

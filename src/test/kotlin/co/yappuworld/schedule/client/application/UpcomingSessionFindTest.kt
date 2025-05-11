@@ -10,7 +10,9 @@ import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.ScheduleFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -45,10 +47,14 @@ class UpcomingSessionFindTest :
 
         feature("가장 인접한 세션을 조회할 때") {
 
-            val userId = UUID.randomUUID()
-            val now = LocalDateTime.of(2024, 10, 22, 14, 0)
-            val user = getUserWithActivityUnitFixture(userId = userId, generation = 25)
             val generation = 25
+            val now = LocalDateTime.of(2024, 10, 22, 14, 0)
+            val userId = UUID.randomUUID()
+            val user = getUserWithActivityUnitsFixture(
+                activityUnits = listOf(
+                    getActivityUnitFixture(generation = generation, position = Position.PM, userId = userId)
+                )
+            )
             val session = ScheduleFixture.getSessionEntityFixture(
                 date = now.toLocalDate(),
                 endDate = now.toLocalDate(),
@@ -59,11 +65,16 @@ class UpcomingSessionFindTest :
 
             fun setCheckInPossibleCircumstance() {
                 every { generationFindService.findActiveGenerationOrNull() } returns generation
-                every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns
-                    getUserWithActivityUnitFixture(
-                        userId = userId,
-                        generation = generation
+                every { userFindService.findUserWithActivityUnits(any()) } returns getUserWithActivityUnitsFixture(
+                    userId = userId,
+                    activityUnits = listOf(
+                        getActivityUnitFixture(
+                            generation = generation,
+                            position = Position.PM,
+                            userId = userId
+                        )
                     )
+                )
                 every { sessionFindService.findUpcomingSession(any(), any()) } returns session
                 every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             }
@@ -82,28 +93,34 @@ class UpcomingSessionFindTest :
                 }.error shouldBe ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION
             }
 
-            scenario("활성화 된 기수의 유저가 아니면 출석을 누를 수 없다.") {
+            scenario("세션의 기수에 유저 활동기록이 없으면 예외가 발생한다.") {
                 setCheckInPossibleCircumstance()
-                every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns
-                    user.copy(generation = 24)
+                every { userFindService.findUserWithActivityUnits(any()) } returns
+                    getUserWithActivityUnitsFixture(
+                        activityUnits = listOf(
+                            getActivityUnitFixture(
+                                generation = generation + 1,
+                                position = Position.PM,
+                                userId = userId
+                            )
+                        )
+                    )
 
                 shouldThrowExactly<BusinessException> {
                     scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
-                }.error shouldBe AttendanceError.GENERATION_NOT_MATCH
+                }.error shouldBe AttendanceError.NO_ATTENDEE_ACTIVITY_IN_GENERATION
             }
 
-            scenario("유저의 권한이 활동 중인 상태가 아니라면 출석이 불가하다.") {
+            scenario("운영진이나 활동회원이 아니면 출석이 불가하다.") {
                 setCheckInPossibleCircumstance()
 
                 forAll(
                     row(UserRole.ALUMNI),
                     row(UserRole.GRADUATE),
-                    row(UserRole.ADMIN),
-                    row(UserRole.STAFF)
+                    row(UserRole.ADMIN)
                 ) { role ->
-                    every {
-                        userFindService.findUserWithActivityUnitOfGeneration(any(), any())
-                    } returns user.copy(role = role)
+                    every { userFindService.findUserWithActivityUnits(any()) } returns
+                        getUserWithActivityUnitsFixture(role = role)
 
                     shouldThrowExactly<BusinessException> {
                         scheduleService.getUpcomingSessionAttendance(userId, now)

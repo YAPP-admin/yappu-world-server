@@ -53,11 +53,6 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_2002"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
-    GENERATION_NOT_MATCH {
-        override val message: String = "출석 처리를 위한 기수 정보가 올바르지 않습니다."
-        override val code: String = "ATD_2003"
-        override val type: ErrorType = ErrorType.WRONG_STATE
-    },
     UNAUTHORIZED_CHECK_IN {
         override val message: String = "출석할 수 있는 권한이 없습니다."
         override val code: String = "ATD_2004"
@@ -71,6 +66,16 @@ enum class AttendanceError : Error {
     CANNOT_EXISTS_ATTENDANCE_FUTURE_SESSION {
         override val message: String = "미래 세션에 출석할 수 없습니다."
         override val code: String = "ATD_2006"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    NO_ATTENDEE_ACTIVITY_IN_GENERATION {
+        override val message: String = "해당 기수에 활동이 없어서 출석 관련 처리가 불가합니다."
+        override val code: String = "ATD_2007"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION {
+        override val message: String = "해당 기수에 참가자 직군으로 활동이 없어서 출석 관련 처리가 불가합니다."
+        override val code: String = "ATD_2008"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
 
