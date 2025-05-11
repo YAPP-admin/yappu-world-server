@@ -65,7 +65,7 @@ class UpcomingSessionFindTest :
 
             fun setCheckInPossibleCircumstance() {
                 every { generationFindService.findActiveGenerationOrNull() } returns generation
-                every { userFindService.findUserWithActivityUnits(any()) } returns getUserWithActivityUnitsFixture(
+                every { userFindService.findUserWithActivities(any()) } returns getUserWithActivityUnitsFixture(
                     userId = userId,
                     activityUnits = listOf(
                         getActivityUnitFixture(
@@ -95,7 +95,7 @@ class UpcomingSessionFindTest :
 
             scenario("세션의 기수에 유저 활동기록이 없으면 예외가 발생한다.") {
                 setCheckInPossibleCircumstance()
-                every { userFindService.findUserWithActivityUnits(any()) } returns
+                every { userFindService.findUserWithActivities(any()) } returns
                     getUserWithActivityUnitsFixture(
                         activityUnits = listOf(
                             getActivityUnitFixture(
@@ -119,7 +119,7 @@ class UpcomingSessionFindTest :
                     row(UserRole.GRADUATE),
                     row(UserRole.ADMIN)
                 ) { role ->
-                    every { userFindService.findUserWithActivityUnits(any()) } returns
+                    every { userFindService.findUserWithActivities(any()) } returns
                         getUserWithActivityUnitsFixture(role = role)
 
                     shouldThrowExactly<BusinessException> {

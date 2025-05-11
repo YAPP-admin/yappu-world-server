@@ -17,11 +17,13 @@ class UserWithActivityUnits(
             check(elements.groupBy { it.userId }.size == 1)
 
             return UserWithActivityUnits(
-                userId = elements.single().userId,
-                email = elements.single().email,
-                name = elements.single().name,
-                role = elements.single().role,
-                activityUnits = elements.map { ActivityUnit(it.generation, it.position, it.userId) }
+                userId = elements.first().userId,
+                email = elements.first().email,
+                name = elements.first().name,
+                role = elements.first().role,
+                activityUnits = elements
+                    .map { ActivityUnit(it.generation, it.position, it.userId) }
+                    .sortedByDescending { au -> au.generation }
             )
         }
     }
