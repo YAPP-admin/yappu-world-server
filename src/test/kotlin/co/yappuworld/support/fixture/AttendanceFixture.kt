@@ -20,7 +20,7 @@ object AttendanceFixture {
         attendance: AttendanceEntity? = null
     ): SessionAttendance =
         SessionAttendance(
-            user = user,
+            attendee = user,
             session = session,
             attendance = attendance
         )

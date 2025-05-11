@@ -73,6 +73,16 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_2006"
         override val type: ErrorType = ErrorType.WRONG_STATE
     },
+    NO_ATTENDEE_ACTIVITY_IN_GENERATION {
+        override val message: String = "해당 기수에 활동이 없어서 출석 관련 처리가 불가합니다."
+        override val code: String = "ATD_2007"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION {
+        override val message: String = "해당 기수에 참가자 직군으로 활동이 없어서 출석 관련 처리가 불가합니다."
+        override val code: String = "ATD_2008"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
 
     // 4000번대 - 어드민
     CANNOT_UPDATE_STATUS {

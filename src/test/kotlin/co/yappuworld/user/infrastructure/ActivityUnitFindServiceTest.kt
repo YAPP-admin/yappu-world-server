@@ -1,7 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
-import co.yappuworld.support.fixture.ActivityUnitFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -25,8 +25,8 @@ class ActivityUnitFindServiceTest @Autowired constructor(
             scenario("활동 기록이 있으면 모두 반환한다.") {
                 val userId = UUID.randomUUID()
                 val activityUnits = listOf(
-                    getActivityUnitFixture(generation = 22, position = Position.SERVER, userId = userId),
-                    getActivityUnitFixture(generation = 23, position = Position.SERVER, userId = userId)
+                    getActivityUnitEntityFixture(generation = 22, position = Position.SERVER, userId = userId),
+                    getActivityUnitEntityFixture(generation = 23, position = Position.SERVER, userId = userId)
                 )
 
                 activityUnitRepository.saveAllAndFlush(activityUnits)

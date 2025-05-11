@@ -45,7 +45,7 @@ class AttendanceService(
         checkAttendanceCode(request.attendanceCode)
         sessionAttendance.checkIn(now)
 
-        attendanceCommandService.save(sessionAttendance)
+        attendanceCommandService.checkIn(sessionAttendance)
     }
 
     @Transactional(readOnly = true)
@@ -98,7 +98,7 @@ class AttendanceService(
         val session = sessionFindService.findSession(sessionId)
         val attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
 
-        return SessionAttendance(user = user, session = session, attendance = attendance)
+        return SessionAttendance(attendee = user, session = session, attendance = attendance)
     }
 
     private fun checkAttendanceCode(attendanceCode: String) {

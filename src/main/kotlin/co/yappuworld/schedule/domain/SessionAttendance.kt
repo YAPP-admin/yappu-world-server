@@ -8,7 +8,7 @@ import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.LocalDate
@@ -16,23 +16,34 @@ import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * 특정 세션의 출석 정보
+ */
 class SessionAttendance(
-    private val user: UserWithActivityUnit,
+    private val attendee: SessionAttendee,
     private val session: SessionEntity,
     private var attendance: AttendanceEntity?
 ) {
 
-    private val checkInAuthorities: List<UserRole> = listOf(UserRole.ACTIVE)
+    constructor(
+        attendee: UserWithActivityUnit,
+        session: SessionEntity,
+        attendance: AttendanceEntity?
+    ) : this(
+        attendee = UserWithActivityUnits.of(listOf(attendee)),
+        session = session,
+        attendance = attendance
+    )
 
-    init {
-        if (user.generation != session.generation) {
-            throw BusinessException(AttendanceError.GENERATION_NOT_MATCH)
-        }
-
-        if (user.role !in checkInAuthorities) {
-            throw BusinessException(AttendanceError.UNAUTHORIZED_CHECK_IN)
-        }
-    }
+    constructor(
+        attendee: UserWithActivityUnits,
+        session: SessionEntity,
+        attendance: AttendanceEntity?
+    ) : this(
+        attendee = SessionAttendee(attendee, session),
+        session = session,
+        attendance = attendance
+    )
 
     val sessionId = session.id
     val sessionName = session.name
@@ -55,14 +66,14 @@ class SessionAttendance(
         validateCheckInAvailability(now)
         attendance = AttendanceEntity(
             status = session.decideCheckInStatus(now),
-            userId = user.userId,
+            userId = attendee.id,
             scheduleId = session.id
         )
     }
 
     fun validateCheckInAvailability(now: LocalDateTime) {
         if (hasAttendance) {
-            logger.warn { "이미 출석을 완료한 유저(${user.userId})입니다." }
+            logger.warn { "이미 출석을 완료한 유저(${attendee.id})입니다." }
             throw BusinessException(AttendanceError.ALREADY_CHECKED_IN)
         }
 

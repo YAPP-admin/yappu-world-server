@@ -1,6 +1,8 @@
 package co.yappuworld.support.fixture
 
 import co.yappuworld.global.util.EncryptUtils
+import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserRole
@@ -12,8 +14,6 @@ import co.yappuworld.user.infrastructure.entity.UserAlarmSettingEntity
 import co.yappuworld.user.infrastructure.entity.UserDeviceEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
-import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
-import java.time.LocalDateTime
 import java.util.UUID
 
 object UserFixture {
@@ -81,40 +81,6 @@ object UserFixture {
         )
     ): List<ActivityUnitParam> = activityUnitParams.toList()
 
-    fun getActivityUnitEntityFixture(
-        generation: Int = 25,
-        position: Position = Position.SERVER,
-        userId: UUID = UUID.randomUUID()
-    ): ActivityUnitEntity =
-        ActivityUnitEntity(
-            generation = generation,
-            position = position,
-            userId = userId
-        )
-
-    fun getUserWithLastActivityUnitFixture(
-        userId: UUID = UUID.randomUUID(),
-        email: String = "email@abc.com",
-        name: String = "홍길동",
-        role: UserRole = UserRole.ACTIVE,
-        isActive: Boolean = true,
-        createdAt: LocalDateTime = LocalDateTime.now(),
-        generation: Int = 25,
-        position: Position = Position.PM,
-        activityUnitId: UUID = UUID.randomUUID()
-    ): UserWithLastActivityUnit =
-        UserWithLastActivityUnit(
-            userId = userId,
-            email = email,
-            name = name,
-            role = role,
-            isActive = isActive,
-            createdAt = createdAt,
-            lastActiveGeneration = generation,
-            lastActivePosition = position,
-            activityUnitId = activityUnitId
-        )
-
     fun getUserAlarmSettingEntityFixture(
         device: Boolean = true,
         master: Boolean = true,
@@ -151,6 +117,27 @@ object UserFixture {
             position = position
         )
 
+    fun getUserWithActivityUnitsFixture(
+        userId: UUID = UUID.randomUUID(),
+        email: String = "email@abc.com",
+        name: String = "홍길동",
+        role: UserRole = UserRole.ACTIVE,
+        activityUnits: List<ActivityUnit> = listOf(
+            ActivityUnit(
+                generation = 25,
+                position = Position.SERVER,
+                userId = userId
+            )
+        )
+    ): UserWithActivityUnits =
+        UserWithActivityUnits(
+            userId = userId,
+            email = email,
+            name = name,
+            role = role,
+            activityUnits = activityUnits
+        )
+
     fun getActivityUnitParamFixture(
         generation: Int = 25,
         position: Position = Position.SERVER
@@ -159,4 +146,24 @@ object UserFixture {
             generation = generation,
             position = position
         )
+
+    fun getActivityUnitFixture(
+        generation: Int = 23,
+        position: Position = Position.SERVER,
+        userId: UUID = UUID.randomUUID()
+    ) = ActivityUnit(
+        generation = generation,
+        position = position,
+        userId = userId
+    )
+
+    fun getActivityUnitEntityFixture(
+        generation: Int = 23,
+        position: Position = Position.SERVER,
+        userId: UUID = UUID.randomUUID()
+    ) = ActivityUnitEntity(
+        generation = generation,
+        position = position,
+        userId = userId
+    )
 }

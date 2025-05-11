@@ -58,7 +58,7 @@ class AttendanceServiceTest :
             every { sessionFindService.findSession(any()) } returns session
             every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             every { configFindService.findAttendanceCode() } returns attendanceCode
-            justRun { attendanceCommandService.save(any()) }
+            justRun { attendanceCommandService.checkIn(any()) }
         }
 
         feature("출석 체크") {

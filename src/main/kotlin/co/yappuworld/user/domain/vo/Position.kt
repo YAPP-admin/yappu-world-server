@@ -10,5 +10,9 @@ enum class Position(
     IOS("iOS"),
     FLUTTER("Flutter"),
     SERVER("Server"),
-    STAFF("운영진")
+    STAFF("운영진");
+
+    fun isStaff(): Boolean = this == STAFF
+
+    fun isAttendeePosition(): Boolean = this != STAFF
 }
