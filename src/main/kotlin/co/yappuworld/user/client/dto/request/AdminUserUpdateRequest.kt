@@ -1,5 +1,8 @@
 package co.yappuworld.user.client.dto.request
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.StringUtils.isPhoneNumber
+import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
@@ -26,4 +29,27 @@ data class AdminUserUpdateRequest(
     val phoneNumber: String? = null,
     @Schema(description = "성별", nullable = true, allowableValues = ["남", "여"])
     val gender: String? = null
-)
+) {
+
+    fun checkRequest() {
+        checkActivityUnitUpdateRequest(activityUnits)
+        checkPhoneNumber()
+    }
+
+    private fun checkActivityUnitUpdateRequest(requests: List<AdminActivityUnitUpdateRequest>) {
+        val hasDuplicateActivityUnit = requests
+            .groupingBy { it.generation to it.position }
+            .eachCount()
+            .any { it.value > 1 }
+
+        if (hasDuplicateActivityUnit) {
+            throw BusinessException(UserError.DUPLICATE_ACTIVITY_UNIT)
+        }
+    }
+
+    private fun checkPhoneNumber() {
+        phoneNumber?.let {
+            if (it.isPhoneNumber().not()) throw BusinessException(UserError.WRONG_PHONE_NUMBER)
+        }
+    }
+}

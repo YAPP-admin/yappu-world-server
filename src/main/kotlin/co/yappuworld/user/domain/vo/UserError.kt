@@ -143,5 +143,17 @@ enum class UserError : Error {
         override val message: String = "기존에 존재하는 가입코드이므로 변경할 수 없습니다."
         override val code: String = "USR_2003"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
+    },
+
+    // 3000번대 - 유저 관리
+    DUPLICATE_ACTIVITY_UNIT {
+        override val message: String = "기수와 직군이 모두 중복된 활동 정보가 존재합니다."
+        override val code: String = "USR_3000"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    WRONG_PHONE_NUMBER {
+        override val message: String = "잘못된 전화번호 형식입니다."
+        override val code: String = "USR_3001"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     }
 }
