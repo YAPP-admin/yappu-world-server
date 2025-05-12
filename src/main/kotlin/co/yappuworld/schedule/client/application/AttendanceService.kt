@@ -7,7 +7,6 @@ import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import co.yappuworld.schedule.domain.AttendanceBook
-import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
@@ -55,7 +54,7 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendanceStatisticsResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val user = userFindService.findUserWithActivities(userId)
+        val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
         val activeGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId = userId,
@@ -65,7 +64,7 @@ class AttendanceService(
 
         val attendanceBook = AttendanceBook(
             generation = activeGeneration,
-            attendees = listOf(Attendee(user, activeGeneration)),
+            attendees = listOf(attendee),
             sessions = activeGenerationSessions,
             attendances = attendances,
             latePassCountByUserId = mapOf(userId to latePassCount),
@@ -93,12 +92,14 @@ class AttendanceService(
     private fun getSessionAttendance(
         userId: UUID,
         sessionId: UUID
-    ): SessionAttendance =
-        SessionAttendance(
-            user = userFindService.findUserWithActivities(userId),
-            session = sessionFindService.findSession(sessionId),
+    ): SessionAttendance {
+        val session = sessionFindService.findSession(sessionId)
+        return SessionAttendance(
+            attendee = userFindService.findSessionAttendee(userId, session.generation),
+            session = session,
             attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
         )
+    }
 
     private fun checkAttendanceCode(attendanceCode: String) {
         val value = configFindService.findAttendanceCode()

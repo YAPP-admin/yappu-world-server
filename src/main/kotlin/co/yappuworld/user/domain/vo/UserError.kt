@@ -160,5 +160,10 @@ enum class UserError : Error {
         override val message: String = "활동 정보가 존재하지 않습니다."
         override val code: String = "USR_3002"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    DUPLICATE_ATTENDEE_ACTIVITY {
+        override val message: String = "한 기수에 둘 이상의 참가자 활동 기록이 있습니다."
+        override val code: String = "USR_3003"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }

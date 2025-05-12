@@ -3,6 +3,7 @@ package co.yappuworld.schedule.domain
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import io.kotest.assertions.throwables.shouldNotThrowAny
@@ -71,7 +72,7 @@ class AttendanceBookTest :
                 shouldNotThrowAny {
                     AttendanceBook(
                         generation = generation,
-                        attendees = users.map { Attendee(it, generation) },
+                        attendees = users.map { getAttendeeFixture(it, generation) },
                         sessions = sessions,
                         attendances = attendances,
                         latePasses = latePassEntities,
@@ -83,7 +84,7 @@ class AttendanceBookTest :
             scenario("유저 출석 통계가 정상적으로 생성된다.") {
                 val attendanceBook = AttendanceBook(
                     generation = generation,
-                    attendees = users.map { Attendee(it, generation) },
+                    attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
                     latePasses = latePassEntities,
@@ -133,7 +134,7 @@ class AttendanceBookTest :
             scenario("세션 출석 통계가 정상적으로 생성된다.") {
                 val attendanceBook = AttendanceBook(
                     generation = generation,
-                    attendees = users.map { Attendee(it, generation) },
+                    attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
                     latePasses = latePassEntities,
@@ -171,7 +172,7 @@ class AttendanceBookTest :
             scenario("지각 면제권이 100점을 초과하도록 주어져도, total point는 100점을 넘지 않는다.") {
                 val attendanceBook = AttendanceBook(
                     generation = generation,
-                    attendees = users.map { Attendee(it, generation) },
+                    attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
                     latePasses = listOf(
@@ -193,7 +194,7 @@ class AttendanceBookTest :
             scenario("출석 데이터가 정상적으로 생성된다.") {
                 val attendanceBook = AttendanceBook(
                     generation = generation,
-                    attendees = users.map { Attendee(it, generation) },
+                    attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
                     latePasses = latePassEntities,

@@ -2,6 +2,7 @@ package co.yappuworld.schedule.domain
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.AttendanceError
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
@@ -27,7 +28,7 @@ class SessionAttendeeTest :
                 )
 
                 shouldThrowExactly<BusinessException> {
-                    Attendee(
+                    getAttendeeFixture(
                         userWithActivityUnits = userWithActivityUnits,
                         generation = session.generation
                     )
@@ -40,7 +41,7 @@ class SessionAttendeeTest :
                 )
 
                 shouldThrowExactly<BusinessException> {
-                    Attendee(
+                    getAttendeeFixture(
                         userWithActivityUnits = userWithActivityUnits,
                         generation = session.generation
                     )
@@ -62,7 +63,7 @@ class SessionAttendeeTest :
                     )
 
                     shouldNotThrowAny {
-                        Attendee(
+                        getAttendeeFixture(
                             userWithActivityUnits = userWithActivityUnits,
                             generation = session.generation
                         )
@@ -88,7 +89,7 @@ class SessionAttendeeTest :
                     )
 
                     shouldNotThrowAny {
-                        Attendee(
+                        getAttendeeFixture(
                             userWithActivityUnits = userWithActivityUnits,
                             generation = session.generation
                         )

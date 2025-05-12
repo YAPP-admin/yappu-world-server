@@ -12,20 +12,6 @@ class UserWithActivityUnits(
     val activityUnits: List<ActivityUnit>
 ) {
 
-    constructor(user: UserWithActivityUnit) : this(
-        userId = user.userId,
-        email = user.email,
-        name = user.name,
-        role = user.role,
-        activityUnits = listOf(
-            ActivityUnit(
-                generation = user.generation,
-                position = user.position,
-                userId = user.userId
-            )
-        )
-    )
-
     companion object {
         fun of(elements: List<UserWithActivityUnit>): UserWithActivityUnits {
             check(elements.groupBy { it.userId }.size == 1)
