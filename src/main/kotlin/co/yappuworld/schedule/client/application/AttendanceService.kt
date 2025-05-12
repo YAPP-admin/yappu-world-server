@@ -54,18 +54,18 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendanceStatisticsResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
-        val thisGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
+        val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
+        val activeGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId = userId,
-            scheduleIds = thisGenerationSessions.map { it.id }
+            scheduleIds = activeGenerationSessions.map { it.id }
         )
         val latePassCount = latePassFindService.countLatePasses(activeGeneration, userId)
 
         val attendanceBook = AttendanceBook(
             generation = activeGeneration,
-            users = listOf(user),
-            sessions = thisGenerationSessions,
+            attendees = listOf(attendee),
+            sessions = activeGenerationSessions,
             attendances = attendances,
             latePassCountByUserId = mapOf(userId to latePassCount),
             now = now
@@ -92,12 +92,14 @@ class AttendanceService(
     private fun getSessionAttendance(
         userId: UUID,
         sessionId: UUID
-    ): SessionAttendance =
-        SessionAttendance(
-            attendee = userFindService.findUserWithActivities(userId),
-            session = sessionFindService.findSession(sessionId),
+    ): SessionAttendance {
+        val session = sessionFindService.findSession(sessionId)
+        return SessionAttendance(
+            attendee = userFindService.findSessionAttendee(userId, session.generation),
+            session = session,
             attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
         )
+    }
 
     private fun checkAttendanceCode(attendanceCode: String) {
         val value = configFindService.findAttendanceCode()

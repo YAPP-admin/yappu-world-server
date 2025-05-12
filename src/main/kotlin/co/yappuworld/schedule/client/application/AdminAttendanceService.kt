@@ -31,7 +31,7 @@ class AdminAttendanceService(
         return AdminAttendancesResponse.from(
             AttendanceBook(
                 generation = activeGeneration,
-                users = userFindService.findUsersActiveOfGeneration(activeGeneration),
+                attendees = userFindService.findSessionAttendeesOfGeneration(activeGeneration),
                 sessions = sessionFindService.findSessionsInGeneration(activeGeneration),
                 attendances = attendanceFindService.findAttendancesOfGeneration(activeGeneration),
                 latePasses = latePassFindService.findLatePasses(activeGeneration),

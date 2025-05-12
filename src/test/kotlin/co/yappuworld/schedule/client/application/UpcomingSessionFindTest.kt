@@ -2,18 +2,17 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
-import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
 import co.yappuworld.user.domain.vo.Position
-import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FeatureSpec
@@ -51,6 +50,7 @@ class UpcomingSessionFindTest :
             val now = LocalDateTime.of(2024, 10, 22, 14, 0)
             val userId = UUID.randomUUID()
             val user = getUserWithActivityUnitsFixture(
+                userId = userId,
                 activityUnits = listOf(
                     getActivityUnitFixture(generation = generation, position = Position.PM, userId = userId)
                 )
@@ -65,15 +65,9 @@ class UpcomingSessionFindTest :
 
             fun setCheckInPossibleCircumstance() {
                 every { generationFindService.findActiveGenerationOrNull() } returns generation
-                every { userFindService.findUserWithActivities(any()) } returns getUserWithActivityUnitsFixture(
-                    userId = userId,
-                    activityUnits = listOf(
-                        getActivityUnitFixture(
-                            generation = generation,
-                            position = Position.PM,
-                            userId = userId
-                        )
-                    )
+                every { userFindService.findSessionAttendee(any(), any()) } returns getAttendeeFixture(
+                    userWithActivityUnits = user,
+                    generation = generation
                 )
                 every { sessionFindService.findUpcomingSession(any(), any()) } returns session
                 every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
@@ -81,7 +75,7 @@ class UpcomingSessionFindTest :
 
             scenario("현재 테스트 조건에선 출석을 누를 수 있다.") {
                 setCheckInPossibleCircumstance()
-                scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeTrue()
+                scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeTrue()
             }
 
             scenario("활성화 된 기수가 없으면 예외가 발생한다.") {
@@ -89,43 +83,8 @@ class UpcomingSessionFindTest :
                 every { generationFindService.findActiveGenerationOrNull() } returns null
 
                 shouldThrowExactly<BusinessException> {
-                    scheduleService.getUpcomingSessionAttendance(userId, now)
+                    scheduleService.getUpcomingSessionAttendance(user.userId, now)
                 }.error shouldBe ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION
-            }
-
-            scenario("세션의 기수에 유저 활동기록이 없으면 예외가 발생한다.") {
-                setCheckInPossibleCircumstance()
-                every { userFindService.findUserWithActivities(any()) } returns
-                    getUserWithActivityUnitsFixture(
-                        activityUnits = listOf(
-                            getActivityUnitFixture(
-                                generation = generation + 1,
-                                position = Position.PM,
-                                userId = userId
-                            )
-                        )
-                    )
-
-                shouldThrowExactly<BusinessException> {
-                    scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
-                }.error shouldBe AttendanceError.NO_ATTENDEE_ACTIVITY_IN_GENERATION
-            }
-
-            scenario("운영진이나 활동회원이 아니면 출석이 불가하다.") {
-                setCheckInPossibleCircumstance()
-
-                forAll(
-                    row(UserRole.ALUMNI),
-                    row(UserRole.GRADUATE),
-                    row(UserRole.ADMIN)
-                ) { role ->
-                    every { userFindService.findUserWithActivities(any()) } returns
-                        getUserWithActivityUnitsFixture(role = role)
-
-                    shouldThrowExactly<BusinessException> {
-                        scheduleService.getUpcomingSessionAttendance(userId, now)
-                    }.error shouldBe AttendanceError.UNAUTHORIZED_CHECK_IN
-                }
             }
 
             scenario("이미 출석을 했다면 출석을 누를 수 없다.") {
@@ -140,12 +99,12 @@ class UpcomingSessionFindTest :
                 ) { status ->
                     every { attendanceFindService.findSessionAttendance(any(), any()) } returns
                         AttendanceFixture.getAttendanceEntityFixture(
-                            userId = userId,
+                            userId = user.userId,
                             scheduleId = session.id,
                             status = status
                         )
 
-                    scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
+                    scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeFalse()
                 }
             }
 
@@ -160,7 +119,7 @@ class UpcomingSessionFindTest :
                     ),
                     row(LocalDateTime.of(session.endDate, session.endTime))
                 ) { now ->
-                    scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeFalse()
+                    scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeFalse()
                 }
             }
 
@@ -170,7 +129,7 @@ class UpcomingSessionFindTest :
                     row(LocalDateTime.of(session.date, session.time.minusMinutes(20) ?: LocalTime.MIN)),
                     row(LocalDateTime.of(session.endDate, session.endTime.minusNanos(1) ?: LocalTime.MAX))
                 ) { now ->
-                    scheduleService.getUpcomingSessionAttendance(userId, now).canCheckIn.shouldBeTrue()
+                    scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeTrue()
                 }
             }
         }

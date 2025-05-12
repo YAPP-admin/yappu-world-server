@@ -11,6 +11,7 @@ import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
@@ -49,6 +50,10 @@ class AttendanceServiceTest :
         val user = getUserWithActivityUnitsFixture(
             activityUnits = listOf(getActivityUnitFixture(generation = activeGeneration))
         )
+        val attendee = getAttendeeFixture(
+            userWithActivityUnits = user,
+            generation = activeGeneration
+        )
         val session = getSessionEntityFixture()
         val request = AttendanceFixture.getAttendRequestFixture(
             attendanceCode = attendanceCode,
@@ -57,7 +62,7 @@ class AttendanceServiceTest :
 
         fun successConditionMocking() {
             every { generationFindService.findActiveGeneration() } returns activeGeneration
-            every { userFindService.findUserWithActivities(any()) } returns user
+            every { userFindService.findSessionAttendee(any(), any()) } returns attendee
             every { sessionFindService.findSession(any()) } returns session
             every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
             every { configFindService.findAttendanceCode() } returns attendanceCode

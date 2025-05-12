@@ -8,7 +8,6 @@ import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.user.domain.model.UserWithActivityUnits
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -18,21 +17,11 @@ private val logger = KotlinLogging.logger {}
 /**
  * 특정 세션의 출석 정보
  */
-class SessionAttendance private constructor(
-    private val attendee: SessionAttendee,
+class SessionAttendance(
+    private val attendee: Attendee,
     private val session: SessionEntity,
     private var attendance: AttendanceEntity?
 ) {
-
-    constructor(
-        attendee: UserWithActivityUnits,
-        session: SessionEntity,
-        attendance: AttendanceEntity?
-    ) : this(
-        attendee = SessionAttendee(attendee, session),
-        session = session,
-        attendance = attendance
-    )
 
     val sessionId = session.id
     val sessionName = session.name
