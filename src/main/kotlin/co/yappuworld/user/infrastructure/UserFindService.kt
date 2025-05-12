@@ -1,7 +1,9 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.user.domain.model.UserWithActivityUnits
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
@@ -146,6 +148,30 @@ class UserFindService(
                         )
                 )
             }.filterNotNull()
+
+    fun findSessionAttendeesOfGeneration(generation: Int): List<Attendee> =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(entity(ActivityUnitEntity::class))
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(ActivityUnitEntity::generation).equal(generation),
+                                path(ActivityUnitEntity::position).notEqual(Position.STAFF)
+                            )
+                        )
+                )
+            }.filterNotNull()
+            .map { Attendee(it, generation) }
 
     fun findUserWithActivityUnitOfGeneration(
         userId: UUID,

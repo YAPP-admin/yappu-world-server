@@ -7,6 +7,7 @@ import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import co.yappuworld.schedule.domain.AttendanceBook
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
@@ -54,18 +55,18 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendanceStatisticsResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
-        val thisGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
+        val user = userFindService.findUserWithActivities(userId)
+        val activeGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId = userId,
-            scheduleIds = thisGenerationSessions.map { it.id }
+            scheduleIds = activeGenerationSessions.map { it.id }
         )
         val latePassCount = latePassFindService.countLatePasses(activeGeneration, userId)
 
         val attendanceBook = AttendanceBook(
             generation = activeGeneration,
-            users = listOf(user),
-            sessions = thisGenerationSessions,
+            attendees = listOf(Attendee(user, activeGeneration)),
+            sessions = activeGenerationSessions,
             attendances = attendances,
             latePassCountByUserId = mapOf(userId to latePassCount),
             now = now
@@ -94,7 +95,7 @@ class AttendanceService(
         sessionId: UUID
     ): SessionAttendance =
         SessionAttendance(
-            attendee = userFindService.findUserWithActivities(userId),
+            user = userFindService.findUserWithActivities(userId),
             session = sessionFindService.findSession(sessionId),
             attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
         )

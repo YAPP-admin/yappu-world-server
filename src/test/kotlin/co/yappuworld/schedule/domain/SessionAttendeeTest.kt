@@ -27,9 +27,9 @@ class SessionAttendeeTest :
                 )
 
                 shouldThrowExactly<BusinessException> {
-                    SessionAttendee(
+                    Attendee(
                         userWithActivityUnits = userWithActivityUnits,
-                        session = session
+                        generation = session.generation
                     )
                 }.error shouldBe AttendanceError.NO_ATTENDEE_ACTIVITY_IN_GENERATION
             }
@@ -40,9 +40,9 @@ class SessionAttendeeTest :
                 )
 
                 shouldThrowExactly<BusinessException> {
-                    SessionAttendee(
+                    Attendee(
                         userWithActivityUnits = userWithActivityUnits,
-                        session = session
+                        generation = session.generation
                     )
                 }.error shouldBe AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION
             }
@@ -62,9 +62,9 @@ class SessionAttendeeTest :
                     )
 
                     shouldNotThrowAny {
-                        SessionAttendee(
+                        Attendee(
                             userWithActivityUnits = userWithActivityUnits,
-                            session = session
+                            generation = session.generation
                         )
                     }
                 }
@@ -88,9 +88,9 @@ class SessionAttendeeTest :
                     )
 
                     shouldNotThrowAny {
-                        SessionAttendee(
+                        Attendee(
                             userWithActivityUnits = userWithActivityUnits,
-                            session = session
+                            generation = session.generation
                         )
                     }
                 }

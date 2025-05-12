@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceBookFixture
@@ -57,7 +58,7 @@ class AttendanceStatisticsResponseTest :
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
-                            users = listOf(user),
+                            attendees = listOf(Attendee(user, generation)),
                             sessions = sessions,
                             attendances = attendances,
                             now = datetime
@@ -76,7 +77,7 @@ class AttendanceStatisticsResponseTest :
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
-                            users = listOf(user),
+                            attendees = listOf(Attendee(user, generation)),
                             sessions = sessions,
                             attendances = attendances,
                             latePassCountByUserId = mapOf(user.userId to 0),
@@ -98,7 +99,7 @@ class AttendanceStatisticsResponseTest :
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
-                            users = listOf(user),
+                            attendees = listOf(Attendee(user, generation)),
                             sessions = sessions,
                             attendances = sessions.subList(0, 2).map {
                                 getAttendanceEntityFixture(
@@ -128,7 +129,7 @@ class AttendanceStatisticsResponseTest :
                         .from(
                             getAttendanceBookFixture(
                                 generation = generation,
-                                users = listOf(user),
+                                attendees = listOf(Attendee(user, generation)),
                                 sessions = sessions,
                                 attendances = attendances,
                                 now = datetime
@@ -150,7 +151,7 @@ class AttendanceStatisticsResponseTest :
                         .from(
                             getAttendanceBookFixture(
                                 generation = generation,
-                                users = listOf(user),
+                                attendees = listOf(Attendee(user, generation)),
                                 sessions = sessions,
                                 attendances = attendances,
                                 now = datetime
@@ -177,7 +178,7 @@ class AttendanceStatisticsResponseTest :
                         .from(
                             getAttendanceBookFixture(
                                 generation = generation,
-                                users = listOf(user),
+                                attendees = listOf(Attendee(user, generation)),
                                 sessions = sessions,
                                 attendances = attendances,
                                 latePassCountByUserId = mapOf(user.userId to latePassCount),

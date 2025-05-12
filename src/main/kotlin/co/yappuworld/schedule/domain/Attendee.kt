@@ -2,16 +2,24 @@ package co.yappuworld.schedule.domain
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.AttendanceError
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
+import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.util.UUID
 
-class SessionAttendee(
+class Attendee(
     userWithActivityUnits: UserWithActivityUnits,
-    session: SessionEntity
+    generation: Int
 ) {
+
+    constructor(
+        userWithActivityUnit: UserWithActivityUnit,
+        generation: Int
+    ) : this(
+        userWithActivityUnits = UserWithActivityUnits(userWithActivityUnit),
+        generation = generation
+    )
 
     val id: UUID = userWithActivityUnits.userId
     val name: String = userWithActivityUnits.name
@@ -24,7 +32,7 @@ class SessionAttendee(
         }
 
         val sessionGenerationActivityUnits = userWithActivityUnits.activityUnits
-            .filter { it.generation == session.generation }
+            .filter { it.generation == generation }
 
         if (sessionGenerationActivityUnits.isEmpty()) {
             throw BusinessException(AttendanceError.NO_ATTENDEE_ACTIVITY_IN_GENERATION)
@@ -36,5 +44,4 @@ class SessionAttendee(
             throw BusinessException(AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION)
         }
     }
-
 }

@@ -6,13 +6,12 @@ import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.time.LocalDateTime
 import java.util.UUID
 
 class AttendanceBook(
     val generation: Int,
-    val users: List<UserWithActivityUnit>,
+    val attendees: List<Attendee>,
     val sessions: List<SessionEntity>,
     attendances: List<AttendanceEntity>,
     private val latePassCountByUserId: Map<UUID, Int>,
@@ -28,28 +27,28 @@ class AttendanceBook(
     val finishedSessionCount = sessions.count { it.isFinished(now) }
 
     init {
-        require(users.all { it.generation == generation } || sessions.all { it.generation == generation })
+        require(sessions.all { it.generation == generation })
 
         // (userId to sessionId) to AttendanceStatus
         val attendanceMatrix = attendances.associate { (it.userId to it.scheduleId) to it.status }
 
         fun decideStatus(
-            user: UserWithActivityUnit,
+            user: Attendee,
             session: SessionEntity
         ): AttendanceStatus? =
             when (session.isFinished(now)) {
-                true -> attendanceMatrix[user.userId to session.id] ?: AttendanceStatus.ABSENT
-                false -> attendanceMatrix[user.userId to session.id]
+                true -> attendanceMatrix[user.id to session.id] ?: AttendanceStatus.ABSENT
+                false -> attendanceMatrix[user.id to session.id]
             }
 
         this.bySession = sessions.associate { session ->
-            session.id to users.associate { user ->
-                user.userId to decideStatus(user, session)
+            session.id to attendees.associate { user ->
+                user.id to decideStatus(user, session)
             }
         }
 
-        this.byUser = users.associate { user ->
-            user.userId to sessions.associate { session ->
+        this.byUser = attendees.associate { user ->
+            user.id to sessions.associate { session ->
                 session.id to decideStatus(user, session)
             }
         }
@@ -57,14 +56,14 @@ class AttendanceBook(
 
     constructor(
         generation: Int,
-        users: List<UserWithActivityUnit>,
+        attendees: List<Attendee>,
         sessions: List<SessionEntity>,
         attendances: List<AttendanceEntity>,
         latePasses: List<LatePassEntity>,
         now: LocalDateTime
     ) : this(
         generation = generation,
-        users = users,
+        attendees = attendees,
         sessions = sessions,
         attendances = attendances,
         latePassCountByUserId = latePasses

@@ -19,17 +19,17 @@ private val logger = KotlinLogging.logger {}
  * 특정 세션의 출석 정보
  */
 class SessionAttendance private constructor(
-    private val attendee: SessionAttendee,
+    private val attendee: Attendee,
     private val session: SessionEntity,
     private var attendance: AttendanceEntity?
 ) {
 
     constructor(
-        attendee: UserWithActivityUnits,
+        user: UserWithActivityUnits,
         session: SessionEntity,
         attendance: AttendanceEntity?
     ) : this(
-        attendee = SessionAttendee(attendee, session),
+        attendee = Attendee(user, session.generation),
         session = session,
         attendance = attendance
     )

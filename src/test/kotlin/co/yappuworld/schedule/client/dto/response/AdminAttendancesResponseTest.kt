@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.schedule.domain.AttendanceBook
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.LATE
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
@@ -44,7 +45,7 @@ class AdminAttendancesResponseTest :
                 val response = AdminAttendancesResponse.from(
                     AttendanceBook(
                         generation = generation,
-                        users = users,
+                        attendees = users.map { Attendee(it, generation) },
                         sessions = sessions,
                         attendances = attendances,
                         latePasses = emptyList(),

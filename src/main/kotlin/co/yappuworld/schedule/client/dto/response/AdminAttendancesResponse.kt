@@ -2,6 +2,7 @@ package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.AttendanceBook
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.SessionAttendanceStatistics
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
@@ -31,8 +32,8 @@ data class AdminAttendancesResponse(
                 sessions = attendanceBook.sessions.map {
                     AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id))
                 },
-                users = attendanceBook.users.map {
-                    AdminAttendanceUserResponse(it, attendanceBook.getUserAttendanceStatistics(it.userId))
+                users = attendanceBook.attendees.map { attendee ->
+                    AdminAttendanceUserResponse(attendee, attendanceBook.getUserAttendanceStatistics(attendee.id))
                 },
                 attendancesGroupedBySession = attendanceBook.sessions.map { session ->
                     AdminSessionAttendanceGroupResponse.from(
@@ -121,12 +122,12 @@ data class AdminAttendanceUserResponse(
 ) {
 
     constructor(
-        user: UserWithActivityUnit,
+        attendee: Attendee,
         statistics: UserAttendanceStatistics
     ) : this(
-        userId = user.userId,
-        name = user.name,
-        position = user.position.name,
+        userId = attendee.id,
+        name = attendee.name,
+        position = attendee.position.label,
         onTimeCount = statistics.onTimeCount,
         lateCount = statistics.lateCount,
         absentCount = statistics.absentCount,

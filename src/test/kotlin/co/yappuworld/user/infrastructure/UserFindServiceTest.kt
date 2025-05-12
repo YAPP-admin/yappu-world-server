@@ -319,6 +319,36 @@ class UserFindServiceTest @Autowired constructor(
             }
         }
 
+        feature("특정 기수의 모든 세션 참석자를 조회한다.") {
+
+            scenario("데이터가 없으면 빈 리스트가 반환된다.") {
+                userFindService.findSessionAttendeesOfGeneration(99).shouldBeEmpty()
+            }
+
+            scenario("운영진 활동 기록은 제외된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAllAndFlush(
+                    listOf(getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id))
+                )
+
+                userFindService.findSessionAttendeesOfGeneration(99).shouldHaveSize(0)
+            }
+
+            scenario("운영진 활동 기록과 다른 기록이 함께 있으면, 운영진 기록은 제외하고 다른 활동 기록이 포함된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAllAndFlush(
+                    listOf(
+                        getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id),
+                        getActivityUnitEntityFixture(generation = 99, position = Position.PM, userId = user.id)
+                    )
+                )
+
+                userFindService.findSessionAttendeesOfGeneration(99).shouldHaveSize(1)
+            }
+        }
+
         feature("특정 기수에 활동한 모든 유저를 조회한다.") {
 
             scenario("해당 기수에 활동한 유저가 없다면 빈 리스트를 반환한다.") {

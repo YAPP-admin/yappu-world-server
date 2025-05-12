@@ -73,7 +73,7 @@ class ScheduleService(
 
         return UpcomingSessionAttendanceResponse.of(
             sessionAttendance = SessionAttendance(
-                attendee = attendee,
+                user = attendee,
                 session = session,
                 attendance = attendanceOrNull
             ),

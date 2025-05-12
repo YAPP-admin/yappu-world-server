@@ -2,6 +2,7 @@ package co.yappuworld.support.fixture
 
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.domain.AttendanceBook
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
@@ -22,7 +23,7 @@ object AttendanceFixture {
         attendance: AttendanceEntity? = null
     ): SessionAttendance =
         SessionAttendance(
-            attendee = user,
+            user = user,
             session = session,
             attendance = attendance
         )
@@ -48,7 +49,7 @@ object AttendanceFixture {
 
     fun getAttendanceBookFixture(
         generation: Int = 25,
-        users: List<UserWithActivityUnit> = listOf(getUserWithActivityUnitFixture(generation = generation)),
+        attendees: List<Attendee> = listOf(getAttendeeFixture()),
         sessions: List<SessionEntity> = listOf(getSessionEntityFixture(generation = generation)),
         attendances: List<AttendanceEntity> = emptyList(),
         latePassCountByUserId: Map<UUID, Int> = emptyMap(),
@@ -56,10 +57,19 @@ object AttendanceFixture {
     ): AttendanceBook =
         AttendanceBook(
             generation = generation,
-            users = users,
+            attendees = attendees,
             sessions = sessions,
             attendances = attendances,
             latePassCountByUserId = latePassCountByUserId,
             now = now
+        )
+
+    fun getAttendeeFixture(
+        user: UserWithActivityUnit = getUserWithActivityUnitFixture(),
+        generation: Int = 25
+    ): Attendee =
+        Attendee(
+            userWithActivityUnit = user,
+            generation = generation
         )
 }
