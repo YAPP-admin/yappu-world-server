@@ -78,11 +78,11 @@ class AttendanceServiceTest :
                     scenario("이미 출석을 완료한 유저면 예외가 발생한다.") {
                         successConditionMocking()
                         every {
-                            attendanceFindService.findSessionAttendance(user.userId, session.id)
+                            attendanceFindService.findSessionAttendance(user.id, session.id)
                         } returns getAttendanceEntityFixture()
 
                         shouldThrow<BusinessException> {
-                            attendanceService.checkIn(request, user.userId, LocalDateTime.now())
+                            attendanceService.checkIn(request, user.id, LocalDateTime.now())
                         }.error.shouldBe(AttendanceError.ALREADY_CHECKED_IN)
                     }
 
@@ -93,7 +93,7 @@ class AttendanceServiceTest :
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(
                                 request = request,
-                                userId = user.userId,
+                                userId = user.id,
                                 now = LocalDateTime.of(session.date, session.time)
                             )
                         }.error shouldBe AttendanceError.UNREGISTERED_ATTENDANCE_CODE
@@ -107,7 +107,7 @@ class AttendanceServiceTest :
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(
                                 request = AttendanceRequest(session.id, wrongAttendanceCode),
-                                userId = user.userId,
+                                userId = user.id,
                                 now = LocalDateTime.of(session.date, session.time)
                             )
                         }.error.shouldBe(AttendanceError.ATTENDANCE_CODE_NOT_MATCH)

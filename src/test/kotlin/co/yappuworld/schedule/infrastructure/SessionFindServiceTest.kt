@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
@@ -15,7 +16,9 @@ import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.UUID
 
 class SessionFindServiceTest @Autowired constructor(
@@ -262,6 +265,86 @@ class SessionFindServiceTest @Autowired constructor(
 
                 sessionFindService.findUpcomingSession(generation, now).id shouldBe
                     sessions[1].id
+            }
+        }
+
+        feature("기수와 날짜를 기준으로 세션 목록을 조회한다.") {
+
+            scenario("파라미터로 전달된 기수 세션만 조회된다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(generation = 24),
+                        getSessionEntityFixture(generation = 25)
+                    )
+                )
+
+                sessionFindService
+                    .findSessions(generation = 25)
+                    .shouldHaveSize(1)
+            }
+
+            scenario("기간이 파라미터로 넘어가면, 기간 내의 세션만 조회한다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 12)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 13)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 14)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 15))
+                    )
+                )
+
+                sessionFindService
+                    .findSessions(
+                        range = LocalDateRange(
+                            LocalDate.of(2024, 12, 13),
+                            LocalDate.of(2024, 12, 14)
+                        )
+                    ).shouldHaveSize(2)
+            }
+
+            scenario("기수와 기간 모두 충족하는 세션만 조회된다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(generation = 24, date = LocalDate.of(2024, 12, 12)),
+                        getSessionEntityFixture(generation = 25, date = LocalDate.of(2024, 12, 13)),
+                        getSessionEntityFixture(generation = 24, date = LocalDate.of(2024, 12, 14)),
+                        getSessionEntityFixture(generation = 25, date = LocalDate.of(2024, 12, 15))
+                    )
+                )
+
+                sessionFindService
+                    .findSessions(
+                        generation = 25,
+                        range = LocalDateRange(
+                            LocalDate.of(2024, 12, 13),
+                            LocalDate.of(2024, 12, 14)
+                        )
+                    ).let {
+                        it.shouldHaveSize(1)
+                        it.first().date shouldBe LocalDate.of(2024, 12, 13)
+                    }
+            }
+
+            scenario("정렬 순서는 시작 날짜, 시간, 종료 날짜, 시간 순이다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 13)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 15)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 12), time = LocalTime.of(15, 0)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 12), time = LocalTime.of(14, 0)),
+                        getSessionEntityFixture(date = LocalDate.of(2024, 12, 14))
+                    )
+                )
+
+                sessionFindService.findSessions().let {
+                    it.shouldHaveSize(5)
+                    it[0].date shouldBe LocalDate.of(2024, 12, 12)
+                    it[0].time shouldBe LocalTime.of(14, 0)
+                    it[1].date shouldBe LocalDate.of(2024, 12, 12)
+                    it[2].date shouldBe LocalDate.of(2024, 12, 13)
+                    it[3].date shouldBe LocalDate.of(2024, 12, 14)
+                    it[4].date shouldBe LocalDate.of(2024, 12, 15)
+                }
             }
         }
     })

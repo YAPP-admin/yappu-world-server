@@ -36,7 +36,7 @@ class ScheduleServiceScheduleProgressPhaseTest {
     fun `같은 날 2개의 데이터가 있으면 해당 일자 schedules가 하나의 배열로 묶인다`() {
         val targetDate = LocalDate.of(2021, 5, 5)
         every { userFindService.findUserWithActivities(any()) } returns UserWithActivityUnits(
-            userId = UUID.randomUUID(),
+            id = UUID.randomUUID(),
             "email",
             "name",
             UserRole.ACTIVE,

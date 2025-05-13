@@ -5,7 +5,7 @@ import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.util.UUID
 
 class UserWithActivityUnits(
-    val userId: UUID,
+    val id: UUID,
     val email: String,
     val name: String,
     val role: UserRole,
@@ -17,7 +17,7 @@ class UserWithActivityUnits(
             check(elements.groupBy { it.userId }.size == 1)
 
             return UserWithActivityUnits(
-                userId = elements.first().userId,
+                id = elements.first().userId,
                 email = elements.first().email,
                 name = elements.first().name,
                 role = elements.first().role,
@@ -30,4 +30,7 @@ class UserWithActivityUnits(
 
     val activityGenerations
         get() = activityUnits.map { it.generation }.distinct()
+
+    fun hasAttendeeActivityInGeneration(generation: Int): Boolean =
+        activityUnits.any { it.generation == generation && it.position.isAttendeePosition() }
 }

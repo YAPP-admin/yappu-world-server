@@ -131,7 +131,7 @@ object UserFixture {
         )
     ): UserWithActivityUnits =
         UserWithActivityUnits(
-            userId = userId,
+            id = userId,
             email = email,
             name = name,
             role = role,

@@ -75,7 +75,7 @@ class UpcomingSessionFindTest :
 
             scenario("현재 테스트 조건에선 출석을 누를 수 있다.") {
                 setCheckInPossibleCircumstance()
-                scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeTrue()
+                scheduleService.getUpcomingSessionAttendance(user.id, now).canCheckIn.shouldBeTrue()
             }
 
             scenario("활성화 된 기수가 없으면 예외가 발생한다.") {
@@ -83,7 +83,7 @@ class UpcomingSessionFindTest :
                 every { generationFindService.findActiveGenerationOrNull() } returns null
 
                 shouldThrowExactly<BusinessException> {
-                    scheduleService.getUpcomingSessionAttendance(user.userId, now)
+                    scheduleService.getUpcomingSessionAttendance(user.id, now)
                 }.error shouldBe ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION
             }
 
@@ -99,12 +99,12 @@ class UpcomingSessionFindTest :
                 ) { status ->
                     every { attendanceFindService.findSessionAttendance(any(), any()) } returns
                         AttendanceFixture.getAttendanceEntityFixture(
-                            userId = user.userId,
+                            userId = user.id,
                             scheduleId = session.id,
                             status = status
                         )
 
-                    scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeFalse()
+                    scheduleService.getUpcomingSessionAttendance(user.id, now).canCheckIn.shouldBeFalse()
                 }
             }
 
@@ -119,7 +119,7 @@ class UpcomingSessionFindTest :
                     ),
                     row(LocalDateTime.of(session.endDate, session.endTime))
                 ) { now ->
-                    scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeFalse()
+                    scheduleService.getUpcomingSessionAttendance(user.id, now).canCheckIn.shouldBeFalse()
                 }
             }
 
@@ -129,7 +129,7 @@ class UpcomingSessionFindTest :
                     row(LocalDateTime.of(session.date, session.time.minusMinutes(20) ?: LocalTime.MIN)),
                     row(LocalDateTime.of(session.endDate, session.endTime.minusNanos(1) ?: LocalTime.MAX))
                 ) { now ->
-                    scheduleService.getUpcomingSessionAttendance(user.userId, now).canCheckIn.shouldBeTrue()
+                    scheduleService.getUpcomingSessionAttendance(user.id, now).canCheckIn.shouldBeTrue()
                 }
             }
         }
