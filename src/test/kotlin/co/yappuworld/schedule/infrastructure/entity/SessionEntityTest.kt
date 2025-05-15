@@ -26,17 +26,17 @@ class SessionEntityTest :
 
             scenario("세션 종료 시간 이후로 DONE") {
                 val now = LocalDateTime.of(2024, 12, 13, 12, 0)
-                session.getProgressPhase(now) shouldBe DONE.label
+                session.getProgressPhase(now) shouldBe DONE
             }
 
             scenario("세션 전날 PENDING") {
                 val now = LocalDateTime.of(2024, 12, 11, 0, 0)
-                session.getProgressPhase(now) shouldBe PENDING.label
+                session.getProgressPhase(now) shouldBe PENDING
             }
 
             scenario("세션이 오늘인데 시작 안 했으면 TODAY") {
                 val now = LocalDateTime.of(2024, 12, 12, 0, 0)
-                session.getProgressPhase(now) shouldBe TODAY.label
+                session.getProgressPhase(now) shouldBe TODAY
             }
 
             scenario("세션이 진행 중이면 ONGOING") {
@@ -44,7 +44,7 @@ class SessionEntityTest :
                     row(LocalDateTime.of(2024, 12, 12, 12, 0)),
                     row(LocalDateTime.of(2024, 12, 13, 12, 0).minusNanos(1))
                 ) { now ->
-                    session.getProgressPhase(now) shouldBe ONGOING.label
+                    session.getProgressPhase(now) shouldBe ONGOING
                 }
             }
         }

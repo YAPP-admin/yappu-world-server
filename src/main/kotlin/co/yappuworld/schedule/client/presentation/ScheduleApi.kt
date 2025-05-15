@@ -5,6 +5,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
+import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
@@ -114,6 +115,84 @@ interface ScheduleApi {
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<SchedulePageResponse>>
 
+    @Operation(summary = "활동 중인 기수의 세션 목록")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "활동 중인 기수의 세션 목록 (25년 4월 29일 기준)",
+                                value = """
+                                    {
+                                        "data": {
+                                            "sessions": [
+                                                {
+                                                    "id": "c07aa77e-1b30-11f0-add0-0242ac140002",
+                                                    "name": "가짜 세션1",
+                                                    "place": "아몰랑",
+                                                    "date": "2025-04-18",
+                                                    "startDayOfWeek": "금",
+                                                    "endDate": "2025-04-18",
+                                                    "endDayOfWeek": "금",
+                                                    "relativeDays": 11,
+                                                    "time": "13:30:00",
+                                                    "endTime": "17:00:00",
+                                                    "type": "OFFLINE",
+                                                    "progressPhase": "DONE",
+                                                    "attendanceStatus": "결석"
+                                                },
+                                                {
+                                                    "id": "c07afa8b-1b30-11f0-add0-0242ac140002",
+                                                    "name": "가짜 세션2",
+                                                    "place": "아몰랑",
+                                                    "date": "2025-05-08",
+                                                    "startDayOfWeek": "목",
+                                                    "endDate": "2025-05-08",
+                                                    "endDayOfWeek": "목",
+                                                    "relativeDays": -9,
+                                                    "time": "13:30:00",
+                                                    "endTime": "17:00:00",
+                                                    "type": "OFFLINE",
+                                                    "progressPhase": "UPCOMING",
+                                                    "attendanceStatus": null
+                                                },
+                                                {
+                                                    "id": "c07afa8b-1b30-11f0-add0-0242ac140003",
+                                                    "name": "가짜 세션3",
+                                                    "place": "아몰랑",
+                                                    "date": "2025-05-11",
+                                                    "startDayOfWeek": "일",
+                                                    "endDate": "2025-05-11",
+                                                    "endDayOfWeek": "일",
+                                                    "relativeDays": -12,
+                                                    "time": "13:30:00",
+                                                    "endTime": "17:00:00",
+                                                    "type": "OFFLINE",
+                                                    "progressPhase": "PENDING",
+                                                    "attendanceStatus": null
+                                                }
+                                            ],
+                                            "upcomingSessionId": "c07afa8b-1b30-11f0-add0-0242ac140002"
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v1/sessions")
+    fun getSessions(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>>
+
     @Operation(summary = "세션 목록 조회")
     @ApiResponses(
         value = [
@@ -157,7 +236,7 @@ interface ScheduleApi {
             )
         ]
     )
-    @GetMapping("/v1/sessions")
+    @GetMapping("/v2/sessions")
     fun getSessions(
         @AuthenticationPrincipal securityUser: SecurityUser,
         @Valid @ParameterObject request: SessionQueryParamRequest

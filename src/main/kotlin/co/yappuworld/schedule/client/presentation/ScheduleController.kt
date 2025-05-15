@@ -6,6 +6,7 @@ import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
+import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
@@ -31,6 +32,15 @@ class ScheduleController(
                     securityUser.userId,
                     getCurrentDateTimeInKST()
                 )
+            )
+        )
+
+    override fun getSessions(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<ActiveGenerationSessionsResponse>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                scheduleService.getCurrentGenerationSessions(securityUser.userId, getCurrentDateTimeInKST())
             )
         )
 
