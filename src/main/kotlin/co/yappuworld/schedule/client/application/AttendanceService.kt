@@ -102,7 +102,7 @@ class AttendanceService(
     }
 
     private fun checkAttendanceCode(attendanceCode: String) {
-        val value = configFindService.findAttendanceCode()
+        val value = configFindService.findAttendanceCodeValue()
 
         if (value == null) {
             logger.error { "출석 코드가 등록되지 않았습니다." }

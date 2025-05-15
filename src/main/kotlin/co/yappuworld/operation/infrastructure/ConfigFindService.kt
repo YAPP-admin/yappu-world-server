@@ -25,7 +25,7 @@ class ConfigFindService(
             configRepository.findAllByIdIn(UserRole.entries.map { it.signUpCodeKey })
         )
 
-    fun findAttendanceCode(): String? {
+    fun findAttendanceCodeValue(): String? {
         val config = configRepository.findByIdOrNull("attendanceCode")
 
         if (config == null) {
@@ -35,5 +35,9 @@ class ConfigFindService(
 
         return config.value
     }
+
+    fun findAttendanceCode(): ConfigEntity =
+        configRepository.findByIdOrNull("attendanceCode")
+            ?: throw BusinessException(ConfigError.CONFIG_KEY_ERROR)
 
 }
