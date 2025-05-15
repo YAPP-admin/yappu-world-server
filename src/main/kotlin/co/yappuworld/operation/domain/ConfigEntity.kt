@@ -43,6 +43,10 @@ class ConfigEntity(
         this.value = value
     }
 
+    fun reset() {
+        this.value = null
+    }
+
     @Transient
     private var _isNew = true
 

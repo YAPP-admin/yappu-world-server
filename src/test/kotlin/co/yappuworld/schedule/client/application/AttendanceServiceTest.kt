@@ -65,7 +65,7 @@ class AttendanceServiceTest :
             every { userFindService.findSessionAttendee(any(), any()) } returns attendee
             every { sessionFindService.findSession(any()) } returns session
             every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
-            every { configFindService.findAttendanceCode() } returns attendanceCode
+            every { configFindService.findAttendanceCodeValue() } returns attendanceCode
             justRun { attendanceCommandService.checkIn(any()) }
         }
 
@@ -88,7 +88,7 @@ class AttendanceServiceTest :
 
                     scenario("출석 코드가 등록되지 않은 상황에는 예외가 발생한다.") {
                         successConditionMocking()
-                        every { configFindService.findAttendanceCode() } returns null
+                        every { configFindService.findAttendanceCodeValue() } returns null
 
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(
