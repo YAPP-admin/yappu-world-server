@@ -67,7 +67,7 @@ interface OperationApi {
                         examples = [
                             ExampleObject(
                                 name = "강제 업데이트 필요",
-//                                ref = "#/components/schemas/SuccessResponseForceUpdateResponse",
+                                //                                ref = "#/components/schemas/SuccessResponseForceUpdateResponse",
                                 value = """
                                     {
                                         "isSuccess": "true",
