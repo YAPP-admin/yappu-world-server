@@ -27,15 +27,15 @@ class AttendanceStatisticsResponseTest :
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
                     endDate = datetime.toLocalDate(),
-                    time = datetime.toLocalTime().minusMinutes(10),
+                    time = datetime.toLocalTime().minusMinutes(20),
                     endTime = datetime.toLocalTime().minusMinutes(10),
                     generation = generation
                 ),
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
                     endDate = datetime.toLocalDate(),
-                    time = datetime.toLocalTime(),
-                    endTime = datetime.toLocalTime(),
+                    time = datetime.toLocalTime().minusMinutes(20),
+                    endTime = datetime.toLocalTime().plusMinutes(20),
                     generation = generation
                 ),
                 getSessionEntityFixture(

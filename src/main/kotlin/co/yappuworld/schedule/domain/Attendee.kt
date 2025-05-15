@@ -53,7 +53,7 @@ class Attendee(
             }
 
             return Attendee(
-                id = userWithActivityUnits.userId,
+                id = userWithActivityUnits.id,
                 name = userWithActivityUnits.name,
                 role = userWithActivityUnits.role,
                 position = position
