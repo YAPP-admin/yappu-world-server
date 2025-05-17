@@ -5,6 +5,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.client.application.AdminUserOperationService
 import co.yappuworld.operation.client.application.ConfigInquiryComponent
 import co.yappuworld.operation.client.dto.request.AdminGenerationActiveUpdateRequest
+import co.yappuworld.operation.client.dto.request.AdminGenerationDeleteRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
@@ -36,6 +37,11 @@ class AdminUserOperationController(
     override fun registerGeneration(request: AdminGenerationRegisterRequest): ResponseEntity<Unit> {
         adminUserOperationService.registerGeneration(request)
         return ResponseEntity.created(URI("/admin/v1/operations")).build()
+    }
+
+    override fun deleteGeneration(request: AdminGenerationDeleteRequest): ResponseEntity<SuccessResponse<Unit>> {
+        adminUserOperationService.deleteGeneration(request)
+        return ResponseEntity.noContent().build()
     }
 
     override fun updateActiveGeneration(
