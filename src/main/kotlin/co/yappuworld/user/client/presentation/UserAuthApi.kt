@@ -310,6 +310,16 @@ interface UserAuthApi {
                                         "errorCode": "USR_1002"
                                     }
                                 """
+                            ),
+                            ExampleObject(
+                                name = "탈퇴한 이메일",
+                                value = """
+                                    {
+                                        "isSuccess": "false",
+                                        "message": "탈퇴한 이메일입니다.",
+                                        "errorCode": "USR_1006"
+                                    }
+                                """
                             )
                         ]
                     )

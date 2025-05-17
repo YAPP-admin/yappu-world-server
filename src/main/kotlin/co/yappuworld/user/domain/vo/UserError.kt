@@ -63,6 +63,12 @@ enum class UserError : Error {
         override val code: String = "USR_1005"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },
+    WITHDRAWN_EMAIL {
+        override val message: String = "탈퇴한 이메일입니다."
+        override val code: String = "USR_1006"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+
     ALREADY_PROCESSED_EMAIL {
         override val message: String = "이미 처리 중인 이메일입니다."
         override val code: String = "USR_1098"
