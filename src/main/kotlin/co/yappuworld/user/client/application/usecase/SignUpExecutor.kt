@@ -76,9 +76,10 @@ class SignUpExecutor(
     }
 
     fun checkEmailAvailability(email: String) {
-        if (userFindService.existsEmail(email)) {
-            logger.warn { "${email}은 이미 가입된 이메일입니다." }
-            throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
+        val user = userFindService.findUserOrNull(email) ?: return
+        when (user.isWithdrawn()) {
+            true -> throw BusinessException(UserError.WITHDRAWN_EMAIL)
+            false -> throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }
     }
 

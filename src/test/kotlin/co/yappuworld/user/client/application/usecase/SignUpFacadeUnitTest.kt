@@ -46,14 +46,14 @@ class SignUpFacadeUnitTest :
             every { signUpApplicationCommandService.getLock(any()) } returns 1
 
             scenario("이미 사용 중인 이메일이면 제출할 수 없다.") {
-                every { userFindService.existsEmail(any()) } returns true
+                every { userFindService.findUserOrNull(any<String>()) } returns getUserEntityFixture()
                 shouldThrowExactly<BusinessException> {
                     executor.submit(getSignUpApplicationEntityFixture())
                 }.error shouldBe UserError.ALREADY_SIGNED_UP_EMAIL
             }
 
             scenario("이미 PENDING 상태의 신청서가 있으면 추가 제출이 불가") {
-                every { userFindService.existsEmail(any()) } returns false
+                every { userFindService.findUserOrNull(any<String>()) } returns null
                 every { signUpApplicationFindService.existsPendingApplication(any()) } returns true
 
                 shouldThrowExactly<BusinessException> {
@@ -62,7 +62,7 @@ class SignUpFacadeUnitTest :
             }
 
             scenario("정상적으로 신청서를 제출한다.") {
-                every { userFindService.existsEmail(any()) } returns false
+                every { userFindService.findUserOrNull(any<String>()) } returns null
                 every { signUpApplicationFindService.existsPendingApplication(any()) } returns false
                 justRun { signUpApplicationCommandService.submit(any()) }
 
@@ -111,8 +111,8 @@ class SignUpFacadeUnitTest :
             scenario("하나라도 이미 가입된 이메일이라면 예외가 발생한다.") {
                 val applications = List(2) { getSignUpApplicationEntityFixture(email = "email$it@email.com") }
                 every { signUpApplicationFindService.findSignUpApplications(ids = any()) } returns applications
-                every { userFindService.existsEmail(applications[0].applicantEmail) } returns true
-                every { userFindService.existsEmail(applications[1].applicantEmail) } returns false
+                every { userFindService.findUserOrNull(applications[0].applicantEmail) } returns getUserEntityFixture()
+                every { userFindService.findUserOrNull(applications[1].applicantEmail) } returns null
 
                 shouldThrowExactly<BusinessException> {
                     executor.approve(applications.map { it.id }, UserRole.ACTIVE)
@@ -122,7 +122,7 @@ class SignUpFacadeUnitTest :
             scenario("정상적으로 승인된다.") {
                 val applications = List(2) { getSignUpApplicationEntityFixture(email = "email$it@email.com") }
                 every { signUpApplicationFindService.findSignUpApplications(ids = any()) } returns applications
-                every { userFindService.existsEmail(any()) } returns false
+                every { userFindService.findUserOrNull(any<String>()) } returns null
                 val users = List(2) { getUserEntityFixture() }
                 applications.forEachIndexed { index, application ->
                     every { userCommandService.signUp(application, any()) } returns users[index]
@@ -188,14 +188,22 @@ class SignUpFacadeUnitTest :
         feature("이메일 사용 가능 검사") {
 
             scenario("이미 존재한다면 예외가 발생한다.") {
-                every { userFindService.existsEmail(any()) } returns true
+                every { userFindService.findUserOrNull(any<String>()) } returns getUserEntityFixture()
                 shouldThrowExactly<BusinessException> {
                     executor.checkEmailAvailability("email@email.com")
-                }
+                }.error shouldBe UserError.ALREADY_SIGNED_UP_EMAIL
+            }
+
+            scenario("탈퇴했으면 관련 에러를 발생시킨다.") {
+                every { userFindService.findUserOrNull(any<String>()) } returns
+                    getUserEntityFixture().apply { withdraw() }
+                shouldThrowExactly<BusinessException> {
+                    executor.checkEmailAvailability("email@email.com")
+                }.error shouldBe UserError.WITHDRAWN_EMAIL
             }
 
             scenario("존재하지 않으면 예외가 발생하지 않는다.") {
-                every { userFindService.existsEmail(any()) } returns false
+                every { userFindService.findUserOrNull(any<String>()) } returns null
                 shouldNotThrowAny {
                     executor.checkEmailAvailability("email@email.com")
                 }
