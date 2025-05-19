@@ -13,7 +13,7 @@ import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

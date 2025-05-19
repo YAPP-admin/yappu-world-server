@@ -5,8 +5,8 @@ import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionType
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate

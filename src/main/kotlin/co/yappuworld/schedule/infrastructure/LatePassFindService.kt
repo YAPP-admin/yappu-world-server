@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
+import co.yappuworld.schedule.infrastructure.jpa.LatePassEntity
+import co.yappuworld.schedule.infrastructure.jpa.LatePassRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID

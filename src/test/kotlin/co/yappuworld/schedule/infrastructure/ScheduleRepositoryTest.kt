@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.ScheduleRepository
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import org.assertj.core.api.Assertions

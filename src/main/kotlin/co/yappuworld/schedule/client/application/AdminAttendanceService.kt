@@ -12,7 +12,7 @@ import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

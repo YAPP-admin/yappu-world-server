@@ -6,8 +6,8 @@ import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime

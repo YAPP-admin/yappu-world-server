@@ -113,12 +113,25 @@ CREATE TABLE generations
     is_active  tinyint(1)  NOT NULL
 );
 
+drop table if exists session_participants;
+create table session_participants
+(
+    id                binary(16) PRIMARY KEY,
+    created_at        datetime(6),
+    updated_at        datetime(6),
+    activity_unit_id  binary(16) NOT NULL,
+    schedule_id       binary(16) NOT NULL,
+    attendance_status varchar(16),
+    checked_in_at     datetime(6)
+);
+
 drop table if exists attendances;
 create table attendances
 (
     id          binary(16) PRIMARY KEY,
     created_at  datetime(6),
     updated_at  datetime(6),
+
     user_id     binary(16) NOT NULL,
     schedule_id binary(16) NOT NULL,
     status      varchar(32) NOT NULL

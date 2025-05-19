@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.domain
 
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
-import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
+import co.yappuworld.schedule.infrastructure.jpa.LatePassEntity
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture

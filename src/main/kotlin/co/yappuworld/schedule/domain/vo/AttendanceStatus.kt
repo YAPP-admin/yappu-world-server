@@ -2,8 +2,8 @@ package co.yappuworld.schedule.domain.vo
 
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.EXCUSED_ABSENCE
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import java.time.LocalDateTime
 
@@ -31,7 +31,7 @@ enum class AttendanceStatus(
             when {
                 attendance != null -> attendance.status
                 !user.hasAttendeeActivityInGeneration(session.generation) -> null
-                session.isFinished(now) -> AttendanceStatus.ABSENT
+                session.isFinished(now) -> ABSENT
                 else -> null
             }
     }

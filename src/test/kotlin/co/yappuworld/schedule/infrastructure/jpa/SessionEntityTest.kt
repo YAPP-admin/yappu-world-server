@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.infrastructure.entity
+package co.yappuworld.schedule.infrastructure.jpa
 
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.DONE
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.ONGOING

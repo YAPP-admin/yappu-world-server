@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
 import java.time.LocalDate
 
 data class AdminSignUpApplicationDetailsResponse(

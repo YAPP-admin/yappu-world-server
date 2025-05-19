@@ -4,7 +4,7 @@ import co.yappuworld.external.discord.DiscordClient
 import co.yappuworld.external.discord.dto.DiscordEmbed
 import co.yappuworld.external.discord.dto.DiscordEmbedField
 import co.yappuworld.global.property.AdminProperty
-import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 

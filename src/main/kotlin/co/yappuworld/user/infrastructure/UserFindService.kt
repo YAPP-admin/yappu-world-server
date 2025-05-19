@@ -5,8 +5,8 @@ import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
-import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
-import co.yappuworld.user.infrastructure.entity.UserEntity
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.jpa.UserEntity
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit

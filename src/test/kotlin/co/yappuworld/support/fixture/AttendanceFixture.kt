@@ -5,8 +5,8 @@ import co.yappuworld.schedule.domain.AttendanceBook
 import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture

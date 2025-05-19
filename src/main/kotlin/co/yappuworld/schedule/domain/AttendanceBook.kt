@@ -3,9 +3,9 @@ package co.yappuworld.schedule.domain
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.LatePassEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import java.time.LocalDateTime
 import java.util.UUID
 

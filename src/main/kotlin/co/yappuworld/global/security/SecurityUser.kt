@@ -1,6 +1,6 @@
 package co.yappuworld.global.security
 
-import co.yappuworld.user.infrastructure.entity.UserEntity
+import co.yappuworld.user.infrastructure.jpa.UserEntity
 import co.yappuworld.user.domain.vo.UserRole
 import java.util.UUID
 

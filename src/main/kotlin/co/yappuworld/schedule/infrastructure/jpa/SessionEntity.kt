@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.infrastructure.entity
+package co.yappuworld.schedule.infrastructure.jpa
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.AttendancePolicy.ABSENT_AFTER_SESSION_START_HOURS

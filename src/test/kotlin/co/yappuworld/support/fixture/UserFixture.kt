@@ -6,13 +6,13 @@ import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
-import co.yappuworld.user.infrastructure.entity.ActivityUnitParam
-import co.yappuworld.user.infrastructure.entity.ApplicationDetails
-import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
-import co.yappuworld.user.infrastructure.entity.UserAlarmSettingEntity
-import co.yappuworld.user.infrastructure.entity.UserDeviceEntity
-import co.yappuworld.user.infrastructure.entity.UserEntity
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitParam
+import co.yappuworld.user.infrastructure.jpa.ApplicationDetails
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingEntity
+import co.yappuworld.user.infrastructure.jpa.UserDeviceEntity
+import co.yappuworld.user.infrastructure.jpa.UserEntity
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.util.UUID
 

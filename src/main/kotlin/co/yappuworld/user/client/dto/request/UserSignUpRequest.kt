@@ -1,8 +1,8 @@
 package co.yappuworld.user.client.dto.request
 
 import co.yappuworld.global.util.EncryptUtils
-import co.yappuworld.user.infrastructure.entity.ApplicationDetails
-import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.jpa.ApplicationDetails
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty

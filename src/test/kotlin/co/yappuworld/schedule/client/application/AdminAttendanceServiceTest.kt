@@ -2,9 +2,9 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.schedule.client.dto.request.AdminSessionAttendanceUpdateRequest
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.infrastructure.AttendanceRepository
-import co.yappuworld.schedule.infrastructure.ScheduleRepository
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceRepository
+import co.yappuworld.schedule.infrastructure.jpa.ScheduleRepository
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.support.environment.SpringBootTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
@@ -12,7 +12,7 @@ import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserCommandService
-import co.yappuworld.user.infrastructure.entity.UserEntity
+import co.yappuworld.user.infrastructure.jpa.UserEntity
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty

@@ -2,7 +2,7 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
-import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

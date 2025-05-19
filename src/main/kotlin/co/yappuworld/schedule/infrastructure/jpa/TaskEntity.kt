@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.infrastructure.entity
+package co.yappuworld.schedule.infrastructure.jpa
 
 import java.time.LocalDate
 import java.time.LocalTime

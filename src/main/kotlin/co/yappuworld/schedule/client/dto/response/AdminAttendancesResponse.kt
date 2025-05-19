@@ -7,8 +7,8 @@ import co.yappuworld.schedule.domain.SessionAttendanceStatistics
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate

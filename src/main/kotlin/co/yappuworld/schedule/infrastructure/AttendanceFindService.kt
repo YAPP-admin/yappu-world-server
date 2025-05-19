@@ -1,7 +1,8 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceRepository
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID

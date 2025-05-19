@@ -1,4 +1,4 @@
-package co.yappuworld.schedule.infrastructure.entity
+package co.yappuworld.schedule.infrastructure.jpa
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.persistence.BaseEntity

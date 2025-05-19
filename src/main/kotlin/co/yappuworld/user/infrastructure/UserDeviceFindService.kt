@@ -1,7 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.infrastructure.entity.UserDeviceEntity
+import co.yappuworld.user.infrastructure.jpa.UserDeviceEntity
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
 import org.springframework.stereotype.Service

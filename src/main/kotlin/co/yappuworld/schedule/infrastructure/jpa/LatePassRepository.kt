@@ -1,10 +1,9 @@
-package co.yappuworld.schedule.infrastructure
+package co.yappuworld.schedule.infrastructure.jpa
 
-import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 
-interface LatePassRepository : JpaRepository<LatePassEntity, Long> {
+interface LatePassRepository : JpaRepository<LatePassEntity, UUID> {
 
     fun countAllByGenerationAndUserId(
         generation: Int,

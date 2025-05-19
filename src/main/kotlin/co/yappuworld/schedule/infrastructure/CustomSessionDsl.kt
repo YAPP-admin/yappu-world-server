@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.JpqlDsl
 import com.linecorp.kotlinjdsl.querymodel.jpql.sort.Sortable

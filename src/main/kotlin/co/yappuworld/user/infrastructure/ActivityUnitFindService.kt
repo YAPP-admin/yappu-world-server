@@ -1,6 +1,6 @@
 package co.yappuworld.user.infrastructure
 
-import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

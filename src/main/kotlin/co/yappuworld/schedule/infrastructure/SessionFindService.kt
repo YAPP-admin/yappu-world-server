@@ -4,8 +4,9 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.jpa.ScheduleRepository
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicatable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

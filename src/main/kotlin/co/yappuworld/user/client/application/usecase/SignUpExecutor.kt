@@ -10,7 +10,7 @@ import co.yappuworld.user.infrastructure.SignUpApplicationCommandService
 import co.yappuworld.user.infrastructure.SignUpApplicationFindService
 import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserFindService
-import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

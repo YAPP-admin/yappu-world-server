@@ -2,6 +2,7 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.AttendanceError
+import co.yappuworld.schedule.infrastructure.jpa.AttendanceRepository
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getSessionAttendanceFixture
