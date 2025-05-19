@@ -11,23 +11,28 @@ import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
+import co.yappuworld.schedule.infrastructure.SessionParticipantCommandService
+import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
+import co.yappuworld.user.infrastructure.ActivityUnitFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
-class ScheduleAdminService(
+class AdminScheduleService(
     private val sessionFindService: SessionFindService,
-    private val scheduleCommandService: ScheduleCommandService
+    private val scheduleCommandService: ScheduleCommandService,
+    private val sessionParticipantCommandService: SessionParticipantCommandService,
+    private val activityUnitFindService: ActivityUnitFindService
 ) {
 
     @Transactional
-    fun createSchedule(request: AdminSessionCreateRequest): UUID {
-        val schedule = request
-            .toDomain()
-            .also { scheduleCommandService.save(it) }
+    fun createSession(request: AdminSessionCreateRequest): UUID {
+        val session = request.toDomain()
+        scheduleCommandService.save(session)
+        inviteParticipants(session, request)
 
-        return schedule.id
+        return session.id
     }
 
     @Transactional(readOnly = true)
@@ -60,5 +65,17 @@ class ScheduleAdminService(
         sessionFindService
             .findSession(request.id)
             .apply { request.applyTo(this) }
+    }
+
+    private fun inviteParticipants(
+        session: SessionEntity,
+        request: AdminSessionCreateRequest
+    ) {
+        val participants = when (request.userIds.isNullOrEmpty()) {
+            true -> activityUnitFindService.findParticipants(request.generation)
+            false -> activityUnitFindService.findParticipants(request.generation, request.userIds)
+        }
+
+        sessionParticipantCommandService.saveAll(session, participants)
     }
 }

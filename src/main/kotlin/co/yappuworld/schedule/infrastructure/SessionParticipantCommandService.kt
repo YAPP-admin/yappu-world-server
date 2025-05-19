@@ -13,15 +13,17 @@ class SessionParticipantCommandService(
     private val sessionParticipantRepository: SessionParticipantRepository
 ) {
 
-    fun invite(
+    fun saveAll(
         session: SessionEntity,
-        activityUnit: ActivityUnitEntity
+        activityUnits: List<ActivityUnitEntity>
     ) {
-        sessionParticipantRepository.save(
-            SessionParticipantEntity(
-                session = session,
-                activityUnit = activityUnit
-            )
+        sessionParticipantRepository.saveAll(
+            activityUnits.map { activityUnit ->
+                SessionParticipantEntity(
+                    session = session,
+                    activityUnit = activityUnit
+                )
+            }
         )
     }
 }

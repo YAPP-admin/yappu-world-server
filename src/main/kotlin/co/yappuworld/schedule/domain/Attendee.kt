@@ -47,7 +47,7 @@ class Attendee(
             }
 
             val position = try {
-                sessionGenerationActivityUnits.single { it.position.isAttendeePosition() }.position
+                sessionGenerationActivityUnits.single { it.position.isParticipantPosition() }.position
             } catch (e: RuntimeException) {
                 throw BusinessException(AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION)
             }
@@ -74,7 +74,7 @@ class Attendee(
                 throw BusinessException(AttendanceError.NO_ATTENDEE_ACTIVITY_IN_GENERATION)
             }
 
-            if (!activityUnit.position.isAttendeePosition()) {
+            if (!activityUnit.position.isParticipantPosition()) {
                 throw BusinessException(AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION)
             }
         }

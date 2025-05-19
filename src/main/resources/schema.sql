@@ -120,7 +120,7 @@ create table session_participants
     created_at        datetime(6),
     updated_at        datetime(6),
     activity_unit_id  binary(16) NOT NULL,
-    schedule_id       binary(16) NOT NULL,
+    session_id       binary(16) NOT NULL,
     attendance_status varchar(16),
     checked_in_at     datetime(6)
 );

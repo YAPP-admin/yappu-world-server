@@ -2,15 +2,18 @@ package co.yappuworld.schedule.client.dto.request
 
 import co.yappuworld.schedule.domain.vo.ScheduleType
 import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.jpa.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.UUID
 
-data class AdminSessionCreateRequest(
+private val logger = KotlinLogging.logger {}
+
+data class AdminScheduleCreateRequest(
     @Schema(description = "스케줄 이름", nullable = false, example = "데모데이")
     @field:NotBlank
     val name: String,
@@ -21,23 +24,35 @@ data class AdminSessionCreateRequest(
     @Schema(description = "시작일", nullable = false, example = "2025-02-27")
     val date: LocalDate,
     @Schema(description = "종료일", nullable = false, example = "2025-02-27")
-    val endDate: LocalDate,
+    var endDate: LocalDate,
     @Schema(description = "시작 시간", nullable = false, example = "14:00:00", type = "string")
-    val time: LocalTime,
+    var time: LocalTime,
     @Schema(description = "종료 시간", nullable = false, example = "18:00:00", type = "string")
-    val endTime: LocalTime,
+    var endTime: LocalTime,
     @Schema(description = "기수(세션, 태스크의 경우 필수)", nullable = false, example = "25")
-    val generation: Int,
+    var generation: Int,
     @Schema(description = "스케줄 종류", nullable = false, example = "SESSION")
     @field:NotNull
-    val type: ScheduleType,
+    var type: ScheduleType,
     @Schema(description = "세션 종류", nullable = false, example = "OFFLINE")
-    val sessionType: SessionType,
-    @Schema(description = "세션 참여자의 유저 ID 목록, null인 경우 세션 기수의 전체 참여자", nullable = true)
-    val userIds: List<UUID>? = emptyList()
+    var sessionType: SessionType
 ) {
 
-    fun toDomain(): SessionEntity =
+    init {
+        logger.info { "세션 시작 날짜: $date" }
+        logger.info { "세션 시작 시간: $time" }
+        logger.info { "세션 종료 날짜: $endDate" }
+        logger.info { "세션 종료 시간: $endTime" }
+    }
+
+    fun toDomain(): ScheduleEntity =
+        when (type) {
+            ScheduleType.SESSION -> convertToSession()
+            ScheduleType.TASK -> TODO()
+            ScheduleType.ETC -> TODO()
+        }
+
+    private fun convertToSession(): ScheduleEntity =
         SessionEntity(
             name = name,
             description = description,

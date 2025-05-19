@@ -2,7 +2,7 @@ package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.schedule.client.application.ScheduleAdminService
+import co.yappuworld.schedule.client.application.AdminScheduleService
 import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
@@ -16,11 +16,11 @@ import java.util.UUID
 
 @RestController
 class ScheduleAdminController(
-    private val scheduleAdminService: ScheduleAdminService
+    private val adminScheduleService: AdminScheduleService
 ) : ScheduleAdminApi {
 
     override fun createSchedule(request: AdminSessionCreateRequest): ResponseEntity<Unit> {
-        val scheduleId = scheduleAdminService.createSchedule(request)
+        val scheduleId = adminScheduleService.createSession(request)
         return ResponseEntity.created(URI.create("/v1/admin/schedules/$scheduleId")).build()
     }
 
@@ -28,21 +28,21 @@ class ScheduleAdminController(
         request: AdminSessionPageRequest
     ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSessionOverviewResponse>>> =
         ResponseEntity.ok(
-            SuccessResponse(scheduleAdminService.getSessions(request))
+            SuccessResponse(adminScheduleService.getSessions(request))
         )
 
     override fun getSession(sessionId: UUID): ResponseEntity<SuccessResponse<AdminSessionDetailResponse>> =
-        scheduleAdminService
+        adminScheduleService
             .getSession(sessionId)
             .let { ResponseEntity.ok(SuccessResponse(it)) }
 
     override fun deleteSession(request: AdminSessionDeleteRequest): ResponseEntity<Unit> {
-        scheduleAdminService.deleteSession(request)
+        adminScheduleService.deleteSession(request)
         return ResponseEntity.noContent().build()
     }
 
     override fun updateSession(request: AdminSessionUpdateRequest): ResponseEntity<Unit> {
-        scheduleAdminService.updateSession(request)
+        adminScheduleService.updateSession(request)
         return ResponseEntity.noContent().build()
     }
 }

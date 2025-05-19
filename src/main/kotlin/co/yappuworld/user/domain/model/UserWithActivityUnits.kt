@@ -32,5 +32,5 @@ class UserWithActivityUnits(
         get() = activityUnits.map { it.generation }.distinct()
 
     fun hasAttendeeActivityInGeneration(generation: Int): Boolean =
-        activityUnits.any { it.generation == generation && it.position.isAttendeePosition() }
+        activityUnits.any { it.generation == generation && it.position.isParticipantPosition() }
 }
