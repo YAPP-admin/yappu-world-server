@@ -12,6 +12,7 @@ import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeIn
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
@@ -25,7 +26,7 @@ class SessionParticipantFindServiceTest @Autowired constructor(
 
         val sessionParticipantFindService = SessionParticipantFindService(sessionParticipantRepository)
 
-        feature("세션 참가자 조회") {
+        feature("세션 참가자 엔티티 조회") {
 
             scenario("참가자가 없으면 빈 리스트를 반환한다.") {
                 sessionParticipantFindService.findSessionParticipantEntieis(UUID.randomUUID()).shouldBeEmpty()
@@ -51,6 +52,41 @@ class SessionParticipantFindServiceTest @Autowired constructor(
                 sessionParticipantFindService
                     .findSessionParticipantEntieis(session1.id)
                     .shouldForAll { it.session.id shouldBe session1.id }
+            }
+        }
+
+        feature("세션 참가자를 세션 ID와 활동기록 ID로 조회") {
+
+            scenario("존재하지 않으면 빈 리스트를 반환한다.") {
+                sessionParticipantFindService
+                    .findSessionParticipantEntities(
+                        listOf(
+                            UUID.randomUUID() to UUID.randomUUID()
+                        )
+                    ).shouldBeEmpty()
+            }
+
+            scenario("세션 ID와 활동기록 ID가 둘 다 일치해야 조회된다.") {
+                val session1 = sessionRepository.save(getSessionEntityFixture())
+                val session2 = sessionRepository.save(getSessionEntityFixture())
+                val activityUnit1 = activityUnitRepository.save(getActivityUnitEntityFixture())
+                val activityUnit2 = activityUnitRepository.save(getActivityUnitEntityFixture())
+                sessionParticipantRepository.saveAllAndFlush(
+                    listOf(
+                        SessionParticipantEntity(session1, activityUnit1),
+                        SessionParticipantEntity(session1, activityUnit2),
+                        SessionParticipantEntity(session2, activityUnit1),
+                        SessionParticipantEntity(session2, activityUnit2)
+                    )
+                )
+
+                val result = sessionParticipantFindService.findSessionParticipantEntities(
+                    listOf(session1.id to activityUnit1.id)
+                )
+
+                result.shouldHaveSize(1)
+                result[0].session.id shouldBe session1.id
+                result[0].activityUnit.id shouldBe activityUnit1.id
             }
         }
 

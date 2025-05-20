@@ -24,6 +24,23 @@ class SessionParticipantFindService(
                     .where(path(SessionParticipantEntity::session)(SessionEntity::getId).equal(sessionId))
             }.filterNotNull()
 
+    fun findSessionParticipantEntities(
+        sessionAndUserActivityUnitIds: List<Pair<UUID, UUID>>
+    ): List<SessionParticipantEntity> =
+        sessionParticipantRepository
+            .findAll {
+                val predicates = sessionAndUserActivityUnitIds.map { (sessionId, activityUnitId) ->
+                    and(
+                        path(SessionParticipantEntity::session)(SessionEntity::getId).equal(sessionId),
+                        path(SessionParticipantEntity::activityUnit)(ActivityUnitEntity::getId).equal(activityUnitId)
+                    )
+                }
+
+                select(entity(SessionParticipantEntity::class))
+                    .from(entity(SessionParticipantEntity::class))
+                    .where(or(*predicates.toTypedArray()))
+            }.filterNotNull()
+
     fun findSessionParticipants(sessionId: UUID): List<SessionParticipant> =
         sessionParticipantRepository
             .findAll {

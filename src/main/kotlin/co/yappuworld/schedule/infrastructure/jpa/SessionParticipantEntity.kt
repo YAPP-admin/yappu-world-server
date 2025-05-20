@@ -42,7 +42,7 @@ class SessionParticipantEntity(
         }
     }
 
-    fun adminUpdate(attendanceStatus: AttendanceStatus) {
+    fun forceUpdateStatus(attendanceStatus: AttendanceStatus) {
         this.attendanceStatus = attendanceStatus
     }
 }

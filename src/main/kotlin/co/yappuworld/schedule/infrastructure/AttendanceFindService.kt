@@ -54,26 +54,4 @@ class AttendanceFindService(
                             )
                     )
             }.filterNotNull()
-
-    fun findAttendances(sessionAndUserIds: List<Pair<UUID, UUID>>): List<AttendanceEntity> =
-        attendanceRepository
-            .findAll {
-                val predicates = sessionAndUserIds.map { (sessionId, userId) ->
-                    and(
-                        path(AttendanceEntity::userId).equal(userId),
-                        path(AttendanceEntity::scheduleId).equal(sessionId)
-                    )
-                }
-                select(entity(AttendanceEntity::class))
-                    .from(entity(AttendanceEntity::class))
-                    .where(or(*predicates.toTypedArray()))
-            }.filterNotNull()
-
-    fun findAttendances(sessionId: UUID): List<AttendanceEntity> =
-        attendanceRepository
-            .findAll {
-                select(entity(AttendanceEntity::class))
-                    .from(entity(AttendanceEntity::class))
-                    .where(path(AttendanceEntity::scheduleId).equal(sessionId))
-            }.filterNotNull()
 }

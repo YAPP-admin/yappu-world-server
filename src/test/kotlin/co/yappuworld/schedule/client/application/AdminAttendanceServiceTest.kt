@@ -1,5 +1,7 @@
 package co.yappuworld.schedule.client.application
 
+import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateTargetRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionAttendanceUpdateRequest
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.jpa.ScheduleRepository
@@ -16,11 +18,14 @@ import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.UserEntity
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.shouldForAll
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.UUID
 
 class AdminAttendanceServiceTest @Autowired constructor(
     private val adminAttendanceService: AdminAttendanceService,
@@ -29,6 +34,70 @@ class AdminAttendanceServiceTest @Autowired constructor(
     private val scheduleRepository: ScheduleRepository,
     private val sessionParticipantRepository: SessionParticipantRepository
 ) : SpringBootTestFeatureSpec({
+
+        feature("세션과 활동 기록 ID로 출석 업데이트") {
+
+            scenario("존재하지 않는 세션 ID와 활동 기록 ID를 넘기더라도 예외는 발생하지 않는다.") {
+                shouldNotThrowAny {
+                    adminAttendanceService.updateAttendance(
+                        AdminAttendanceUpdateRequest(
+                            listOf(
+                                AdminAttendanceUpdateTargetRequest(
+                                    generationMemberId = UUID.randomUUID(),
+                                    sessionId = UUID.randomUUID(),
+                                    attendanceStatus = AttendanceStatus.ON_TIME
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+
+            scenario("세션 ID와 활동 기록이 매칭되는 경우 출석 상태가 업데이트 된다.") {
+                val session1 = scheduleRepository.save(getSessionEntityFixture())
+                val session2 = scheduleRepository.save(getSessionEntityFixture())
+                val activityUnit1 = activityUnitRepository.save(getActivityUnitEntityFixture())
+                val activityUnit2 = activityUnitRepository.save(getActivityUnitEntityFixture())
+                sessionParticipantRepository.saveAllAndFlush(
+                    listOf(
+                        SessionParticipantEntity(session1, activityUnit1)
+                    )
+                )
+
+                adminAttendanceService.updateAttendance(
+                    AdminAttendanceUpdateRequest(
+                        listOf(
+                            AdminAttendanceUpdateTargetRequest(
+                                generationMemberId = activityUnit1.id,
+                                sessionId = session1.id,
+                                attendanceStatus = AttendanceStatus.ON_TIME
+                            ),
+                            AdminAttendanceUpdateTargetRequest(
+                                generationMemberId = activityUnit1.id,
+                                sessionId = session2.id,
+                                attendanceStatus = AttendanceStatus.LATE
+                            ),
+                            AdminAttendanceUpdateTargetRequest(
+                                generationMemberId = activityUnit2.id,
+                                sessionId = session1.id,
+                                attendanceStatus = AttendanceStatus.LATE
+                            ),
+                            AdminAttendanceUpdateTargetRequest(
+                                generationMemberId = activityUnit2.id,
+                                sessionId = session2.id,
+                                attendanceStatus = AttendanceStatus.LATE
+                            )
+                        )
+                    )
+                )
+
+                val result = sessionParticipantRepository.findAll()
+                result.shouldHaveSize(1)
+                result[0].session.id shouldBe session1.id
+                result[0].activityUnit.id shouldBe activityUnit1.id
+                result[0].attendanceStatus shouldBe AttendanceStatus.ON_TIME
+            }
+        }
 
         feature("특정 세션의 출석 일괄 업데이트") {
             val activeGeneration = 25
