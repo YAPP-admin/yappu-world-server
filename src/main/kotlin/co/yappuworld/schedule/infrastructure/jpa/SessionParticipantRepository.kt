@@ -8,6 +8,8 @@ interface SessionParticipantRepository :
     JpaRepository<SessionParticipantEntity, UUID>,
     KotlinJdslJpqlExecutor {
 
+    fun findAllBySessionId(sessionId: UUID): List<SessionParticipantEntity>
+
     fun deleteAllBySession(session: SessionEntity)
 
     fun deleteAllBySessionIdIn(sessionIds: List<UUID>)

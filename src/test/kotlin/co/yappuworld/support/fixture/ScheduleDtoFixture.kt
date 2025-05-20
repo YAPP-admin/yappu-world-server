@@ -21,7 +21,7 @@ object ScheduleDtoFixture {
         generation: Int = 25,
         type: ScheduleType = ScheduleType.SESSION,
         sessionType: SessionType = SessionType.OFFLINE,
-        participantIds: List<UUID>? = emptyList()
+        participantIds: List<UUID>? = null
     ): AdminSessionCreateRequest =
         AdminSessionCreateRequest(
             name = name,
