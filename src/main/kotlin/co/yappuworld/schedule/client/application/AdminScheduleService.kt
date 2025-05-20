@@ -45,8 +45,11 @@ class AdminScheduleService(
         }.let { OffsetPageResponse.from(it) { session -> AdminSessionOverviewResponse(session) } }
 
     @Transactional(readOnly = true)
-    fun getSession(id: UUID): AdminSessionDetailResponse =
-        AdminSessionDetailResponse(sessionFindService.findSession(id))
+    fun getSession(id: UUID): AdminSessionDetailResponse {
+        val session = sessionFindService.findSession(id)
+        val participants = sessionParticipantFindService.findSessionParticipants(session.id)
+        return AdminSessionDetailResponse.from(session, participants)
+    }
 
     /**
      * 어드민에서 요청하는 세션 삭제라, hard delete 구현
@@ -103,7 +106,7 @@ class AdminScheduleService(
             return
         }
 
-        val existParticipants = sessionParticipantFindService.findSessionParticipants(session.id)
+        val existParticipants = sessionParticipantFindService.findSessionParticipantEntieis(session.id)
         val existParticipantIds = existParticipants.map { it.id }.toSet()
 
         val updateParticipantIds = updateUserIds.toSet()

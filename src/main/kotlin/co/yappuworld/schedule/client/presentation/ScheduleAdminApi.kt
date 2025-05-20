@@ -153,14 +153,60 @@ interface ScheduleAdminApi {
                                 value = """
                                     {
                                         "data": {
-                                            "id": "f70dd5ff-ffe4-11ef-ad31-0242ac120002",
-                                            "name": "팀세션",
+                                            "id": "0196ed57-f71d-e55d-8e24-0f4e4f898fae",
+                                            "name": "데모데이",
                                             "generation": 25,
-                                            "place": null,
-                                            "date": "2024-11-01",
-                                            "time": null,
-                                            "endTime": null,
-                                            "sessionType": "TEAM"
+                                            "place": "공덕 창업 허브",
+                                            "date": "2025-02-27",
+                                            "endDate": "2025-02-27",
+                                            "time": "14:00:00",
+                                            "endTime": "18:00:00",
+                                            "sessionType": "OFFLINE",
+                                            "participantsByPosition": [
+                                                {
+                                                    "position": "PM",
+                                                    "participants": [
+                                                        {
+                                                            "id": "0196ed53-5af5-5ef0-2933-109de415f064",
+                                                            "name": "홍길동",
+                                                            "position": "PM"
+                                                        },
+                                                        {
+                                                            "id": "0196ed53-7aa9-3234-ac58-26b178e94dec",
+                                                            "name": "임꺽정",
+                                                            "position": "PM"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "position": "Design",
+                                                    "participants": []
+                                                },
+                                                {
+                                                    "position": "Web",
+                                                    "participants": []
+                                                },
+                                                {
+                                                    "position": "Android",
+                                                    "participants": []
+                                                },
+                                                {
+                                                    "position": "iOS",
+                                                    "participants": []
+                                                },
+                                                {
+                                                    "position": "Flutter",
+                                                    "participants": []
+                                                },
+                                                {
+                                                    "position": "Web",
+                                                    "participants": []
+                                                },
+                                                {
+                                                    "position": "Server",
+                                                    "participants": []
+                                                }
+                                            ]
                                         },
                                         "isSuccess": true
                                     }
