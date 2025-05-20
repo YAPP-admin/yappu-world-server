@@ -32,9 +32,9 @@ class ScheduleAdminController(
         )
 
     override fun getSession(sessionId: UUID): ResponseEntity<SuccessResponse<AdminSessionDetailResponse>> =
-        adminScheduleService
-            .getSession(sessionId)
-            .let { ResponseEntity.ok(SuccessResponse(it)) }
+        ResponseEntity.ok(
+            SuccessResponse(adminScheduleService.getSession(sessionId))
+        )
 
     override fun deleteSession(request: AdminSessionDeleteRequest): ResponseEntity<Unit> {
         adminScheduleService.deleteSession(request)

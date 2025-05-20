@@ -6,4 +6,9 @@ import java.util.UUID
 
 interface SessionParticipantRepository :
     JpaRepository<SessionParticipantEntity, UUID>,
-    KotlinJdslJpqlExecutor
+    KotlinJdslJpqlExecutor {
+
+    fun deleteAllBySession(session: SessionEntity)
+
+    fun deleteAllBySessionIdIn(sessionIds: List<UUID>)
+}

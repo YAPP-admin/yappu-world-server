@@ -26,4 +26,16 @@ class SessionParticipantCommandService(
             }
         )
     }
+
+    fun deleteAll(sessionParticipants: List<SessionParticipantEntity>) {
+        sessionParticipantRepository.deleteAll(sessionParticipants)
+    }
+
+    fun deleteAllSessionParticipants(session: SessionEntity) {
+        sessionParticipantRepository.deleteAllBySession(session)
+    }
+
+    fun deleteAllSessionParticipants(sessions: List<SessionEntity>) {
+        sessionParticipantRepository.deleteAllBySessionIdIn(sessions.map { it.id })
+    }
 }
