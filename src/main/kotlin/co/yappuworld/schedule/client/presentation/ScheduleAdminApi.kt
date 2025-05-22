@@ -145,9 +145,9 @@ interface ScheduleAdminApi {
         value = [
             ApiResponse(
                 responseCode = "200",
-                useReturnTypeSchema = true,
                 content = [
                     Content(
+                        schema = Schema(implementation = AdminSessionDetailResponse::class),
                         examples = [
                             ExampleObject(
                                 value = """

@@ -42,11 +42,11 @@ data class AdminSessionDetailResponse(
                 Position.participantPositions.map { position ->
                     participantsGroupedByPosition[position]?.let { positionParticipants ->
                         AdminSessionParticipantsByPositionResponse.from(
-                            position = position.label,
+                            position = position,
                             participants = positionParticipants
                         )
                     } ?: AdminSessionParticipantsByPositionResponse.from(
-                        position = position.label,
+                        position = position,
                         participants = emptyList()
                     )
                 }
@@ -69,7 +69,7 @@ data class AdminSessionDetailResponse(
 
 data class AdminSessionParticipantsByPositionResponse(
     @Schema(description = "유저 직군")
-    val position: String,
+    val position: Position,
     @Schema(description = "유저 목록")
     val participants: List<AdminSessionParticipantResponse>
 ) {
@@ -77,7 +77,7 @@ data class AdminSessionParticipantsByPositionResponse(
     companion object {
 
         fun from(
-            position: String,
+            position: Position,
             participants: List<SessionParticipant>
         ) = AdminSessionParticipantsByPositionResponse(
             position = position,
@@ -85,7 +85,7 @@ data class AdminSessionParticipantsByPositionResponse(
                 AdminSessionParticipantResponse(
                     id = it.userId,
                     name = it.userName,
-                    position = it.position.label
+                    position = it.position
                 )
             }
         )
@@ -98,5 +98,5 @@ data class AdminSessionParticipantResponse(
     @Schema(description = "유저 이름")
     val name: String,
     @Schema(description = "유저 직군")
-    val position: String
+    val position: Position
 )

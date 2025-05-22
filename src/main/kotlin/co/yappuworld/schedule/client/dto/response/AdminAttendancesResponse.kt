@@ -1,8 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
-import co.yappuworld.schedule.domain.AttendanceBook
-import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.GenerationAttendanceBook
 import co.yappuworld.schedule.domain.SessionAttendanceStatistics
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
@@ -24,22 +22,6 @@ data class AdminAttendancesResponse(
 ) {
 
     companion object {
-
-        fun from(attendanceBook: AttendanceBook): AdminAttendancesResponse =
-            AdminAttendancesResponse(
-                sessions = attendanceBook.sessions.map {
-                    AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id))
-                },
-                users = attendanceBook.attendees.map { attendee ->
-                    AdminAttendanceUserResponse(attendee, attendanceBook.getUserAttendanceStatistics(attendee.id))
-                },
-                attendancesGroupedBySession = attendanceBook.sessions.map { session ->
-                    AdminSessionAttendanceGroupResponse.from(
-                        sessionId = session.id,
-                        attendanceByUserId = attendanceBook.getSessionStatuses(session.id)
-                    )
-                }
-            )
 
         fun from(attendanceBook: GenerationAttendanceBook): AdminAttendancesResponse =
             AdminAttendancesResponse(
@@ -137,24 +119,6 @@ data class AdminAttendanceUserResponse(
     @Schema(description = "가점")
     val bonusPoint: Int
 ) {
-
-    constructor(
-        attendee: Attendee,
-        statistics: UserAttendanceStatistics
-    ) : this(
-        userId = attendee.id,
-        name = attendee.name,
-        position = attendee.position.label,
-        onTimeCount = statistics.onTimeCount,
-        lateCount = statistics.lateCount,
-        absentCount = statistics.absentCount,
-        earlyCheckOutCount = statistics.earlyCheckOutCount,
-        excusedAbsenceCount = statistics.excusedAbsenceCount,
-        latePassCount = statistics.latePassCount,
-        totalPoint = statistics.totalPoint,
-        penaltyPoint = statistics.penaltyPoint,
-        bonusPoint = statistics.bonusPoint
-    )
 
     constructor(
         userActivityUnit: UserActivityUnit,

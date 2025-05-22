@@ -220,17 +220,17 @@ class AdminAttendanceServiceTest @Autowired constructor(
                 result.sessions.shouldHaveSize(3)
 
                 result.attendancesGroupedBySession[0].attendances.let {
-                    it[0].status shouldBe AttendanceStatus.ABSENT.label
-                    it[1].status shouldBe AttendanceStatus.ABSENT.label
+                    it[0].status shouldBe AttendanceStatus.ABSENT
+                    it[1].status shouldBe AttendanceStatus.ABSENT
                 }
 
                 result.attendancesGroupedBySession[1].attendances.let {
-                    it[0].status shouldBe AttendanceStatus.ON_TIME.label
-                    it[1].status shouldBe AttendanceStatus.LATE.label
+                    it[0].status shouldBe AttendanceStatus.ON_TIME
+                    it[1].status shouldBe AttendanceStatus.LATE
                 }
 
                 result.attendancesGroupedBySession[2].attendances.let {
-                    it[0].status shouldBe AttendanceStatus.PENDING.label
+                    it[0].status shouldBe AttendanceStatus.PENDING
                     it[1].status.shouldBeNull()
                 }
             }

@@ -107,11 +107,11 @@ interface AdminAttendanceApi {
                                                     "attendances": [
                                                         {
                                                             "userId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
-                                                            "status": "결석"
+                                                            "status": "ABSENT"
                                                         },
                                                         {
                                                             "userId": "12954809-38fd-1268-e0d6-d3fda39f6b4c",
-                                                            "status": "출석"
+                                                            "status": "ON_TIME"
                                                         }
                                                     ]
                                                 },
@@ -120,7 +120,7 @@ interface AdminAttendanceApi {
                                                     "attendances": [
                                                         {
                                                             "userId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
-                                                            "status": null
+                                                            "status": "PENDING"
                                                         },
                                                         {
                                                             "userId": "12954809-38fd-1268-e0d6-d3fda39f6b4c",
