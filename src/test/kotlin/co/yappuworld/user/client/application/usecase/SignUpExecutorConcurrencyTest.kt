@@ -1,23 +1,21 @@
 package co.yappuworld.user.client.application.usecase
 
 import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
+import co.yappuworld.support.environment.SpringBootTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import co.yappuworld.user.infrastructure.jpa.UserRepository
-import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
-@SpringBootTest
 class SignUpExecutorConcurrencyTest @Autowired constructor(
     private val signUpExecutor: SignUpExecutor,
     private val userRepository: UserRepository,
     private val signUpApplicationRepository: SignUpApplicationRepository
-) : FeatureSpec({
+) : SpringBootTestFeatureSpec({
 
         afterTest {
             userRepository.deleteAll()
@@ -61,7 +59,7 @@ class SignUpExecutorConcurrencyTest @Autowired constructor(
                         try {
                             signUpExecutor.submit(
                                 application = getSignUpApplicationEntityFixture(
-                                    email = "abc@gmail.com"
+                                    email = "eba@gmail.com"
                                 )
                             )
                         } finally {
