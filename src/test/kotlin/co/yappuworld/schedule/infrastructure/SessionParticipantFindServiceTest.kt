@@ -13,6 +13,7 @@ import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
@@ -29,7 +30,7 @@ class SessionParticipantFindServiceTest @Autowired constructor(
         feature("세션 참가자 엔티티 조회") {
 
             scenario("참가자가 없으면 빈 리스트를 반환한다.") {
-                sessionParticipantFindService.findSessionParticipantEntieis(UUID.randomUUID()).shouldBeEmpty()
+                sessionParticipantFindService.findSessionParticipantEntities(UUID.randomUUID()).shouldBeEmpty()
             }
 
             scenario("특정 세션의 모든 참가자들을 조회한다.") {
@@ -50,7 +51,7 @@ class SessionParticipantFindServiceTest @Autowired constructor(
                 )
 
                 sessionParticipantFindService
-                    .findSessionParticipantEntieis(session1.id)
+                    .findSessionParticipantEntities(session1.id)
                     .shouldForAll { it.session.id shouldBe session1.id }
             }
         }
@@ -117,6 +118,53 @@ class SessionParticipantFindServiceTest @Autowired constructor(
                     it.sessionId shouldBe session1.id
                     it.userId shouldBeIn listOf(user1.id, user2.id)
                 }
+            }
+        }
+
+        feature("특정 기수의 모든 세션 참가자들을 도메인 모델로 조회") {
+
+            scenario("기수에 속한 세션 참가자들을 조회한다.") {
+                val session1 = getSessionEntityFixture(generation = 1)
+                val session2 = getSessionEntityFixture(generation = 1)
+                val session3 = getSessionEntityFixture(generation = 2)
+                val user1 = getUserEntityFixture()
+                val user2 = getUserEntityFixture()
+                val activityUnit1 = getActivityUnitEntityFixture(userId = user1.id, generation = 1)
+                val activityUnit2 = getActivityUnitEntityFixture(userId = user1.id, generation = 2)
+                val activityUnit3 = getActivityUnitEntityFixture(userId = user2.id, generation = 1)
+                sessionRepository.saveAll(listOf(session1, session2, session3))
+                userRepository.saveAll(listOf(user1, user2))
+                activityUnitRepository.saveAll(listOf(activityUnit1, activityUnit2, activityUnit3))
+
+                sessionParticipantRepository.saveAllAndFlush(
+                    listOf(
+                        SessionParticipantEntity(session1, activityUnit1),
+                        SessionParticipantEntity(session1, activityUnit3),
+                        SessionParticipantEntity(session2, activityUnit1),
+                        SessionParticipantEntity(session3, activityUnit3)
+                    )
+                )
+
+                val sessionParticipants = sessionParticipantFindService.findSessionParticipantsInGeneration(1)
+                sessionParticipants.shouldHaveSize(3)
+                sessionParticipants
+                    .singleOrNull {
+                        session1.id == it.sessionId &&
+                            activityUnit1.userId == it.userId &&
+                            activityUnit1.id == it.activityUnitId
+                    }.shouldNotBeNull()
+                sessionParticipants
+                    .singleOrNull {
+                        session1.id == it.sessionId &&
+                            activityUnit3.userId == it.userId &&
+                            activityUnit3.id == it.activityUnitId
+                    }.shouldNotBeNull()
+                sessionParticipants
+                    .singleOrNull {
+                        session2.id == it.sessionId &&
+                            activityUnit1.userId == it.userId &&
+                            activityUnit1.id == it.activityUnitId
+                    }.shouldNotBeNull()
             }
         }
     })

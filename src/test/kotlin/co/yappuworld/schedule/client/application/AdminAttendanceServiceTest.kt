@@ -13,18 +13,22 @@ import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
+import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.UserEntity
+import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
+import java.time.LocalDateTime
 import java.util.UUID
 
 class AdminAttendanceServiceTest @Autowired constructor(
@@ -32,7 +36,8 @@ class AdminAttendanceServiceTest @Autowired constructor(
     private val userCommandService: UserCommandService,
     private val activityUnitRepository: ActivityUnitRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val sessionParticipantRepository: SessionParticipantRepository
+    private val sessionParticipantRepository: SessionParticipantRepository,
+    private val userRepository: UserRepository
 ) : SpringBootTestFeatureSpec({
 
         feature("세션과 활동 기록 ID로 출석 업데이트") {
@@ -43,7 +48,7 @@ class AdminAttendanceServiceTest @Autowired constructor(
                         AdminAttendanceUpdateRequest(
                             listOf(
                                 AdminAttendanceUpdateTargetRequest(
-                                    generationMemberId = UUID.randomUUID(),
+                                    userActivityUnitId = UUID.randomUUID(),
                                     sessionId = UUID.randomUUID(),
                                     attendanceStatus = AttendanceStatus.ON_TIME
                                 )
@@ -68,22 +73,22 @@ class AdminAttendanceServiceTest @Autowired constructor(
                     AdminAttendanceUpdateRequest(
                         listOf(
                             AdminAttendanceUpdateTargetRequest(
-                                generationMemberId = activityUnit1.id,
+                                userActivityUnitId = activityUnit1.id,
                                 sessionId = session1.id,
                                 attendanceStatus = AttendanceStatus.ON_TIME
                             ),
                             AdminAttendanceUpdateTargetRequest(
-                                generationMemberId = activityUnit1.id,
+                                userActivityUnitId = activityUnit1.id,
                                 sessionId = session2.id,
                                 attendanceStatus = AttendanceStatus.LATE
                             ),
                             AdminAttendanceUpdateTargetRequest(
-                                generationMemberId = activityUnit2.id,
+                                userActivityUnitId = activityUnit2.id,
                                 sessionId = session1.id,
                                 attendanceStatus = AttendanceStatus.LATE
                             ),
                             AdminAttendanceUpdateTargetRequest(
-                                generationMemberId = activityUnit2.id,
+                                userActivityUnitId = activityUnit2.id,
                                 sessionId = session2.id,
                                 attendanceStatus = AttendanceStatus.LATE
                             )
@@ -151,6 +156,104 @@ class AdminAttendanceServiceTest @Autowired constructor(
                         .findAllBySessionId(session.id)
                         .shouldForAll { it.attendanceStatus shouldBe status }
                 }
+            }
+        }
+
+        feature("출석 조회") {
+
+            val generation = 25
+            val now = LocalDateTime.of(2024, 12, 12, 0, 0)
+            val sessions = listOf(
+                getSessionEntityFixture(
+                    date = now.toLocalDate().minusDays(2),
+                    endDate = now.toLocalDate().minusDays(2),
+                    generation = generation
+                ),
+                getSessionEntityFixture(
+                    date = now.toLocalDate().minusDays(1),
+                    endDate = now.toLocalDate().minusDays(1),
+                    generation = generation
+                ),
+                getSessionEntityFixture(
+                    date = now.toLocalDate().plusDays(1),
+                    endDate = now.toLocalDate().plusDays(1),
+                    generation = generation
+                )
+            )
+            val users = List(2) { getUserEntityFixture() }
+            val activityUnits = users.map { getActivityUnitEntityFixture(generation = generation, userId = it.id) }
+            val sessionParticipants = listOf(
+                SessionParticipantEntity(
+                    session = sessions[0],
+                    activityUnit = activityUnits[0]
+                ).apply { forceUpdateStatus(AttendanceStatus.ABSENT) },
+                SessionParticipantEntity(
+                    session = sessions[1],
+                    activityUnit = activityUnits[0]
+                ).apply { forceUpdateStatus(AttendanceStatus.ON_TIME) },
+                SessionParticipantEntity(
+                    session = sessions[2],
+                    activityUnit = activityUnits[0]
+                ).apply { forceUpdateStatus(AttendanceStatus.PENDING) },
+                SessionParticipantEntity(
+                    session = sessions[0],
+                    activityUnit = activityUnits[1]
+                ).apply { forceUpdateStatus(AttendanceStatus.PENDING) },
+                SessionParticipantEntity(
+                    session = sessions[1],
+                    activityUnit = activityUnits[1]
+                ).apply { forceUpdateStatus(AttendanceStatus.LATE) }
+            )
+
+            fun initialize() {
+                scheduleRepository.saveAll(sessions)
+                userRepository.saveAll(users)
+                activityUnitRepository.saveAll(activityUnits)
+                sessionParticipantRepository.saveAllAndFlush(sessionParticipants)
+            }
+
+            scenario("출석 상태 조회") {
+                initialize()
+                val result = adminAttendanceService.findAttendances(now)
+
+                result.users.shouldHaveSize(2)
+                result.sessions.shouldHaveSize(3)
+
+                result.attendancesGroupedBySession[0].attendances.let {
+                    it[0].status shouldBe AttendanceStatus.ABSENT.label
+                    it[1].status shouldBe AttendanceStatus.ABSENT.label
+                }
+
+                result.attendancesGroupedBySession[1].attendances.let {
+                    it[0].status shouldBe AttendanceStatus.ON_TIME.label
+                    it[1].status shouldBe AttendanceStatus.LATE.label
+                }
+
+                result.attendancesGroupedBySession[2].attendances.let {
+                    it[0].status shouldBe AttendanceStatus.PENDING.label
+                    it[1].status.shouldBeNull()
+                }
+            }
+
+            scenario("세션 통계를 조회") {
+                initialize()
+                val result = adminAttendanceService.findAttendances(now)
+
+                result.sessions[0].totalPersonCount shouldBe 2
+                result.sessions[0].totalOnTimeCount shouldBe 0
+                result.sessions[0].totalLateCount shouldBe 0
+                result.sessions[0].totalAbsentCount shouldBe 2
+                result.sessions[0].totalExcusedAbsenceCount shouldBe 0
+                result.sessions[0].totalEarlyCheckOutCount shouldBe 0
+
+                result.sessions[1].totalPersonCount shouldBe 2
+                result.sessions[1].totalOnTimeCount shouldBe 1
+                result.sessions[1].totalLateCount shouldBe 1
+                result.sessions[1].totalAbsentCount shouldBe 0
+                result.sessions[1].totalExcusedAbsenceCount shouldBe 0
+                result.sessions[1].totalEarlyCheckOutCount shouldBe 0
+
+                result.sessions[2].totalPersonCount shouldBe 1
             }
         }
     })

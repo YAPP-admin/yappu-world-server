@@ -8,12 +8,14 @@ import co.yappuworld.user.domain.model.UserWithActivityUnits
 import java.time.LocalDateTime
 
 /**
+ * @property PENDING 출석 상태가 결정되지 않음. 아직 세션 시간이 안 되었거나 출석 행위를 하지 않음.
  * @property ON_TIME 제 시간에 정상적으로 출석
  * @property EXCUSED_ABSENCE 출석으로 인정되는 결석
  */
 enum class AttendanceStatus(
     val label: String
 ) {
+    PENDING("미출석"),
     ON_TIME("출석"),
     LATE("지각"),
     ABSENT("결석"),

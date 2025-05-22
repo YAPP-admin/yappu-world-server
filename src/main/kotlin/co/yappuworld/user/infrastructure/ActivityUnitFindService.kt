@@ -15,7 +15,7 @@ class ActivityUnitFindService(
 
     fun findActivityUnits(userId: UUID): List<ActivityUnitEntity> = activityUnitRepository.findAllByUserId(userId)
 
-    fun findGenerationMembers(generation: Int): List<ActivityUnitEntity> =
+    fun findUserActivityUnits(generation: Int): List<ActivityUnitEntity> =
         activityUnitRepository
             .findAll {
                 select(entity(ActivityUnitEntity::class))
@@ -26,7 +26,7 @@ class ActivityUnitFindService(
                     )
             }.filterNotNull()
 
-    fun findGenerationMembers(
+    fun findUserActivityUnits(
         generation: Int,
         userIds: Collection<UUID>
     ): List<ActivityUnitEntity> =

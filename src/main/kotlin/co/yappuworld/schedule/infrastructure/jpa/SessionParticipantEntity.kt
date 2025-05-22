@@ -24,7 +24,7 @@ class SessionParticipantEntity(
 
     @Column(name = "attendance_status")
     @Enumerated(value = EnumType.STRING)
-    var attendanceStatus: AttendanceStatus? = null
+    var attendanceStatus: AttendanceStatus = AttendanceStatus.PENDING
         private set
 
     @Column(name = "checked_in_at")

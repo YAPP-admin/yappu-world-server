@@ -2,9 +2,11 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.Attendee
+import co.yappuworld.user.domain.model.UserActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.jdsl.CustomUserDsl
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.jpa.UserEntity
 import co.yappuworld.user.infrastructure.jpa.UserRepository
@@ -237,6 +239,17 @@ class UserFindService(
                 )
             }.singleOrNull()
             ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
+
+    fun findAllUserActivityUnitOfGeneration(generation: Int): List<UserActivityUnit> =
+        userRepository
+            .findAll(CustomUserDsl) {
+                selectFromUserActivityUnitWithInnerJoinOn(
+                    and(
+                        path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                        path(ActivityUnitEntity::generation).equal(generation)
+                    )
+                )
+            }.filterNotNull()
 
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null

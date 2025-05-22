@@ -7,7 +7,7 @@ import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminAttendanceCodeResponse
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
-import co.yappuworld.schedule.domain.AttendanceBook
+import co.yappuworld.schedule.domain.GenerationAttendanceBook
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
@@ -31,12 +31,16 @@ class AdminAttendanceService(
     @Transactional(readOnly = true)
     fun findAttendances(now: LocalDateTime): AdminAttendancesResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
+        val sessions = sessionFindService.findSessionsInGeneration(activeGeneration)
+        val userActivityUnits = userFindService.findAllUserActivityUnitOfGeneration(activeGeneration)
+        val participants = sessionParticipantFindService.findSessionParticipantsInGeneration(activeGeneration)
+
         return AdminAttendancesResponse.from(
-            AttendanceBook(
+            GenerationAttendanceBook(
                 generation = activeGeneration,
-                attendees = userFindService.findSessionAttendeesOfGeneration(activeGeneration),
-                sessions = sessionFindService.findSessionsInGeneration(activeGeneration),
-                attendances = attendanceFindService.findAttendancesOfGeneration(activeGeneration),
+                sessions = sessions,
+                userActivityUnits = userActivityUnits,
+                sessionParticipants = participants,
                 latePasses = latePassFindService.findLatePasses(activeGeneration),
                 now = now
             )
@@ -47,9 +51,10 @@ class AdminAttendanceService(
     fun updateAttendance(request: AdminAttendanceUpdateRequest) {
         val targetBySessionAndActivityUnitId = request.targets
             .groupBy { it.sessionId }
-            .mapValues { (_, list) -> list.associateBy { it.generationMemberId } }
+            .mapValues { (_, list) -> list.associateBy { it.userActivityUnitId } }
+
         sessionParticipantFindService
-            .findSessionParticipantEntities(request.getSessionAndGenerationMemberIdPairs())
+            .findSessionParticipantEntities(request.getSessionAndUserActivityUnitIdPairs())
             .onEach { participant ->
                 targetBySessionAndActivityUnitId[participant.session.id]
                     ?.get(participant.activityUnit.id)
@@ -62,7 +67,7 @@ class AdminAttendanceService(
     @Transactional
     fun updateSessionAttendances(request: AdminSessionAttendanceUpdateRequest) {
         sessionParticipantFindService
-            .findSessionParticipantEntieis(request.sessionId)
+            .findSessionParticipantEntities(request.sessionId)
             .onEach { participant -> participant.forceUpdateStatus(request.attendanceStatus) }
     }
 

@@ -4,6 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.schedule.infrastructure.jdsl.CustomSessionDsl
 import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.jpa.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.jpa.SessionEntity

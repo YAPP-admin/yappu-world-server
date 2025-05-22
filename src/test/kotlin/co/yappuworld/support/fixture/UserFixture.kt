@@ -2,6 +2,7 @@ package co.yappuworld.support.fixture
 
 import co.yappuworld.global.util.EncryptUtils
 import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.UserActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
@@ -165,5 +166,23 @@ object UserFixture {
         generation = generation,
         position = position,
         userId = userId
+    )
+
+    fun getUserActivityUnitFixture(
+        userId: UUID = UUID.randomUUID(),
+        name: String = "홍길동",
+        email: String = "abc@abc.com",
+        role: UserRole = UserRole.ACTIVE,
+        activityUnitId: UUID = UUID.randomUUID(),
+        generation: Int = 25,
+        position: Position = Position.SERVER
+    ) = UserActivityUnit(
+        userId = userId,
+        name = name,
+        email = email,
+        role = role,
+        activityUnitId = activityUnitId,
+        generation = generation,
+        position = position
     )
 }

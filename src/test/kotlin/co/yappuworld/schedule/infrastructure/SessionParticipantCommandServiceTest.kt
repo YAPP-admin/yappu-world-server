@@ -42,18 +42,18 @@ class SessionParticipantCommandServiceTest @Autowired constructor(
             scenario("세션의 모든 참가자들이 삭제된다.") {
                 val session1 = getSessionEntityFixture()
                 val session2 = getSessionEntityFixture()
-                val generationMember1 = getActivityUnitEntityFixture()
-                val generationMember2 = getActivityUnitEntityFixture()
+                val activityUnit1 = getActivityUnitEntityFixture()
+                val activityUnit2 = getActivityUnitEntityFixture()
                 saveSessionAndActivityUnit(
                     listOf(session1, session2),
-                    listOf(generationMember1, generationMember2)
+                    listOf(activityUnit1, activityUnit2)
                 )
                 sessionParticipantRepository.saveAllAndFlush(
                     listOf(
-                        SessionParticipantEntity(session1, generationMember1),
-                        SessionParticipantEntity(session1, generationMember2),
-                        SessionParticipantEntity(session2, generationMember1),
-                        SessionParticipantEntity(session2, generationMember2)
+                        SessionParticipantEntity(session1, activityUnit1),
+                        SessionParticipantEntity(session1, activityUnit2),
+                        SessionParticipantEntity(session2, activityUnit1),
+                        SessionParticipantEntity(session2, activityUnit2)
                     )
                 )
 
@@ -70,18 +70,18 @@ class SessionParticipantCommandServiceTest @Autowired constructor(
             scenario("여러 세션의 참가자들을 모두 삭제한다.") {
                 val session1 = getSessionEntityFixture()
                 val session2 = getSessionEntityFixture()
-                val generationMember1 = getActivityUnitEntityFixture()
-                val generationMember2 = getActivityUnitEntityFixture()
+                val activityUnit1 = getActivityUnitEntityFixture()
+                val activityUnit2 = getActivityUnitEntityFixture()
                 saveSessionAndActivityUnit(
                     listOf(session1, session2),
-                    listOf(generationMember1, generationMember2)
+                    listOf(activityUnit1, activityUnit2)
                 )
                 sessionParticipantRepository.saveAllAndFlush(
                     listOf(
-                        SessionParticipantEntity(session1, generationMember1),
-                        SessionParticipantEntity(session1, generationMember2),
-                        SessionParticipantEntity(session2, generationMember1),
-                        SessionParticipantEntity(session2, generationMember2)
+                        SessionParticipantEntity(session1, activityUnit1),
+                        SessionParticipantEntity(session1, activityUnit2),
+                        SessionParticipantEntity(session2, activityUnit1),
+                        SessionParticipantEntity(session2, activityUnit2)
                     )
                 )
 

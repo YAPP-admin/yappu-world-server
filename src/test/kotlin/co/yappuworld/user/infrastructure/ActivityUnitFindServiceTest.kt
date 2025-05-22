@@ -47,7 +47,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
         feature("기수 내의 참여자 조회") {
 
             scenario("존재하지 않으면 빈 리스트를 반환한다.") {
-                activityUnitFindService.findGenerationMembers(25).shouldBeEmpty()
+                activityUnitFindService.findUserActivityUnits(25).shouldBeEmpty()
             }
 
             scenario("다른 기수 기록은 조회되지 않는다.") {
@@ -57,7 +57,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
                         getActivityUnitEntityFixture(generation = 24, position = Position.PM)
                     )
                 )
-                activityUnitFindService.findGenerationMembers(23).shouldBeEmpty()
+                activityUnitFindService.findUserActivityUnits(23).shouldBeEmpty()
             }
 
             scenario("기수 내에 STAFF가 아닌 기록만 조회한다.") {
@@ -67,7 +67,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
                         getActivityUnitEntityFixture(generation = 25, position = Position.PM)
                     )
                 )
-                activityUnitFindService.findGenerationMembers(25).let {
+                activityUnitFindService.findUserActivityUnits(25).let {
                     it.shouldHaveSize(1)
                     it[0].position shouldBe Position.PM
                 }
@@ -78,7 +78,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
 
             scenario("존재하지 않으면 빈 리스트를 반환한다.") {
                 val userIds = listOf(UUID.randomUUID())
-                activityUnitFindService.findGenerationMembers(25, userIds).shouldBeEmpty()
+                activityUnitFindService.findUserActivityUnits(25, userIds).shouldBeEmpty()
             }
 
             scenario("다른 기수 기록은 조회되지 않는다.") {
@@ -89,7 +89,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
                         getActivityUnitEntityFixture(generation = 24, position = Position.PM, userId = userId)
                     )
                 )
-                activityUnitFindService.findGenerationMembers(23, listOf(userId)).shouldBeEmpty()
+                activityUnitFindService.findUserActivityUnits(23, listOf(userId)).shouldBeEmpty()
             }
 
             scenario("기수 내에 STAFF가 아닌 기록만 조회한다.") {
@@ -100,7 +100,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
                         getActivityUnitEntityFixture(generation = 25, position = Position.PM, userId = userId)
                     )
                 )
-                activityUnitFindService.findGenerationMembers(25, listOf(userId)).let {
+                activityUnitFindService.findUserActivityUnits(25, listOf(userId)).let {
                     it.shouldHaveSize(1)
                     it[0].position shouldBe Position.PM
                 }
@@ -116,7 +116,7 @@ class ActivityUnitFindServiceTest @Autowired constructor(
                         getActivityUnitEntityFixture(generation = 25, position = Position.PM, userId = otherUserId)
                     )
                 )
-                activityUnitFindService.findGenerationMembers(25, listOf(userId)).let {
+                activityUnitFindService.findUserActivityUnits(25, listOf(userId)).let {
                     it.shouldHaveSize(1)
                     it[0].userId shouldBe userId
                     it[0].position shouldBe Position.WEB

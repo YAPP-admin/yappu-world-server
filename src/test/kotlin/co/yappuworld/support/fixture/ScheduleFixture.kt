@@ -1,10 +1,12 @@
 package co.yappuworld.support.fixture
 
+import co.yappuworld.schedule.domain.SessionParticipant
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.jpa.TaskEntity
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.user.domain.vo.Position
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -82,4 +84,24 @@ object ScheduleFixture {
             attendanceStatus = attendanceStatus,
             checkedInAt = checkedInAt
         )
+
+    fun getSessionParticipantFixture(
+        activityUnitId: UUID = UUID.randomUUID(),
+        generation: Int = 25,
+        position: Position = Position.SERVER,
+        userId: UUID = UUID.randomUUID(),
+        userName: String = "홍길동",
+        sessionId: UUID = UUID.randomUUID(),
+        sessionName: String = "세션 이름",
+        attendanceStatus: AttendanceStatus = AttendanceStatus.PENDING
+    ) = SessionParticipant(
+        activityUnitId = activityUnitId,
+        generation = generation,
+        position = position,
+        userId = userId,
+        userName = userName,
+        sessionId = sessionId,
+        sessionName = sessionName,
+        attendanceStatus = attendanceStatus
+    )
 }

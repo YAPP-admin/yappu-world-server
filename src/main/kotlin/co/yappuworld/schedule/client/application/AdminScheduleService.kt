@@ -81,9 +81,9 @@ class AdminScheduleService(
     ) {
         val participants = when {
             // TODO: 현재 프론트에서 해당 값을 파라미터로 보내고 있지 않으므로, 파라미터가 추가되고 나면 해당 로직은 삭제
-            userIds == null -> activityUnitFindService.findGenerationMembers(session.generation)
+            userIds == null -> activityUnitFindService.findUserActivityUnits(session.generation)
             userIds.isEmpty() -> return
-            else -> activityUnitFindService.findGenerationMembers(session.generation, userIds)
+            else -> activityUnitFindService.findUserActivityUnits(session.generation, userIds)
         }
 
         sessionParticipantCommandService.saveAll(session, participants)
@@ -106,13 +106,13 @@ class AdminScheduleService(
             return
         }
 
-        val existParticipants = sessionParticipantFindService.findSessionParticipantEntieis(session.id)
+        val existParticipants = sessionParticipantFindService.findSessionParticipantEntities(session.id)
         val existParticipantIds = existParticipants.map { it.id }.toSet()
 
         val updateParticipantIds = updateUserIds.toSet()
         val newParticipantIds = updateParticipantIds - existParticipantIds
         activityUnitFindService
-            .findGenerationMembers(session.generation, newParticipantIds)
+            .findUserActivityUnits(session.generation, newParticipantIds)
             .also { sessionParticipantCommandService.saveAll(session, it) }
 
         existParticipants

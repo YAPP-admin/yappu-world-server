@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.domain
 
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.user.domain.vo.Position
 import java.util.UUID
 
@@ -10,5 +11,9 @@ class SessionParticipant(
     val userId: UUID,
     val userName: String,
     val sessionId: UUID,
-    val sessionName: String
-)
+    val sessionName: String,
+    val attendanceStatus: AttendanceStatus
+) {
+
+    fun isPending(): Boolean = attendanceStatus == AttendanceStatus.PENDING
+}

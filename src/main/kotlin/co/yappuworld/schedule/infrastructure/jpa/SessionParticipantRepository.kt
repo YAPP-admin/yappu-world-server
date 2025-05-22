@@ -13,4 +13,6 @@ interface SessionParticipantRepository :
     fun deleteAllBySession(session: SessionEntity)
 
     fun deleteAllBySessionIdIn(sessionIds: List<UUID>)
+
+    fun session(session: SessionEntity): MutableList<SessionParticipantEntity>
 }
