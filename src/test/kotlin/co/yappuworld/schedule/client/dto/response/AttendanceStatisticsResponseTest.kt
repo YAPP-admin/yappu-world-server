@@ -6,7 +6,7 @@ import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceBookFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserActivityUnitFixture
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
@@ -16,7 +16,7 @@ class AttendanceStatisticsResponseTest :
 
         feature("데이터 검증") {
             val generation = 25
-            val user = getUserWithActivityUnitFixture(generation = generation)
+            val user = getUserActivityUnitFixture(generation = generation)
             val datetime = LocalDateTime.of(2025, 3, 4, 8, 0, 0)
             val sessions = listOf(
                 getSessionEntityFixture(

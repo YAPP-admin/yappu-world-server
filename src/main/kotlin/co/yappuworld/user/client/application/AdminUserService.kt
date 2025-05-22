@@ -11,7 +11,6 @@ import co.yappuworld.operation.client.application.GenerationActiveStateManager
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.infrastructure.ConfigCommandService
 import co.yappuworld.operation.infrastructure.ConfigFindService
-import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
@@ -37,7 +36,6 @@ class AdminUserService(
     private val userFindService: UserFindService,
     private val activityUnitFindService: ActivityUnitFindService,
     private val activityUnitCommandService: ActivityUnitCommandService,
-    private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
@@ -92,7 +90,7 @@ class AdminUserService(
     @Transactional(readOnly = true)
     fun getUserOverviews(request: AdminUserPageRequest): OffsetPageResponse<AdminUserOverviewResponse> =
         userFindService
-            .findAllUserWithLastActivityUnit(request.toPageRequest())
+            .findAllUserLastActivityUnit(request.toPageRequest())
             .let { page -> OffsetPageResponse.from(page) { AdminUserOverviewResponse(it) } }
 
     @Transactional
@@ -122,7 +120,7 @@ class AdminUserService(
 
     @Transactional(readOnly = true)
     fun getUserProfile(userId: UUID): AdminUserProfileResponse =
-        AdminUserProfileResponse(userFindService.findUserWithLastActivityUnit(userId))
+        AdminUserProfileResponse(userFindService.findUserLastActivityUnit(userId))
 
     private fun handleActivityUnitRequest(
         userId: UUID,

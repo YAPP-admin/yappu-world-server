@@ -8,19 +8,19 @@ import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.jpa.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.jpa.SessionEntity
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
+import co.yappuworld.user.domain.model.UserActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.time.LocalDateTime
 import java.util.UUID
 
 object AttendanceFixture {
 
     fun getSessionAttendanceFixture(
-        attendee: Attendee = getAttendeeFixture(getUserWithActivityUnitFixture()),
+        attendee: Attendee = getAttendeeFixture(getUserActivityUnitFixture()),
         session: SessionEntity = getSessionEntityFixture(),
         attendance: AttendanceEntity? = null
     ): SessionAttendance =
@@ -51,7 +51,7 @@ object AttendanceFixture {
 
     fun getAttendanceBookFixture(
         generation: Int = 25,
-        attendees: List<Attendee> = listOf(getAttendeeFixture(getUserWithActivityUnitFixture())),
+        attendees: List<Attendee> = listOf(getAttendeeFixture(getUserActivityUnitFixture())),
         sessions: List<SessionEntity> = listOf(getSessionEntityFixture(generation = generation)),
         attendances: List<AttendanceEntity> = emptyList(),
         latePassCountByUserId: Map<UUID, Int> = emptyMap(),
@@ -80,11 +80,11 @@ object AttendanceFixture {
         )
 
     fun getAttendeeFixture(
-        userWithActivityUnit: UserWithActivityUnit = getUserWithActivityUnitFixture(),
+        userActivityUnit: UserActivityUnit = getUserActivityUnitFixture(),
         generation: Int = 25
     ): Attendee =
         Attendee.from(
-            userWithActivityUnit = userWithActivityUnit,
+            userActivityUnit = userActivityUnit,
             generation = generation
         )
 

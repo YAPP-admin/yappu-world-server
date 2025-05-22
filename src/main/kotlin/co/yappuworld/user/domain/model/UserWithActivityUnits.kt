@@ -1,7 +1,6 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.util.UUID
 
 class UserWithActivityUnits(
@@ -13,7 +12,8 @@ class UserWithActivityUnits(
 ) {
 
     companion object {
-        fun of(elements: List<UserWithActivityUnit>): UserWithActivityUnits {
+
+        fun of(elements: List<UserActivityUnit>): UserWithActivityUnits {
             check(elements.groupBy { it.userId }.size == 1)
 
             return UserWithActivityUnits(

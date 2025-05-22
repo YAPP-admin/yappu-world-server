@@ -3,7 +3,7 @@ package co.yappuworld.schedule.domain
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getSessionAttendanceFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserActivityUnitFixture
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
@@ -18,7 +18,7 @@ class SessionAttendanceTest :
 
         feature("출석 가능한 지 확인") {
             val generation = 25
-            val attendee = getAttendeeFixture(getUserWithActivityUnitFixture(generation = generation), generation)
+            val attendee = getAttendeeFixture(getUserActivityUnitFixture(generation = generation), generation)
             val session = getSessionEntityFixture(
                 generation = generation,
                 date = LocalDate.of(2024, 12, 12),

@@ -14,7 +14,7 @@ import co.yappuworld.user.infrastructure.jpa.SignUpApplicationEntity
 import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingEntity
 import co.yappuworld.user.infrastructure.jpa.UserDeviceEntity
 import co.yappuworld.user.infrastructure.jpa.UserEntity
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import java.time.LocalDateTime
 import java.util.UUID
 
 object UserFixture {
@@ -101,23 +101,6 @@ object UserFixture {
             fcmToken = fcmToken
         )
 
-    fun getUserWithActivityUnitFixture(
-        userId: UUID = UUID.randomUUID(),
-        email: String = "email@abc.com",
-        name: String = "홍길동",
-        role: UserRole = UserRole.ACTIVE,
-        generation: Int = 25,
-        position: Position = Position.SERVER
-    ): UserWithActivityUnit =
-        UserWithActivityUnit(
-            userId = userId,
-            email = email,
-            name = name,
-            role = role,
-            generation = generation,
-            position = position
-        )
-
     fun getUserWithActivityUnitsFixture(
         userId: UUID = UUID.randomUUID(),
         email: String = "email@abc.com",
@@ -170,17 +153,21 @@ object UserFixture {
 
     fun getUserActivityUnitFixture(
         userId: UUID = UUID.randomUUID(),
+        createdAt: LocalDateTime = LocalDateTime.now(),
         name: String = "홍길동",
         email: String = "abc@abc.com",
         role: UserRole = UserRole.ACTIVE,
+        isActive: Boolean = true,
         activityUnitId: UUID = UUID.randomUUID(),
         generation: Int = 25,
         position: Position = Position.SERVER
     ) = UserActivityUnit(
         userId = userId,
+        createdAt = createdAt,
         name = name,
         email = email,
         role = role,
+        isActive = isActive,
         activityUnitId = activityUnitId,
         generation = generation,
         position = position

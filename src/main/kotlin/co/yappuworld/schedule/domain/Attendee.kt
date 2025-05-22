@@ -3,10 +3,10 @@ package co.yappuworld.schedule.domain
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.user.domain.model.UserActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.util.UUID
 
 class Attendee(
@@ -19,17 +19,17 @@ class Attendee(
     companion object {
 
         fun from(
-            userWithActivityUnit: UserWithActivityUnit,
+            userActivityUnit: UserActivityUnit,
             generation: Int
         ): Attendee {
-            checkRole(userWithActivityUnit.role)
-            checkActivityUnit(userWithActivityUnit.getActivityUnit(), generation)
+            checkRole(userActivityUnit.role)
+            checkActivityUnit(userActivityUnit.getActivityUnit(), generation)
 
             return Attendee(
-                id = userWithActivityUnit.userId,
-                name = userWithActivityUnit.name,
-                role = userWithActivityUnit.role,
-                position = userWithActivityUnit.position
+                id = userActivityUnit.userId,
+                name = userActivityUnit.name,
+                role = userActivityUnit.role,
+                position = userActivityUnit.position
             )
         }
 

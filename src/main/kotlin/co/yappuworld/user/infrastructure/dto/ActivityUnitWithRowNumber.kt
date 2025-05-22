@@ -1,4 +1,4 @@
-package co.yappuworld.user.infrastructure.model
+package co.yappuworld.user.infrastructure.dto
 
 import co.yappuworld.user.domain.vo.Position
 import java.util.UUID

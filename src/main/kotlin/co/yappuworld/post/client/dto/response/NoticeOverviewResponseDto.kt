@@ -1,9 +1,9 @@
 package co.yappuworld.post.client.dto.response
 
 import co.yappuworld.operation.client.dto.response.PositionResponse
-import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.domain.NoticeType
-import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
+import co.yappuworld.user.domain.model.UserActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
@@ -15,7 +15,7 @@ data class NoticeOverviewResponse(
     val writer: NoticeOverviewWriterResponse
 ) {
 
-    constructor(notice: NoticeEntity, writer: UserWithLastActivityUnit) : this(
+    constructor(notice: NoticeEntity, writer: UserActivityUnit) : this(
         notice = NoticeSimpleResponse(notice),
         writer = NoticeOverviewWriterResponse(writer)
     )
@@ -54,10 +54,10 @@ data class NoticeOverviewWriterResponse(
     val activityUnitPosition: PositionResponse
 ) {
 
-    constructor(writer: UserWithLastActivityUnit) : this(
+    constructor(writer: UserActivityUnit) : this(
         id = writer.userId,
         name = writer.name,
-        activityUnitGeneration = writer.lastActiveGeneration,
-        activityUnitPosition = PositionResponse(writer.lastActivePosition)
+        activityUnitGeneration = writer.generation,
+        activityUnitPosition = PositionResponse(writer.position)
     )
 }

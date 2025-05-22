@@ -5,7 +5,6 @@ import co.yappuworld.schedule.infrastructure.jpa.LatePassEntity
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionParticipantFixture
 import co.yappuworld.support.fixture.UserFixture.getUserActivityUnitFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
@@ -15,7 +14,7 @@ class GenerationAttendanceBookTest :
     FeatureSpec({
         val now = LocalDateTime.of(2024, 12, 10, 0, 0)
         val generation = 25
-        val users = List(2) { getUserWithActivityUnitFixture(generation = generation) }
+        val users = List(2) { getUserActivityUnitFixture(generation = generation) }
         val userActivityUnits = users.map { getUserActivityUnitFixture(userId = it.userId, generation = generation) }
         val sessions = listOf(
             getSessionEntityFixture(

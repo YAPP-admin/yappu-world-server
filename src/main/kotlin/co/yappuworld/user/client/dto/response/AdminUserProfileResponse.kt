@@ -1,6 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
+import co.yappuworld.user.domain.model.UserActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -17,10 +17,10 @@ data class AdminUserProfileResponse(
     )
     val position: String
 ) {
-    constructor(userWithLastActivityUnit: UserWithLastActivityUnit) : this(
-        id = userWithLastActivityUnit.userId,
-        name = userWithLastActivityUnit.name,
-        role = userWithLastActivityUnit.role.label,
-        position = userWithLastActivityUnit.lastActivePosition.label
+    constructor(userLastActivityUnit: UserActivityUnit) : this(
+        id = userLastActivityUnit.userId,
+        name = userLastActivityUnit.name,
+        role = userLastActivityUnit.role.label,
+        position = userLastActivityUnit.position.label
     )
 }

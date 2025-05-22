@@ -127,7 +127,7 @@ class UserFindServiceTest @Autowired constructor(
 
             scenario("유저가 존재하지 않으면 예외 발생") {
                 shouldThrowExactly<BusinessException> {
-                    userFindService.findUserWithLastActivityUnit(UUID.randomUUID())
+                    userFindService.findUserLastActivityUnit(UUID.randomUUID())
                 }.error shouldBe UserError.USER_NOT_FOUND
             }
 
@@ -136,7 +136,7 @@ class UserFindServiceTest @Autowired constructor(
                 userRepository.saveAndFlush(user)
 
                 shouldThrowExactly<BusinessException> {
-                    userFindService.findUserWithLastActivityUnit(user.id)
+                    userFindService.findUserLastActivityUnit(user.id)
                 }.error shouldBe UserError.USER_NOT_FOUND
             }
 
@@ -147,10 +147,10 @@ class UserFindServiceTest @Autowired constructor(
                     getActivityUnitEntityFixture(generation = 25, position = Position.ANDROID, userId = user.id)
                 )
 
-                userFindService.findUserWithLastActivityUnit(user.id).let {
+                userFindService.findUserLastActivityUnit(user.id).let {
                     it.userId shouldBe user.id
-                    it.lastActiveGeneration shouldBe 25
-                    it.lastActivePosition shouldBe Position.ANDROID
+                    it.generation shouldBe 25
+                    it.position shouldBe Position.ANDROID
                 }
             }
 
@@ -164,10 +164,10 @@ class UserFindServiceTest @Autowired constructor(
                     )
                 )
 
-                userFindService.findUserWithLastActivityUnit(user.id).let {
+                userFindService.findUserLastActivityUnit(user.id).let {
                     it.userId shouldBe user.id
-                    it.lastActiveGeneration shouldBe 25
-                    it.lastActivePosition shouldBe Position.ANDROID
+                    it.generation shouldBe 25
+                    it.position shouldBe Position.ANDROID
                 }
             }
         }
@@ -176,12 +176,12 @@ class UserFindServiceTest @Autowired constructor(
 
             scenario("빈 리스트로 요청하면 예외가 발생한다.") {
                 shouldThrowExactly<IllegalArgumentException> {
-                    userFindService.findAllUserWithLastActivityUnit(emptyList())
+                    userFindService.findAllUserLastActivityUnit(emptyList())
                 }
             }
 
             scenario("존재하지 않는 유저만 조회하면 빈 리스트 반환") {
-                userFindService.findAllUserWithLastActivityUnit(listOf(UUID.randomUUID())).shouldBeEmpty()
+                userFindService.findAllUserLastActivityUnit(listOf(UUID.randomUUID())).shouldBeEmpty()
             }
 
             scenario("존재하는 것과 존재하지 않는 것이 함께 요청되면, 존재하는 것만 반환") {
@@ -191,11 +191,11 @@ class UserFindServiceTest @Autowired constructor(
                     getActivityUnitEntityFixture(generation = 25, position = Position.ANDROID, userId = user.id)
                 )
 
-                userFindService.findAllUserWithLastActivityUnit(listOf(user.id, UUID.randomUUID())).let {
+                userFindService.findAllUserLastActivityUnit(listOf(user.id, UUID.randomUUID())).let {
                     it.shouldHaveSize(1)
                     it.first().userId shouldBe user.id
-                    it.first().lastActiveGeneration shouldBe 25
-                    it.first().lastActivePosition shouldBe Position.ANDROID
+                    it.first().generation shouldBe 25
+                    it.first().position shouldBe Position.ANDROID
                 }
             }
 
@@ -212,13 +212,13 @@ class UserFindServiceTest @Autowired constructor(
                 )
 
                 userFindService
-                    .findAllUserWithLastActivityUnit(listOf(userHasActivityUnit.id, userWithoutActivityUnit.id))
+                    .findAllUserLastActivityUnit(listOf(userHasActivityUnit.id, userWithoutActivityUnit.id))
                     .let { result ->
                         result.shouldHaveSize(1)
                         result.first().let { user ->
                             user.userId shouldBe userHasActivityUnit.id
-                            user.lastActiveGeneration shouldBe 24
-                            user.lastActivePosition shouldBe Position.SERVER
+                            user.generation shouldBe 24
+                            user.position shouldBe Position.SERVER
                         }
                     }
             }
@@ -227,7 +227,7 @@ class UserFindServiceTest @Autowired constructor(
         feature("유저의 마지막 활동 내역을 페이지로 조회") {
 
             scenario("데이터가 없으면 빈 페이지 반환") {
-                userFindService.findAllUserWithLastActivityUnit(PageRequest.of(0, 10)).let {
+                userFindService.findAllUserLastActivityUnit(PageRequest.of(0, 10)).let {
                     it.content.shouldHaveSize(0)
                     it.number shouldBe 0
                     it.totalElements shouldBe 0
@@ -243,7 +243,7 @@ class UserFindServiceTest @Autowired constructor(
                 activityUnitRepository.saveAll(activityUnits)
 
                 userFindService
-                    .findAllUserWithLastActivityUnit(PageRequest.of(0, 10))
+                    .findAllUserLastActivityUnit(PageRequest.of(0, 10))
                     .let { result ->
                         result.content.shouldHaveSize(4)
                         result.content
@@ -264,7 +264,7 @@ class UserFindServiceTest @Autowired constructor(
                 activityUnitRepository.saveAllAndFlush(activityUnits)
 
                 userFindService
-                    .findAllUserWithLastActivityUnit(PageRequest.of(1, 10))
+                    .findAllUserLastActivityUnit(PageRequest.of(1, 10))
                     .let { result ->
                         result.content.shouldHaveSize(1)
                         result.content.last().userId shouldBeIn users.map { it.id }
@@ -350,111 +350,6 @@ class UserFindServiceTest @Autowired constructor(
                 userFindService
                     .findSessionAttendee(user.id, 99)
                     .position shouldBe Position.PM
-            }
-        }
-
-        feature("특정 기수의 모든 세션 참석자를 조회한다.") {
-
-            scenario("데이터가 없으면 빈 리스트가 반환된다.") {
-                userFindService.findSessionAttendeesOfGeneration(99).shouldBeEmpty()
-            }
-
-            scenario("운영진 활동 기록은 제외된다.") {
-                val user = getUserEntityFixture()
-                userRepository.saveAndFlush(user)
-                activityUnitRepository.saveAllAndFlush(
-                    listOf(getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id))
-                )
-
-                userFindService.findSessionAttendeesOfGeneration(99).shouldHaveSize(0)
-            }
-
-            scenario("운영진 활동 기록과 다른 기록이 함께 있으면, 운영진 기록은 제외하고 다른 활동 기록이 포함된다.") {
-                val user = getUserEntityFixture()
-                userRepository.saveAndFlush(user)
-                activityUnitRepository.saveAllAndFlush(
-                    listOf(
-                        getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id),
-                        getActivityUnitEntityFixture(generation = 99, position = Position.PM, userId = user.id)
-                    )
-                )
-
-                userFindService.findSessionAttendeesOfGeneration(99).shouldHaveSize(1)
-            }
-        }
-
-        feature("특정 기수에 활동한 모든 유저를 조회한다.") {
-
-            scenario("해당 기수에 활동한 유저가 없다면 빈 리스트를 반환한다.") {
-                userFindService.findUsersActiveOfGeneration(99).shouldBeEmpty()
-            }
-
-            scenario("특정 기수에 활동한 기록이 있는 모든 유저를 조회한다.") {
-                val user1 = getUserEntityFixture().also {
-                    userRepository.saveAndFlush(it)
-                    activityUnitRepository.saveAllAndFlush(
-                        listOf(
-                            getActivityUnitEntityFixture(generation = 99, position = Position.PM, userId = it.id),
-                            getActivityUnitEntityFixture(generation = 98, position = Position.PM, userId = it.id)
-                        )
-                    )
-                }
-                val user2 = getUserEntityFixture().also {
-                    userRepository.saveAndFlush(it)
-                    activityUnitRepository.saveAllAndFlush(
-                        listOf(
-                            getActivityUnitEntityFixture(generation = 99, position = Position.SERVER, userId = it.id),
-                            getActivityUnitEntityFixture(generation = 100, position = Position.SERVER, userId = it.id)
-                        )
-                    )
-                }
-
-                val userIds = listOf(user1.id, user2.id).sorted()
-                val result = userFindService
-                    .findUsersActiveOfGeneration(99)
-                val resultByUserId = result.associateBy { it.userId }
-
-                result.shouldHaveSize(2)
-                userIds.forEach { userId ->
-                    val userWithActivityUnit = resultByUserId[userId].shouldNotBeNull()
-                    userWithActivityUnit.generation shouldBe 99
-                }
-            }
-        }
-
-        feature("유저의 특정 기수 활동 기록을 조회한다.") {
-
-            scenario("유저가 존재하지 않으면 예외가 발생한다.") {
-                shouldThrowExactly<BusinessException> {
-                    userFindService.findUserWithActivityUnitOfGeneration(UUID.randomUUID(), 24)
-                }.error shouldBe UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY
-            }
-
-            scenario("해당 기수의 활동 내역이 없으면 예외가 발생한다.") {
-                val user = getUserEntityFixture()
-                userRepository.saveAndFlush(user)
-
-                val activityUnit = getActivityUnitEntityFixture(generation = 25, userId = user.id)
-                activityUnitRepository.save(activityUnit)
-
-                shouldThrowExactly<BusinessException> {
-                    userFindService.findUserWithActivityUnitOfGeneration(user.id, activityUnit.generation + 1)
-                }.error shouldBe UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY
-            }
-
-            scenario("해당 기수 활동 내역이 있으면 정상 조회된다.") {
-                val user = getUserEntityFixture()
-                userRepository.saveAndFlush(user)
-
-                val activityUnit = getActivityUnitEntityFixture(generation = 25, userId = user.id)
-                activityUnitRepository.save(activityUnit)
-
-                shouldNotThrowAny {
-                    userFindService.findUserWithActivityUnitOfGeneration(user.id, activityUnit.generation)
-                }.let {
-                    it.generation shouldBe activityUnit.generation
-                    it.userId shouldBe user.id
-                }
             }
         }
     })
