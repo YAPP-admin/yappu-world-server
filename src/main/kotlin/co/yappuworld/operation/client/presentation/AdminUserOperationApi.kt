@@ -99,11 +99,31 @@ interface AdminUserOperationApi {
             ApiResponse(
                 responseCode = "204",
                 content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "존재하지 않는 기수가 요청에 포함",
+                                value = """
+                                {
+                                    "errorCode": "OPR_1002",
+                                    "message": "존재하지 않는 기수가 포함되어 있습니다.",
+                                    "isSuccess": false
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     )
     @DeleteMapping("/admin/v1/operations/generations")
-    fun deleteGeneration(
+    fun deleteGenerations(
         @RequestBody request: AdminGenerationDeleteRequest
     ): ResponseEntity<SuccessResponse<Unit>>
 

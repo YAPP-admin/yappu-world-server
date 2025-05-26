@@ -39,8 +39,8 @@ class AdminUserOperationController(
         return ResponseEntity.created(URI("/admin/v1/operations")).build()
     }
 
-    override fun deleteGeneration(request: AdminGenerationDeleteRequest): ResponseEntity<SuccessResponse<Unit>> {
-        adminUserOperationService.deleteGeneration(request)
+    override fun deleteGenerations(request: AdminGenerationDeleteRequest): ResponseEntity<SuccessResponse<Unit>> {
+        adminUserOperationService.deleteGenerations(request)
         return ResponseEntity.noContent().build()
     }
 
