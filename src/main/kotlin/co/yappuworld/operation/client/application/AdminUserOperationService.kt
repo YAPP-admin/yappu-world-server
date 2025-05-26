@@ -51,7 +51,7 @@ class AdminUserOperationService(
         )
 
     @Transactional
-    fun deleteGeneration(request: AdminGenerationDeleteRequest) {
-        generationCommandService.delete(request.generation)
+    fun deleteGenerations(request: AdminGenerationDeleteRequest) {
+        generationCommandService.deleteAll(request.generations)
     }
 }
