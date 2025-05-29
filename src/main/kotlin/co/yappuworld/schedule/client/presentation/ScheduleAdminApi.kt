@@ -60,7 +60,7 @@ interface ScheduleAdminApi {
         ]
     )
     @PostMapping("/admin/v1/sessions")
-    fun createSchedule(
+    fun createSession(
         @Valid @RequestBody request: AdminSessionCreateRequest
     ): ResponseEntity<Unit>
 

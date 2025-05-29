@@ -9,8 +9,10 @@ import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
+import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -18,14 +20,18 @@ import java.util.UUID
 @Service
 class ScheduleAdminService(
     private val sessionFindService: SessionFindService,
-    private val scheduleCommandService: ScheduleCommandService
+    private val scheduleCommandService: ScheduleCommandService,
+    private val attendanceCommandService: AttendanceCommandService
 ) {
 
     @Transactional
     fun createSchedule(request: AdminSessionCreateRequest): UUID {
-        val schedule = request
-            .toDomain()
-            .also { scheduleCommandService.save(it) }
+        val schedule = request.toDomain()
+        scheduleCommandService.save(schedule)
+
+        request.sessionAttendeeIds
+            .map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = schedule.id) }
+            .also { attendanceCommandService.saveAll(it) }
 
         return schedule.id
     }

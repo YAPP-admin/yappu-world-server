@@ -4,14 +4,12 @@ import co.yappuworld.schedule.domain.vo.ScheduleType
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.time.LocalTime
-
-private val logger = KotlinLogging.logger {}
+import java.util.UUID
 
 data class AdminSessionCreateRequest(
     @Schema(description = "스케줄 이름", nullable = false, example = "데모데이")
@@ -35,24 +33,12 @@ data class AdminSessionCreateRequest(
     @field:NotNull
     var type: ScheduleType,
     @Schema(description = "세션 종류", nullable = false, example = "OFFLINE")
-    var sessionType: SessionType
+    var sessionType: SessionType,
+    @Schema(description = "세션 참석자 ID", nullable = false, example = "OFFLINE")
+    val sessionAttendeeIds: List<UUID>
 ) {
 
-    init {
-        logger.info { "세션 시작 날짜: $date" }
-        logger.info { "세션 시작 시간: $time" }
-        logger.info { "세션 종료 날짜: $endDate" }
-        logger.info { "세션 종료 시간: $endTime" }
-    }
-
     fun toDomain(): ScheduleEntity =
-        when (type) {
-            ScheduleType.SESSION -> convertToSession()
-            ScheduleType.TASK -> TODO()
-            ScheduleType.ETC -> TODO()
-        }
-
-    private fun convertToSession(): ScheduleEntity =
         SessionEntity(
             name = name,
             description = description,

@@ -19,7 +19,7 @@ class ScheduleAdminController(
     private val scheduleAdminService: ScheduleAdminService
 ) : ScheduleAdminApi {
 
-    override fun createSchedule(request: AdminSessionCreateRequest): ResponseEntity<Unit> {
+    override fun createSession(request: AdminSessionCreateRequest): ResponseEntity<Unit> {
         val scheduleId = scheduleAdminService.createSchedule(request)
         return ResponseEntity.created(URI.create("/v1/admin/schedules/$scheduleId")).build()
     }

@@ -14,7 +14,7 @@ import java.util.UUID
 @Entity
 @Table(name = "attendances")
 class AttendanceEntity(
-    status: AttendanceStatus,
+    status: AttendanceStatus = AttendanceStatus.PENDING,
     @Column(name = "user_id", nullable = false)
     val userId: UUID,
     @Column(name = "schedule_id", nullable = false)

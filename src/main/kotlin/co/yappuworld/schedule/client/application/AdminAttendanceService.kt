@@ -50,21 +50,10 @@ class AdminAttendanceService(
             .findAttendances(request.getSessionAndUserIdPairs())
             .associateBy { it.scheduleId to it.userId }
 
-        val newAttendances = mutableListOf<AttendanceEntity>()
-
         request.targets.forEach { target ->
             attendanceBySessionAndUserId[target.sessionId to target.userId]
                 ?.apply { updateStatus(target.attendanceStatus) }
-                ?: newAttendances.add(
-                    AttendanceEntity(
-                        status = target.attendanceStatus,
-                        userId = target.userId,
-                        scheduleId = target.sessionId
-                    )
-                )
         }
-
-        if (newAttendances.isNotEmpty()) attendanceCommandService.saveAll(newAttendances)
     }
 
     @Transactional
