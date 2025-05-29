@@ -13,6 +13,9 @@ class GenerationCommandService(
 
     fun deleteAll(generations: List<Int>) {
         val generationEntities = generationRepository.findAllByValueIn(generations)
+        if (generationEntities.any { it.isActive }) {
+            throw BusinessException(OperationError.CANNOT_DELETE_ACTIVE_GENERATION)
+        }
         if (generationEntities.size != generations.size) {
             throw BusinessException(OperationError.CONTAIN_NOT_EXIST_GENERATION)
         }
