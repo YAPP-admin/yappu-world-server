@@ -237,7 +237,7 @@ interface ScheduleAdminApi {
         ]
     )
     @DeleteMapping("/admin/v1/sessions")
-    fun deleteSession(
+    fun deleteSessions(
         @Valid @RequestBody request: AdminSessionDeleteRequest
     ): ResponseEntity<Unit>
 
