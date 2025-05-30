@@ -103,7 +103,7 @@ class AttendanceFindService(
                             and(
                                 path(ActivityUnitEntity::userId).equal(path(AttendanceEntity::userId)),
                                 path(ActivityUnitEntity::generation).equal(path(SessionEntity::generation)),
-                                path(ActivityUnitEntity::position).`in`(Position.attendeePositions)
+                                path(ActivityUnitEntity::position).notEqual(Position.STAFF)
                             )
                         ),
                     join(entity(UserEntity::class))

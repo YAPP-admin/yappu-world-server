@@ -3,7 +3,7 @@ package co.yappuworld.schedule.client.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
-import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
+import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
@@ -64,7 +64,7 @@ class ScheduleService(
 
     fun getSessions(
         userId: UUID,
-        request: SessionQueryParamRequest,
+        request: SessionParamRequest,
         now: LocalDateTime
     ): SessionOverviewResponse {
         val generation = request.generation

@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 class ScheduleAdminServiceTest @Autowired constructor(
-    private val scheduleAdminService: ScheduleAdminService,
+    private val adminScheduleService: AdminScheduleService,
     private val userRepository: UserRepository,
     private val activityUnitRepository: ActivityUnitRepository,
     private val scheduleRepository: ScheduleRepository,
@@ -39,7 +39,7 @@ class ScheduleAdminServiceTest @Autowired constructor(
                 val request = getAdminSessionCreateRequestFixture(attendeeIds = users.map { it.id })
 
                 // when
-                val scheduleId = scheduleAdminService.createSchedule(request)
+                val scheduleId = adminScheduleService.createSchedule(request)
 
                 val userIds = users.map { user -> user.id }
                 val result = attendanceRepository.findAllByScheduleId(scheduleId)
@@ -59,7 +59,7 @@ class ScheduleAdminServiceTest @Autowired constructor(
 
                 // when, then
                 shouldThrowExactly<BusinessException> {
-                    scheduleAdminService.deleteSessions(request)
+                    adminScheduleService.deleteSessions(request)
                 }.error shouldBe ScheduleError.CONTAIN_IMPROPER_ID_FOR_DELETE_SESSION
             }
 
@@ -75,7 +75,7 @@ class ScheduleAdminServiceTest @Autowired constructor(
                 ).also { attendanceRepository.saveAll(it) }
 
                 // when
-                scheduleAdminService.deleteSessions(AdminSessionDeleteRequest(ids = sessions.map { it.id }))
+                adminScheduleService.deleteSessions(AdminSessionDeleteRequest(ids = sessions.map { it.id }))
 
                 // then
                 attendanceRepository.findAllByScheduleId(sessions[0].id).shouldHaveSize(0)
@@ -107,7 +107,7 @@ class ScheduleAdminServiceTest @Autowired constructor(
                 scheduleRepository.save(session)
                 attendanceRepository.saveAllAndFlush(attendances)
 
-                val result = scheduleAdminService.getSession(session.id)
+                val result = adminScheduleService.getSession(session.id)
 
                 result.attendees.single { it.position == Position.PM }.let {
                     it.attendees.shouldHaveSize(1)

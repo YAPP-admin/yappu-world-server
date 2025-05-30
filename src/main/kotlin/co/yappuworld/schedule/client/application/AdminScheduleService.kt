@@ -4,9 +4,11 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionEligibleUsersParamRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
+import co.yappuworld.schedule.client.dto.response.AdminSessionEligibleUsersResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
@@ -14,16 +16,18 @@ import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
-class ScheduleAdminService(
+class AdminScheduleService(
     private val sessionFindService: SessionFindService,
     private val scheduleCommandService: ScheduleCommandService,
     private val attendanceFindService: AttendanceFindService,
-    private val attendanceCommandService: AttendanceCommandService
+    private val attendanceCommandService: AttendanceCommandService,
+    private val userFindService: UserFindService
 ) {
 
     @Transactional
@@ -73,4 +77,8 @@ class ScheduleAdminService(
             .findSession(request.id)
             .apply { request.applyTo(this) }
     }
+
+    @Transactional(readOnly = true)
+    fun getSessionEligibleUsers(request: AdminSessionEligibleUsersParamRequest): AdminSessionEligibleUsersResponse =
+        AdminSessionEligibleUsersResponse.from(userFindService.findActiveUsersOfGeneration(request.generation))
 }

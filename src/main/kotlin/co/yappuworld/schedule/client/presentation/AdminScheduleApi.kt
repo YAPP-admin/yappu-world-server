@@ -5,9 +5,11 @@ import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
+import co.yappuworld.schedule.client.dto.request.AdminSessionEligibleUsersParamRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
+import co.yappuworld.schedule.client.dto.response.AdminSessionEligibleUsersResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -28,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
 
 @Tag(name = "어드민 일정 API", description = "일정 및 출석 관리")
-interface ScheduleAdminApi {
+interface AdminScheduleApi {
 
     @Operation(summary = "세션 생성")
     @ApiResponses(
@@ -330,4 +332,82 @@ interface ScheduleAdminApi {
     fun updateSession(
         @RequestBody request: AdminSessionUpdateRequest
     ): ResponseEntity<Unit>
+
+    @Operation(summary = "세션 참석 가능한 유저 목록 조회")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AdminSessionEligibleUsersResponse::class),
+                        examples = [
+                            ExampleObject(
+                                value = """
+                                    {
+                                        "data": {
+                                            "users": [
+                                                {
+                                                    "position": "PM",
+                                                    "users": [
+                                                        {
+                                                            "userId": "01971fa9-f620-7579-a0bf-eb79e3ffd31a",
+                                                            "name": "홍길동"
+                                                        },
+                                                        {
+                                                            "userId": "01971faa-2675-9a41-e1e1-ecf1f81504ca",
+                                                            "name": "임꺽정"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "position": "DESIGN",
+                                                    "users": []
+                                                },
+                                                {
+                                                    "position": "WEB",
+                                                    "users": [
+                                                        {
+                                                            "userId": "01971faa-6929-0843-8f00-91c31b7c6650",
+                                                            "name": "진달래"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "position": "ANDROID",
+                                                    "users": []
+                                                },
+                                                {
+                                                    "position": "IOS",
+                                                    "users": []
+                                                },
+                                                {
+                                                    "position": "FLUTTER",
+                                                    "users": []
+                                                },
+                                                {
+                                                    "position": "SERVER",
+                                                    "users": [
+                                                        {
+                                                            "userId": "01971faa-a1c3-7a64-2dd9-0aad37df97c7",
+                                                            "name": "장미"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/admin/v1/session-eligible-users")
+    fun getSessionEligibleUsers(
+        @Valid @ParameterObject request: AdminSessionEligibleUsersParamRequest
+    ): ResponseEntity<SuccessResponse<AdminSessionEligibleUsersResponse>>
 }

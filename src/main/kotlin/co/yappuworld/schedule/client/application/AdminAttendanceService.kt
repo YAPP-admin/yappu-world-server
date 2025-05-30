@@ -59,7 +59,7 @@ class AdminAttendanceService(
     @Transactional
     fun updateSessionAttendances(request: AdminSessionAttendanceUpdateRequest) {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val users = userFindService.findUsersActiveOfGeneration(activeGeneration)
+        val users = userFindService.findActiveUsersOfGeneration(activeGeneration)
         val existAttendances = attendanceFindService
             .findAttendances(request.sessionId)
             .associateBy { it.userId }

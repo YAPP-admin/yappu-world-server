@@ -18,7 +18,7 @@ enum class Position(
     fun isAttendeePosition(): Boolean = this != STAFF
 
     companion object {
-        val attendeePositions = listOf(
+        val activeUserPositions = listOf(
             PM,
             DESIGN,
             WEB,

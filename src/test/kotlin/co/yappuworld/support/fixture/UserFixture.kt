@@ -105,6 +105,7 @@ object UserFixture {
         email: String = "email@abc.com",
         name: String = "홍길동",
         role: UserRole = UserRole.ACTIVE,
+        activityUnitId: UUID = UUID.randomUUID(),
         generation: Int = 25,
         position: Position = Position.SERVER
     ): UserWithActivityUnit =
@@ -113,6 +114,7 @@ object UserFixture {
             email = email,
             name = name,
             role = role,
+            activityUnitId = activityUnitId,
             generation = generation,
             position = position
         )

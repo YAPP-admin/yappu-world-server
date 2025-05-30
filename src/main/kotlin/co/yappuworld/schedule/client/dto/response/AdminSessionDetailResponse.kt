@@ -44,7 +44,7 @@ data class AdminSessionDetailResponse(
         attendees = attendees
             .groupBy { it.position }
             .let { attendeesGroupByPosition ->
-                Position.attendeePositions.map { position ->
+                Position.activeUserPositions.map { position ->
                     AdminSessionAttendeeByPositionResponse(
                         position = position,
                         attendees = attendeesGroupByPosition[position]?.map { AdminSessionAttendeeResponse(it) }
