@@ -5,13 +5,21 @@ import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
+import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
+import co.yappuworld.user.domain.vo.Position
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
+import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 
 class AttendanceFindServiceTest @Autowired constructor(
     private val sessionRepository: ScheduleRepository,
-    private val attendanceRepository: AttendanceRepository
+    private val attendanceRepository: AttendanceRepository,
+    private val userRepository: UserRepository,
+    private val activityUnitRepository: ActivityUnitRepository
 ) : CustomDataJpaTestFeatureSpec({
 
         val attendanceFindService = AttendanceFindService(attendanceRepository)
@@ -40,6 +48,39 @@ class AttendanceFindServiceTest @Autowired constructor(
 
                 val result = attendanceFindService.findAttendancesOfGeneration(generation)
                 result.shouldHaveSize(3)
+            }
+        }
+
+        feature("세션 참석자를 조회한다.") {
+
+            scenario("세션 참석자 조회 시, 해당 세션에 참석한 직군 자격으로 조회된다.") {
+                val user1 = getUserEntityFixture()
+                val user1ActivityUnits = listOf(
+                    getActivityUnitEntityFixture(generation = 25, position = Position.PM, userId = user1.id),
+                    getActivityUnitEntityFixture(generation = 25, position = Position.STAFF, userId = user1.id),
+                    getActivityUnitEntityFixture(generation = 24, position = Position.SERVER, userId = user1.id)
+                )
+                val user2 = getUserEntityFixture()
+                val user2ActivityUnits = listOf(
+                    getActivityUnitEntityFixture(generation = 25, position = Position.STAFF, userId = user2.id)
+                )
+                val session = getSessionEntityFixture()
+                val attendance = getAttendanceEntityFixture(userId = user1.id, scheduleId = session.id)
+
+                userRepository.saveAll(listOf(user1, user2))
+                activityUnitRepository.saveAll(user1ActivityUnits.union(user2ActivityUnits))
+                sessionRepository.save(session)
+                attendanceRepository.saveAndFlush(attendance)
+
+                val result = attendanceFindService.findAttendees(session.id)
+                result.shouldHaveSize(1)
+                result[0].let {
+                    it.userId shouldBe user1.id
+                    it.name shouldBe user1.name
+                    it.generation shouldBe session.generation
+                    it.position shouldBe Position.PM
+                    it.sessionId shouldBe session.id
+                }
             }
         }
     })

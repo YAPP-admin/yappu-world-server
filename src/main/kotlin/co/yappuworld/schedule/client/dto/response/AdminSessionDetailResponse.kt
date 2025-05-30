@@ -1,7 +1,9 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.dto.SessionAttendeeDto
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import co.yappuworld.user.domain.vo.Position
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalTime
@@ -25,10 +27,11 @@ data class AdminSessionDetailResponse(
     @Schema(description = "세션 종료 시간")
     val endTime: LocalTime,
     @Schema(description = "세션 타입")
-    val sessionType: SessionType
+    val sessionType: SessionType,
+    val attendees: List<AdminSessionAttendeeByPositionResponse>
 ) {
 
-    constructor(session: SessionEntity) : this(
+    constructor(session: SessionEntity, attendees: List<SessionAttendeeDto>) : this(
         id = session.id,
         name = session.name,
         generation = session.generation,
@@ -37,6 +40,35 @@ data class AdminSessionDetailResponse(
         endDate = session.endDate,
         time = session.time,
         endTime = session.endTime,
-        sessionType = session.sessionType
+        sessionType = session.sessionType,
+        attendees = attendees
+            .groupBy { it.position }
+            .let { attendeesGroupByPosition ->
+                Position.attendeePositions.map { position ->
+                    AdminSessionAttendeeByPositionResponse(
+                        position = position,
+                        attendees = attendeesGroupByPosition[position]?.map { AdminSessionAttendeeResponse(it) }
+                            ?: emptyList()
+                    )
+                }
+            }.sortedBy { it.position.ordinal }
+    )
+}
+
+data class AdminSessionAttendeeByPositionResponse(
+    val position: Position,
+    val attendees: List<AdminSessionAttendeeResponse>
+)
+
+data class AdminSessionAttendeeResponse(
+    val userId: UUID,
+    val name: String,
+    val position: Position
+) {
+
+    constructor(attendee: SessionAttendeeDto) : this(
+        userId = attendee.userId,
+        name = attendee.name,
+        position = attendee.position
     )
 }

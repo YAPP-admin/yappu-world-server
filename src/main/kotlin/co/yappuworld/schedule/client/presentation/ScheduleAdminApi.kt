@@ -158,9 +158,45 @@ interface ScheduleAdminApi {
                                             "generation": 25,
                                             "place": null,
                                             "date": "2024-11-01",
-                                            "time": null,
-                                            "endTime": null,
-                                            "sessionType": "TEAM"
+                                            "time": "17:00:00",
+                                            "endTime": "20:00:00",
+                                            "sessionType": "TEAM",
+                                            "attendees": [
+                                                 {
+                                                     "position": "PM",
+                                                     "attendees": [
+                                                        {
+                                                            "userId": "f70dd5ff-ffe4-11ef-ad31-0242ac120002",
+                                                            "name": "홍길동",
+                                                            "position": "PM"
+                                                        }
+                                                     ]
+                                                 },
+                                                 {
+                                                     "position": "DESIGN",
+                                                     "attendees": []
+                                                 },
+                                                 {
+                                                     "position": "WEB",
+                                                     "attendees": []
+                                                 },
+                                                 {
+                                                     "position": "ANDROID",
+                                                     "attendees": []
+                                                 },
+                                                 {
+                                                     "position": "IOS",
+                                                     "attendees": []
+                                                 },
+                                                 {
+                                                     "position": "FLUTTER",
+                                                     "attendees": []
+                                                 },
+                                                 {
+                                                     "position": "SERVER",
+                                                     "attendees": []
+                                                 }
+                                            ]
                                         },
                                         "isSuccess": true
                                     }

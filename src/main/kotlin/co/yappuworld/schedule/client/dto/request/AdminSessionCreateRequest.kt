@@ -34,7 +34,7 @@ data class AdminSessionCreateRequest(
     var type: ScheduleType,
     @Schema(description = "세션 종류", nullable = false, example = "OFFLINE")
     var sessionType: SessionType,
-    @Schema(description = "세션 참석자 ID", nullable = false, example = "OFFLINE")
+    @Schema(description = "세션 참석자 ID", nullable = false)
     val sessionAttendeeIds: List<UUID>
 ) {
 

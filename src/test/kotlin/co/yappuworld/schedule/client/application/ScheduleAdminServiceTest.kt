@@ -8,9 +8,13 @@ import co.yappuworld.schedule.infrastructure.AttendanceRepository
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.support.environment.SpringBootTestFeatureSpec
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleDtoFixture.getAdminSessionCreateRequestFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
+import co.yappuworld.user.domain.vo.Position
+import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.inspectors.shouldForAll
@@ -22,6 +26,7 @@ import java.util.UUID
 class ScheduleAdminServiceTest @Autowired constructor(
     private val scheduleAdminService: ScheduleAdminService,
     private val userRepository: UserRepository,
+    private val activityUnitRepository: ActivityUnitRepository,
     private val scheduleRepository: ScheduleRepository,
     private val attendanceRepository: AttendanceRepository
 ) : SpringBootTestFeatureSpec({
@@ -63,7 +68,7 @@ class ScheduleAdminServiceTest @Autowired constructor(
                 val sessions = listOf(getSessionEntityFixture(), getSessionEntityFixture())
                     .also { scheduleRepository.saveAll(it) }
                 val users = userRepository.saveAll(listOf(getUserEntityFixture(), getUserEntityFixture()))
-                val attendances = listOf(
+                listOf(
                     AttendanceEntity(userId = users[0].id, scheduleId = sessions[0].id),
                     AttendanceEntity(userId = users[0].id, scheduleId = sessions[1].id),
                     AttendanceEntity(userId = users[1].id, scheduleId = sessions[1].id)
@@ -75,6 +80,43 @@ class ScheduleAdminServiceTest @Autowired constructor(
                 // then
                 attendanceRepository.findAllByScheduleId(sessions[0].id).shouldHaveSize(0)
                 attendanceRepository.findAllByScheduleId(sessions[1].id).shouldHaveSize(0)
+            }
+        }
+
+        feature("세션 상세 조회") {
+
+            scenario("참석자 정보가 포함된다") {
+                val user1 = getUserEntityFixture(name = "김개똥")
+                val user1ActivityUnits = listOf(
+                    getActivityUnitEntityFixture(generation = 25, position = Position.PM, userId = user1.id),
+                    getActivityUnitEntityFixture(generation = 25, position = Position.STAFF, userId = user1.id),
+                    getActivityUnitEntityFixture(generation = 24, position = Position.SERVER, userId = user1.id)
+                )
+                val user2 = getUserEntityFixture(name = "홍길동")
+                val user2ActivityUnits = listOf(
+                    getActivityUnitEntityFixture(generation = 25, position = Position.ANDROID, userId = user2.id)
+                )
+                val session = getSessionEntityFixture()
+                val attendances = listOf(
+                    getAttendanceEntityFixture(userId = user1.id, scheduleId = session.id),
+                    getAttendanceEntityFixture(userId = user2.id, scheduleId = session.id)
+                )
+
+                userRepository.saveAll(listOf(user1, user2))
+                activityUnitRepository.saveAll(user1ActivityUnits.union(user2ActivityUnits))
+                scheduleRepository.save(session)
+                attendanceRepository.saveAllAndFlush(attendances)
+
+                val result = scheduleAdminService.getSession(session.id)
+
+                result.attendees.single { it.position == Position.PM }.let {
+                    it.attendees.shouldHaveSize(1)
+                    it.attendees[0].name shouldBe user1.name
+                }
+                result.attendees.single { it.position == Position.ANDROID }.let {
+                    it.attendees.shouldHaveSize(1)
+                    it.attendees[0].name shouldBe user2.name
+                }
             }
         }
     })

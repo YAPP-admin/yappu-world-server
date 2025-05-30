@@ -32,8 +32,9 @@ class ScheduleAdminService(
         scheduleCommandService.save(schedule)
 
         request.sessionAttendeeIds
-            .map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = schedule.id) }
-            .also { attendanceCommandService.saveAll(it) }
+            .takeIf { it.isNotEmpty() }
+            ?.map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = schedule.id) }
+            ?.also { attendanceCommandService.saveAll(it) }
 
         return schedule.id
     }
@@ -47,7 +48,10 @@ class ScheduleAdminService(
 
     @Transactional(readOnly = true)
     fun getSession(id: UUID): AdminSessionDetailResponse =
-        AdminSessionDetailResponse(sessionFindService.findSession(id))
+        AdminSessionDetailResponse(
+            session = sessionFindService.findSession(id),
+            attendees = attendanceFindService.findAttendees(id)
+        )
 
     /**
      * 어드민에서 요청하는 세션 삭제라, hard delete 구현
