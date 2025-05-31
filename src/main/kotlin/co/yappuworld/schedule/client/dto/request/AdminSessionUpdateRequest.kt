@@ -25,7 +25,9 @@ data class AdminSessionUpdateRequest(
     @Schema(description = "종료 시간", example = "17:00:00", type = "string")
     val endTime: LocalTime,
     @Schema(description = "세션 종류", example = "OFFLINE")
-    val sessionType: SessionType
+    val sessionType: SessionType,
+    @Schema(description = "세션 참석자 ID", nullable = false)
+    val sessionAttendeeIds: List<UUID>
 ) {
 
     fun applyTo(session: SessionEntity) {

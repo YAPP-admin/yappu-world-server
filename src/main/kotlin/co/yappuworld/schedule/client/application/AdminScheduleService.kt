@@ -16,6 +16,7 @@ import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -73,12 +74,29 @@ class AdminScheduleService(
 
     @Transactional
     fun updateSession(request: AdminSessionUpdateRequest) {
-        sessionFindService
-            .findSession(request.id)
-            .apply { request.applyTo(this) }
+        val session = sessionFindService.findSession(request.id)
+        request.applyTo(session)
+        handleAttendee(session, request.sessionAttendeeIds)
     }
 
     @Transactional(readOnly = true)
     fun getSessionEligibleUsers(request: AdminSessionEligibleUsersParamRequest): AdminSessionEligibleUsersResponse =
         AdminSessionEligibleUsersResponse.from(userFindService.findActiveUsersOfGeneration(request.generation))
+
+    private fun handleAttendee(
+        session: SessionEntity,
+        requestSessionAttendeeIds: List<UUID>
+    ) {
+        val attendances = attendanceFindService.findAttendances(session.id)
+        val attendeeIds = attendances.map { it.userId }
+
+        requestSessionAttendeeIds
+            .filter { attendeeId -> attendeeId !in attendeeIds }
+            .map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = session.id) }
+            .also { toCreate -> attendanceCommandService.saveAll(toCreate) }
+
+        attendances
+            .filter { attendance -> attendance.userId !in requestSessionAttendeeIds }
+            .also { toDelete -> attendanceCommandService.deleteAll(toDelete) }
+    }
 }
