@@ -1,7 +1,9 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.LATE
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.PENDING
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceBookFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
@@ -53,7 +55,7 @@ class AttendanceStatisticsResponseTest :
             )
 
             scenario("일자, 시간에 따른 잔여 세션 수와 진행률 검증") {
-                val attendances = sessions.subList(0, 1).map { getAttendanceEntityFixture(scheduleId = it.id) }
+                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id, userId = user.userId) }
                 AttendanceStatisticsResponse
                     .from(
                         getAttendanceBookFixture(
@@ -71,8 +73,14 @@ class AttendanceStatisticsResponseTest :
             }
 
             scenario("datetime 기준으로 조회를 진행") {
-                val attendances =
-                    sessions.subList(0, 2).map { getAttendanceEntityFixture(userId = user.userId, scheduleId = it.id) }
+                val attendances = sessions.map {
+                    getAttendanceEntityFixture(
+                        userId = user.userId,
+                        scheduleId = it.id,
+                        status = PENDING
+                    )
+                }
+
                 AttendanceStatisticsResponse
                     .from(
                         getAttendanceBookFixture(
@@ -87,26 +95,35 @@ class AttendanceStatisticsResponseTest :
                         it.totalSessionCount shouldBe 5
                         it.remainingSessionCount shouldBe 3
                         it.sessionProgressRate shouldBe 40
-                        it.attendancePoint shouldBe 100
-                        it.attendanceCount shouldBe 2
-                        it.lateCount shouldBe 0
-                        it.absenceCount shouldBe 0
                     }
             }
 
             scenario("모두 출석이면 출석 점수가 100점이다.") {
+                val attendances = sessions
+                    .subList(0, 2)
+                    .map {
+                        getAttendanceEntityFixture(
+                            userId = user.userId,
+                            scheduleId = it.id,
+                            status = ON_TIME
+                        )
+                    }.union(
+                        sessions.subList(2, 5).map {
+                            getAttendanceEntityFixture(
+                                userId = user.userId,
+                                scheduleId = it.id,
+                                status = PENDING
+                            )
+                        }
+                    ).toList()
+
                 AttendanceStatisticsResponse
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
                             attendees = listOf(getAttendeeFixture(user, generation)),
                             sessions = sessions,
-                            attendances = sessions.subList(0, 2).map {
-                                getAttendanceEntityFixture(
-                                    userId = user.userId,
-                                    scheduleId = it.id
-                                )
-                            },
+                            attendances = attendances,
                             now = datetime
                         ).getUserAttendanceStatistics(user.userId)
                     ).let {
@@ -124,7 +141,7 @@ class AttendanceStatisticsResponseTest :
                 val attendances =
                     sessions.subList(0, 2).map { getAttendanceEntityFixture(userId = user.userId, scheduleId = it.id) }
                 repeat(2) { r ->
-                    attendances[r].updateStatus(AttendanceStatus.LATE)
+                    attendances[r].updateStatus(LATE)
                     AttendanceStatisticsResponse
                         .from(
                             getAttendanceBookFixture(

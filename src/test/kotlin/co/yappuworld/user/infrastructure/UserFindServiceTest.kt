@@ -386,7 +386,7 @@ class UserFindServiceTest @Autowired constructor(
         feature("특정 기수에 활동한 모든 유저를 조회한다.") {
 
             scenario("해당 기수에 활동한 유저가 없다면 빈 리스트를 반환한다.") {
-                userFindService.findUsersActiveOfGeneration(99).shouldBeEmpty()
+                userFindService.findActiveUsersOfGeneration(99).shouldBeEmpty()
             }
 
             scenario("특정 기수에 활동한 기록이 있는 모든 유저를 조회한다.") {
@@ -411,7 +411,7 @@ class UserFindServiceTest @Autowired constructor(
 
                 val userIds = listOf(user1.id, user2.id).sorted()
                 val result = userFindService
-                    .findUsersActiveOfGeneration(99)
+                    .findActiveUsersOfGeneration(99)
                 val resultByUserId = result.associateBy { it.userId }
 
                 result.shouldHaveSize(2)

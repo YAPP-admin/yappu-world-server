@@ -8,12 +8,14 @@ import co.yappuworld.user.domain.model.UserWithActivityUnits
 import java.time.LocalDateTime
 
 /**
+ * @property PENDING 유저의 출석 액션이 이뤄지지 않은 상태 - 유저에게는 결석으로 노출될 수 있음
  * @property ON_TIME 제 시간에 정상적으로 출석
  * @property EXCUSED_ABSENCE 출석으로 인정되는 결석
  */
 enum class AttendanceStatus(
     val label: String
 ) {
+    PENDING("미출석"),
     ON_TIME("출석"),
     LATE("지각"),
     ABSENT("결석"),

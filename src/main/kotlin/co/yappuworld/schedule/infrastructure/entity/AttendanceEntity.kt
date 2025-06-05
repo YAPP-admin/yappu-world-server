@@ -14,11 +14,11 @@ import java.util.UUID
 @Entity
 @Table(name = "attendances")
 class AttendanceEntity(
-    status: AttendanceStatus,
     @Column(name = "user_id", nullable = false)
     val userId: UUID,
     @Column(name = "schedule_id", nullable = false)
-    val scheduleId: UUID
+    val scheduleId: UUID,
+    status: AttendanceStatus = AttendanceStatus.PENDING
 ) : BaseEntity() {
 
     companion object {

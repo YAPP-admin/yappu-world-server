@@ -10,6 +10,7 @@ data class UserWithActivityUnit(
     val email: String,
     val name: String,
     val role: UserRole,
+    val activityUnitId: UUID,
     val generation: Int,
     val position: Position
 ) {

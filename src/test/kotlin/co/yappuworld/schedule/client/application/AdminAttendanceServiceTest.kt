@@ -13,9 +13,8 @@ import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixtu
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.entity.UserEntity
-import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 
 class AdminAttendanceServiceTest @Autowired constructor(
@@ -40,7 +39,7 @@ class AdminAttendanceServiceTest @Autowired constructor(
                 session = scheduleRepository.save(getSessionEntityFixture(generation = activeGeneration))
             }
 
-            scenario("출석 데이터가 아무것도 없다면, 모두 새로 생성한다.") {
+            scenario("출석 데이터가 아무것도 없다면 변경 사항이 존재하지 않는다.") {
                 adminAttendanceService.updateSessionAttendances(
                     AdminSessionAttendanceUpdateRequest(
                         sessionId = session.id,
@@ -48,10 +47,10 @@ class AdminAttendanceServiceTest @Autowired constructor(
                     )
                 )
 
-                attendanceRepository.findAllByScheduleId(session.id) shouldHaveSize 2
+                attendanceRepository.findAllByScheduleId(session.id) shouldHaveSize 0
             }
 
-            scenario("출석 데이터 중 일부 유저의 데이터가 없다면 새로 생성한다.") {
+            scenario("출석 데이터 중 일부 유저의 데이터가 없다면, 존재하는 출석 데이터만 변경된다.") {
                 val attendance = getAttendanceEntityFixture(
                     status = ABSENT,
                     scheduleId = session.id,
@@ -67,28 +66,8 @@ class AdminAttendanceServiceTest @Autowired constructor(
                 )
 
                 val attendances = attendanceRepository.findAllByScheduleId(session.id)
-                attendances shouldHaveSize 2
-                attendances.filterNot { it.userId == users[0].id }.shouldNotBeEmpty()
-            }
-
-            scenario("존재하는 출석 데이터는 상태가 업데이트 된다.") {
-                val attendance = getAttendanceEntityFixture(
-                    status = ABSENT,
-                    scheduleId = session.id,
-                    userId = users[0].id
-                )
-                attendanceRepository.save(attendance)
-
-                adminAttendanceService.updateSessionAttendances(
-                    AdminSessionAttendanceUpdateRequest(
-                        sessionId = session.id,
-                        attendanceStatus = ABSENT
-                    )
-                )
-
-                val attendances = attendanceRepository.findAllByScheduleId(session.id)
-                attendances shouldHaveSize 2
-                attendances.shouldForAll { it.status == ABSENT }
+                attendances shouldHaveSize 1
+                attendances.single().status shouldBe ABSENT
             }
         }
     })

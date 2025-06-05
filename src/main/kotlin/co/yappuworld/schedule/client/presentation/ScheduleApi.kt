@@ -4,7 +4,7 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
-import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
+import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
@@ -239,7 +239,7 @@ interface ScheduleApi {
     @GetMapping("/v2/sessions")
     fun getSessions(
         @AuthenticationPrincipal securityUser: SecurityUser,
-        @Valid @ParameterObject request: SessionQueryParamRequest
+        @Valid @ParameterObject request: SessionParamRequest
     ): ResponseEntity<SuccessResponse<SessionOverviewResponse>>
 
     @Operation(summary = "임박한 세션의 출석 정보")

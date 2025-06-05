@@ -5,7 +5,7 @@ import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.schedule.client.application.ScheduleService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
-import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
+import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
@@ -46,7 +46,7 @@ class ScheduleController(
 
     override fun getSessions(
         @AuthenticationPrincipal securityUser: SecurityUser,
-        @Valid @ParameterObject request: SessionQueryParamRequest
+        @Valid @ParameterObject request: SessionParamRequest
     ): ResponseEntity<SuccessResponse<SessionOverviewResponse>> =
         ResponseEntity.ok(
             SuccessResponse(
