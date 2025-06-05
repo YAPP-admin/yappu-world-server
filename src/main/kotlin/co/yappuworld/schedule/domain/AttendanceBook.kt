@@ -3,6 +3,8 @@ package co.yappuworld.schedule.domain
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.PENDING
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.LatePassEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
@@ -24,22 +26,21 @@ class AttendanceBook(
     // userId to sessionId to AttendanceStatus
     private val byUser: Map<UUID, Map<UUID, AttendanceStatus?>>
 
-    val finishedSessionCount = sessions.count { it.isFinished(now) }
+    private val sessionById: Map<UUID, SessionEntity> = sessions.associateBy { it.id }
 
     init {
         require(sessions.all { it.generation == generation })
 
         // (userId to sessionId) to AttendanceStatus
-        val attendanceMatrix = attendances.associate { (it.userId to it.scheduleId) to it.status }
+        val attendanceMatrix = attendances.associateBy { (it.userId to it.scheduleId) }
 
         fun decideStatus(
             user: Attendee,
             session: SessionEntity
-        ): AttendanceStatus? =
-            when (session.isFinished(now)) {
-                true -> attendanceMatrix[user.id to session.id] ?: AttendanceStatus.ABSENT
-                false -> attendanceMatrix[user.id to session.id]
-            }
+        ): AttendanceStatus? {
+            val status = attendanceMatrix[user.id to session.id]?.status ?: return null
+            return if (status == PENDING && session.isFinished(now)) ABSENT else status
+        }
 
         this.bySession = sessions.associate { session ->
             session.id to attendees.associate { user ->
@@ -49,7 +50,7 @@ class AttendanceBook(
 
         this.byUser = attendees.associate { user ->
             user.id to sessions.associate { session ->
-                session.id to decideStatus(user, session)
+                session.id to bySession[session.id]?.get(user.id)
             }
         }
     }
@@ -85,14 +86,13 @@ class AttendanceBook(
         return sessionAttendances[userId]
     }
 
-    fun getUserAttendanceStatistics(userId: UUID): UserAttendanceStatistics {
-        val userAttendances = byUser[userId] ?: throw BusinessException(AttendanceError.USER_NOT_FOUND)
-        return UserAttendanceStatistics.from(
-            userAttendances.map { it.value },
-            finishedSessionCount,
-            latePassCountByUserId[userId] ?: 0
+    fun getUserAttendanceStatistics(userId: UUID): UserAttendanceStatistics =
+        UserAttendanceStatistics.from(
+            attendanceBySessionId = byUser[userId] ?: throw BusinessException(AttendanceError.USER_NOT_FOUND),
+            sessionById = sessionById,
+            latePassCount = latePassCountByUserId[userId] ?: 0,
+            now = now
         )
-    }
 
     fun getSessionAttendanceStatistics(sessionId: UUID): SessionAttendanceStatistics {
         val sessionAttendances = bySession[sessionId] ?: throw BusinessException(AttendanceError.SESSION_NOT_FOUND)

@@ -3,7 +3,6 @@ package co.yappuworld.user.infrastructure
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.user.domain.model.UserWithActivityUnits
-import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
@@ -97,24 +96,9 @@ class UserFindService(
 
     fun findUserWithActivities(userId: UUID): UserWithActivityUnits {
         val result = userRepository
-            .findAll {
-                selectNew<UserWithActivityUnit>(
-                    path(UserEntity::getId),
-                    path(UserEntity::email),
-                    path(UserEntity::name),
-                    path(UserEntity::role),
-                    path(ActivityUnitEntity::generation),
-                    path(ActivityUnitEntity::position)
-                ).from(
-                    entity(UserEntity::class),
-                    innerJoin(ActivityUnitEntity::class)
-                        .on(
-                            and(
-                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
-                                path(UserEntity::getId).equal(userId)
-                            )
-                        )
-                )
+            .findAll(CustomUserDsl) {
+                selectFromUserWithActivityUnit()
+                    .where(path(UserEntity::getId).equal(userId))
             }.filterNotNull()
 
         if (result.isNotEmpty()) {
@@ -127,78 +111,21 @@ class UserFindService(
         }
     }
 
-    fun findUsersActiveOfGeneration(generation: Int): List<UserWithActivityUnit> =
+    fun findActiveUsersOfGeneration(generation: Int): List<UserWithActivityUnit> =
         userRepository
-            .findAll {
-                selectNew<UserWithActivityUnit>(
-                    path(UserEntity::getId),
-                    path(UserEntity::email),
-                    path(UserEntity::name),
-                    path(UserEntity::role),
-                    path(ActivityUnitEntity::generation),
-                    path(ActivityUnitEntity::position)
-                ).from(
-                    entity(ActivityUnitEntity::class),
-                    innerJoin(entity(UserEntity::class))
-                        .on(
-                            and(
-                                path(ActivityUnitEntity::userId).equal(path(UserEntity::getId)),
-                                path(ActivityUnitEntity::generation).equal(generation)
-                            )
-                        )
-                )
-            }.filterNotNull()
+            .findAll(CustomUserDsl) { getActiveUser(generation) }
+            .filterNotNull()
 
     fun findSessionAttendeesOfGeneration(generation: Int): List<Attendee> =
-        userRepository
-            .findAll {
-                selectNew<UserWithActivityUnit>(
-                    path(UserEntity::getId),
-                    path(UserEntity::email),
-                    path(UserEntity::name),
-                    path(UserEntity::role),
-                    path(ActivityUnitEntity::generation),
-                    path(ActivityUnitEntity::position)
-                ).from(
-                    entity(UserEntity::class),
-                    innerJoin(entity(ActivityUnitEntity::class))
-                        .on(
-                            and(
-                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
-                                path(ActivityUnitEntity::generation).equal(generation),
-                                path(ActivityUnitEntity::position).notEqual(Position.STAFF)
-                            )
-                        )
-                )
-            }.filterNotNull()
-            .map { Attendee.from(it, generation) }
+        findActiveUsersOfGeneration(generation).map { Attendee.from(it, generation) }
 
     fun findSessionAttendee(
         userId: UUID,
         generation: Int
     ): Attendee {
         val result = userRepository
-            .findAll {
-                selectNew<UserWithActivityUnit>(
-                    path(UserEntity::getId),
-                    path(UserEntity::email),
-                    path(UserEntity::name),
-                    path(UserEntity::role),
-                    path(ActivityUnitEntity::generation),
-                    path(ActivityUnitEntity::position)
-                ).from(
-                    entity(UserEntity::class),
-                    innerJoin(entity(ActivityUnitEntity::class))
-                        .on(
-                            and(
-                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
-                                path(UserEntity::getId).equal(userId),
-                                path(ActivityUnitEntity::generation).equal(generation),
-                                path(ActivityUnitEntity::position).notEqual(Position.STAFF)
-                            )
-                        )
-                )
-            }.filterNotNull()
+            .findAll(CustomUserDsl) { getActiveUser(userId, generation) }
+            .filterNotNull()
 
         if (result.size > 1) {
             throw BusinessException(UserError.DUPLICATE_ATTENDEE_ACTIVITY)
@@ -216,26 +143,8 @@ class UserFindService(
         generation: Int
     ): UserWithActivityUnit =
         userRepository
-            .findAll {
-                selectNew<UserWithActivityUnit>(
-                    path(UserEntity::getId),
-                    path(UserEntity::email),
-                    path(UserEntity::name),
-                    path(UserEntity::role),
-                    path(ActivityUnitEntity::generation),
-                    path(ActivityUnitEntity::position)
-                ).from(
-                    entity(UserEntity::class),
-                    innerJoin(entity(ActivityUnitEntity::class))
-                        .on(
-                            and(
-                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
-                                path(UserEntity::getId).equal(userId),
-                                path(ActivityUnitEntity::generation).equal(generation)
-                            )
-                        )
-                )
-            }.singleOrNull()
+            .findAll(CustomUserDsl) { getActiveUser(userId, generation) }
+            .singleOrNull()
             ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
 
     private fun Jpql.getUserWithLastActivityUnit(

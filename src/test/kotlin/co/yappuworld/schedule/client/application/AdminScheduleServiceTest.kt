@@ -1,0 +1,52 @@
+package co.yappuworld.schedule.client.application
+
+import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.infrastructure.AttendanceRepository
+import co.yappuworld.schedule.infrastructure.ScheduleRepository
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.support.environment.SpringBootTestFeatureSpec
+import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
+import org.springframework.beans.factory.annotation.Autowired
+import java.util.UUID
+
+class AdminScheduleServiceTest @Autowired constructor(
+    private val adminScheduleService: AdminScheduleService,
+    private val scheduleRepository: ScheduleRepository,
+    private val attendanceRepository: AttendanceRepository
+) : SpringBootTestFeatureSpec({
+
+        feature("세션을 수정할 때") {
+
+            scenario("참가자 요청에 따라, attendance의 추가, 삭제가 발생한다.") {
+                val session = scheduleRepository.save(getSessionEntityFixture())
+                val userId1 = UUID.randomUUID()
+                val userId2 = UUID.randomUUID()
+                val userId3 = UUID.randomUUID()
+                attendanceRepository.saveAllAndFlush(
+                    listOf(userId1, userId2).map { AttendanceEntity(it, session.id) }
+                )
+
+                val request = AdminSessionUpdateRequest(
+                    id = session.id,
+                    name = "수정된 세션",
+                    generation = 25,
+                    place = "마루 180",
+                    date = session.date,
+                    endDate = session.endDate,
+                    time = session.time,
+                    endTime = session.endTime,
+                    sessionType = session.sessionType,
+                    sessionAttendeeIds = listOf(userId2, userId3)
+                )
+                adminScheduleService.updateSession(request)
+
+                val result = attendanceRepository.findAll()
+                result.shouldHaveSize(2)
+                listOf(userId2, userId3).forEach { userId ->
+                    result.any { it.userId == userId } shouldBe true
+                }
+            }
+        }
+    })
