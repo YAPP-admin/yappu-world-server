@@ -51,8 +51,8 @@ class AttendanceFindService(
                         join(entity(SessionEntity::class))
                             .on(
                                 and(
-                                    path(SessionEntity::generation).equal(generation),
-                                    path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId))
+                                    path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
+                                    path(SessionEntity::generation).equal(generation)
                                 )
                             )
                     )
