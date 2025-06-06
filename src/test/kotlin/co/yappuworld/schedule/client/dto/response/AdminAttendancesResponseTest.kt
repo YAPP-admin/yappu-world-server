@@ -5,6 +5,7 @@ import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.LATE
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ON_TIME
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import io.kotest.core.spec.style.FeatureSpec
@@ -44,7 +45,7 @@ class AdminAttendancesResponseTest :
                 val response = AdminAttendancesResponse.from(
                     AttendanceBook(
                         generation = generation,
-                        users = users,
+                        attendees = users.map { getAttendeeFixture(it, generation) },
                         sessions = sessions,
                         attendances = attendances,
                         latePasses = emptyList(),

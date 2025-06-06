@@ -3,11 +3,13 @@ package co.yappuworld.schedule.client.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
+import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
+import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
-import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
@@ -26,20 +28,6 @@ class ScheduleService(
     private val attendanceFindService: AttendanceFindService,
     private val generationFindService: GenerationFindService
 ) {
-
-    @Transactional(readOnly = true)
-    fun getCurrentGenerationSessions(
-        userId: UUID,
-        now: LocalDateTime
-    ): ActiveGenerationSessionsResponse {
-        val currentGeneration = generationFindService.findActiveGenerationOrNull()
-            ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
-        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
-        return ActiveGenerationSessionsResponse.from(
-            sessions = sessions,
-            now = now
-        )
-    }
 
     @Transactional(readOnly = true)
     fun getSchedules(
@@ -61,19 +49,59 @@ class ScheduleService(
     }
 
     @Transactional(readOnly = true)
+    fun getCurrentGenerationSessions(
+        userId: UUID,
+        now: LocalDateTime
+    ): ActiveGenerationSessionsResponse {
+        val currentGeneration = generationFindService.findActiveGenerationOrNull()
+            ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
+        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
+        return ActiveGenerationSessionsResponse.from(
+            sessions = sessions,
+            now = now
+        )
+    }
+
+    fun getSessions(
+        userId: UUID,
+        request: SessionQueryParamRequest,
+        now: LocalDateTime
+    ): SessionOverviewResponse {
+        val generation = request.generation
+            ?: generationFindService.findActiveGenerationOrNull()
+
+        if (generation == null && request.start == null && request.end == null) {
+            throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
+        }
+
+        val user = userFindService.findUserWithActivities(userId)
+        val sessions = sessionFindService.findSessions(
+            request.generation,
+            request.getDateRange()
+        )
+        val attendances = attendanceFindService.findAttendancesBySchedules(userId, sessions.map { it.id })
+        return SessionOverviewResponse.from(
+            user = user,
+            sessions = sessions,
+            attendances = attendances,
+            now = now
+        )
+    }
+
+    @Transactional(readOnly = true)
     fun getUpcomingSessionAttendance(
         userId: UUID,
         now: LocalDateTime
     ): UpcomingSessionAttendanceResponse {
         val activeGeneration = generationFindService.findActiveGenerationOrNull()
             ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
+        val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
         val session = sessionFindService.findUpcomingSession(activeGeneration, now)
         val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)
 
         return UpcomingSessionAttendanceResponse.of(
             sessionAttendance = SessionAttendance(
-                user = user,
+                attendee = attendee,
                 session = session,
                 attendance = attendanceOrNull
             ),

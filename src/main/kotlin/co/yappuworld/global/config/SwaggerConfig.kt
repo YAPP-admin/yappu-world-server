@@ -28,7 +28,7 @@ class SwaggerConfig {
         GroupedOpenApi
             .builder()
             .group("App API")
-            .pathsToMatch("/v1/**")
+            .pathsToExclude("/admin/**")
             .addOpenApiCustomizer(customizeResponses)
             .build()
 

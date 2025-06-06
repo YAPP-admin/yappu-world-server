@@ -4,6 +4,7 @@ import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceBookFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import io.kotest.core.spec.style.FeatureSpec
@@ -26,15 +27,15 @@ class AttendanceStatisticsResponseTest :
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
                     endDate = datetime.toLocalDate(),
-                    time = datetime.toLocalTime().minusMinutes(10),
+                    time = datetime.toLocalTime().minusMinutes(20),
                     endTime = datetime.toLocalTime().minusMinutes(10),
                     generation = generation
                 ),
                 getSessionEntityFixture(
                     date = datetime.toLocalDate(),
                     endDate = datetime.toLocalDate(),
-                    time = datetime.toLocalTime(),
-                    endTime = datetime.toLocalTime(),
+                    time = datetime.toLocalTime().minusMinutes(20),
+                    endTime = datetime.toLocalTime().plusMinutes(20),
                     generation = generation
                 ),
                 getSessionEntityFixture(
@@ -57,7 +58,7 @@ class AttendanceStatisticsResponseTest :
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
-                            users = listOf(user),
+                            attendees = listOf(getAttendeeFixture(user, generation)),
                             sessions = sessions,
                             attendances = attendances,
                             now = datetime
@@ -76,7 +77,7 @@ class AttendanceStatisticsResponseTest :
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
-                            users = listOf(user),
+                            attendees = listOf(getAttendeeFixture(user, generation)),
                             sessions = sessions,
                             attendances = attendances,
                             latePassCountByUserId = mapOf(user.userId to 0),
@@ -98,7 +99,7 @@ class AttendanceStatisticsResponseTest :
                     .from(
                         getAttendanceBookFixture(
                             generation = generation,
-                            users = listOf(user),
+                            attendees = listOf(getAttendeeFixture(user, generation)),
                             sessions = sessions,
                             attendances = sessions.subList(0, 2).map {
                                 getAttendanceEntityFixture(
@@ -128,7 +129,7 @@ class AttendanceStatisticsResponseTest :
                         .from(
                             getAttendanceBookFixture(
                                 generation = generation,
-                                users = listOf(user),
+                                attendees = listOf(getAttendeeFixture(user, generation)),
                                 sessions = sessions,
                                 attendances = attendances,
                                 now = datetime
@@ -150,7 +151,7 @@ class AttendanceStatisticsResponseTest :
                         .from(
                             getAttendanceBookFixture(
                                 generation = generation,
-                                users = listOf(user),
+                                attendees = listOf(getAttendeeFixture(user, generation)),
                                 sessions = sessions,
                                 attendances = attendances,
                                 now = datetime
@@ -177,7 +178,7 @@ class AttendanceStatisticsResponseTest :
                         .from(
                             getAttendanceBookFixture(
                                 generation = generation,
-                                users = listOf(user),
+                                attendees = listOf(getAttendeeFixture(user, generation)),
                                 sessions = sessions,
                                 attendances = attendances,
                                 latePassCountByUserId = mapOf(user.userId to latePassCount),

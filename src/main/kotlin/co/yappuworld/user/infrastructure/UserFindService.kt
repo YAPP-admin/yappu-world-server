@@ -1,8 +1,9 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.domain.model.ActivityUnit
+import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.user.domain.model.UserWithActivityUnits
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
@@ -107,23 +108,22 @@ class UserFindService(
                 ).from(
                     entity(UserEntity::class),
                     innerJoin(ActivityUnitEntity::class)
-                        .on(path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)))
-                ).where(path(UserEntity::getId).equal(userId))
-                    .orderBy(path(ActivityUnitEntity::generation).desc())
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(UserEntity::getId).equal(userId)
+                            )
+                        )
+                )
             }.filterNotNull()
 
-        if (result.isEmpty()) throw BusinessException(UserError.USER_NOT_FOUND)
+        if (result.isNotEmpty()) {
+            return result.let { UserWithActivityUnits.of(it) }
+        }
 
-        return result.let {
-            UserWithActivityUnits(
-                userId = it.first().userId,
-                email = it.first().email,
-                name = it.first().name,
-                role = it.first().role,
-                activityUnits = it
-                    .map { au -> ActivityUnit(au.generation, au.position, au.userId) }
-                    .sortedByDescending { au -> au.generation }
-            )
+        when (userRepository.existsById(userId)) {
+            true -> throw BusinessException(UserError.NO_ACTIVITY_UNIT)
+            false -> throw BusinessException(UserError.USER_NOT_FOUND)
         }
     }
 
@@ -148,6 +148,68 @@ class UserFindService(
                         )
                 )
             }.filterNotNull()
+
+    fun findSessionAttendeesOfGeneration(generation: Int): List<Attendee> =
+        userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(entity(ActivityUnitEntity::class))
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(ActivityUnitEntity::generation).equal(generation),
+                                path(ActivityUnitEntity::position).notEqual(Position.STAFF)
+                            )
+                        )
+                )
+            }.filterNotNull()
+            .map { Attendee.from(it, generation) }
+
+    fun findSessionAttendee(
+        userId: UUID,
+        generation: Int
+    ): Attendee {
+        val result = userRepository
+            .findAll {
+                selectNew<UserWithActivityUnit>(
+                    path(UserEntity::getId),
+                    path(UserEntity::email),
+                    path(UserEntity::name),
+                    path(UserEntity::role),
+                    path(ActivityUnitEntity::generation),
+                    path(ActivityUnitEntity::position)
+                ).from(
+                    entity(UserEntity::class),
+                    innerJoin(entity(ActivityUnitEntity::class))
+                        .on(
+                            and(
+                                path(UserEntity::getId).equal(path(ActivityUnitEntity::userId)),
+                                path(UserEntity::getId).equal(userId),
+                                path(ActivityUnitEntity::generation).equal(generation),
+                                path(ActivityUnitEntity::position).notEqual(Position.STAFF)
+                            )
+                        )
+                )
+            }.filterNotNull()
+
+        if (result.size > 1) {
+            throw BusinessException(UserError.DUPLICATE_ATTENDEE_ACTIVITY)
+        }
+
+        if (result.isEmpty()) {
+            throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
+        }
+
+        return Attendee.from(result.single(), generation)
+    }
 
     fun findUserWithActivityUnitOfGeneration(
         userId: UUID,

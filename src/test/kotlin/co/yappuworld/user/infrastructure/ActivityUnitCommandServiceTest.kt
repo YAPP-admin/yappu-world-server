@@ -1,7 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
-import co.yappuworld.support.fixture.ActivityUnitFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -22,8 +22,8 @@ class ActivityUnitCommandServiceTest @Autowired constructor(
             scenario("저장한 데이터대로 조회된다") {
                 val userId = UUID.randomUUID()
                 val activityUnits = listOf(
-                    getActivityUnitFixture(generation = 22, position = Position.SERVER, userId = userId),
-                    getActivityUnitFixture(generation = 23, position = Position.IOS, userId = userId)
+                    getActivityUnitEntityFixture(generation = 22, position = Position.SERVER, userId = userId),
+                    getActivityUnitEntityFixture(generation = 23, position = Position.IOS, userId = userId)
                 )
 
                 activityUnitCommandService.saveAll(activityUnits)
@@ -35,8 +35,8 @@ class ActivityUnitCommandServiceTest @Autowired constructor(
             scenario("저장한 데이터가 영속화된다.") {
                 val userId = UUID.randomUUID()
                 val activityUnits = listOf(
-                    getActivityUnitFixture(generation = 22, position = Position.SERVER, userId = userId),
-                    getActivityUnitFixture(generation = 23, position = Position.IOS, userId = userId)
+                    getActivityUnitEntityFixture(generation = 22, position = Position.SERVER, userId = userId),
+                    getActivityUnitEntityFixture(generation = 23, position = Position.IOS, userId = userId)
                 )
 
                 activityUnits.forEach { activityUnit -> activityUnit.isNew shouldBe true }
@@ -60,8 +60,8 @@ class ActivityUnitCommandServiceTest @Autowired constructor(
                 val userId = UUID.randomUUID()
                 val activityUnits = activityUnitRepository.saveAllAndFlush(
                     listOf(
-                        getActivityUnitFixture(generation = 22, position = Position.SERVER, userId = userId),
-                        getActivityUnitFixture(generation = 23, position = Position.IOS, userId = userId)
+                        getActivityUnitEntityFixture(generation = 22, position = Position.SERVER, userId = userId),
+                        getActivityUnitEntityFixture(generation = 23, position = Position.IOS, userId = userId)
                     )
                 )
 

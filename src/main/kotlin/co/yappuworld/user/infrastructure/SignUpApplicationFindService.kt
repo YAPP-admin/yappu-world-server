@@ -31,6 +31,19 @@ class SignUpApplicationFindService(
                     ).orderBy(path(SignUpApplicationEntity::createdAt).desc())
             }.isNotEmpty()
 
+    fun findPendingApplicationOrNull(email: String): SignUpApplicationEntity? =
+        signUpApplicationRepository
+            .findAll(limit = 1) {
+                select(entity(SignUpApplicationEntity::class))
+                    .from(entity(SignUpApplicationEntity::class))
+                    .where(
+                        and(
+                            path(SignUpApplicationEntity::applicantEmail).equal(email),
+                            path(SignUpApplicationEntity::status).equal(SignUpApplicationStatus.PENDING)
+                        )
+                    ).orderBy(path(SignUpApplicationEntity::createdAt).desc())
+            }.singleOrNull()
+
     fun findSignUpApplications(ids: List<UUID>): List<SignUpApplicationEntity> {
         require(ids.isNotEmpty()) { "가입 신청서 조회 대상 ID 목록은 최소 하나 이상이어야 합니다." }
         return signUpApplicationRepository.findAllByIdIn(ids)

@@ -290,7 +290,7 @@ class UserFindServiceTest @Autowired constructor(
 
                 shouldThrowExactly<BusinessException> {
                     userFindService.findUserWithActivities(user.id)
-                }.error shouldBe UserError.USER_NOT_FOUND
+                }.error shouldBe UserError.NO_ACTIVITY_UNIT
             }
 
             scenario("활동 기록이 하나만 있는 경우") {
@@ -316,6 +316,70 @@ class UserFindServiceTest @Autowired constructor(
                 val result = shouldNotThrowAny { userFindService.findUserWithActivities(user.id) }
                 result.activityUnits.size shouldBe 2
                 result.activityGenerations shouldContainInOrder listOf(25, 24)
+            }
+        }
+
+        feature("특정 기수의 세션 참석자를 조회한다.") {
+
+            scenario("데이터가 없으면 빈 리스트가 반환된다.") {
+                shouldThrowExactly<BusinessException> { userFindService.findSessionAttendee(UUID.randomUUID(), 99) }
+                    .error shouldBe UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY
+            }
+
+            scenario("운영진 활동 기록은 제외된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAllAndFlush(
+                    listOf(getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id))
+                )
+
+                shouldThrowExactly<BusinessException> { userFindService.findSessionAttendee(user.id, 99) }
+                    .error shouldBe UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY
+            }
+
+            scenario("운영진 활동 기록과 다른 기록이 함께 있으면, 운영진 기록은 제외하고 다른 활동 기록이 포함된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAllAndFlush(
+                    listOf(
+                        getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id),
+                        getActivityUnitEntityFixture(generation = 99, position = Position.PM, userId = user.id)
+                    )
+                )
+
+                userFindService
+                    .findSessionAttendee(user.id, 99)
+                    .position shouldBe Position.PM
+            }
+        }
+
+        feature("특정 기수의 모든 세션 참석자를 조회한다.") {
+
+            scenario("데이터가 없으면 빈 리스트가 반환된다.") {
+                userFindService.findSessionAttendeesOfGeneration(99).shouldBeEmpty()
+            }
+
+            scenario("운영진 활동 기록은 제외된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAllAndFlush(
+                    listOf(getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id))
+                )
+
+                userFindService.findSessionAttendeesOfGeneration(99).shouldHaveSize(0)
+            }
+
+            scenario("운영진 활동 기록과 다른 기록이 함께 있으면, 운영진 기록은 제외하고 다른 활동 기록이 포함된다.") {
+                val user = getUserEntityFixture()
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAllAndFlush(
+                    listOf(
+                        getActivityUnitEntityFixture(generation = 99, position = Position.STAFF, userId = user.id),
+                        getActivityUnitEntityFixture(generation = 99, position = Position.PM, userId = user.id)
+                    )
+                )
+
+                userFindService.findSessionAttendeesOfGeneration(99).shouldHaveSize(1)
             }
         }
 

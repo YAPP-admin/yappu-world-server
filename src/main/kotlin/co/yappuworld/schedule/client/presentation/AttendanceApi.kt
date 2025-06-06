@@ -107,11 +107,21 @@ interface AttendanceApi {
                                 """
                             ),
                             ExampleObject(
-                                name = "기수 정보 오류",
+                                name = "해당 기수에 활동 기록이 없음",
                                 value = """
                                     {
-                                        "errorCode": "ATD_2003",
-                                        "message": "출석 처리를 위한 기수 정보가 올바르지 않습니다.",
+                                        "errorCode": "ATD_2007",
+                                        "message": "해당 기수에 활동이 없어서 출석 관련 처리가 불가합니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "해당 기수에 운영진이 아닌 활동 기록이 없음",
+                                value = """
+                                    {
+                                        "errorCode": "ATD_2002",
+                                        "message": "해당 기수에 참가자 직군으로 활동이 없어서 출석 관련 처리가 불가합니다.",
                                         "isSuccess": false
                                     }
                                 """

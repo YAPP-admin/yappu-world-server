@@ -1,8 +1,10 @@
 package co.yappuworld.schedule.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
+import co.yappuworld.schedule.client.dto.request.AdminAttendanceCodeUpdateRequest
 import co.yappuworld.schedule.client.dto.request.AdminAttendanceUpdateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionAttendanceUpdateRequest
+import co.yappuworld.schedule.client.dto.response.AdminAttendanceCodeResponse
 import co.yappuworld.schedule.client.dto.response.AdminAttendancesResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -11,7 +13,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -201,4 +205,79 @@ interface AdminAttendanceApi {
     fun updateSessionAttendances(
         @RequestBody request: AdminSessionAttendanceUpdateRequest
     ): ResponseEntity<Unit>
+
+    @Operation(summary = "출석 코드 조회")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AdminAttendanceCodeResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "출석 코드 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "code": 1234
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AdminAttendanceCodeResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "출석 코드 환경 변수 미설정",
+                                value = """
+                                    {
+                                        "message": "환경 변수 세팅에 오류가 발생했습니다. 요청 데이터를 확인해주세요.",
+                                        "errorCode": "CFG_9000",
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/admin/v1/attendance-code")
+    fun getAttendanceCode(): ResponseEntity<SuccessResponse<AdminAttendanceCodeResponse>>
+
+    @Operation(summary = "출석 코드 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            )
+        ]
+    )
+    @PutMapping("/admin/v1/attendance-code")
+    fun updateAttendanceCode(
+        @Valid @RequestBody request: AdminAttendanceCodeUpdateRequest
+    ): ResponseEntity<Unit>
+
+    @Operation(summary = "출석 코드 삭제")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            )
+        ]
+    )
+    @DeleteMapping("/admin/v1/attendance-code")
+    fun deleteAttendanceCode(): ResponseEntity<Unit>
 }

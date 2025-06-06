@@ -4,6 +4,7 @@ import co.yappuworld.global.response.ErrorResponse
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.client.dto.request.AdminGenerationActiveUpdateRequest
+import co.yappuworld.operation.client.dto.request.AdminGenerationDeleteRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
@@ -82,7 +83,6 @@ interface AdminUserOperationApi {
     @ApiResponses(
         value = [
             ApiResponse(
-                description = "성공",
                 responseCode = "201",
                 content = [Content()]
             )
@@ -92,6 +92,40 @@ interface AdminUserOperationApi {
     fun registerGeneration(
         @Valid @RequestBody request: AdminGenerationRegisterRequest
     ): ResponseEntity<Unit>
+
+    @Operation(summary = "기수 삭제")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "존재하지 않는 기수가 요청에 포함",
+                                value = """
+                                {
+                                    "errorCode": "OPR_1002",
+                                    "message": "존재하지 않는 기수가 포함되어 있습니다.",
+                                    "isSuccess": false
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @DeleteMapping("/admin/v1/operations/generations")
+    fun deleteGenerations(
+        @RequestBody request: AdminGenerationDeleteRequest
+    ): ResponseEntity<SuccessResponse<Unit>>
 
     @Operation(summary = "기수 활성화 상태 변경")
     @ApiResponses(

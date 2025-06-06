@@ -44,8 +44,16 @@ class SignUpExecutor(
         executeWithLockReturning(application.applicantEmail) {
             checkEmailAvailability(application.applicantEmail)
             val user = userCommandService.signUp(application, role)
+            rejectPendingSignUpApplication(application.applicantEmail)
             jwtGenerator.generateToken(SecurityUser.from(user), now)
         }
+
+    private fun rejectPendingSignUpApplication(applicantEmail: String) {
+        signUpApplicationFindService
+            .findPendingApplicationOrNull(applicantEmail)
+            ?.apply { reject(reason = "가입 코드를 통해 회원가입을 완료하였습니다.") }
+            ?.also { signUpApplicationCommandService.update(it) }
+    }
 
     fun approve(
         applicationIds: List<UUID>,
@@ -68,9 +76,10 @@ class SignUpExecutor(
     }
 
     fun checkEmailAvailability(email: String) {
-        if (userFindService.existsEmail(email)) {
-            logger.warn { "${email}은 이미 가입된 이메일입니다." }
-            throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
+        val user = userFindService.findUserOrNull(email) ?: return
+        when (user.isWithdrawn()) {
+            true -> throw BusinessException(UserError.WITHDRAWN_EMAIL)
+            false -> throw BusinessException(UserError.ALREADY_SIGNED_UP_EMAIL)
         }
     }
 

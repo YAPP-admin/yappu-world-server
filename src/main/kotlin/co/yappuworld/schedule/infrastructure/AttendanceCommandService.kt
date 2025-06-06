@@ -11,7 +11,7 @@ class AttendanceCommandService(
     private val attendanceRepository: AttendanceRepository
 ) {
 
-    fun save(sessionAttendance: SessionAttendance) {
+    fun checkIn(sessionAttendance: SessionAttendance) {
         attendanceRepository.save(sessionAttendance.getNewAttendance())
     }
 

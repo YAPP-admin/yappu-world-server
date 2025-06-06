@@ -1,11 +1,14 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
+
+private val logger = KotlinLogging.logger {}
 
 data class AdminSessionDetailResponse(
     @Schema(description = "세션 ID")
@@ -27,6 +30,13 @@ data class AdminSessionDetailResponse(
     @Schema(description = "세션 타입")
     val sessionType: SessionType
 ) {
+
+    init {
+        logger.info { "세션 시작 날짜: $date" }
+        logger.info { "세션 시작 시간: $time" }
+        logger.info { "세션 종료 날짜: $endDate" }
+        logger.info { "세션 종료 시간: $endTime" }
+    }
 
     constructor(session: SessionEntity) : this(
         id = session.id,

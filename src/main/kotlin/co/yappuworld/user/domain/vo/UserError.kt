@@ -63,6 +63,12 @@ enum class UserError : Error {
         override val code: String = "USR_1005"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },
+    WITHDRAWN_EMAIL {
+        override val message: String = "탈퇴한 이메일입니다."
+        override val code: String = "USR_1006"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+
     ALREADY_PROCESSED_EMAIL {
         override val message: String = "이미 처리 중인 이메일입니다."
         override val code: String = "USR_1098"
@@ -143,5 +149,27 @@ enum class UserError : Error {
         override val message: String = "기존에 존재하는 가입코드이므로 변경할 수 없습니다."
         override val code: String = "USR_2003"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
+    },
+
+    // 3000번대 - 유저 관리
+    DUPLICATE_ACTIVITY_UNIT {
+        override val message: String = "기수와 직군이 모두 중복된 활동 정보가 존재합니다."
+        override val code: String = "USR_3000"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    WRONG_PHONE_NUMBER {
+        override val message: String = "잘못된 전화번호 형식입니다."
+        override val code: String = "USR_3001"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    NO_ACTIVITY_UNIT {
+        override val message: String = "활동 정보가 존재하지 않습니다."
+        override val code: String = "USR_3002"
+        override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    DUPLICATE_ATTENDEE_ACTIVITY {
+        override val message: String = "한 기수에 둘 이상의 참가자 활동 기록이 있습니다."
+        override val code: String = "USR_3003"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }

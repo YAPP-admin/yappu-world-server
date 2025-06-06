@@ -11,8 +11,10 @@ import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
-import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FeatureSpec
@@ -45,7 +47,13 @@ class AttendanceServiceTest :
 
         val activeGeneration = 25
         val attendanceCode = "1234"
-        val user = getUserWithActivityUnitFixture()
+        val user = getUserWithActivityUnitsFixture(
+            activityUnits = listOf(getActivityUnitFixture(generation = activeGeneration))
+        )
+        val attendee = getAttendeeFixture(
+            userWithActivityUnits = user,
+            generation = activeGeneration
+        )
         val session = getSessionEntityFixture()
         val request = AttendanceFixture.getAttendRequestFixture(
             attendanceCode = attendanceCode,
@@ -54,11 +62,11 @@ class AttendanceServiceTest :
 
         fun successConditionMocking() {
             every { generationFindService.findActiveGeneration() } returns activeGeneration
-            every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns user
+            every { userFindService.findSessionAttendee(any(), any()) } returns attendee
             every { sessionFindService.findSession(any()) } returns session
             every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
-            every { configFindService.findAttendanceCode() } returns attendanceCode
-            justRun { attendanceCommandService.save(any()) }
+            every { configFindService.findAttendanceCodeValue() } returns attendanceCode
+            justRun { attendanceCommandService.checkIn(any()) }
         }
 
         feature("출석 체크") {
@@ -70,22 +78,22 @@ class AttendanceServiceTest :
                     scenario("이미 출석을 완료한 유저면 예외가 발생한다.") {
                         successConditionMocking()
                         every {
-                            attendanceFindService.findSessionAttendance(user.userId, session.id)
+                            attendanceFindService.findSessionAttendance(user.id, session.id)
                         } returns getAttendanceEntityFixture()
 
                         shouldThrow<BusinessException> {
-                            attendanceService.checkIn(request, user.userId, LocalDateTime.now())
+                            attendanceService.checkIn(request, user.id, LocalDateTime.now())
                         }.error.shouldBe(AttendanceError.ALREADY_CHECKED_IN)
                     }
 
                     scenario("출석 코드가 등록되지 않은 상황에는 예외가 발생한다.") {
                         successConditionMocking()
-                        every { configFindService.findAttendanceCode() } returns null
+                        every { configFindService.findAttendanceCodeValue() } returns null
 
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(
                                 request = request,
-                                userId = user.userId,
+                                userId = user.id,
                                 now = LocalDateTime.of(session.date, session.time)
                             )
                         }.error shouldBe AttendanceError.UNREGISTERED_ATTENDANCE_CODE
@@ -99,45 +107,10 @@ class AttendanceServiceTest :
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(
                                 request = AttendanceRequest(session.id, wrongAttendanceCode),
-                                userId = user.userId,
+                                userId = user.id,
                                 now = LocalDateTime.of(session.date, session.time)
                             )
                         }.error.shouldBe(AttendanceError.ATTENDANCE_CODE_NOT_MATCH)
-                    }
-                }
-
-                feature("세션 관련 검증을 진행한다.") {
-
-                    scenario("세션의 기수와 활성화된 기수가 일치하지 않으면 예외가 발생한다.") {
-                        successConditionMocking()
-
-                        val lastGenerationSession = getSessionEntityFixture(generation = activeGeneration - 1)
-                        every { sessionFindService.findSession(any()) } returns lastGenerationSession
-
-                        shouldThrow<BusinessException> {
-                            attendanceService.checkIn(
-                                request = request,
-                                userId = user.userId,
-                                now = LocalDateTime.of(session.date, session.time)
-                            )
-                        }.error.shouldBe(AttendanceError.GENERATION_NOT_MATCH)
-                    }
-                }
-
-                feature("유저 관련 검증을 진행한다.") {
-
-                    scenario("유저의 기수와 활성화된 기수가 일치하지 않으면 예외가 발생한다.") {
-                        successConditionMocking()
-                        every { userFindService.findUserWithActivityUnitOfGeneration(any(), any()) } returns
-                            getUserWithActivityUnitFixture(generation = activeGeneration - 1)
-
-                        shouldThrow<BusinessException> {
-                            attendanceService.checkIn(
-                                request = request,
-                                userId = user.userId,
-                                now = LocalDateTime.of(session.date, session.time)
-                            )
-                        }.error.shouldBe(AttendanceError.GENERATION_NOT_MATCH)
                     }
                 }
             }

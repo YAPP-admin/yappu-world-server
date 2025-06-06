@@ -1,10 +1,12 @@
 package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicatable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -144,6 +146,22 @@ class SessionFindService(
 
         return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
     }
+
+    fun findSessions(
+        generation: Int? = null,
+        range: LocalDateRange? = null
+    ): List<SessionEntity> =
+        scheduleRepository
+            .findAll(CustomSessionDsl) {
+                val predicates = mutableListOf<Predicatable>()
+                generation?.let { predicates.add(path(SessionEntity::generation).equal(it)) }
+                range?.let { predicates.add(path(SessionEntity::date).between(range.start, range.last)) }
+
+                select(entity(SessionEntity::class))
+                    .from(entity(SessionEntity::class))
+                    .whereAnd(*predicates.toTypedArray())
+                    .orderBy(*sessionSorting().toTypedArray())
+            }.filterNotNull()
 
     fun findSessionsInGeneration(
         pageRequest: PageRequest,

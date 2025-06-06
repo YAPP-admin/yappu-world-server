@@ -75,10 +75,6 @@ class SessionEntity(
     val lateTimeUntil: LocalDateTime
         get() = LocalDateTime.of(date, time).plusHours(ABSENT_AFTER_SESSION_START_HOURS)
 
-    fun isFinished(now: LocalDateTime): Boolean =
-        endDate.isBefore(now.toLocalDate()) ||
-            (endDate.isEqual(now.toLocalDate()) && endTime.isBefore(now.toLocalTime()))
-
     fun decideCheckInStatus(now: LocalDateTime): AttendanceStatus =
         when {
             now.isBefore(checkInTimeFrom) -> throw BusinessException(AttendanceError.NOT_CHECK_IN_TIME)

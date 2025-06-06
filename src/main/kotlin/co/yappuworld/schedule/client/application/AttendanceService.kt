@@ -45,7 +45,7 @@ class AttendanceService(
         checkAttendanceCode(request.attendanceCode)
         sessionAttendance.checkIn(now)
 
-        attendanceCommandService.save(sessionAttendance)
+        attendanceCommandService.checkIn(sessionAttendance)
     }
 
     @Transactional(readOnly = true)
@@ -54,18 +54,18 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendanceStatisticsResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, activeGeneration)
-        val thisGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
+        val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
+        val activeGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
         val attendances = attendanceFindService.findAttendancesBySchedules(
             userId = userId,
-            scheduleIds = thisGenerationSessions.map { it.id }
+            scheduleIds = activeGenerationSessions.map { it.id }
         )
         val latePassCount = latePassFindService.countLatePasses(activeGeneration, userId)
 
         val attendanceBook = AttendanceBook(
             generation = activeGeneration,
-            users = listOf(user),
-            sessions = thisGenerationSessions,
+            attendees = listOf(attendee),
+            sessions = activeGenerationSessions,
             attendances = attendances,
             latePassCountByUserId = mapOf(userId to latePassCount),
             now = now
@@ -93,16 +93,16 @@ class AttendanceService(
         userId: UUID,
         sessionId: UUID
     ): SessionAttendance {
-        val generation = generationFindService.findActiveGeneration()
-        val user = userFindService.findUserWithActivityUnitOfGeneration(userId, generation)
         val session = sessionFindService.findSession(sessionId)
-        val attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
-
-        return SessionAttendance(user = user, session = session, attendance = attendance)
+        return SessionAttendance(
+            attendee = userFindService.findSessionAttendee(userId, session.generation),
+            session = session,
+            attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
+        )
     }
 
     private fun checkAttendanceCode(attendanceCode: String) {
-        val value = configFindService.findAttendanceCode()
+        val value = configFindService.findAttendanceCodeValue()
 
         if (value == null) {
             logger.error { "출석 코드가 등록되지 않았습니다." }

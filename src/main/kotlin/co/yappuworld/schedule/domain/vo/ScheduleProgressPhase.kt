@@ -1,10 +1,11 @@
 package co.yappuworld.schedule.domain.vo
 
 enum class ScheduleProgressPhase(
-    private val label: String
+    val label: String,
+    val order: Int
 ) {
-    DONE("완료"),
-    TODAY("오늘"),
-    ONGOING("진행 중"),
-    PENDING("예정")
+    DONE("종료", 0),
+    ONGOING("진행 중", 1),
+    TODAY("당일", 2),
+    PENDING("예정", 3)
 }
