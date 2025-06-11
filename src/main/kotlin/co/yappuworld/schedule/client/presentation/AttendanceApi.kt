@@ -174,7 +174,7 @@ interface AttendanceApi {
                                         "data": {
                                             "totalSessionCount": 17,
                                             "remainingSessionCount": 2,
-                                            "sessionProgressRate": 88,
+                                            "sessionProgressRate": 88.2,
                                             "attendancePoint": 40,
                                             "attendanceCount": 10,
                                             "lateCount": 3,
