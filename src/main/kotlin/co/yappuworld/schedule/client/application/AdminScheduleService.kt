@@ -88,15 +88,17 @@ class AdminScheduleService(
         requestSessionAttendeeIds: List<UUID>
     ) {
         val attendances = attendanceFindService.findAttendances(session.id)
-        val attendeeIds = attendances.map { it.userId }
+        val attendeeIds = attendances.map { it.userId }.toSet()
 
-        requestSessionAttendeeIds
-            .filter { attendeeId -> attendeeId !in attendeeIds }
+        val toCreate = requestSessionAttendeeIds
+            .filterNot { attendeeId -> attendeeId in attendeeIds }
             .map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = session.id) }
-            .also { toCreate -> attendanceCommandService.saveAll(toCreate) }
 
-        attendances
-            .filter { attendance -> attendance.userId !in requestSessionAttendeeIds }
-            .also { toDelete -> attendanceCommandService.deleteAll(toDelete) }
+        if (toCreate.isNotEmpty()) attendanceCommandService.saveAll(toCreate)
+
+        val toDelete = attendances
+            .filterNot { attendance -> attendance.userId in requestSessionAttendeeIds }
+
+        if (toDelete.isNotEmpty()) attendanceCommandService.deleteAll(toDelete)
     }
 }
