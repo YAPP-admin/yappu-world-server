@@ -25,9 +25,9 @@ data class AdminAttendancesResponse(
 
         fun from(attendanceBook: AttendanceBook): AdminAttendancesResponse =
             AdminAttendancesResponse(
-                sessions = attendanceBook.sessions.map {
-                    AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id))
-                },
+                sessions = attendanceBook.sessions
+                    .map { AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id)) }
+                    .sortedBy { it.startDate },
                 users = attendanceBook.attendees.map { attendee ->
                     AdminAttendanceUserResponse(attendee, attendanceBook.getUserAttendanceStatistics(attendee.id))
                 },
