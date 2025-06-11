@@ -4,10 +4,10 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
-import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import co.yappuworld.schedule.domain.AttendanceBook
 import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
@@ -52,7 +52,7 @@ class AttendanceService(
     fun getAttendanceStatistics(
         userId: UUID,
         now: LocalDateTime
-    ): AttendanceStatisticsResponse {
+    ): UserAttendanceStatistics {
         val activeGeneration = generationFindService.findActiveGeneration()
         val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
         val activeGenerationSessions = sessionFindService.findSessionsInGeneration(activeGeneration)
@@ -71,7 +71,7 @@ class AttendanceService(
             now = now
         )
 
-        return AttendanceStatisticsResponse.from(attendanceBook.getUserAttendanceStatistics(userId))
+        return attendanceBook.getUserAttendanceStatistics(userId)
     }
 
     @Transactional(readOnly = true)

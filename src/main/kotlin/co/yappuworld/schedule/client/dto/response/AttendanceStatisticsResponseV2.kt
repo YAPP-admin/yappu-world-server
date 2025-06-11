@@ -2,14 +2,15 @@ package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import io.swagger.v3.oas.annotations.media.Schema
+import kotlin.math.roundToInt
 
-data class AttendanceStatisticsResponse(
+data class AttendanceStatisticsResponseV2(
     @Schema(description = "전체 세션 수")
     val totalSessionCount: Int,
     @Schema(description = "남은 세션 수")
     val remainingSessionCount: Int,
     @Schema(description = "세션 진행률 (소수 첫째자리까지 표현)")
-    val sessionProgressRate: Int,
+    val sessionProgressRate: Double,
     @Schema(description = "출석 점수")
     val attendancePoint: Int,
     @Schema(description = "출석한 세션 수")
@@ -23,12 +24,15 @@ data class AttendanceStatisticsResponse(
 ) {
 
     companion object {
-        fun from(userAttendanceStatistics: UserAttendanceStatistics): AttendanceStatisticsResponse =
+        fun from(userAttendanceStatistics: UserAttendanceStatistics): AttendanceStatisticsResponseV2 =
             userAttendanceStatistics.let {
-                AttendanceStatisticsResponse(
+                val sessionProgressRatio = 1.0 - it.leftSessionCount.toDouble() / it.totalSessionCount
+                val sessionProgressRate = (sessionProgressRatio * 100 * 10).roundToInt() / 10.0
+
+                AttendanceStatisticsResponseV2(
                     totalSessionCount = it.totalSessionCount,
                     remainingSessionCount = it.leftSessionCount,
-                    sessionProgressRate = ((1.0 - it.leftSessionCount.toDouble() / it.totalSessionCount) * 100).toInt(),
+                    sessionProgressRate = sessionProgressRate,
                     attendancePoint = it.totalPoint,
                     attendanceCount = it.onTimeCount,
                     lateCount = it.lateCount,

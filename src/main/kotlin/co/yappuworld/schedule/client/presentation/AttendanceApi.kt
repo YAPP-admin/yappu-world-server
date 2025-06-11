@@ -5,6 +5,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.SecurityUser
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
+import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponseV2
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -174,7 +175,7 @@ interface AttendanceApi {
                                         "data": {
                                             "totalSessionCount": 17,
                                             "remainingSessionCount": 2,
-                                            "sessionProgressRate": 88.2,
+                                            "sessionProgressRate": 88,
                                             "attendancePoint": 40,
                                             "attendanceCount": 10,
                                             "lateCount": 3,
@@ -215,6 +216,64 @@ interface AttendanceApi {
     fun getAttendanceStatistics(
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponse>>
+
+    @Operation(summary = "나의 출석 통계")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AttendanceStatisticsResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "출석 통계 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "totalSessionCount": 17,
+                                            "remainingSessionCount": 2,
+                                            "sessionProgressRate": 88.2,
+                                            "attendancePoint": 40,
+                                            "attendanceCount": 10,
+                                            "lateCount": 3,
+                                            "absenceCount": 2,
+                                            "latePassCount": 1
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "활성화 된 기수가 없어 출석 통계 조회 불가",
+                                value = """
+                                    {
+                                        "errorCode": "ATD_2002",
+                                        "message": "활성화 된 기수가 없어서 출석 통계 조회가 불가합니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v2/attendances/statistics")
+    fun getAttendanceStatisticsV2(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponseV2>>
 
     @Operation(summary = "출석 내역 조회")
     @ApiResponses(
