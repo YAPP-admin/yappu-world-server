@@ -8,6 +8,7 @@ import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
@@ -69,8 +70,8 @@ class UpcomingSessionFindTest :
                     userWithActivityUnits = user,
                     generation = generation
                 )
-                every { sessionFindService.findUpcomingSession(any(), any()) } returns session
-                every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
+                every { sessionFindService.findUpcomingSession(any(), any(), any()) } returns session
+                every { attendanceFindService.findSessionAttendance(any(), any()) } returns getAttendanceEntityFixture()
             }
 
             scenario("현재 테스트 조건에선 출석을 누를 수 있다.") {

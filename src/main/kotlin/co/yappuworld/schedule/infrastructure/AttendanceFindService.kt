@@ -1,5 +1,7 @@
 package co.yappuworld.schedule.infrastructure
 
+import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.infrastructure.dto.SessionAttendeeDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
@@ -24,7 +26,9 @@ class AttendanceFindService(
     fun findSessionAttendance(
         userId: UUID,
         sessionId: UUID
-    ): AttendanceEntity? = attendanceRepository.findByUserIdAndScheduleId(userId, sessionId)
+    ): AttendanceEntity =
+        attendanceRepository.findByUserIdAndScheduleId(userId, sessionId)
+            ?: throw BusinessException(AttendanceError.NOT_INVITED)
 
     fun findAttendancesBySchedules(
         userId: UUID,
