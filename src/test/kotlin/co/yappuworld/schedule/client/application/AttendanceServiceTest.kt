@@ -5,6 +5,7 @@ import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.domain.vo.AttendanceError
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
@@ -64,7 +65,7 @@ class AttendanceServiceTest :
             every { generationFindService.findActiveGeneration() } returns activeGeneration
             every { userFindService.findSessionAttendee(any(), any()) } returns attendee
             every { sessionFindService.findSession(any()) } returns session
-            every { attendanceFindService.findSessionAttendance(any(), any()) } returns null
+            every { attendanceFindService.findSessionAttendance(any(), any()) } returns getAttendanceEntityFixture()
             every { configFindService.findAttendanceCodeValue() } returns attendanceCode
             justRun { attendanceCommandService.checkIn(any()) }
         }
@@ -79,7 +80,7 @@ class AttendanceServiceTest :
                         successConditionMocking()
                         every {
                             attendanceFindService.findSessionAttendance(user.id, session.id)
-                        } returns getAttendanceEntityFixture()
+                        } returns getAttendanceEntityFixture(status = AttendanceStatus.ON_TIME)
 
                         shouldThrow<BusinessException> {
                             attendanceService.checkIn(request, user.id, LocalDateTime.now())

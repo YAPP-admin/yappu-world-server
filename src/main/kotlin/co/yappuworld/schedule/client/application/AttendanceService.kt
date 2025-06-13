@@ -44,8 +44,6 @@ class AttendanceService(
 
         checkAttendanceCode(request.attendanceCode)
         sessionAttendance.checkIn(now)
-
-        attendanceCommandService.checkIn(sessionAttendance)
     }
 
     @Transactional(readOnly = true)

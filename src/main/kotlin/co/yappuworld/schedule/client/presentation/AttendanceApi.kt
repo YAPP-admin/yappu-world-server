@@ -56,6 +56,16 @@ interface AttendanceApi {
                                         "isSuccess": false
                                     }
                                 """
+                            ),
+                            ExampleObject(
+                                name = "초대받지 않은 유저여서 출석이 불가",
+                                value = """
+                                    {
+                                        "errorCode": "ATD_1005",
+                                        "message": "초대받지 못한 유저입니다.",
+                                        "isSuccess": false
+                                    }
+                                """
                             )
                         ]
                     )

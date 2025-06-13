@@ -53,4 +53,8 @@ class AttendanceEntity(
     fun updateStatus(status: AttendanceStatus) {
         this.status = status
     }
+
+    fun hasAttended(): Boolean = status != AttendanceStatus.PENDING
+
+    fun canAttend(): Boolean = status == AttendanceStatus.PENDING
 }

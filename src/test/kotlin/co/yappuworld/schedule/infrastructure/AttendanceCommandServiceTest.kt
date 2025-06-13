@@ -1,7 +1,5 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getSessionAttendanceFixture
@@ -21,12 +19,6 @@ class AttendanceCommandServiceTest @Autowired constructor(
         val attendanceCommandService = AttendanceCommandService(attendanceRepository)
 
         feature("도메인 모델로부터 새로운 출석 정보를 저장") {
-
-            scenario("출석 정보가 없으면 예외가 발생한다.") {
-                shouldThrowExactly<BusinessException> {
-                    attendanceCommandService.checkIn(getSessionAttendanceFixture())
-                }.error shouldBe AttendanceError.NO_ATTENDANCE_TO_CHECK_IN
-            }
 
             scenario("출석 정보가 있으면 정상적으로 저장된다.") {
                 val attendance = getAttendanceEntityFixture()
