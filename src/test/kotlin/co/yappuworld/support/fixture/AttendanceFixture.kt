@@ -22,7 +22,7 @@ object AttendanceFixture {
     fun getSessionAttendanceFixture(
         attendee: Attendee = getAttendeeFixture(getUserWithActivityUnitFixture()),
         session: SessionEntity = getSessionEntityFixture(),
-        attendance: AttendanceEntity? = null
+        attendance: AttendanceEntity = getAttendanceEntityFixture(userId = attendee.id, scheduleId = session.id)
     ): SessionAttendance =
         SessionAttendance(
             attendee = attendee,
@@ -40,7 +40,7 @@ object AttendanceFixture {
         )
 
     fun getAttendanceEntityFixture(
-        status: AttendanceStatus = AttendanceStatus.ON_TIME,
+        status: AttendanceStatus = AttendanceStatus.PENDING,
         userId: UUID = UUID.randomUUID(),
         scheduleId: UUID = UUID.randomUUID()
     ) = AttendanceEntity(

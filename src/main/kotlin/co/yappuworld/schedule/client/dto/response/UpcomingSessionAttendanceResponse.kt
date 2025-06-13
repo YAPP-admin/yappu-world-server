@@ -39,7 +39,7 @@ data class UpcomingSessionAttendanceResponse(
         description = """
             현재 출석이 가능한지 여부
             출석이 가능한 조건
-            1. 유저의 기수가 활성화 기수와 동일 & 유저의 권한이 ACTIVE(활동 중)
+            1. 세션 참가자로 초대를 받았고
             2. 세션 시작 20분 전 ~ 세션 종료 시간
             3. 아직 출석하지 않은 경우
         """

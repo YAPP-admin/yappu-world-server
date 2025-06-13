@@ -26,15 +26,15 @@ enum class AttendanceError : Error {
         override val code: String = "ATD_1002"
         override val type: ErrorType = ErrorType.BAD_REQUEST
     },
-    NO_ATTENDANCE_TO_CHECK_IN {
-        override val message: String = "출석이 불가합니다. 개발자에게 문의해주세요."
-        override val code: String = "ATD_1003"
-        override val type: ErrorType = ErrorType.UNEXPECTED_ERROR
-    },
     UNREGISTERED_ATTENDANCE_CODE {
         override val message: String = "출석코드가 등록되지 않았습니다."
         override val code: String = "ATD_1004"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    NOT_INVITED {
+        override val message: String = "초대받지 못한 유저입니다."
+        override val code: String = "ATD_1005"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     },
 
     // 외부 도메인 에러
@@ -62,11 +62,6 @@ enum class AttendanceError : Error {
         override val message: String = "유저의 출석 정보를 찾을 수 없습니다."
         override val code: String = "ATD_2005"
         override val type: ErrorType = ErrorType.NOT_FOUND
-    },
-    CANNOT_EXISTS_ATTENDANCE_FUTURE_SESSION {
-        override val message: String = "미래 세션에 출석할 수 없습니다."
-        override val code: String = "ATD_2006"
-        override val type: ErrorType = ErrorType.WRONG_STATE
     },
     NO_ATTENDEE_ACTIVITY_IN_GENERATION {
         override val message: String = "해당 기수에 활동이 없어서 출석 관련 처리가 불가합니다."

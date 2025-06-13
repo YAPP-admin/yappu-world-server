@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.domain
 
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getSessionAttendanceFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
@@ -29,7 +30,9 @@ class SessionAttendanceTest :
 
             scenario("세션 시작 20분 전보다 더 이전이면 출석할 수 없다.") {
                 val now = LocalDateTime.of(2024, 12, 12, 13, 40).minusNanos(1)
-                getSessionAttendanceFixture(attendee, session, null).canCheckIn(now).shouldBeFalse()
+                getSessionAttendanceFixture(attendee, session, getAttendanceEntityFixture())
+                    .canCheckIn(now)
+                    .shouldBeFalse()
             }
 
             scenario("세션 시작 20분 전부터, 세션 종료 직전까지 출석할 수 있다.") {
@@ -37,13 +40,17 @@ class SessionAttendanceTest :
                     row(LocalDateTime.of(2024, 12, 12, 13, 40)),
                     row(LocalDateTime.of(2024, 12, 13, 10, 0).minusNanos(1))
                 ) { now ->
-                    getSessionAttendanceFixture(attendee, session, null).canCheckIn(now).shouldBeTrue()
+                    getSessionAttendanceFixture(attendee, session, getAttendanceEntityFixture())
+                        .canCheckIn(now)
+                        .shouldBeTrue()
                 }
             }
 
             scenario("종료 시간부터는 출석할 수 없다.") {
                 val now = LocalDateTime.of(session.endDate, session.endTime)
-                getSessionAttendanceFixture(attendee, session, null).canCheckIn(now).shouldBeFalse()
+                getSessionAttendanceFixture(attendee, session, getAttendanceEntityFixture())
+                    .canCheckIn(now)
+                    .shouldBeFalse()
             }
         }
     })

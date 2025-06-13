@@ -27,16 +27,21 @@ class SessionFindService(
             ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
 
     fun findUpcomingSession(
+        userId: UUID,
         activeGeneration: Int,
         now: LocalDateTime
     ): SessionEntity =
         scheduleRepository
             .findAll(limit = 1) {
                 select(entity(SessionEntity::class))
-                    .from(entity(SessionEntity::class))
-                    .where(
+                    .from(
+                        entity(SessionEntity::class),
+                        innerJoin(AttendanceEntity::class)
+                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)))
+                    ).where(
                         and(
                             path(SessionEntity::generation).equal(activeGeneration),
+                            path(AttendanceEntity::userId).equal(userId),
                             or(
                                 path(SessionEntity::endDate).greaterThan(now.toLocalDate()),
                                 and(
