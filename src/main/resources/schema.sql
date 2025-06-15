@@ -116,12 +116,13 @@ CREATE TABLE generations
 drop table if exists attendances;
 create table attendances
 (
-    id          binary(16) PRIMARY KEY,
-    created_at  datetime(6),
-    updated_at  datetime(6),
-    user_id     binary(16) NOT NULL,
-    schedule_id binary(16) NOT NULL,
-    status      varchar(32) NOT NULL
+    id                 binary(16) PRIMARY KEY,
+    created_at         datetime(6),
+    updated_at         datetime(6),
+    user_id            binary(16) NOT NULL,
+    schedule_id        binary(16) NOT NULL,
+    status             varchar(32) NOT NULL,
+    user_checked_in_at datetime(6)
 );
 
 drop table if exists late_passes;
