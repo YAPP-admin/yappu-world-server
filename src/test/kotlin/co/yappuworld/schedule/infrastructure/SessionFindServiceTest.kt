@@ -111,7 +111,7 @@ class SessionFindServiceTest @Autowired constructor(
 
             scenario("특정 기수의 세션이 존재하지 않으면 emptylist를 반환한다.") {
                 sessionFindService
-                    .findAttendancesHistory(4, UUID.randomUUID(), LocalDateTime.now())
+                    .findAttendancesHistories(4, UUID.randomUUID(), LocalDateTime.now())
                     .shouldBeEmpty()
             }
 
@@ -120,7 +120,7 @@ class SessionFindServiceTest @Autowired constructor(
                     .also { scheduleRepository.save(it) }
 
                 sessionFindService
-                    .findAttendancesHistory(4, UUID.randomUUID(), LocalDateTime.now())
+                    .findAttendancesHistories(4, UUID.randomUUID(), LocalDateTime.now())
                     .shouldNotBeEmpty()
             }
 
@@ -129,7 +129,7 @@ class SessionFindServiceTest @Autowired constructor(
                     .also { scheduleRepository.save(it) }
 
                 val result = sessionFindService
-                    .findAttendancesHistory(
+                    .findAttendancesHistories(
                         4,
                         UUID.randomUUID(),
                         LocalDateTime.of(session.date.plusDays(1), session.time)
@@ -162,7 +162,7 @@ class SessionFindServiceTest @Autowired constructor(
                 ).also { scheduleRepository.saveAll(it) }
 
                 sessionFindService
-                    .findAttendancesHistory(
+                    .findAttendancesHistories(
                         4,
                         UUID.randomUUID(),
                         datetime
@@ -197,7 +197,7 @@ class SessionFindServiceTest @Autowired constructor(
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)
 
-                val result = sessionFindService.findAttendancesHistory(4, userId, now)
+                val result = sessionFindService.findAttendancesHistories(4, userId, now)
                 result.forEachIndexed { index, sessionWithAttendance ->
                     sessionWithAttendance.attendanceStatus shouldBe status[index].label
                 }

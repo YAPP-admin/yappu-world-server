@@ -39,7 +39,7 @@ class SessionAttendance(
 
     fun checkIn(now: LocalDateTime) {
         validateCheckInAvailability(now)
-        attendance.updateStatus(session.decideCheckInStatus(now))
+        attendance.checkIn(session.decideCheckInStatus(now), now)
     }
 
     fun validateCheckInAvailability(now: LocalDateTime) {

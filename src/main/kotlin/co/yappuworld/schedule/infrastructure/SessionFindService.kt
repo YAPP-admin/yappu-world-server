@@ -94,7 +94,7 @@ class SessionFindService(
             }.filterNotNull()
             .apply { forEach { it.resolveAttendanceStatusOfPastSessions(now) } }
 
-    fun findAttendancesHistory(
+    fun findAttendancesHistories(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
