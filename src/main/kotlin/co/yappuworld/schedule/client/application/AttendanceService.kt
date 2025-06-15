@@ -78,7 +78,7 @@ class AttendanceService(
         now: LocalDateTime
     ): AttendancesHistoryResponse {
         val activeGeneration = generationFindService.findActiveGeneration()
-        val sessionsWithAttendance = sessionFindService.findAttendancesHistory(
+        val sessionsWithAttendance = sessionFindService.findAttendancesHistories(
             generation = activeGeneration,
             userId = userId,
             now = now
