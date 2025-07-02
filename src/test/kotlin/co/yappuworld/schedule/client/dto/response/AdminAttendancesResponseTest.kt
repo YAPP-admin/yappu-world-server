@@ -40,6 +40,12 @@ class AdminAttendancesResponseTest :
                 getAttendanceEntityFixture(scheduleId = sessions[0].id, userId = users[2].userId, status = ON_TIME),
                 getAttendanceEntityFixture(scheduleId = sessions[1].id, userId = users[2].userId, status = ABSENT)
             )
+            /**
+             *         세션1    세션2    세션3
+             * 유저1   출석     초대X    초대X
+             * 유저2   지각     초대X    초대X
+             * 유저3   출석     결석     초대X
+             */
 
             scenario("세션, 유저, 출석 정보를 기반으로 AdminAttendancesResponse를 생성한다.") {
                 val response = AdminAttendancesResponse.from(
@@ -56,9 +62,9 @@ class AdminAttendancesResponseTest :
                 response.users shouldHaveSize 3
                 response.sessions shouldHaveSize 3
                 response.attendancesGroupedBySession.forEach { it.attendances.shouldHaveSize(3) }
-                response.attendancesGroupedBySession[0].attendances.count { it.status == ON_TIME.label } shouldBe 2
-                response.attendancesGroupedBySession[0].attendances.count { it.status == LATE.label } shouldBe 1
-                response.attendancesGroupedBySession[1].attendances.count { it.status == ABSENT.label } shouldBe 3
+                response.attendancesGroupedBySession[0].attendances.count { it.status == ON_TIME } shouldBe 2
+                response.attendancesGroupedBySession[0].attendances.count { it.status == LATE } shouldBe 1
+                response.attendancesGroupedBySession[1].attendances.count { it.status == ABSENT } shouldBe 1
                 response.attendancesGroupedBySession[2].attendances.forAll { it.status.shouldBeNull() }
             }
         }

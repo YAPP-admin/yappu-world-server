@@ -156,6 +156,7 @@ interface AdminAttendanceApi {
                     Content(
                         examples = [
                             ExampleObject(
+                                name = "출석 상태 변경 실패",
                                 value = """
                                     {
                                         "isSuccess": false,
@@ -188,6 +189,7 @@ interface AdminAttendanceApi {
                     Content(
                         examples = [
                             ExampleObject(
+                                name = "출석 상태 변경 실패",
                                 value = """
                                     {
                                         "isSuccess": false,
@@ -202,6 +204,7 @@ interface AdminAttendanceApi {
             )
         ]
     )
+    @PutMapping("/admin/v1/session-attendances")
     fun updateSessionAttendances(
         @RequestBody request: AdminSessionAttendanceUpdateRequest
     ): ResponseEntity<Unit>

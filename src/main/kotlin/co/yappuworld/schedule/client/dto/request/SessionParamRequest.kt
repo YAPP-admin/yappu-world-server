@@ -4,7 +4,7 @@ import co.yappuworld.global.util.LocalDateRange
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
-data class SessionQueryParamRequest(
+data class SessionParamRequest(
     @field:Schema(description = "기수, null이라면 현재 활성화 된 기수를 처리", nullable = true)
     val generation: Int? = null,
     @field:Schema(

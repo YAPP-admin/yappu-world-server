@@ -2,6 +2,7 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.LocalDateRange
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
@@ -27,16 +28,21 @@ class SessionFindService(
             ?: throw BusinessException(ScheduleError.NOT_FOUND_SESSION)
 
     fun findUpcomingSession(
+        userId: UUID,
         activeGeneration: Int,
         now: LocalDateTime
     ): SessionEntity =
         scheduleRepository
             .findAll(limit = 1) {
                 select(entity(SessionEntity::class))
-                    .from(entity(SessionEntity::class))
-                    .where(
+                    .from(
+                        entity(SessionEntity::class),
+                        innerJoin(AttendanceEntity::class)
+                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)))
+                    ).where(
                         and(
                             path(SessionEntity::generation).equal(activeGeneration),
+                            path(AttendanceEntity::userId).equal(userId),
                             or(
                                 path(SessionEntity::endDate).greaterThan(now.toLocalDate()),
                                 and(
@@ -63,70 +69,46 @@ class SessionFindService(
         now: LocalDateTime
     ): List<SessionWithAttendanceDto> =
         scheduleRepository
-            .findAll {
-                selectNew<SessionWithAttendanceDto>(
-                    path(SessionEntity::getId),
-                    path(SessionEntity::name),
-                    path(SessionEntity::description),
-                    path(SessionEntity::place),
-                    path(SessionEntity::date),
-                    path(SessionEntity::endDate),
-                    path(SessionEntity::time),
-                    path(SessionEntity::endTime),
-                    path(SessionEntity::generation),
-                    path(SessionEntity::sessionType),
-                    path(AttendanceEntity::createdAt),
-                    path(AttendanceEntity::status)
-                ).from(
-                    entity(SessionEntity::class),
-                    leftJoin(AttendanceEntity::class).on(
-                        and(
-                            path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
-                            path(AttendanceEntity::userId).equal(userId)
+            .findAll(CustomAttendanceDsl) {
+                selectSessionWithAttendance()
+                    .from(
+                        entity(SessionEntity::class),
+                        leftJoin(AttendanceEntity::class).on(
+                            and(
+                                path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
+                                path(AttendanceEntity::userId).equal(userId)
+                            )
                         )
-                    )
-                ).where(path(SessionEntity::generation).equal(generation))
+                    ).where(path(SessionEntity::generation).equal(generation))
             }.filterNotNull()
-            .apply { forEach { it.resolveAttendanceStatusOfPastSessions(now) } }
+            .onEach { it.resolveAttendanceStatusOfPastSessions(now) }
 
-    fun findAttendancesHistory(
+    fun findAttendancesHistories(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
     ): List<SessionWithAttendanceDto> =
         scheduleRepository
-            .findAll {
-                selectNew<SessionWithAttendanceDto>(
-                    path(SessionEntity::getId),
-                    path(SessionEntity::name),
-                    path(SessionEntity::description),
-                    path(SessionEntity::place),
-                    path(SessionEntity::date),
-                    path(SessionEntity::endDate),
-                    path(SessionEntity::time),
-                    path(SessionEntity::endTime),
-                    path(SessionEntity::generation),
-                    path(SessionEntity::sessionType),
-                    path(AttendanceEntity::createdAt),
-                    path(AttendanceEntity::status)
-                ).from(
-                    entity(SessionEntity::class),
-                    leftJoin(AttendanceEntity::class).on(
-                        and(
-                            path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
-                            path(AttendanceEntity::userId).equal(userId)
+            .findAll(CustomAttendanceDsl) {
+                selectSessionWithAttendance()
+                    .from(
+                        entity(AttendanceEntity::class),
+                        innerJoin(SessionEntity::class)
+                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)))
+                    ).whereAnd(
+                        path(AttendanceEntity::userId).equal(userId),
+                        path(SessionEntity::generation).equal(generation),
+                        or(
+                            path(AttendanceEntity::status).notEqual(AttendanceStatus.PENDING),
+                            or(
+                                path(SessionEntity::endDate).lessThan(now.toLocalDate()),
+                                and(
+                                    path(SessionEntity::endDate).equal(now.toLocalDate()),
+                                    path(SessionEntity::endTime).lessThan(now.toLocalTime())
+                                )
+                            )
                         )
                     )
-                ).whereAnd(
-                    path(SessionEntity::generation).equal(generation),
-                    or(
-                        path(SessionEntity::endDate).lessThan(now.toLocalDate()),
-                        and(
-                            path(SessionEntity::endDate).equal(now.toLocalDate()),
-                            path(SessionEntity::endTime).lessThan(now.toLocalTime())
-                        )
-                    )
-                )
             }.filterNotNull()
             .onEach { it.resolveAttendanceStatusOfPastSessions(now) }
 

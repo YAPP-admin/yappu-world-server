@@ -39,6 +39,12 @@ class AttendanceBookTest :
 
         feature("임의의 데이터로 AttendanceBook을 생성한다.") {
 
+            /**
+             *         세션1    세션2    세션3
+             * 유저1   출석     지각     초대X
+             * 유저2   결석    미출석    초대X
+             * 유저3   초대X    지각    미출석
+             */
             val attendances = listOf(
                 getAttendanceEntityFixture(
                     userId = users[0].userId,
@@ -56,9 +62,19 @@ class AttendanceBookTest :
                     status = AttendanceStatus.ABSENT
                 ),
                 getAttendanceEntityFixture(
+                    userId = users[1].userId,
+                    scheduleId = sessions[1].id,
+                    status = AttendanceStatus.PENDING
+                ),
+                getAttendanceEntityFixture(
                     userId = users[2].userId,
                     scheduleId = sessions[1].id,
                     status = AttendanceStatus.LATE
+                ),
+                getAttendanceEntityFixture(
+                    userId = users[2].userId,
+                    scheduleId = sessions[2].id,
+                    status = AttendanceStatus.PENDING
                 )
             )
             val latePassEntities = listOf(
@@ -92,7 +108,7 @@ class AttendanceBookTest :
                 )
 
                 attendanceBook.getUserAttendanceStatistics(users[0].userId).let {
-                    it.totalSessionCount shouldBe 3
+                    it.totalSessionCount shouldBe 2
                     it.onTimeCount shouldBe 1
                     it.lateCount shouldBe 1
                     it.absentCount shouldBe 0
@@ -105,7 +121,7 @@ class AttendanceBookTest :
                 }
 
                 attendanceBook.getUserAttendanceStatistics(users[1].userId).let {
-                    it.totalSessionCount shouldBe 3
+                    it.totalSessionCount shouldBe 2
                     it.onTimeCount shouldBe 0
                     it.lateCount shouldBe 0
                     it.absentCount shouldBe 2
@@ -118,15 +134,15 @@ class AttendanceBookTest :
                 }
 
                 attendanceBook.getUserAttendanceStatistics(users[2].userId).let {
-                    it.totalSessionCount shouldBe 3
+                    it.totalSessionCount shouldBe 2
                     it.onTimeCount shouldBe 0
                     it.lateCount shouldBe 1
-                    it.absentCount shouldBe 1
+                    it.absentCount shouldBe 0
                     it.earlyCheckOutCount shouldBe 0
                     it.excusedAbsenceCount shouldBe 0
                     it.latePassCount shouldBe 0
-                    it.totalPoint shouldBe 70
-                    it.penaltyPoint shouldBe 30
+                    it.totalPoint shouldBe 90
+                    it.penaltyPoint shouldBe 10
                     it.bonusPoint shouldBe 0
                 }
             }
@@ -142,10 +158,10 @@ class AttendanceBookTest :
                 )
 
                 attendanceBook.getSessionAttendanceStatistics(sessions[0].id).let {
-                    it.totalPersonCount shouldBe 3
+                    it.totalPersonCount shouldBe 2
                     it.totalOnTimeCount shouldBe 1
                     it.totalLateCount shouldBe 0
-                    it.totalAbsentCount shouldBe 2
+                    it.totalAbsentCount shouldBe 1
                     it.totalEarlyCheckOutCount shouldBe 0
                     it.totalExcusedAbsenceCount shouldBe 0
                 }
@@ -160,7 +176,7 @@ class AttendanceBookTest :
                 }
 
                 attendanceBook.getSessionAttendanceStatistics(sessions[2].id).let {
-                    it.totalPersonCount shouldBe 3
+                    it.totalPersonCount shouldBe 1
                     it.totalOnTimeCount shouldBe 0
                     it.totalLateCount shouldBe 0
                     it.totalAbsentCount shouldBe 0
@@ -204,10 +220,12 @@ class AttendanceBookTest :
                 for (user in users) {
                     for (session in sessions) {
                         val expected = attendanceBook.getStatus(session.id, user.userId)
-                        val actual = attendances
-                            .find { it.userId == user.userId && it.scheduleId == session.id }
-                            ?.status
-                            ?: if (session.isFinished(now)) AttendanceStatus.ABSENT else null
+                        val attendance = attendances.find { it.userId == user.userId && it.scheduleId == session.id }
+                        val actual = when (attendance?.status == AttendanceStatus.PENDING && session.isFinished(now)) {
+                            true -> AttendanceStatus.ABSENT
+                            false -> attendance?.status
+                        }
+
                         expected shouldBe actual
                     }
                 }

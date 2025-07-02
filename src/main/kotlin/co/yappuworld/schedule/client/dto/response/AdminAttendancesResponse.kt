@@ -6,13 +6,9 @@ import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.schedule.domain.SessionAttendanceStatistics
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
-import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -29,9 +25,9 @@ data class AdminAttendancesResponse(
 
         fun from(attendanceBook: AttendanceBook): AdminAttendancesResponse =
             AdminAttendancesResponse(
-                sessions = attendanceBook.sessions.map {
-                    AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id))
-                },
+                sessions = attendanceBook.sessions
+                    .map { AdminAttendanceSessionResponse(it, attendanceBook.getSessionAttendanceStatistics(it.id)) }
+                    .sortedBy { it.startDate },
                 users = attendanceBook.attendees.map { attendee ->
                     AdminAttendanceUserResponse(attendee, attendanceBook.getUserAttendanceStatistics(attendee.id))
                 },
@@ -150,29 +146,6 @@ data class AdminSessionAttendanceGroupResponse(
     companion object {
 
         fun from(
-            session: SessionEntity,
-            users: List<UserWithActivityUnit>,
-            attendances: List<AttendanceEntity>,
-            now: LocalDateTime
-        ): AdminSessionAttendanceGroupResponse {
-            val attendancesInSessionByUserId = attendances
-                .filter { it.scheduleId == session.id }
-                .associateBy { it.userId }
-            val statusWithoutAttendanceData = if (session.isFinished(now)) ABSENT.label else null
-
-            return AdminSessionAttendanceGroupResponse(
-                sessionId = session.id,
-                attendances = users.map { user ->
-                    AdminUserAttendanceResponse(
-                        userId = user.userId,
-                        status = attendancesInSessionByUserId[user.userId]?.status?.label
-                            ?: statusWithoutAttendanceData
-                    )
-                }
-            )
-        }
-
-        fun from(
             sessionId: UUID,
             attendanceByUserId: Map<UUID, AttendanceStatus?>
         ): AdminSessionAttendanceGroupResponse =
@@ -181,7 +154,7 @@ data class AdminSessionAttendanceGroupResponse(
                 attendances = attendanceByUserId.map { (userId, status) ->
                     AdminUserAttendanceResponse(
                         userId = userId,
-                        status = status?.label
+                        status = status
                     )
                 }
             )
@@ -191,6 +164,6 @@ data class AdminSessionAttendanceGroupResponse(
 data class AdminUserAttendanceResponse(
     @Schema(description = "유저 ID")
     val userId: UUID,
-    @Schema(description = "출석 정보", allowableValues = ["출석", "지각", "결석", "조퇴", "공결"], nullable = true)
-    val status: String? = null
+    @Schema(description = "출석 정보, null이면 세션에 참석하지 않는 유저", nullable = true)
+    val status: AttendanceStatus? = null
 )

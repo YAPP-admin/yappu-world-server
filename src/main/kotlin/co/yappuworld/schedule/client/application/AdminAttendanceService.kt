@@ -12,7 +12,6 @@ import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -50,43 +49,17 @@ class AdminAttendanceService(
             .findAttendances(request.getSessionAndUserIdPairs())
             .associateBy { it.scheduleId to it.userId }
 
-        val newAttendances = mutableListOf<AttendanceEntity>()
-
         request.targets.forEach { target ->
             attendanceBySessionAndUserId[target.sessionId to target.userId]
                 ?.apply { updateStatus(target.attendanceStatus) }
-                ?: newAttendances.add(
-                    AttendanceEntity(
-                        status = target.attendanceStatus,
-                        userId = target.userId,
-                        scheduleId = target.sessionId
-                    )
-                )
         }
-
-        if (newAttendances.isNotEmpty()) attendanceCommandService.saveAll(newAttendances)
     }
 
     @Transactional
     fun updateSessionAttendances(request: AdminSessionAttendanceUpdateRequest) {
-        val activeGeneration = generationFindService.findActiveGeneration()
-        val users = userFindService.findUsersActiveOfGeneration(activeGeneration)
-        val existAttendances = attendanceFindService
+        attendanceFindService
             .findAttendances(request.sessionId)
-            .associateBy { it.userId }
-
-        val allAttendances = users.map { user ->
-            when (existAttendances.containsKey(user.userId)) {
-                true -> existAttendances[user.userId]!!.apply { updateStatus(request.attendanceStatus) }
-                false -> AttendanceEntity(
-                    status = request.attendanceStatus,
-                    userId = user.userId,
-                    scheduleId = request.sessionId
-                )
-            }
-        }
-
-        attendanceCommandService.saveAll(allAttendances)
+            .onEach { it.updateStatus(request.attendanceStatus) }
     }
 
     @Transactional(readOnly = true)

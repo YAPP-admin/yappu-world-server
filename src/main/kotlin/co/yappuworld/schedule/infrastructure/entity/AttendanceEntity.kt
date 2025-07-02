@@ -1,7 +1,6 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.persistence.BaseEntity
-import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -14,43 +13,35 @@ import java.util.UUID
 @Entity
 @Table(name = "attendances")
 class AttendanceEntity(
-    status: AttendanceStatus,
     @Column(name = "user_id", nullable = false)
     val userId: UUID,
     @Column(name = "schedule_id", nullable = false)
-    val scheduleId: UUID
+    val scheduleId: UUID,
+    status: AttendanceStatus = AttendanceStatus.PENDING
 ) : BaseEntity() {
-
-    companion object {
-
-        fun checkInSession(
-            now: LocalDateTime,
-            userId: UUID,
-            session: SessionEntity
-        ): AttendanceEntity {
-            val isNowBetweenLateTimeRange =
-                session.lateTimeFrom.isBeforeOrEqual(now) && now.isBeforeOrEqual(session.lateTimeUntil)
-
-            val status = when {
-                now < session.lateTimeFrom -> AttendanceStatus.ON_TIME
-                isNowBetweenLateTimeRange -> AttendanceStatus.LATE
-                else -> AttendanceStatus.ABSENT
-            }
-
-            return AttendanceEntity(
-                status = status,
-                userId = userId,
-                scheduleId = session.id
-            )
-        }
-    }
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     var status: AttendanceStatus = status
         private set
 
+    @Column(name = "user_checked_in_at")
+    var userCheckedInAt: LocalDateTime? = null
+        private set
+
+    fun checkIn(
+        status: AttendanceStatus,
+        now: LocalDateTime
+    ) {
+        this.status = status
+        this.userCheckedInAt = now
+    }
+
     fun updateStatus(status: AttendanceStatus) {
         this.status = status
     }
+
+    fun hasAttended(): Boolean = status != AttendanceStatus.PENDING
+
+    fun canAttend(): Boolean = status == AttendanceStatus.PENDING
 }

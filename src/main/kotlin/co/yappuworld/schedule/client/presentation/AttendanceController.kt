@@ -6,6 +6,7 @@ import co.yappuworld.global.util.DatetimeUtils
 import co.yappuworld.schedule.client.application.AttendanceService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
+import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponseV2
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -30,7 +31,20 @@ class AttendanceController(
     ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponse>> =
         ResponseEntity.ok(
             SuccessResponse(
-                attendanceService.getAttendanceStatistics(securityUser.userId, LocalDateTime.now())
+                AttendanceStatisticsResponse.from(
+                    attendanceService.getAttendanceStatistics(securityUser.userId, LocalDateTime.now())
+                )
+            )
+        )
+
+    override fun getAttendanceStatisticsV2(
+        securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponseV2>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                AttendanceStatisticsResponseV2.from(
+                    attendanceService.getAttendanceStatistics(securityUser.userId, LocalDateTime.now())
+                )
             )
         )
 

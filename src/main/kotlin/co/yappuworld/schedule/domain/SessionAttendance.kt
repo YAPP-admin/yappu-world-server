@@ -5,7 +5,7 @@ import co.yappuworld.global.util.DatetimeUtils.dDayFrom
 import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.vo.AttendanceError
-import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger {}
 class SessionAttendance(
     private val attendee: Attendee,
     private val session: SessionEntity,
-    private var attendance: AttendanceEntity?
+    private val attendance: AttendanceEntity
 ) {
 
     val sessionId = session.id
@@ -33,24 +33,17 @@ class SessionAttendance(
     val sessionEndTime = session.endTime
     val sessionPlace = session.place
 
-    private val hasAttendance: Boolean
-        get() = attendance != null
-
     fun getRelativeDays(now: LocalDate): Int = sessionStartDate.dDayFrom(now).toInt()
 
-    fun canCheckIn(now: LocalDateTime): Boolean = now.isBetweenCheckInTime() && !hasAttendance
+    fun canCheckIn(now: LocalDateTime): Boolean = now.isBetweenCheckInTime() && attendance.canAttend()
 
     fun checkIn(now: LocalDateTime) {
         validateCheckInAvailability(now)
-        attendance = AttendanceEntity(
-            status = session.decideCheckInStatus(now),
-            userId = attendee.id,
-            scheduleId = session.id
-        )
+        attendance.checkIn(session.decideCheckInStatus(now), now)
     }
 
     fun validateCheckInAvailability(now: LocalDateTime) {
-        if (hasAttendance) {
+        if (attendance.hasAttended()) {
             logger.warn { "이미 출석을 완료한 유저(${attendee.id})입니다." }
             throw BusinessException(AttendanceError.ALREADY_CHECKED_IN)
         }
@@ -61,23 +54,13 @@ class SessionAttendance(
         }
     }
 
-    fun getAttendanceStatus(now: LocalDateTime): String? {
-        val safeAttendance = attendance
-        return when {
-            safeAttendance != null -> safeAttendance.status.label
-            session.isFinished(now) -> AttendanceStatus.ABSENT.label
-            else -> null
-        }
-    }
-
-    fun getNewAttendance(): AttendanceEntity {
-        if (attendance == null) {
-            logger.error { "출석을 위한 데이터가 없습니다. 로직을 확인해주세요." }
-            throw BusinessException(AttendanceError.NO_ATTENDANCE_TO_CHECK_IN)
+    fun getAttendanceStatus(now: LocalDateTime): String? =
+        when {
+            attendance.canAttend() -> if (session.isFinished(now)) ABSENT.label else null
+            else -> attendance.status.label
         }
 
-        return checkNotNull(attendance)
-    }
+    fun getNewAttendance(): AttendanceEntity = attendance
 
     private fun LocalDateTime.isBetweenCheckInTime(): Boolean =
         session.checkInTimeFrom.isBeforeOrEqual(this) && this.isBefore(session.checkInTimeUntil)

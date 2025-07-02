@@ -12,14 +12,36 @@ data class SessionAttendanceStatistics(
 ) {
 
     companion object {
-        fun from(statuses: List<AttendanceStatus?>): SessionAttendanceStatistics =
-            SessionAttendanceStatistics(
-                totalPersonCount = statuses.size,
-                totalOnTimeCount = statuses.count { it == AttendanceStatus.ON_TIME },
-                totalLateCount = statuses.count { it == AttendanceStatus.LATE },
-                totalAbsentCount = statuses.count { it == AttendanceStatus.ABSENT },
-                totalEarlyCheckOutCount = statuses.count { it == AttendanceStatus.EARLY_CHECK_OUT },
-                totalExcusedAbsenceCount = statuses.count { it == AttendanceStatus.EXCUSED_ABSENCE }
+        fun from(statuses: List<AttendanceStatus?>): SessionAttendanceStatistics {
+            var totalPersonCount = 0
+            var totalOnTimeCount = 0
+            var totalLateCount = 0
+            var totalAbsentCount = 0
+            var totalEarlyCheckOutCount = 0
+            var totalExcusedAbsenceCount = 0
+
+            statuses.forEach { status ->
+                when (status) {
+                    AttendanceStatus.ON_TIME -> totalOnTimeCount++
+                    AttendanceStatus.LATE -> totalLateCount++
+                    AttendanceStatus.ABSENT -> totalAbsentCount++
+                    AttendanceStatus.EARLY_CHECK_OUT -> totalEarlyCheckOutCount++
+                    AttendanceStatus.EXCUSED_ABSENCE -> totalExcusedAbsenceCount++
+                    else -> Unit
+                }
+
+                if (status != null) totalPersonCount++
+            }
+
+            return SessionAttendanceStatistics(
+                totalPersonCount = totalPersonCount,
+                totalOnTimeCount = totalOnTimeCount,
+                totalLateCount = totalLateCount,
+                totalAbsentCount = totalAbsentCount,
+                totalEarlyCheckOutCount = totalEarlyCheckOutCount,
+                totalExcusedAbsenceCount = totalExcusedAbsenceCount
             )
+        }
+
     }
 }

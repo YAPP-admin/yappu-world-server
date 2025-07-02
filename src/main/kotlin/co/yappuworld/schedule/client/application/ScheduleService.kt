@@ -3,7 +3,7 @@ package co.yappuworld.schedule.client.application
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
-import co.yappuworld.schedule.client.dto.request.SessionQueryParamRequest
+import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
@@ -64,7 +64,7 @@ class ScheduleService(
 
     fun getSessions(
         userId: UUID,
-        request: SessionQueryParamRequest,
+        request: SessionParamRequest,
         now: LocalDateTime
     ): SessionOverviewResponse {
         val generation = request.generation
@@ -96,14 +96,15 @@ class ScheduleService(
         val activeGeneration = generationFindService.findActiveGenerationOrNull()
             ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
         val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
-        val session = sessionFindService.findUpcomingSession(activeGeneration, now)
-        val attendanceOrNull = attendanceFindService.findSessionAttendance(userId, session.id)
+        // TODO: 내가 참여하는 가장 임박한 세션으로 변경해야 함
+        val session = sessionFindService.findUpcomingSession(userId, activeGeneration, now)
+        val attendance = attendanceFindService.findSessionAttendance(userId, session.id)
 
         return UpcomingSessionAttendanceResponse.of(
             sessionAttendance = SessionAttendance(
                 attendee = attendee,
                 session = session,
-                attendance = attendanceOrNull
+                attendance = attendance
             ),
             now = now
         )

@@ -9,6 +9,7 @@ import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
@@ -110,66 +111,69 @@ class SessionFindServiceTest @Autowired constructor(
 
             scenario("특정 기수의 세션이 존재하지 않으면 emptylist를 반환한다.") {
                 sessionFindService
-                    .findAttendancesHistory(4, UUID.randomUUID(), LocalDateTime.now())
+                    .findAttendancesHistories(4, UUID.randomUUID(), LocalDateTime.now())
                     .shouldBeEmpty()
             }
 
-            scenario("특정 기수의 세션이 존재하면 세션을 반환한다.") {
-                getSessionEntityFixture(generation = 4)
-                    .also { scheduleRepository.save(it) }
-
-                sessionFindService
-                    .findAttendancesHistory(4, UUID.randomUUID(), LocalDateTime.now())
-                    .shouldNotBeEmpty()
-            }
-
-            scenario("세션은 있는데 출석이 없으면 결석이다.") {
-                val session = getSessionEntityFixture(generation = 4)
-                    .also { scheduleRepository.save(it) }
-
-                val result = sessionFindService
-                    .findAttendancesHistory(
-                        4,
-                        UUID.randomUUID(),
-                        LocalDateTime.of(session.date.plusDays(1), session.time)
-                    ).first()
-
-                result.attendanceStatus shouldBe AttendanceStatus.ABSENT.label
-                result.checkedInAt.shouldBeNull()
-            }
-
-            scenario("현재 시간보다 뒷 세션은 조회되지 않는다.") {
-                val datetime = LocalDateTime.now()
-                listOf(
-                    getSessionEntityFixture(generation = 4, endDate = datetime.toLocalDate().minusDays(1)),
+            scenario("내가 참석자로 존재하는 세션만 조회된다.") {
+                val now = LocalDateTime.of(2024, 12, 14, 0, 0)
+                val user = getUserEntityFixture()
+                val sessions = listOf(
                     getSessionEntityFixture(
                         generation = 4,
-                        endDate = datetime.toLocalDate(),
-                        endTime = datetime.toLocalTime().minusSeconds(1)
+                        date = LocalDate.of(2024, 12, 12),
+                        endDate = LocalDate.of(2024, 12, 12)
                     ),
                     getSessionEntityFixture(
                         generation = 4,
-                        endDate = datetime.toLocalDate(),
-                        endTime = datetime.toLocalTime()
-                    ),
-                    getSessionEntityFixture(
-                        generation = 4,
-                        endDate = datetime.toLocalDate(),
-                        endTime = datetime.toLocalTime().plusSeconds(1)
-                    ),
-                    getSessionEntityFixture(generation = 4, endDate = datetime.toLocalDate().plusDays(1))
+                        date = LocalDate.of(2024, 12, 13),
+                        endDate = LocalDate.of(2024, 12, 13)
+                    )
                 ).also { scheduleRepository.saveAll(it) }
+                getAttendanceEntityFixture(
+                    userId = user.id,
+                    scheduleId = sessions[0].id,
+                    status = AttendanceStatus.PENDING
+                ).also { attendanceRepository.saveAndFlush(it) }
 
-                sessionFindService
-                    .findAttendancesHistory(
-                        4,
-                        UUID.randomUUID(),
-                        datetime
-                    ).shouldHaveSize(2)
-                    .forEach {
-                        it.checkedInAt.shouldBeNull()
-                        it.attendanceStatus shouldBe AttendanceStatus.ABSENT.label
+                sessionFindService.findAttendancesHistories(generation = 4, userId = user.id, now = now).let {
+                    it.shouldHaveSize(1)
+                    it[0].id shouldBe sessions[0].id
+                    it[0].attendanceStatus shouldBe AttendanceStatus.PENDING.label
+                }
+            }
+
+            scenario("종료 시간이 지나지 않은 세션에 대해, 출석을 한 경우만 노출이 된다.") {
+                val now = LocalDateTime.of(2024, 12, 12, 10, 40)
+                val user = getUserEntityFixture()
+                val sessions = listOf(
+                    getSessionEntityFixture(
+                        generation = 4,
+                        date = LocalDate.of(2024, 12, 12),
+                        time = LocalTime.of(10, 0),
+                        endDate = LocalDate.of(2024, 12, 12),
+                        endTime = LocalTime.of(11, 0)
+                    ),
+                    getSessionEntityFixture(
+                        generation = 4,
+                        date = LocalDate.of(2024, 12, 12),
+                        time = LocalTime.of(10, 0),
+                        endDate = LocalDate.of(2024, 12, 12),
+                        endTime = LocalTime.of(11, 0)
+                    )
+                ).also { scheduleRepository.saveAll(it) }
+                sessions
+                    .map { getAttendanceEntityFixture(userId = user.id, scheduleId = it.id) }
+                    .also {
+                        it[0].updateStatus(AttendanceStatus.ON_TIME)
+                        attendanceRepository.saveAllAndFlush(it)
                     }
+
+                sessionFindService.findAttendancesHistories(generation = 4, userId = user.id, now = now).let {
+                    it.shouldHaveSize(1)
+                    it[0].id shouldBe sessions[0].id
+                    it[0].attendanceStatus shouldBe AttendanceStatus.ON_TIME.label
+                }
             }
 
             scenario("출석 상태 검증") {
@@ -196,7 +200,7 @@ class SessionFindServiceTest @Autowired constructor(
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)
 
-                val result = sessionFindService.findAttendancesHistory(4, userId, now)
+                val result = sessionFindService.findAttendancesHistories(4, userId, now)
                 result.forEachIndexed { index, sessionWithAttendance ->
                     sessionWithAttendance.attendanceStatus shouldBe status[index].label
                 }
@@ -205,66 +209,61 @@ class SessionFindServiceTest @Autowired constructor(
 
         feature("findUpcomingSession") {
 
-            scenario("예정된 세션이 없는 경우 NULL 반환") {
+            scenario("예정된 세션이 없는 경우 예외 발생") {
                 shouldThrowExactly<BusinessException> {
-                    sessionFindService.findUpcomingSession(25, LocalDateTime.of(2024, 12, 12, 0, 0))
+                    sessionFindService.findUpcomingSession(UUID.randomUUID(), 25, LocalDateTime.of(2024, 12, 12, 0, 0))
                 }.error shouldBe ScheduleError.NO_UPCOMING_SESSION
             }
 
-            scenario("당일 세션이 없다면, 다음 세션 중 가장 임박한 세션이 조회된다.") {
-                val generation = 25
-                val now = LocalDateTime.of(2024, 12, 12, 0, 0)
-                val sessions = listOf(
-                    getSessionEntityFixture(
-                        generation = generation,
-                        date = now.toLocalDate().minusDays(1),
-                        endDate = now.toLocalDate().minusDays(1)
-                    ),
-                    getSessionEntityFixture(
-                        generation = generation,
-                        date = now.toLocalDate().plusDays(1),
-                        endDate = now.toLocalDate().plusDays(1)
-                    ),
-                    getSessionEntityFixture(
-                        generation = generation,
-                        date = now.toLocalDate().plusDays(2),
-                        endDate = now.toLocalDate().plusDays(2)
+            scenario("세션 초대 현황에 따라 조회되는 세션이 다르다.") {
+                val today = LocalDate.of(2024, 12, 12)
+                val tomorrowSession = getSessionEntityFixture(
+                    generation = 25,
+                    date = today.plusDays(1),
+                    endDate = today.plusDays(1)
+                )
+                val nextWeekSession = getSessionEntityFixture(
+                    generation = 25,
+                    date = today.plusDays(7),
+                    endDate = today.plusDays(7)
+                )
+                scheduleRepository.saveAll(listOf(tomorrowSession, nextWeekSession))
+
+                val user1 = getUserEntityFixture()
+                val user2 = getUserEntityFixture()
+
+                attendanceRepository.saveAllAndFlush(
+                    listOf(
+                        getAttendanceEntityFixture(
+                            status = AttendanceStatus.PENDING,
+                            userId = user1.id,
+                            scheduleId = tomorrowSession.id
+                        ),
+                        getAttendanceEntityFixture(
+                            status = AttendanceStatus.PENDING,
+                            userId = user1.id,
+                            scheduleId = nextWeekSession.id
+                        ),
+                        getAttendanceEntityFixture(
+                            status = AttendanceStatus.PENDING,
+                            userId = user2.id,
+                            scheduleId = nextWeekSession.id
+                        )
                     )
                 )
 
-                scheduleRepository.saveAllAndFlush(sessions)
-
-                sessionFindService.findUpcomingSession(generation, now).id shouldBe
-                    sessions[1].id
-            }
-
-            scenario("당일 끝나지 않은 세션이 있다면, 해당 세션이 조회된다.") {
-                val generation = 25
-                val now = LocalDateTime.of(2024, 12, 12, 0, 0)
-                val sessions = listOf(
-                    getSessionEntityFixture(
-                        generation = generation,
-                        date = now.toLocalDate().minusDays(1),
-                        endDate = now.toLocalDate().minusDays(1)
-                    ),
-                    getSessionEntityFixture(
-                        generation = generation,
-                        date = now.toLocalDate(),
-                        endDate = now.toLocalDate(),
-                        time = now.toLocalTime().plusHours(1),
-                        endTime = now.toLocalTime().plusHours(1)
-                    ),
-                    getSessionEntityFixture(
-                        generation = generation,
-                        date = now.toLocalDate().plusDays(1),
-                        endDate = now.toLocalDate().plusDays(1)
-                    )
-                )
-
-                scheduleRepository.saveAllAndFlush(sessions)
-
-                sessionFindService.findUpcomingSession(generation, now).id shouldBe
-                    sessions[1].id
+                sessionFindService
+                    .findUpcomingSession(
+                        userId = user1.id,
+                        activeGeneration = 25,
+                        now = today.atStartOfDay()
+                    ).id shouldBe tomorrowSession.id
+                sessionFindService
+                    .findUpcomingSession(
+                        userId = user2.id,
+                        activeGeneration = 25,
+                        now = today.atStartOfDay()
+                    ).id shouldBe nextWeekSession.id
             }
         }
 
