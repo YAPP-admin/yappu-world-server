@@ -8,6 +8,8 @@ services:
             MYSQL_USER: yapp
             MYSQL_PASSWORD: yapp
             MYSQL_ROOT_PASSWORD: yapp
+        volumes:
+            - yappu_mysql_data:/var/lib/mysql
         ports:
             - '3306:3306'
         restart: always
@@ -15,3 +17,6 @@ services:
             - --character-set-server=utf8mb4
             - --collation-server=utf8mb4_unicode_ci
             - --skip-character-set-client-handshake
+
+volumes:
+    yappu_mysql_data:

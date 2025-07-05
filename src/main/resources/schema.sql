@@ -101,7 +101,8 @@ CREATE TABLE posts
     content_summary varchar(255),
     display_target  varchar(255),
     writer_id       binary(16) NOT NULL,
-    is_active       tinyint(1)  NOT NULL
+    is_active       tinyint(1) NOT NULL,
+    session_id      binary(16)
 );
 
 DROP TABLE IF EXISTS generations;

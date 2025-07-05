@@ -2,7 +2,7 @@ package co.yappuworld.post.infrastructure
 
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.support.environment.CustomDataJpaTest
-import co.yappuworld.support.fixture.PostFixture.getNoticeFixture
+import co.yappuworld.support.fixture.PostFixture.getNoticeEntityFixture
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -30,8 +30,8 @@ class PostFindServiceJdslTest {
     @Test
     @Transactional
     fun `predicate 조건이 모두 주어지면 잘 조회된다`() {
-        val first = getNoticeFixture(noticeType = NoticeType.SESSION)
-        val second = getNoticeFixture(noticeType = NoticeType.SESSION)
+        val first = getNoticeEntityFixture(noticeType = NoticeType.SESSION)
+        val second = getNoticeEntityFixture(noticeType = NoticeType.SESSION)
         postRepository.saveAll(listOf(first, second))
 
         val notices = postFindService.findAllNotices(
@@ -48,18 +48,18 @@ class PostFindServiceJdslTest {
     fun `predicate 조건에 따라 조회된다`() {
         val sessions = postRepository.saveAll(
             listOf(
-                getNoticeFixture(title = "1", noticeType = NoticeType.SESSION),
-                getNoticeFixture(title = "2", noticeType = NoticeType.SESSION)
+                getNoticeEntityFixture(title = "1", noticeType = NoticeType.SESSION),
+                getNoticeEntityFixture(title = "2", noticeType = NoticeType.SESSION)
             )
         )
         val operations = postRepository.saveAll(
             listOf(
-                postRepository.save(getNoticeFixture(title = "1", noticeType = NoticeType.OPERATION)),
-                postRepository.save(getNoticeFixture(title = "2", noticeType = NoticeType.OPERATION))
+                postRepository.save(getNoticeEntityFixture(title = "1", noticeType = NoticeType.OPERATION)),
+                postRepository.save(getNoticeEntityFixture(title = "2", noticeType = NoticeType.OPERATION))
             )
         )
-        val lastSession = postRepository.save(getNoticeFixture(title = "3", noticeType = NoticeType.SESSION))
-        val lastOperation = postRepository.save(getNoticeFixture(title = "3", noticeType = NoticeType.OPERATION))
+        val lastSession = postRepository.save(getNoticeEntityFixture(title = "3", noticeType = NoticeType.SESSION))
+        val lastOperation = postRepository.save(getNoticeEntityFixture(title = "3", noticeType = NoticeType.OPERATION))
 
         entityManager.flush()
         entityManager.clear()
