@@ -9,10 +9,12 @@ import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailWriterResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
-import co.yappuworld.post.infrastructure.entity.NoticeEntity
+import co.yappuworld.post.client.dto.response.AdminNoticeTargetedSessionResponse
 import co.yappuworld.post.domain.PostError
 import co.yappuworld.post.infrastructure.PostCommandService
 import co.yappuworld.post.infrastructure.PostFindService
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
+import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +24,8 @@ import java.util.UUID
 class AdminNoticeService(
     private val postFindService: PostFindService,
     private val postCommandService: PostCommandService,
-    private val userFindService: UserFindService
+    private val userFindService: UserFindService,
+    private val sessionFindService: SessionFindService
 ) {
 
     @Transactional(readOnly = true)
@@ -63,7 +66,8 @@ class AdminNoticeService(
             title = notice.title,
             content = notice.content,
             type = notice.noticeType,
-            writer = AdminNoticeDetailWriterResponse(writer)
+            writer = AdminNoticeDetailWriterResponse(writer),
+            targetSession = notice.targetSession?.let { AdminNoticeTargetedSessionResponse(it) }
         )
     }
 
@@ -78,7 +82,12 @@ class AdminNoticeService(
             contentSummary = request.plainContent.take(200),
             writerId = writerId,
             noticeType = request.type
-        ).run { postCommandService.save(this) }
+        ).also { postCommandService.save(it) }
+
+        if (request.sessionId != null) {
+            val session = sessionFindService.findSession(request.sessionId)
+            notice.targetSession(session)
+        }
 
         return notice.id
     }
@@ -94,6 +103,16 @@ class AdminNoticeService(
             contentSummary = request.plainContent.take(200),
             noticeType = request.type
         )
+
+        if (notice.targetSession?.id != request.sessionId) {
+            when (request.sessionId == null) {
+                true -> notice.detachSession()
+                false -> {
+                    val session = sessionFindService.findSession(request.sessionId)
+                    notice.targetSession(session)
+                }
+            }
+        }
     }
 
     @Transactional
