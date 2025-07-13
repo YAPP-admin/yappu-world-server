@@ -2,97 +2,106 @@ package co.yappuworld.post.infrastructure
 
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.support.environment.CustomDataJpaTest
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.PostFixture.getNoticeEntityFixture
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional
-import kotlin.test.BeforeTest
-import kotlin.test.Test
+import org.springframework.data.domain.PageRequest
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @CustomDataJpaTest
-class PostFindServiceJdslTest {
+class PostFindServiceJdslTest @Autowired constructor(
+    private val postRepository: PostRepository,
+    private val entityManager: EntityManager
+) : CustomDataJpaTestFeatureSpec({
 
-    @Autowired
-    lateinit var postRepository: PostRepository
+        lateinit var postFindService: PostFindService
 
-    lateinit var postFindService: PostFindService
-
-    @Autowired
-    lateinit var entityManager: EntityManager
-
-    @BeforeTest
-    fun beforeEach() {
-        postFindService = PostFindService(postRepository)
-    }
-
-    @Test
-    @Transactional
-    fun `predicate 조건이 모두 주어지면 잘 조회된다`() {
-        val first = getNoticeEntityFixture(noticeType = NoticeType.SESSION)
-        val second = getNoticeEntityFixture(noticeType = NoticeType.SESSION)
-        postRepository.saveAll(listOf(first, second))
-
-        val notices = postFindService.findAllNotices(
-            limit = 10,
-            noticeType = NoticeType.SESSION,
-            lastNoticeId = second.id
-        )
-
-        assert(notices.isNotEmpty())
-        assertEquals(notices.first(), first)
-    }
-
-    @Test
-    fun `predicate 조건에 따라 조회된다`() {
-        val sessions = postRepository.saveAll(
-            listOf(
-                getNoticeEntityFixture(title = "1", noticeType = NoticeType.SESSION),
-                getNoticeEntityFixture(title = "2", noticeType = NoticeType.SESSION)
-            )
-        )
-        val operations = postRepository.saveAll(
-            listOf(
-                postRepository.save(getNoticeEntityFixture(title = "1", noticeType = NoticeType.OPERATION)),
-                postRepository.save(getNoticeEntityFixture(title = "2", noticeType = NoticeType.OPERATION))
-            )
-        )
-        val lastSession = postRepository.save(getNoticeEntityFixture(title = "3", noticeType = NoticeType.SESSION))
-        val lastOperation = postRepository.save(getNoticeEntityFixture(title = "3", noticeType = NoticeType.OPERATION))
-
-        entityManager.flush()
-        entityManager.clear()
-
-        postFindService.findAllNotices(2, NoticeType.SESSION).let {
-            assert(it.size == 2)
-            assert(it.all { n -> n.noticeType == NoticeType.SESSION })
+        beforeEach {
+            postFindService = PostFindService(postRepository)
         }
 
-        postFindService.findAllNotices(2, NoticeType.OPERATION).let {
-            assert(it.size == 2)
-            assert(it.all { n -> n.noticeType == NoticeType.OPERATION })
-        }
+        feature("공지사항 목록 조회") {
+            scenario("predicate 조건이 모두 주어지면 잘 조회된다") {
+                val first = getNoticeEntityFixture(noticeType = NoticeType.SESSION)
+                val second = getNoticeEntityFixture(noticeType = NoticeType.SESSION)
+                postRepository.saveAll(listOf(first, second))
 
-        postFindService.findAllNotices(limit = 2, lastNoticeId = lastSession.id).let {
-            val operationIds = operations.map { s -> s.id }
-            it.forEach { n ->
-                assertContains(operationIds, n.id)
+                val notices = postFindService.findAllNotices(
+                    limit = 10,
+                    noticeType = NoticeType.SESSION,
+                    lastNoticeId = second.id
+                )
+
+                assert(notices.isNotEmpty())
+                assertEquals(notices.first(), first)
+            }
+
+            scenario("predicate 조건에 따라 조회된다") {
+                val sessions = postRepository.saveAll(
+                    listOf(
+                        getNoticeEntityFixture(title = "1", noticeType = NoticeType.SESSION),
+                        getNoticeEntityFixture(title = "2", noticeType = NoticeType.SESSION)
+                    )
+                )
+                val operations = postRepository.saveAll(
+                    listOf(
+                        postRepository.save(getNoticeEntityFixture(title = "1", noticeType = NoticeType.OPERATION)),
+                        postRepository.save(getNoticeEntityFixture(title = "2", noticeType = NoticeType.OPERATION))
+                    )
+                )
+                val lastSession = postRepository.save(
+                    getNoticeEntityFixture(title = "3", noticeType = NoticeType.SESSION)
+                )
+                val lastOperation =
+                    postRepository.save(getNoticeEntityFixture(title = "3", noticeType = NoticeType.OPERATION))
+
+                entityManager.flush()
+                entityManager.clear()
+
+                postFindService.findAllNotices(2, NoticeType.SESSION).let {
+                    assert(it.size == 2)
+                    assert(it.all { n -> n.noticeType == NoticeType.SESSION })
+                }
+
+                postFindService.findAllNotices(2, NoticeType.OPERATION).let {
+                    assert(it.size == 2)
+                    assert(it.all { n -> n.noticeType == NoticeType.OPERATION })
+                }
+
+                postFindService.findAllNotices(limit = 2, lastNoticeId = lastSession.id).let {
+                    val operationIds = operations.map { s -> s.id }
+                    it.forEach { n ->
+                        assertContains(operationIds, n.id)
+                    }
+                }
+
+                postFindService.findAllNotices(2, NoticeType.SESSION, lastSession.id).let {
+                    val sessionIds = sessions.map { s -> s.id }
+                    it.forEach { n ->
+                        assertContains(sessionIds, n.id)
+                    }
+                }
+
+                postFindService.findAllNotices(2, NoticeType.OPERATION, lastOperation.id).let { notices ->
+                    val operationIds = operations.map { o -> o.id }
+                    notices.forEach { n ->
+                        assertContains(operationIds, n.id)
+                    }
+                }
             }
         }
 
-        postFindService.findAllNotices(2, NoticeType.SESSION, lastSession.id).let {
-            val sessionIds = sessions.map { s -> s.id }
-            it.forEach { n ->
-                assertContains(sessionIds, n.id)
-            }
-        }
+        feature("세션 공지사항 조회") {
+            scenario("검색어가 있는 경우 매칭되는 조건에 맞추어 검색된다.") {
+                postRepository.saveAndFlush(getNoticeEntityFixture(title = "우리 호빵맨~", noticeType = NoticeType.SESSION))
 
-        postFindService.findAllNotices(2, NoticeType.OPERATION, lastOperation.id).let { notices ->
-            val operationIds = operations.map { o -> o.id }
-            notices.forEach { n ->
-                assertContains(operationIds, n.id)
+                postFindService.findSessionNotices(PageRequest.of(0, 5), "호빵맨").let { page ->
+                    assert(page.content.isNotEmpty())
+                    assertEquals(1, page.content.size)
+                    assertEquals("우리 호빵맨~", page.content.first().title)
+                }
             }
         }
-    }
-}
+    })

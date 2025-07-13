@@ -1,6 +1,7 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.PageUtils.filterNotNull
 import co.yappuworld.schedule.domain.Attendee
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError
@@ -21,7 +22,6 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -86,13 +86,7 @@ class UserFindService(
             .findPage(pageable) {
                 selectUserWithLastActivityUnit()
                     .orderBy(path(UserEntity::getId).desc())
-            }.let {
-                PageImpl(
-                    it.content.filterNotNull(),
-                    it.pageable,
-                    it.totalElements
-                )
-            }
+            }.filterNotNull()
 
     fun findUserWithActivities(userId: UUID): UserWithActivityUnits {
         val result = userRepository

@@ -2,14 +2,17 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
+import co.yappuworld.post.infrastructure.PostFindService
 import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionEligibleUsersParamRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSimpleSessionNoticePageRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionEligibleUsersResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
+import co.yappuworld.schedule.client.dto.response.AdminTargetableSessionNoticeResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
@@ -28,7 +31,8 @@ class AdminScheduleService(
     private val scheduleCommandService: ScheduleCommandService,
     private val attendanceFindService: AttendanceFindService,
     private val attendanceCommandService: AttendanceCommandService,
-    private val userFindService: UserFindService
+    private val userFindService: UserFindService,
+    private val postFindService: PostFindService
 ) {
 
     @Transactional
@@ -82,6 +86,21 @@ class AdminScheduleService(
     @Transactional(readOnly = true)
     fun getSessionEligibleUsers(request: AdminSessionEligibleUsersParamRequest): AdminSessionEligibleUsersResponse =
         AdminSessionEligibleUsersResponse.from(userFindService.findActiveUsersOfGeneration(request.generation))
+
+    @Transactional(readOnly = true)
+    fun getTargetableSessionNotices(
+        request: AdminSimpleSessionNoticePageRequest
+    ): OffsetPageResponse<AdminTargetableSessionNoticeResponse> {
+        val response = postFindService.findSessionNotices(request.toPageRequest(), request.search)
+        return OffsetPageResponse.from(response) { notice ->
+            AdminTargetableSessionNoticeResponse(
+                id = notice.id,
+                title = notice.title,
+                createdAt = notice.createdAt,
+                isSelectedByOtherSession = notice.targetSession != null
+            )
+        }
+    }
 
     private fun handleAttendee(
         session: SessionEntity,
