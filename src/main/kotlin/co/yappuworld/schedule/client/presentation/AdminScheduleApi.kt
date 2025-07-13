@@ -8,9 +8,11 @@ import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionEligibleUsersParamRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSimpleSessionNoticePageRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionEligibleUsersResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
+import co.yappuworld.schedule.client.dto.response.AdminTargetableSessionNoticeResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -410,4 +412,10 @@ interface AdminScheduleApi {
     fun getSessionEligibleUsers(
         @Valid @ParameterObject request: AdminSessionEligibleUsersParamRequest
     ): ResponseEntity<SuccessResponse<AdminSessionEligibleUsersResponse>>
+
+    @Operation(summary = "세션 공지사항으로 선택할 수 있는 목록 조회")
+    @GetMapping("/admin/v1/sessions/targetable-notices")
+    fun getTargetNotices(
+        @Valid @ParameterObject request: AdminSimpleSessionNoticePageRequest
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminTargetableSessionNoticeResponse>>>
 }

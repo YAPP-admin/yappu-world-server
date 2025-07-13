@@ -8,9 +8,11 @@ import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionEligibleUsersParamRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSimpleSessionNoticePageRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionEligibleUsersResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
+import co.yappuworld.schedule.client.dto.response.AdminTargetableSessionNoticeResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
@@ -53,5 +55,12 @@ class AdminScheduleController(
     ): ResponseEntity<SuccessResponse<AdminSessionEligibleUsersResponse>> =
         ResponseEntity.ok(
             SuccessResponse(adminScheduleService.getSessionEligibleUsers(request))
+        )
+
+    override fun getTargetNotices(
+        request: AdminSimpleSessionNoticePageRequest
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminTargetableSessionNoticeResponse>>> =
+        ResponseEntity.ok(
+            SuccessResponse(adminScheduleService.getTargetableSessionNotices(request))
         )
 }

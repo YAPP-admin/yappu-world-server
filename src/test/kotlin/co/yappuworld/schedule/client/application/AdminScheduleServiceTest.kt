@@ -1,10 +1,14 @@
 package co.yappuworld.schedule.client.application
 
+import co.yappuworld.post.domain.NoticeType
+import co.yappuworld.post.infrastructure.PostRepository
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSimpleSessionNoticePageRequest
 import co.yappuworld.schedule.infrastructure.AttendanceRepository
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.support.environment.SpringBootTestFeatureSpec
+import co.yappuworld.support.fixture.PostFixture.getNoticeEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -14,6 +18,7 @@ import java.util.UUID
 class AdminScheduleServiceTest @Autowired constructor(
     private val adminScheduleService: AdminScheduleService,
     private val scheduleRepository: ScheduleRepository,
+    private val noticeRepository: PostRepository,
     private val attendanceRepository: AttendanceRepository
 ) : SpringBootTestFeatureSpec({
 
@@ -47,6 +52,21 @@ class AdminScheduleServiceTest @Autowired constructor(
                 listOf(userId2, userId3).forEach { userId ->
                     result.any { it.userId == userId } shouldBe true
                 }
+            }
+        }
+
+        feature("세션 공지사항으로 등록 가능한 공지사항 목록을 조회할 때") {
+            scenario("공지사항이 다른 세션에 등록되어 있는지 여부가 표현된다.") {
+                val otherSession = scheduleRepository.save(getSessionEntityFixture())
+                val notice = noticeRepository.saveAndFlush(
+                    getNoticeEntityFixture(noticeType = NoticeType.SESSION, targetSession = otherSession)
+                )
+
+                val result = adminScheduleService.getTargetableSessionNotices(
+                    AdminSimpleSessionNoticePageRequest(page = 1, size = 10)
+                )
+
+                result.data.single { it.id == notice.id }.isSelectedByOtherSession shouldBe true
             }
         }
     })
