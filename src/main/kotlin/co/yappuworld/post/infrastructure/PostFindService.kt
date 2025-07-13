@@ -1,7 +1,8 @@
 package co.yappuworld.post.infrastructure
 
-import co.yappuworld.post.infrastructure.entity.NoticeEntity
+import co.yappuworld.global.util.PageUtils.filterNotNull
 import co.yappuworld.post.domain.NoticeType
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.infrastructure.entity.PostEntity
 import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicate
 import org.springframework.data.domain.Page
@@ -69,5 +70,28 @@ class PostFindService(
                 query.orderBy(
                     path(NoticeEntity::getId).desc()
                 )
+            }.filterNotNull()
+
+    fun findSessionNotices(
+        pageable: Pageable,
+        searchTitle: String? = null
+    ): Page<NoticeEntity> =
+        postRepository
+            .findPage(pageable) {
+                val predicates = mutableListOf<Predicate>()
+
+                predicates.add(path(NoticeEntity::noticeType).equal(NoticeType.SESSION))
+                searchTitle?.let {
+                    predicates.add(path(NoticeEntity::title).like("%$searchTitle%"))
+                }
+
+                val query = select(entity(NoticeEntity::class))
+                    .from(entity(NoticeEntity::class))
+
+                if (predicates.isNotEmpty()) {
+                    query.where(and(*predicates.toTypedArray()))
+                }
+
+                query.orderBy(path(NoticeEntity::getId).desc())
             }.filterNotNull()
 }
