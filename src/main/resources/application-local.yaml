@@ -8,7 +8,7 @@ spring:
         compose:
             service: yappu-world-server
             enabled: true
-            lifecycle-management: start_only
+            lifecycle-management: none
             #            stop:
             #                command: down
             #                timeout: 1m
@@ -23,9 +23,9 @@ spring:
 
     sql:
         init:
-            schema-locations: classpath:schema.sql
-            data-locations: classpath:data.sql
-            mode: always
+#            schema-locations: classpath:schema.sql
+#            data-locations: classpath:data.sql
+            mode: never
 
     jpa:
         open-in-view: false
