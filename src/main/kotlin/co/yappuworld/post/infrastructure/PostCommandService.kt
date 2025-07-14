@@ -12,6 +12,10 @@ class PostCommandService(
 
     fun save(post: PostEntity): PostEntity = postRepository.save(post)
 
+    fun saveAll(posts: List<PostEntity>) {
+        postRepository.saveAll(posts)
+    }
+
     fun deleteAll(posts: List<PostEntity>) {
         postRepository.deleteAll(posts)
     }

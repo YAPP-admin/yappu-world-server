@@ -42,5 +42,12 @@ enum class ScheduleError : Error {
         override val message: String = "시작 시간이 종료 시간보다 늦을 수 없습니다."
         override val code: String = "SCH_4000"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
+    },
+
+    // 5000번대 - 세션 공지사항
+    NOT_SESSION_NOTICE {
+        override val message: String = "세션 공지사항이 아닙니다."
+        override val code: String = "SCH_5000"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     }
 }

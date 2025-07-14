@@ -2,6 +2,7 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.infrastructure.PostRepository
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSimpleSessionNoticePageRequest
 import co.yappuworld.schedule.infrastructure.AttendanceRepository
@@ -9,7 +10,9 @@ import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.support.environment.SpringBootTestFeatureSpec
 import co.yappuworld.support.fixture.PostFixture.getNoticeEntityFixture
+import co.yappuworld.support.fixture.ScheduleDtoFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +46,8 @@ class AdminScheduleServiceTest @Autowired constructor(
                     time = session.time,
                     endTime = session.endTime,
                     sessionType = session.sessionType,
-                    sessionAttendeeIds = listOf(userId2, userId3)
+                    sessionAttendeeIds = listOf(userId2, userId3),
+                    noticeIds = emptyList()
                 )
                 adminScheduleService.updateSession(request)
 
@@ -52,6 +56,29 @@ class AdminScheduleServiceTest @Autowired constructor(
                 listOf(userId2, userId3).forEach { userId ->
                     result.any { it.userId == userId } shouldBe true
                 }
+            }
+
+            scenario("공지사항 연결이 변경된다.") {
+                val session = scheduleRepository.saveAndFlush(getSessionEntityFixture())
+                val linkedNotices = noticeRepository.saveAllAndFlush(
+                    listOf(
+                        getNoticeEntityFixture(noticeType = NoticeType.SESSION, targetSession = session),
+                        getNoticeEntityFixture(noticeType = NoticeType.SESSION, targetSession = session)
+                    )
+                )
+                val newNotice = noticeRepository.saveAndFlush(getNoticeEntityFixture(noticeType = NoticeType.SESSION))
+
+                val request = ScheduleDtoFixture.getAdminSessionUpdateRequestFixture(
+                    id = session.id,
+                    noticeIds = listOf(linkedNotices[0].id, newNotice.id)
+                )
+                adminScheduleService.updateSession(request)
+
+                val notices = noticeRepository.findAllByIdIn(linkedNotices.map { it.id } + newNotice.id)
+                (notices.single { it.id == linkedNotices[1].id } as NoticeEntity).targetSession shouldBe null
+                notices
+                    .filter { it.id != linkedNotices[1].id }
+                    .shouldForAll { (it as NoticeEntity).targetSession?.id shouldBe session.id }
             }
         }
 
