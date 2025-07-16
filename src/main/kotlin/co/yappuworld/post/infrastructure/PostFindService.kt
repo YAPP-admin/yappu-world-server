@@ -97,8 +97,8 @@ class PostFindService(
             }.filterNotNull()
 
     fun findNoticesTargetingSession(
-        noticeIds: List<UUID>,
-        sessionId: UUID
+        sessionId: UUID,
+        noticeIds: List<UUID> = emptyList()
     ): List<NoticeEntity> =
         postRepository
             .findAll {

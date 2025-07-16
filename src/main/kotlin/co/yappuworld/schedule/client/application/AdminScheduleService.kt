@@ -60,9 +60,10 @@ class AdminScheduleService(
 
     @Transactional(readOnly = true)
     fun getSession(id: UUID): AdminSessionDetailResponse =
-        AdminSessionDetailResponse(
+        AdminSessionDetailResponse.from(
             session = sessionFindService.findSession(id),
-            attendees = attendanceFindService.findAttendees(id)
+            attendees = attendanceFindService.findAttendees(id),
+            notices = postFindService.findNoticesTargetingSession(id)
         )
 
     /**
@@ -153,7 +154,7 @@ class AdminScheduleService(
         noticeIds: List<UUID>,
         session: SessionEntity
     ) {
-        val notices = postFindService.findNoticesTargetingSession(noticeIds, session.id)
+        val notices = postFindService.findNoticesTargetingSession(session.id, noticeIds)
         notices.onEach { notice ->
             when (notice.id in noticeIds) {
                 true -> notice.targetSession(session)
