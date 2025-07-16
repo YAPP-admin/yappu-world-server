@@ -8,6 +8,7 @@ import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.domain.model.UserWithActivityUnits
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -102,6 +103,7 @@ data class SessionOverviewItemResponse(
     val attendanceStatus: String?
 ) {
 
+    @JsonIgnore
     val scheduleProgressPhase = ScheduleProgressPhase.entries.single { it.label == progressPhase }
 
     companion object {
