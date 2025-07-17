@@ -18,7 +18,7 @@ class PathRegistry(
         "/swagger-ui/**",
         "/health",
         "/v3/api-docs/**",
-        "/actuator/**"
+        "/actuator/prometheus"
     )
 
     @PostConstruct

@@ -4,6 +4,7 @@ import co.yappuworld.global.util.PageUtils.filterNotNull
 import co.yappuworld.post.domain.NoticeType
 import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.post.infrastructure.entity.PostEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -93,5 +94,19 @@ class PostFindService(
                 }
 
                 query.orderBy(path(NoticeEntity::getId).desc())
+            }.filterNotNull()
+
+    fun findNoticesTargetingSession(
+        sessionId: UUID,
+        noticeIds: List<UUID> = emptyList()
+    ): List<NoticeEntity> =
+        postRepository
+            .findAll {
+                select(entity(NoticeEntity::class))
+                    .from(entity(NoticeEntity::class))
+                    .whereOr(
+                        path(NoticeEntity::getId).`in`(noticeIds),
+                        path(NoticeEntity::targetSession)(SessionEntity::getId).equal(sessionId)
+                    )
             }.filterNotNull()
 }

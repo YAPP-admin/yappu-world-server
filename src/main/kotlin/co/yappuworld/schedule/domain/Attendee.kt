@@ -7,7 +7,10 @@ import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
+
+private val logger = KotlinLogging.logger { }
 
 class Attendee(
     val id: UUID,
@@ -22,7 +25,7 @@ class Attendee(
             userWithActivityUnit: UserWithActivityUnit,
             generation: Int
         ): Attendee {
-            checkRole(userWithActivityUnit.role)
+            checkRole(userWithActivityUnit.userId, userWithActivityUnit.role)
             checkActivityUnit(userWithActivityUnit.getActivityUnit(), generation)
 
             return Attendee(
@@ -37,7 +40,7 @@ class Attendee(
             userWithActivityUnits: UserWithActivityUnits,
             generation: Int
         ): Attendee {
-            checkRole(userWithActivityUnits.role)
+            checkRole(userWithActivityUnits.id, userWithActivityUnits.role)
 
             val sessionGenerationActivityUnits = userWithActivityUnits.activityUnits
                 .filter { it.generation == generation }
@@ -60,8 +63,12 @@ class Attendee(
             )
         }
 
-        private fun checkRole(role: UserRole) {
+        private fun checkRole(
+            id: UUID,
+            role: UserRole
+        ) {
             if (role !in listOf(UserRole.ACTIVE, UserRole.STAFF)) {
+                logger.warn { "Role $role is not in a valid user with id $id" }
                 throw BusinessException(AttendanceError.UNAUTHORIZED_CHECK_IN)
             }
         }
