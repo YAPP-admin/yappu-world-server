@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionAttendeeDto
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
@@ -28,41 +29,58 @@ data class AdminSessionDetailResponse(
     val endTime: LocalTime,
     @Schema(description = "세션 타입")
     val sessionType: SessionType,
-    val attendees: List<AdminSessionAttendeeByPositionResponse>
+    @Schema(description = "세션 참가자 목록")
+    val attendees: List<AdminSessionAttendeeByPositionResponse>,
+    @Schema(description = "세션 공지사항 목록")
+    val notices: List<AdminSessionNoticeResponse>
 ) {
 
-    constructor(session: SessionEntity, attendees: List<SessionAttendeeDto>) : this(
-        id = session.id,
-        name = session.name,
-        generation = session.generation,
-        place = session.place,
-        date = session.date,
-        endDate = session.endDate,
-        time = session.time,
-        endTime = session.endTime,
-        sessionType = session.sessionType,
-        attendees = attendees
-            .groupBy { it.position }
-            .let { attendeesGroupByPosition ->
-                Position.activeUserPositions.map { position ->
-                    AdminSessionAttendeeByPositionResponse(
-                        position = position,
-                        attendees = attendeesGroupByPosition[position]?.map { AdminSessionAttendeeResponse(it) }
-                            ?: emptyList()
-                    )
-                }
-            }.sortedBy { it.position.ordinal }
-    )
+    companion object {
+
+        fun from(
+            session: SessionEntity,
+            attendees: List<SessionAttendeeDto>,
+            notices: List<NoticeEntity>
+        ): AdminSessionDetailResponse =
+            AdminSessionDetailResponse(
+                id = session.id,
+                name = session.name,
+                generation = session.generation,
+                place = session.place,
+                date = session.date,
+                endDate = session.endDate,
+                time = session.time,
+                endTime = session.endTime,
+                sessionType = session.sessionType,
+                attendees = attendees
+                    .groupBy { it.position }
+                    .let { attendeesGroupByPosition ->
+                        Position.activeUserPositions.map { position ->
+                            AdminSessionAttendeeByPositionResponse(
+                                position = position,
+                                attendees = attendeesGroupByPosition[position]?.map { AdminSessionAttendeeResponse(it) }
+                                    ?: emptyList()
+                            )
+                        }
+                    }.sortedBy { it.position.ordinal },
+                notices = notices.map { n -> AdminSessionNoticeResponse(n.id, n.title) }
+            )
+    }
 }
 
 data class AdminSessionAttendeeByPositionResponse(
+    @Schema(description = "참석자 직군")
     val position: Position,
+    @Schema(description = "직군 내 참석자 목록")
     val attendees: List<AdminSessionAttendeeResponse>
 )
 
 data class AdminSessionAttendeeResponse(
+    @Schema(description = "참석자 ID")
     val userId: UUID,
+    @Schema(description = "참석자 이름")
     val name: String,
+    @Schema(description = "참석자 직군")
     val position: Position
 ) {
 
@@ -72,3 +90,10 @@ data class AdminSessionAttendeeResponse(
         position = attendee.position
     )
 }
+
+data class AdminSessionNoticeResponse(
+    @Schema(description = "공지사항 ID")
+    val noticeId: UUID,
+    @Schema(description = "공지사항 제목")
+    val title: String
+)

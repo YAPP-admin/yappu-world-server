@@ -1,9 +1,13 @@
 package co.yappuworld.post.infrastructure
 
 import co.yappuworld.post.domain.NoticeType
+import co.yappuworld.schedule.infrastructure.ScheduleRepository
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.PostFixture.getNoticeEntityFixture
+import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldNotBe
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
@@ -13,6 +17,7 @@ import kotlin.test.assertEquals
 @CustomDataJpaTest
 class PostFindServiceJdslTest @Autowired constructor(
     private val postRepository: PostRepository,
+    private val scheduleRepository: ScheduleRepository,
     private val entityManager: EntityManager
 ) : CustomDataJpaTestFeatureSpec({
 
@@ -102,6 +107,21 @@ class PostFindServiceJdslTest @Autowired constructor(
                     assertEquals(1, page.content.size)
                     assertEquals("우리 호빵맨~", page.content.first().title)
                 }
+            }
+
+            scenario("세션 ID만으로 조회 된다.") {
+                val session = scheduleRepository.save(getSessionEntityFixture())
+                val notice = postRepository.saveAndFlush(
+                    getNoticeEntityFixture(
+                        title = "우리 호빵맨~",
+                        noticeType = NoticeType.SESSION,
+                        targetSession = session
+                    )
+                )
+
+                val result = postFindService.findNoticesTargetingSession(sessionId = session.id)
+                result shouldHaveSize 1
+                result.first().id shouldNotBe session.id
             }
         }
     })

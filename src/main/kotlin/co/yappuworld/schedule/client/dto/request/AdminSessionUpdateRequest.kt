@@ -27,7 +27,9 @@ data class AdminSessionUpdateRequest(
     @Schema(description = "세션 종류", example = "OFFLINE")
     val sessionType: SessionType,
     @Schema(description = "세션 참석자 ID", nullable = false)
-    val sessionAttendeeIds: List<UUID>
+    val sessionAttendeeIds: List<UUID>,
+    @Schema(description = "세션 공지사항 ID", nullable = false)
+    val noticeIds: List<UUID>
 ) {
 
     fun applyTo(session: SessionEntity) {

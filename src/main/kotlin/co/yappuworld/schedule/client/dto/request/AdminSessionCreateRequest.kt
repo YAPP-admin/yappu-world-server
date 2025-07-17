@@ -35,7 +35,9 @@ data class AdminSessionCreateRequest(
     @Schema(description = "세션 종류", nullable = false, example = "OFFLINE")
     var sessionType: SessionType,
     @Schema(description = "세션 참석자 ID", nullable = false)
-    val sessionAttendeeIds: List<UUID>
+    val sessionAttendeeIds: List<UUID>,
+    @Schema(description = "세션 공지사항 ID", nullable = false)
+    val noticeIds: List<UUID>
 ) {
 
     fun toDomain(): ScheduleEntity =
