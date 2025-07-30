@@ -5,6 +5,5 @@ enum class SessionProgressPhase(
 ) {
     DONE("완료"),
     TODAY("당일"),
-    UPCOMING("임박"),
     PENDING("예정")
 }

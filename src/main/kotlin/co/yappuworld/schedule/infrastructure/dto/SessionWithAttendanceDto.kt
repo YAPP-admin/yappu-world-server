@@ -26,6 +26,8 @@ class SessionWithAttendanceDto(
     var attendanceStatus: String? = attendanceStatus?.label
         private set
 
+    val attendanceStatusType: AttendanceStatus? = attendanceStatus
+
     fun resolveAttendanceStatusOfPastSessions(now: LocalDateTime) {
         if (attendanceStatus == null && isFinished(now)) {
             attendanceStatus = AttendanceStatus.ABSENT.label
