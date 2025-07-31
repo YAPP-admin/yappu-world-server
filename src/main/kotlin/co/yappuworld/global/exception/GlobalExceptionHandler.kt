@@ -1,10 +1,12 @@
 package co.yappuworld.global.exception
 
 import co.yappuworld.global.response.ErrorResponse
+import co.yappuworld.global.response.RequestFieldError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -24,19 +26,34 @@ class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         logger.warn { e.message }
-        return e.bindingResult.fieldErrors[0].defaultMessage?.let {
-            ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(
-                    ErrorResponse.of(
-                        message = it,
-                        errorCode = GlobalError.INVALID_REQUEST_ARGUMENT.code
+
+        return e.bindingResult.allErrors
+            .filterIsInstance<FieldError>()
+            .takeIf { it.isNotEmpty() }
+            ?.let {
+                val errors = it.map { e ->
+                    RequestFieldError(
+                        field = e.field,
+                        message = e.defaultMessage
                     )
-                )
-        } ?: getInternalServerErrorResponse()
+                }
+
+                ResponseEntity
+                    .badRequest()
+                    .body(
+                        ErrorResponse.of(
+                            message = "${errors[0].message}",
+                            errorCode = GlobalError.INVALID_REQUEST_ARGUMENT.code,
+                            errors = errors
+                        )
+                    )
+            } ?: getInternalServerErrorResponse()
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException::class, HttpMessageNotReadableException::class)
+    @ExceptionHandler(
+        MethodArgumentTypeMismatchException::class,
+        HttpMessageNotReadableException::class
+    )
     fun handleMethodArgumentTypeMismatchException(
         e: MethodArgumentTypeMismatchException
     ): ResponseEntity<ErrorResponse> {
