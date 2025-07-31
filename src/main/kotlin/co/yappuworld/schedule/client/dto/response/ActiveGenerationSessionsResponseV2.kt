@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.global.util.DatetimeUtils.korean
+import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase.DONE
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase.PENDING
@@ -14,9 +15,9 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-data class ActiveGenerationSessionsResponse(
+data class ActiveGenerationSessionsResponseV2(
     @Schema(description = "활동 중인 기수의 세션 목록, 데이터가 없다면 빈 리스트 반환")
-    val sessions: List<ActiveGenerationSessionResponse>,
+    val sessions: List<ActiveGenerationSessionResponseV2>,
     @Schema(
         description = """
             가장 가까이 예정된 세션의 인덱스
@@ -32,22 +33,22 @@ data class ActiveGenerationSessionsResponse(
         fun from(
             sessions: List<SessionWithAttendanceDto>,
             now: LocalDateTime
-        ): ActiveGenerationSessionsResponse {
-            if (sessions.isEmpty()) return ActiveGenerationSessionsResponse(emptyList(), null)
+        ): ActiveGenerationSessionsResponseV2 {
+            if (sessions.isEmpty()) return ActiveGenerationSessionsResponseV2(emptyList(), null)
 
             val orderedSessions = sessions.sortedWith(compareBy({ it.date }, { it.time }))
             val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
-                ?: return ActiveGenerationSessionsResponse(
-                    orderedSessions.map { ActiveGenerationSessionResponse(it, DONE, now) },
+                ?: return ActiveGenerationSessionsResponseV2(
+                    orderedSessions.map { ActiveGenerationSessionResponseV2(it, DONE, now) },
                     orderedSessions.last().id
                 )
 
-            return ActiveGenerationSessionsResponse(
+            return ActiveGenerationSessionsResponseV2(
                 sessions = orderedSessions.mapIndexed { index, session ->
                     when {
-                        index < upcomingSessionIndex -> ActiveGenerationSessionResponse(session, DONE, now)
-                        index > upcomingSessionIndex -> ActiveGenerationSessionResponse(session, PENDING, now)
-                        else -> ActiveGenerationSessionResponse(session, upcomingSessionStatus, now)
+                        index < upcomingSessionIndex -> ActiveGenerationSessionResponseV2(session, DONE, now)
+                        index > upcomingSessionIndex -> ActiveGenerationSessionResponseV2(session, PENDING, now)
+                        else -> ActiveGenerationSessionResponseV2(session, upcomingSessionStatus, now)
                     }
                 },
                 upcomingSessionId = orderedSessions[upcomingSessionIndex].id
@@ -70,7 +71,7 @@ data class ActiveGenerationSessionsResponse(
     }
 }
 
-data class ActiveGenerationSessionResponse(
+data class ActiveGenerationSessionResponseV2(
     @Schema(description = "세션 식별자")
     val id: UUID,
     @Schema(description = "세션 이름")
@@ -102,8 +103,8 @@ data class ActiveGenerationSessionResponse(
     val type: SessionType,
     @Schema(description = "세션 진행 상태")
     val progressPhase: SessionProgressPhase,
-    @Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
-    val attendanceStatus: String?
+    @Schema(description = "출석 상태", nullable = true)
+    val attendanceStatus: AttendanceStatus?
 ) {
 
     constructor(
@@ -123,6 +124,6 @@ data class ActiveGenerationSessionResponse(
         endTime = session.endTime,
         type = session.sessionType,
         progressPhase = status,
-        attendanceStatus = session.attendanceStatus
+        attendanceStatus = session.attendanceStatusType
     )
 }

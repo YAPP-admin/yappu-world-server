@@ -5,6 +5,7 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
+import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponseV2
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
@@ -57,6 +58,20 @@ class ScheduleService(
             ?: return ActiveGenerationSessionsResponse.from(emptyList(), now)
         val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
         return ActiveGenerationSessionsResponse.from(
+            sessions = sessions,
+            now = now
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getActiveGenerationSessions(
+        userId: UUID,
+        now: LocalDateTime
+    ): ActiveGenerationSessionsResponseV2 {
+        val currentGeneration = generationFindService.findActiveGenerationOrNull()
+            ?: return ActiveGenerationSessionsResponseV2.from(emptyList(), now)
+        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
+        return ActiveGenerationSessionsResponseV2.from(
             sessions = sessions,
             now = now
         )
