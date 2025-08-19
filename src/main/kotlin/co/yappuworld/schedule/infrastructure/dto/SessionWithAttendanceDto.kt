@@ -2,6 +2,7 @@ package co.yappuworld.schedule.infrastructure.dto
 
 import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionType
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -38,6 +39,21 @@ class SessionWithAttendanceDto(
         endDate.isBefore(now.toLocalDate()) ||
             (endDate.isEqual(now.toLocalDate()) && endTime.isBefore(now.toLocalTime()))
 
+    fun isOnGoing(now: LocalDateTime): Boolean {
+        val start = LocalDateTime.of(date, time)
+        val end = LocalDateTime.of(endDate, endTime)
+
+        return start.isBeforeOrEqual(now) && now.isBeforeOrEqual(end)
+    }
+
     fun isToday(now: LocalDateTime): Boolean =
         date.isBeforeOrEqual(now.toLocalDate()) && now.toLocalDate().isBeforeOrEqual(endDate)
+
+    fun getSessionProgressPhase(now: LocalDateTime): SessionProgressPhase =
+        when {
+            isFinished(now) -> SessionProgressPhase.DONE
+            isOnGoing(now) -> SessionProgressPhase.ONGOING
+            isToday(now) -> SessionProgressPhase.TODAY
+            else -> SessionProgressPhase.PENDING
+        }
 }
