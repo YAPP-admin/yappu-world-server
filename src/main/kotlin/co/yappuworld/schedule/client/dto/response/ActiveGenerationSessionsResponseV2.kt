@@ -4,8 +4,6 @@ import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase.DONE
-import co.yappuworld.schedule.domain.vo.SessionProgressPhase.PENDING
-import co.yappuworld.schedule.domain.vo.SessionProgressPhase.TODAY
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import io.swagger.v3.oas.annotations.media.Schema
@@ -37,19 +35,16 @@ data class ActiveGenerationSessionsResponseV2(
             if (sessions.isEmpty()) return ActiveGenerationSessionsResponseV2(emptyList(), null)
 
             val orderedSessions = sessions.sortedWith(compareBy({ it.date }, { it.time }))
-            val (upcomingSessionIndex, upcomingSessionStatus) = getUpcomingSessionIndexAndStatus(orderedSessions, now)
+            val upcomingSessionIndex = getUpcomingSessionIndexAndStatus(orderedSessions, now)
                 ?: return ActiveGenerationSessionsResponseV2(
                     orderedSessions.map { ActiveGenerationSessionResponseV2(it, DONE, now) },
                     orderedSessions.last().id
                 )
 
             return ActiveGenerationSessionsResponseV2(
-                sessions = orderedSessions.mapIndexed { index, session ->
-                    when {
-                        index < upcomingSessionIndex -> ActiveGenerationSessionResponseV2(session, DONE, now)
-                        index > upcomingSessionIndex -> ActiveGenerationSessionResponseV2(session, PENDING, now)
-                        else -> ActiveGenerationSessionResponseV2(session, upcomingSessionStatus, now)
-                    }
+                sessions = orderedSessions.map { session ->
+                    val status = session.getSessionProgressPhase(now)
+                    ActiveGenerationSessionResponseV2(session, status, now)
                 },
                 upcomingSessionId = orderedSessions[upcomingSessionIndex].id
             )
@@ -58,15 +53,10 @@ data class ActiveGenerationSessionsResponseV2(
         private fun getUpcomingSessionIndexAndStatus(
             orderedSessions: List<SessionWithAttendanceDto>,
             now: LocalDateTime
-        ): Pair<Int, SessionProgressPhase>? {
+        ): Int? {
             val upcomingSession = orderedSessions.firstOrNull { !it.isFinished(now) }
                 ?: return null
-            val upcomingSessionIndex = orderedSessions.indexOf(upcomingSession)
-
-            return when {
-                upcomingSession.isToday(now) -> upcomingSessionIndex to TODAY
-                else -> upcomingSessionIndex to PENDING
-            }
+            return orderedSessions.indexOf(upcomingSession)
         }
     }
 }
