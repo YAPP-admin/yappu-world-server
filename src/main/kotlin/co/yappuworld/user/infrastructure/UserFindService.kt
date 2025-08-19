@@ -3,6 +3,7 @@ package co.yappuworld.user.infrastructure
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.PageUtils.filterNotNull
 import co.yappuworld.schedule.domain.Attendee
+import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
@@ -22,7 +23,6 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -81,10 +81,18 @@ class UserFindService(
             }.filterNotNull()
     }
 
-    fun findAllUserWithLastActivityUnit(pageable: Pageable): Page<UserWithLastActivityUnit> =
+    fun findAllUserWithLastActivityUnit(request: AdminUserPageRequest): Page<UserWithLastActivityUnit> =
         userRepository
-            .findPage(pageable) {
+            .findPage(request.toPageRequest()) {
+                val predicates = buildList {
+                    request.name?.let { add(path(UserEntity::name).like("%$it%")) }
+                    request.generation?.let { add(path(ActivityUnitWithRowNumber::generation).equal(it)) }
+                    request.position?.let { add(path(ActivityUnitWithRowNumber::position).equal(it)) }
+                    request.role?.let { add(path(UserEntity::role).equal(it)) }
+                }
+
                 selectUserWithLastActivityUnit()
+                    .whereAnd(*predicates.toTypedArray())
                     .orderBy(path(UserEntity::getId).desc())
             }.filterNotNull()
 
