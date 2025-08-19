@@ -92,7 +92,7 @@ class AdminUserService(
     @Transactional(readOnly = true)
     fun getUserOverviews(request: AdminUserPageRequest): OffsetPageResponse<AdminUserOverviewResponse> =
         userFindService
-            .findAllUserWithLastActivityUnit(request.toPageRequest())
+            .findAllUserWithLastActivityUnit(request)
             .let { page -> OffsetPageResponse.from(page) { AdminUserOverviewResponse(it) } }
 
     @Transactional
