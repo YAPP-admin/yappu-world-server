@@ -81,8 +81,12 @@ data class SimpleScheduleResponse(
     val place: String?,
     @Schema(description = "일정 날짜")
     val date: LocalDate,
+    @Schema(description = "일정 시작 요일")
+    val startDayOfTheWeek: String,
     @Schema(description = "일정 종료 날짜")
     val endDate: LocalDate,
+    @Schema(description = "일정 종료 요일")
+    val endDayOfTheWeek: String,
     @Schema(description = "일정 시작 시간", nullable = true)
     val time: LocalTime?,
     @Schema(description = "일정 종료 시간", nullable = true)
@@ -121,7 +125,9 @@ data class SimpleScheduleResponse(
                     name = session.name,
                     place = session.place,
                     date = session.date,
+                    startDayOfTheWeek = session.date.dayOfWeek.korean(),
                     endDate = session.endDate,
+                    endDayOfTheWeek = session.endDate.dayOfWeek.korean(),
                     time = session.time,
                     endTime = session.endTime,
                     scheduleType = ScheduleType.SESSION,
