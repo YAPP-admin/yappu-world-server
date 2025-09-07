@@ -47,7 +47,7 @@ class AdminAttendanceService(
     fun updateAttendance(request: AdminAttendanceUpdateRequest) {
         val attendanceBySessionAndUserId = attendanceFindService
             .findAttendances(request.getSessionAndUserIdPairs())
-            .associateBy { it.scheduleId to it.userId }
+            .associateBy { it.session.id to it.userId }
 
         request.targets.forEach { target ->
             attendanceBySessionAndUserId[target.sessionId to target.userId]

@@ -1,61 +1,65 @@
 package co.yappuworld.operation.client.application
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.operation.infrastructure.GenerationRepository
-import co.yappuworld.support.environment.CustomDataJpaTest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
+import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.transaction.annotation.Transactional
-import kotlin.test.Test
+import java.time.LocalDate
 
-@CustomDataJpaTest
-class GenerationActiveStateManagerTest {
+class GenerationActiveStateManagerTest @Autowired constructor(
+    private val repository: GenerationRepository
+) : CustomDataJpaTestFeatureSpec({
 
-    @Autowired
-    lateinit var repository: GenerationRepository
-    lateinit var generationActiveStateManager: GenerationActiveStateManager
+        val generationActiveStateManager = GenerationActiveStateManager(repository)
 
-    @BeforeEach
-    fun setUp() {
-        generationActiveStateManager = GenerationActiveStateManager(repository)
-    }
+        beforeEach {
+            fun saveNotExist(generation: GenerationEntity) {
+                repository.findByIdOrNull(generation.id) ?: repository.saveAndFlush(generation)
+            }
 
-    @Test
-    fun `존재하지 않는 기수를 활성화 시키면 예외가 발생한다`() {
-        val generationValue = Int.MAX_VALUE
-        assertThat(repository.findByIdOrNull(generationValue)).isNull()
-        assertThrows<BusinessException> { generationActiveStateManager.activate(generationValue) }
-    }
+            listOf(
+                GenerationEntity(23, LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31)),
+                GenerationEntity(24, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31)),
+                GenerationEntity(25, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31))
+            ).forEach { saveNotExist(it) }
+        }
 
-    @Test
-    @Transactional
-    fun `특정 기수를 활성화 시키면 나머지는 모두 비활성화 된다`() {
-        generationActiveStateManager.activate(23)
-        generationActiveStateManager.activate(24)
-        generationActiveStateManager.activate(25)
+        feature("기수 활성화 관리") {
 
-        assertThat(repository.findByIdOrNull(23)?.isActive).isFalse()
-        assertThat(repository.findByIdOrNull(24)?.isActive).isFalse()
-        assertThat(repository.findByIdOrNull(25)?.isActive).isTrue()
-    }
+            scenario("존재하지 않는 기수를 활성화 시키면 예외가 발생한다") {
+                val generationValue = Int.MAX_VALUE
+                repository.findByIdOrNull(generationValue).shouldBeNull()
+                shouldThrow<BusinessException> { generationActiveStateManager.activate(generationValue) }
+            }
 
-    @Test
-    @Transactional
-    fun `특정 기수를 비활성화 시키면 해당 기수만 비활성화 된다`() {
-        generationActiveStateManager.activate(25)
-        assertThat(repository.findByIdOrNull(25)?.isActive).isTrue()
+            scenario("특정 기수를 활성화 시키면 나머지는 모두 비활성화 된다") {
+                generationActiveStateManager.activate(23)
+                generationActiveStateManager.activate(24)
+                generationActiveStateManager.activate(25)
 
-        generationActiveStateManager.deactivate(25)
-        assertThat(repository.findByIdOrNull(25)?.isActive).isFalse()
-    }
+                repository.findByIdOrNull(23)?.isActive?.shouldBeFalse()
+                repository.findByIdOrNull(24)?.isActive?.shouldBeFalse()
+                repository.findByIdOrNull(25)?.isActive?.shouldBeTrue()
+            }
 
-    @Test
-    @Transactional
-    fun `활성화 되어 있는 기수가 있다면 해당 기수의 값을 반환한다`() {
-        generationActiveStateManager.activate(25)
-        assertThat(generationActiveStateManager.getActiveGenerationOrNull()).isEqualTo(25)
-    }
-}
+            scenario("특정 기수를 비활성화 시키면 해당 기수만 비활성화 된다") {
+                generationActiveStateManager.activate(25)
+                repository.findByIdOrNull(25)?.isActive?.shouldBeTrue()
+
+                generationActiveStateManager.deactivate(25)
+                repository.findByIdOrNull(25)?.isActive?.shouldBeFalse()
+            }
+
+            scenario("활성화 되어 있는 기수가 있다면 해당 기수의 값을 반환한다") {
+                generationActiveStateManager.activate(25)
+                generationActiveStateManager.getActiveGenerationOrNull() shouldBe 25
+            }
+        }
+    })

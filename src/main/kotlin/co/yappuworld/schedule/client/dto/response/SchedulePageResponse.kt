@@ -31,7 +31,7 @@ data class SchedulePageResponse(
             request: SchedulePageRequest,
             now: LocalDateTime
         ): SchedulePageResponse {
-            val attendanceBySessionId = attendances.associateBy { it.scheduleId }
+            val attendanceBySessionId = attendances.associateBy { it.session.id }
             val scheduleWithAttendance = schedules.map { Pair(it, attendanceBySessionId[it.id]) }
             val scheduleByDate = scheduleWithAttendance.groupBy { (schedule, _) -> schedule.date }
 
