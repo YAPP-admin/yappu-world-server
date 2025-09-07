@@ -43,8 +43,8 @@ class AdminScheduleService(
         val schedule = request.toDomain()
         scheduleCommandService.save(schedule)
 
-        createAttendance(request.sessionAttendeeIds, schedule.id)
         if (schedule is SessionEntity) {
+            createAttendance(request.sessionAttendeeIds, schedule)
             linkSessionAndNotice(request.noticeIds, schedule)
         }
 
@@ -109,11 +109,11 @@ class AdminScheduleService(
 
     private fun createAttendance(
         attendeeIds: List<UUID>,
-        scheduleId: UUID
+        session: SessionEntity
     ) {
         attendeeIds
             .takeIf { it.isNotEmpty() }
-            ?.map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = scheduleId) }
+            ?.map { attendeeId -> AttendanceEntity(userId = attendeeId, session = session) }
             ?.also { attendanceCommandService.saveAll(it) }
     }
 
@@ -140,7 +140,7 @@ class AdminScheduleService(
 
         val toCreate = requestSessionAttendeeIds
             .filterNot { attendeeId -> attendeeId in attendeeIds }
-            .map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = session.id) }
+            .map { attendeeId -> AttendanceEntity(userId = attendeeId, session = session) }
 
         if (toCreate.isNotEmpty()) attendanceCommandService.saveAll(toCreate)
 

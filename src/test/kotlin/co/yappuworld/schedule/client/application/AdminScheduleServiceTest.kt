@@ -33,7 +33,7 @@ class AdminScheduleServiceTest @Autowired constructor(
                 val userId2 = UUID.randomUUID()
                 val userId3 = UUID.randomUUID()
                 attendanceRepository.saveAllAndFlush(
-                    listOf(userId1, userId2).map { AttendanceEntity(it, session.id) }
+                    listOf(userId1, userId2).map { AttendanceEntity(it, session) }
                 )
 
                 val request = AdminSessionUpdateRequest(

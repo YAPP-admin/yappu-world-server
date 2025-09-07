@@ -7,17 +7,5 @@ import java.util.UUID
 
 interface AttendanceRepository :
     JpaRepository<AttendanceEntity, UUID>,
-    KotlinJdslJpqlExecutor {
-
-    fun existsAttendanceByUserIdAndScheduleId(
-        userId: UUID,
-        scheduleId: UUID
-    ): Boolean
-
-    fun findByUserIdAndScheduleId(
-        userId: UUID,
-        scheduleId: UUID
-    ): AttendanceEntity?
-
-    fun findAllByScheduleId(scheduleId: UUID): List<AttendanceEntity>
-}
+    KotlinJdslJpqlExecutor
+//    CustomJdslJpqlExecutor

@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.AttendancePolicy.ABSENT_AFTER_SESSION_START_HOURS
 import co.yappuworld.schedule.domain.AttendancePolicy.CHECK_IN_AVAILABLE_BEFORE_SESSION_START_MINUTES
 import co.yappuworld.schedule.domain.AttendancePolicy.LATE_AFTER_SESSION_START_MINUTES
@@ -40,6 +41,12 @@ class SessionEntity(
     @Enumerated(EnumType.STRING)
     var sessionType: SessionType = sessionType
         private set
+
+    val startDayOfWeek: String
+        get() = date.dayOfWeek.korean()
+
+    val endDayOfWeek: String
+        get() = endDate.dayOfWeek.korean()
 
     fun update(
         name: String,

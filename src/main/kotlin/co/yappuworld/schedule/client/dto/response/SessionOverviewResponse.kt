@@ -36,7 +36,7 @@ data class SessionOverviewResponse(
             attendances: List<AttendanceEntity>,
             now: LocalDateTime
         ): SessionOverviewResponse {
-            val attendanceByScheduleId = attendances.associateBy { it.scheduleId }
+            val attendanceByScheduleId = attendances.associateBy { it.session.id }
             val result = sessions
                 .map { session ->
                     SessionOverviewItemResponse.from(
