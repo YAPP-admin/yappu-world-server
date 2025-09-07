@@ -55,7 +55,7 @@ class AttendanceStatisticsResponseTest :
             )
 
             scenario("일자, 시간에 따른 잔여 세션 수와 진행률 검증") {
-                val attendances = sessions.map { getAttendanceEntityFixture(scheduleId = it.id, userId = user.userId) }
+                val attendances = sessions.map { getAttendanceEntityFixture(session = it, userId = user.userId) }
                 AttendanceStatisticsResponse
                     .from(
                         getAttendanceBookFixture(
@@ -76,7 +76,7 @@ class AttendanceStatisticsResponseTest :
                 val attendances = sessions.map {
                     getAttendanceEntityFixture(
                         userId = user.userId,
-                        scheduleId = it.id,
+                        session = it,
                         status = PENDING
                     )
                 }
@@ -104,14 +104,14 @@ class AttendanceStatisticsResponseTest :
                     .map {
                         getAttendanceEntityFixture(
                             userId = user.userId,
-                            scheduleId = it.id,
+                            session = it,
                             status = ON_TIME
                         )
                     }.union(
                         sessions.subList(2, 5).map {
                             getAttendanceEntityFixture(
                                 userId = user.userId,
-                                scheduleId = it.id,
+                                session = it,
                                 status = PENDING
                             )
                         }
@@ -140,7 +140,7 @@ class AttendanceStatisticsResponseTest :
             scenario("지각 횟수당 10점씩 깎인다.") {
                 val attendances = sessions
                     .subList(0, 2)
-                    .map { getAttendanceEntityFixture(status = ON_TIME, userId = user.userId, scheduleId = it.id) }
+                    .map { getAttendanceEntityFixture(status = ON_TIME, userId = user.userId, session = it) }
 
                 repeat(2) { r ->
                     attendances[r].updateStatus(LATE)
@@ -164,7 +164,7 @@ class AttendanceStatisticsResponseTest :
             scenario("결석 횟수당 20점씩 깎인다.") {
                 val attendances = sessions
                     .subList(0, 2)
-                    .map { getAttendanceEntityFixture(status = ON_TIME, userId = user.userId, scheduleId = it.id) }
+                    .map { getAttendanceEntityFixture(status = ON_TIME, userId = user.userId, session = it) }
 
                 repeat(2) { r ->
                     attendances[r].updateStatus(ABSENT)
@@ -189,7 +189,7 @@ class AttendanceStatisticsResponseTest :
                 val attendances = sessions.subList(0, 2).map {
                     getAttendanceEntityFixture(
                         userId = user.userId,
-                        scheduleId = it.id,
+                        session = it,
                         status = ABSENT
                     )
                 }

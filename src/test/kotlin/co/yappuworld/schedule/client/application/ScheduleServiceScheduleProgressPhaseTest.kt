@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.client.application
 
 import co.yappuworld.operation.infrastructure.GenerationFindService
+import co.yappuworld.post.infrastructure.PostFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
@@ -23,13 +24,15 @@ class ScheduleServiceScheduleProgressPhaseTest {
     val attendanceFindService = mockk<AttendanceFindService>()
     val generationFindService = mockk<GenerationFindService>()
     val scheduleFindService = mockk<ScheduleFindService>()
+    val postFindService = mockk<PostFindService>()
 
     val scheduleService = ScheduleService(
         userFindService = userFindService,
         sessionFindService = sessionFindService,
         attendanceFindService = attendanceFindService,
         generationFindService = generationFindService,
-        scheduleFindService = scheduleFindService
+        scheduleFindService = scheduleFindService,
+        postFindService = postFindService
     )
 
     @Test

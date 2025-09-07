@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.schedule.domain.SessionAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -7,7 +8,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
-data class UpcomingSessionAttendanceResponse(
+data class UpcomingSessionResponse(
     @Schema(description = "세션 식별자")
     val sessionId: UUID,
     @Schema(description = "세션 이름")
@@ -46,30 +47,40 @@ data class UpcomingSessionAttendanceResponse(
     )
     val canCheckIn: Boolean,
     @Schema(description = "현재 출석 상태", allowableValues = ["출석", "지각", "결석", "조퇴", "공결"], nullable = true)
-    val status: String?
+    val status: String?,
+    val notices: List<UpcomingSessionNoticeResponse>
 ) {
 
     companion object {
 
         fun of(
             sessionAttendance: SessionAttendance,
+            notices: List<NoticeEntity>,
             now: LocalDateTime
-        ): UpcomingSessionAttendanceResponse =
+        ): UpcomingSessionResponse =
             sessionAttendance.let {
-                UpcomingSessionAttendanceResponse(
-                    sessionId = it.sessionId,
-                    name = it.sessionName,
-                    startDate = it.sessionStartDate,
-                    startDayOfWeek = it.sessionStartDayOfWeek,
-                    endDate = it.sessionEndDate,
-                    endDayOfWeek = it.sessionEndDayOfWeek,
-                    startTime = it.sessionStartTime,
-                    endTime = it.sessionEndTime,
-                    place = it.sessionPlace,
+                UpcomingSessionResponse(
+                    sessionId = it.session.id,
+                    name = it.session.name,
+                    startDate = it.session.date,
+                    startDayOfWeek = it.session.startDayOfWeek,
+                    endDate = it.session.endDate,
+                    endDayOfWeek = it.session.endDayOfWeek,
+                    startTime = it.session.time,
+                    endTime = it.session.endTime,
+                    place = it.session.place,
                     relativeDays = it.getRelativeDays(now.toLocalDate()),
                     canCheckIn = it.canCheckIn(now),
-                    status = it.getAttendanceStatus(now)
+                    status = it.getAttendanceStatus(now),
+                    notices = notices.map { notice -> UpcomingSessionNoticeResponse(notice.id, notice.title) }
                 )
             }
     }
 }
+
+data class UpcomingSessionNoticeResponse(
+    @Schema(description = "공지사항 ID")
+    val id: UUID,
+    @Schema(description = "공지사항 제목")
+    val title: String
+)

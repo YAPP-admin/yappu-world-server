@@ -10,19 +10,23 @@ import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.UserRepository
+import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 
 class AttendanceFindServiceTest @Autowired constructor(
     private val sessionRepository: ScheduleRepository,
     private val attendanceRepository: AttendanceRepository,
     private val userRepository: UserRepository,
-    private val activityUnitRepository: ActivityUnitRepository
+    private val activityUnitRepository: ActivityUnitRepository,
+    private val entityManager: EntityManager,
+    private val context: JpqlRenderContext
 ) : CustomDataJpaTestFeatureSpec({
 
-        val attendanceFindService = AttendanceFindService(attendanceRepository)
+        val attendanceFindService = AttendanceFindService(attendanceRepository, entityManager, context)
 
         feature("특정 기수의 출석 정보를 조회한다.") {
 
@@ -40,7 +44,7 @@ class AttendanceFindServiceTest @Autowired constructor(
                     sessions.addAll(List(3) { getSessionEntityFixture(generation = generation + it) })
                 }
                 sessions.forEach { session ->
-                    attendances.add(getAttendanceEntityFixture(scheduleId = session.id))
+                    attendances.add(getAttendanceEntityFixture(session = session))
                 }
 
                 sessionRepository.saveAllAndFlush(sessions)
@@ -65,7 +69,7 @@ class AttendanceFindServiceTest @Autowired constructor(
                     getActivityUnitEntityFixture(generation = 25, position = Position.STAFF, userId = user2.id)
                 )
                 val session = getSessionEntityFixture()
-                val attendance = getAttendanceEntityFixture(userId = user1.id, scheduleId = session.id)
+                val attendance = getAttendanceEntityFixture(userId = user1.id, session = session)
 
                 userRepository.saveAll(listOf(user1, user2))
                 activityUnitRepository.saveAll(user1ActivityUnits.union(user2ActivityUnits))

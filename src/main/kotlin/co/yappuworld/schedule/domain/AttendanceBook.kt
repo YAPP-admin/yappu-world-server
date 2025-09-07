@@ -32,7 +32,7 @@ class AttendanceBook(
         require(sessions.all { it.generation == generation })
 
         // (userId to sessionId) to AttendanceStatus
-        val attendanceMatrix = attendances.associateBy { (it.userId to it.scheduleId) }
+        val attendanceMatrix = attendances.associateBy { (it.userId to it.session.id) }
 
         fun decideStatus(
             user: Attendee,

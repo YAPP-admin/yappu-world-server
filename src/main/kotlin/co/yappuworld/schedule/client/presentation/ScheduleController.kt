@@ -9,7 +9,7 @@ import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
-import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
+import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
@@ -56,10 +56,10 @@ class ScheduleController(
 
     override fun getUpcomingSessionAttendance(
         securityUser: SecurityUser
-    ): ResponseEntity<SuccessResponse<UpcomingSessionAttendanceResponse>> =
+    ): ResponseEntity<SuccessResponse<UpcomingSessionResponse>> =
         ResponseEntity.ok(
             SuccessResponse(
-                scheduleService.getUpcomingSessionAttendance(securityUser.userId, getCurrentDateTimeInKST())
+                scheduleService.findUpcomingSessionWithAttendance(securityUser.userId, getCurrentDateTimeInKST())
             )
         )
 }

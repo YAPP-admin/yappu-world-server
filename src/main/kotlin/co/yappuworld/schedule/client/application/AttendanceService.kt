@@ -6,10 +6,8 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
 import co.yappuworld.schedule.domain.AttendanceBook
-import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import co.yappuworld.schedule.domain.vo.AttendanceError
-import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
@@ -25,12 +23,11 @@ private val logger = KotlinLogging.logger {}
 @Service
 class AttendanceService(
     private val attendanceFindService: AttendanceFindService,
-    private val attendanceCommandService: AttendanceCommandService,
-    private val configFindService: ConfigFindService,
     private val sessionFindService: SessionFindService,
     private val generationFindService: GenerationFindService,
     private val userFindService: UserFindService,
-    private val latePassFindService: LatePassFindService
+    private val latePassFindService: LatePassFindService,
+    private val configFindService: ConfigFindService
 ) {
 
     @Transactional
@@ -39,8 +36,10 @@ class AttendanceService(
         userId: UUID,
         now: LocalDateTime
     ) {
-        val sessionAttendance = getSessionAttendance(userId, request.sessionId)
-            .also { it.validateCheckInAvailability(now) }
+        val sessionAttendance = sessionFindService
+            .findSessionAttendance(userId, request.sessionId)
+            ?.also { it.validateCheckInAvailability(now) }
+            ?: throw BusinessException(AttendanceError.NOT_INVITED)
 
         checkAttendanceCode(request.attendanceCode)
         sessionAttendance.checkIn(now)
@@ -85,18 +84,6 @@ class AttendanceService(
         )
 
         return AttendancesHistoryResponse.of(sessionsWithAttendance)
-    }
-
-    private fun getSessionAttendance(
-        userId: UUID,
-        sessionId: UUID
-    ): SessionAttendance {
-        val session = sessionFindService.findSession(sessionId)
-        return SessionAttendance(
-            attendee = userFindService.findSessionAttendee(userId, session.generation),
-            session = session,
-            attendance = attendanceFindService.findSessionAttendance(userId, sessionId)
-        )
     }
 
     private fun checkAttendanceCode(attendanceCode: String) {
