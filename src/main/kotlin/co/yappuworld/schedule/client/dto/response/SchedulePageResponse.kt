@@ -19,7 +19,7 @@ import java.time.LocalTime
 import java.util.UUID
 
 data class SchedulePageResponse(
-    @Schema(description = "날짜 목록")
+    @field:Schema(description = "날짜 목록")
     val dates: List<DateGroupedScheduleResponse>
 ) {
 
@@ -49,13 +49,13 @@ data class SchedulePageResponse(
 }
 
 data class DateGroupedScheduleResponse(
-    @Schema(description = "날짜")
+    @field:Schema(description = "날짜")
     val date: LocalDate,
-    @Schema(description = "요일")
+    @field:Schema(description = "요일")
     val dayOfTheWeek: String,
-    @Schema(description = "당일 여부")
+    @field:Schema(description = "당일 여부")
     val isToday: Boolean,
-    @Schema(description = "일정 목록")
+    @field:Schema(description = "일정 목록")
     val schedules: List<SimpleScheduleResponse>
 ) {
 
@@ -73,31 +73,31 @@ data class DateGroupedScheduleResponse(
 }
 
 data class SimpleScheduleResponse(
-    @Schema(description = "일정 ID")
+    @field:Schema(description = "일정 ID")
     val id: UUID,
-    @Schema(description = "일정 이름")
+    @field:Schema(description = "일정 이름")
     val name: String,
-    @Schema(description = "일정 장소", nullable = true)
+    @field:Schema(description = "일정 장소", nullable = true)
     val place: String?,
-    @Schema(description = "일정 날짜")
+    @field:Schema(description = "일정 날짜")
     val date: LocalDate,
-    @Schema(description = "일정 시작 요일")
+    @field:Schema(description = "일정 시작 요일")
     val startDayOfTheWeek: String,
-    @Schema(description = "일정 종료 날짜")
+    @field:Schema(description = "일정 종료 날짜")
     val endDate: LocalDate,
-    @Schema(description = "일정 종료 요일")
+    @field:Schema(description = "일정 종료 요일")
     val endDayOfTheWeek: String,
-    @Schema(description = "일정 시작 시간", nullable = true)
+    @field:Schema(description = "일정 시작 시간", nullable = true)
     val time: LocalTime?,
-    @Schema(description = "일정 종료 시간", nullable = true)
+    @field:Schema(description = "일정 종료 시간", nullable = true)
     val endTime: LocalTime?,
-    @Schema(description = "일정 종류")
+    @field:Schema(description = "일정 종류")
     val scheduleType: ScheduleType,
-    @Schema(description = "세션 종류", nullable = true)
+    @field:Schema(description = "세션 종류", nullable = true)
     val sessionType: SessionType?,
-    @Schema(description = "일정 진행 상태")
+    @field:Schema(description = "일정 진행 상태")
     val scheduleProgressPhase: ScheduleProgressPhase,
-    @Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
+    @field:Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
     val attendanceStatus: String?
 ) {
 

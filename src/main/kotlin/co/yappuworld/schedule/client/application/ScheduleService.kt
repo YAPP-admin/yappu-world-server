@@ -2,11 +2,14 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
+import co.yappuworld.post.infrastructure.PostFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponseV2
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsNoticeResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
@@ -15,7 +18,6 @@ import co.yappuworld.schedule.infrastructure.ScheduleFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
-import co.yappuworld.post.infrastructure.PostFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -116,6 +118,31 @@ class ScheduleService(
         return UpcomingSessionResponse.of(
             sessionAttendance = sessionAttendance,
             notices = notices,
+            now = now
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun findSessionDetails(
+        sessionId: UUID,
+        now: LocalDateTime
+    ): SessionDetailsResponse {
+        val session = sessionFindService.findSession(sessionId)
+        val notices = postFindService.findNoticesTargetingSession(sessionId)
+        val writerIds = notices.map { it.writerId }.distinct()
+        val writers = when {
+            writerIds.isEmpty() -> emptyMap()
+            else -> userFindService.findAllUserWithLastActivityUnit(writerIds).associateBy { it.userId }
+        }
+
+        val noticeResponses = notices.map { notice ->
+            SessionDetailsNoticeResponse.from(notice)
+        }
+
+        return SessionDetailsResponse.of(
+            session = session,
+            notices = notices,
+            writers = writers,
             now = now
         )
     }

@@ -2,7 +2,7 @@ package co.yappuworld.user.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.security.JwtGenerator
-import co.yappuworld.global.security.JwtProperty
+import co.yappuworld.global.security.JwtProperties
 import co.yappuworld.global.security.JwtResolver
 import co.yappuworld.support.fixture.UserDtoFixture.getLatestSignUpApplicationApiRequestFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
@@ -22,13 +22,13 @@ import io.mockk.mockk
 class UserAuthServiceTest :
     FeatureSpec({
 
-        val jwtProperty = JwtProperty(
+        val jwtProperties = JwtProperties(
             secretKey = "thisisforlocalsfjweifjweifiewfuwefewmkcewocfweklocalsecretkeyonlyusinginlocalenvironment",
             accessTokenExpirationTimes = 1000, // 1초
             refreshTokenExpirationTimes = 2000
         )
-        val jwtGenerator = JwtGenerator(jwtProperty)
-        val jwtResolver = JwtResolver(jwtProperty)
+        val jwtGenerator = JwtGenerator(jwtProperties)
+        val jwtResolver = JwtResolver(jwtProperties)
         val userFindService = mockk<UserFindService>()
         val signUpApplicationFindService = mockk<SignUpApplicationFindService>()
         val userLoginPermissionChecker = mockk<UserLoginPermissionChecker>()

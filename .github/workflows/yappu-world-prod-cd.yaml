@@ -43,6 +43,7 @@ jobs:
                     discord.webhook: ${{secrets.DISCORD_WEBHOOK_URL_IN_PROD}}
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
                     admin.domain: ${{ secrets.PROD_ADMIN_DOMAIN }}
+                    kakao.rest_api_key: ${{ secrets.KAKAO_REST_API_KEY }}
 
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build -x test -Dspring.profiles.active=prod

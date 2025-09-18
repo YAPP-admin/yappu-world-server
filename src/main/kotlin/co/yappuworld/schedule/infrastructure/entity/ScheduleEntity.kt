@@ -10,6 +10,7 @@ import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.DONE
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.ONGOING
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.PENDING
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase.TODAY
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import jakarta.persistence.DiscriminatorColumn
 import jakarta.persistence.DiscriminatorType
 import jakarta.persistence.Entity
@@ -33,6 +34,10 @@ abstract class ScheduleEntity : BaseEntity() {
 
     abstract val description: String?
     abstract val place: String?
+
+    abstract var address: String?
+    abstract var latitude: Double?
+    abstract var longitude: Double?
 
     abstract val date: LocalDate
     abstract val endDate: LocalDate
@@ -64,6 +69,7 @@ abstract class ScheduleEntity : BaseEntity() {
 
     fun isToday(now: LocalDateTime): Boolean = date == now.toLocalDate()
 
+    // TODO: ScheduleProgressPhase -> SessionProgressPhase 전환 후 ScheduleProgressPhase는 fade out
     fun getProgressPhase(now: LocalDateTime): ScheduleProgressPhase =
         when {
             isFinished(now) -> DONE
@@ -71,4 +77,22 @@ abstract class ScheduleEntity : BaseEntity() {
             isToday(now) -> TODAY
             else -> PENDING
         }
+
+    fun getSessionProgressPhase(now: LocalDateTime): SessionProgressPhase =
+        when {
+            isFinished(now) -> SessionProgressPhase.DONE
+            isOngoing(now) -> SessionProgressPhase.ONGOING
+            isToday(now) -> SessionProgressPhase.TODAY
+            else -> SessionProgressPhase.PENDING
+        }
+
+    fun updateAddressAndCoordinates(
+        address: String?,
+        latitude: Double?,
+        longitude: Double?
+    ) {
+        this.address = address
+        this.latitude = latitude
+        this.longitude = longitude
+    }
 }
