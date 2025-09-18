@@ -3,7 +3,7 @@ package co.yappuworld.user.infrastructure
 import co.yappuworld.external.discord.DiscordClient
 import co.yappuworld.external.discord.dto.DiscordEmbed
 import co.yappuworld.external.discord.dto.DiscordEmbedField
-import co.yappuworld.global.property.AdminProperty
+import co.yappuworld.global.property.AdminProperties
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component
 @Primary
 class DiscordUserSystemNotifier(
     private val discordClient: DiscordClient,
-    private val adminProperty: AdminProperty
+    private val adminProperties: AdminProperties
 ) : UserSystemNotifier {
 
     override fun notifySignUpRequestReceived(signUpApplication: SignUpApplicationEntity) {
         discordClient.send(
             DiscordEmbed.info(
                 title = "💡 회원가입 신청을 확인해주세요 💡",
-                url = "${adminProperty.domain}/admin/members/application",
+                url = "${adminProperties.domain}/admin/members/application",
                 fields = listOf(
                     DiscordEmbedField(
                         name = "회원가입 ID",

@@ -9,25 +9,25 @@ import java.time.LocalTime
 import java.util.UUID
 
 data class UpcomingSessionResponse(
-    @Schema(description = "세션 식별자")
+    @field:Schema(description = "세션 식별자")
     val sessionId: UUID,
-    @Schema(description = "세션 이름")
+    @field:Schema(description = "세션 이름")
     val name: String,
-    @Schema(description = "세션 시작 일자")
+    @field:Schema(description = "세션 시작 일자")
     val startDate: LocalDate,
-    @Schema(description = "세션 시작 요일")
+    @field:Schema(description = "세션 시작 요일")
     val startDayOfWeek: String,
-    @Schema(description = "세션 종료 일자")
+    @field:Schema(description = "세션 종료 일자")
     val endDate: LocalDate,
-    @Schema(description = "세션 종료 요일")
+    @field:Schema(description = "세션 종료 요일")
     val endDayOfWeek: String,
-    @Schema(description = "세션 시작 시간")
+    @field:Schema(description = "세션 시작 시간")
     val startTime: LocalTime?,
-    @Schema(description = "세션 종료 시간")
+    @field:Schema(description = "세션 종료 시간")
     val endTime: LocalTime?,
-    @Schema(description = "장소")
+    @field:Schema(description = "장소")
     val place: String?,
-    @Schema(
+    @field:Schema(
         description = """
             세션 시작일 기준 상대 날짜. D-N 혹은 D+N 으로 표시되는 값.
             ex) -2(D-2): 세션 시작일 기준 2일 전
@@ -36,7 +36,7 @@ data class UpcomingSessionResponse(
         """
     )
     val relativeDays: Int,
-    @Schema(
+    @field:Schema(
         description = """
             현재 출석이 가능한지 여부
             출석이 가능한 조건
@@ -46,7 +46,7 @@ data class UpcomingSessionResponse(
         """
     )
     val canCheckIn: Boolean,
-    @Schema(description = "현재 출석 상태", allowableValues = ["출석", "지각", "결석", "조퇴", "공결"], nullable = true)
+    @field:Schema(description = "현재 출석 상태", allowableValues = ["출석", "지각", "결석", "조퇴", "공결"], nullable = true)
     val status: String?,
     val notices: List<UpcomingSessionNoticeResponse>
 ) {
@@ -79,8 +79,8 @@ data class UpcomingSessionResponse(
 }
 
 data class UpcomingSessionNoticeResponse(
-    @Schema(description = "공지사항 ID")
+    @field:Schema(description = "공지사항 ID")
     val id: UUID,
-    @Schema(description = "공지사항 제목")
+    @field:Schema(description = "공지사항 제목")
     val title: String
 )

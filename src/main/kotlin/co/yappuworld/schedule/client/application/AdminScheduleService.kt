@@ -1,5 +1,6 @@
 package co.yappuworld.schedule.client.application
 
+import co.yappuworld.external.map.MapClient
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.post.infrastructure.PostCommandService
@@ -21,6 +22,7 @@ import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
@@ -35,12 +37,15 @@ class AdminScheduleService(
     private val attendanceCommandService: AttendanceCommandService,
     private val userFindService: UserFindService,
     private val postFindService: PostFindService,
-    private val postCommandService: PostCommandService
+    private val postCommandService: PostCommandService,
+    private val mapClient: MapClient
 ) {
 
     @Transactional
     fun createSchedule(request: AdminSessionCreateRequest): UUID {
         val schedule = request.toDomain()
+        updateAddress(schedule, request.address, request.latitude, request.longitude)
+
         scheduleCommandService.save(schedule)
 
         if (schedule is SessionEntity) {
@@ -84,6 +89,8 @@ class AdminScheduleService(
     fun updateSession(request: AdminSessionUpdateRequest) {
         val session = sessionFindService.findSession(request.id)
         request.applyTo(session)
+        updateAddress(session, request.address, request.latitude, request.longitude)
+
         handleAttendee(session, request.sessionAttendeeIds)
         adjustLinkBetweenSessionAndNotice(request.noticeIds, session)
     }
@@ -129,6 +136,28 @@ class AdminScheduleService(
 
         notices.filterIsInstance<NoticeEntity>().onEach { notice -> notice.targetSession(session) }
         postCommandService.saveAll(notices)
+    }
+
+    private fun updateAddress(
+        schedule: ScheduleEntity,
+        address: String?,
+        latitude: Double?,
+        longitude: Double?
+    ) {
+        if (schedule.address == address) return
+
+        if (address == null) {
+            schedule.updateAddressAndCoordinates(null, null, null)
+            return
+        }
+
+        if (latitude != null && longitude != null) {
+            schedule.updateAddressAndCoordinates(address, latitude, longitude)
+            return
+        }
+
+        val response = mapClient.convertAddressToCoordinates(address)
+        schedule.updateAddressAndCoordinates(response.addressName, response.latitude, response.longitude)
     }
 
     private fun handleAttendee(

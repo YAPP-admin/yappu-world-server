@@ -8,7 +8,7 @@ import java.util.Date
 
 @Component
 class JwtGenerator(
-    private val jwtProperty: JwtProperty
+    private val jwtProperties: JwtProperties
 ) {
 
     fun generateToken(
@@ -27,8 +27,8 @@ class JwtGenerator(
             .builder()
             .subject("AccessToken")
             .claims(securityUser.claim)
-            .expiration(Date(now.time + jwtProperty.accessTokenExpirationTimes))
-            .signWith(jwtProperty.base64UrlSecretKey)
+            .expiration(Date(now.time + jwtProperties.accessTokenExpirationTimes))
+            .signWith(jwtProperties.base64UrlSecretKey)
             .compact()
 
     private fun generateRefreshToken(
@@ -39,7 +39,7 @@ class JwtGenerator(
             .builder()
             .subject("RefreshToken")
             .claims(securityUser.claim)
-            .expiration(Date(now.time + jwtProperty.refreshTokenExpirationTimes))
-            .signWith(jwtProperty.base64UrlSecretKey)
+            .expiration(Date(now.time + jwtProperties.refreshTokenExpirationTimes))
+            .signWith(jwtProperties.base64UrlSecretKey)
             .compact()
 }

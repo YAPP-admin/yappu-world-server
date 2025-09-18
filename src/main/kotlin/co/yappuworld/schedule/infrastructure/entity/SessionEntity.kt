@@ -22,6 +22,9 @@ class SessionEntity(
     override var name: String,
     override var description: String?,
     override var place: String?,
+    override var address: String? = null,
+    override var latitude: Double? = null,
+    override var longitude: Double? = null,
     override var date: LocalDate,
     override var endDate: LocalDate,
     override var time: LocalTime,
@@ -62,6 +65,9 @@ class SessionEntity(
         this.name = name
         this.description = description
         this.place = place
+        this.address = address
+        this.latitude = latitude
+        this.longitude = longitude
         this.date = date
         this.endDate = endDate
         this.time = time

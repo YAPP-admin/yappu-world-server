@@ -7,6 +7,7 @@ import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -21,6 +22,8 @@ import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import java.util.UUID
 
 @Tag(name = "스케줄 API", description = "일정 및 출석")
 interface ScheduleApi {
@@ -391,4 +394,12 @@ interface ScheduleApi {
     fun getUpcomingSessionAttendance(
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<UpcomingSessionResponse>>
+
+    @Operation(summary = "세션 상세 조회")
+    @ApiResponses()
+    @GetMapping("/v1/sessions/{sessionId}")
+    fun getSessionDetails(
+        @AuthenticationPrincipal securityUser: SecurityUser,
+        @PathVariable sessionId: UUID
+    ): ResponseEntity<SuccessResponse<SessionDetailsResponse>>
 }

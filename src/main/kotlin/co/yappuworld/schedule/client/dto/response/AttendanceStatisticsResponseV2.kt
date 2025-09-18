@@ -5,21 +5,21 @@ import io.swagger.v3.oas.annotations.media.Schema
 import kotlin.math.roundToInt
 
 data class AttendanceStatisticsResponseV2(
-    @Schema(description = "전체 세션 수")
+    @field:Schema(description = "전체 세션 수")
     val totalSessionCount: Int,
-    @Schema(description = "남은 세션 수")
+    @field:Schema(description = "남은 세션 수")
     val remainingSessionCount: Int,
-    @Schema(description = "세션 진행률 (소수 첫째자리까지 표현)")
+    @field:Schema(description = "세션 진행률 (소수 첫째자리까지 표현)")
     val sessionProgressRate: Double,
-    @Schema(description = "출석 점수")
+    @field:Schema(description = "출석 점수")
     val attendancePoint: Int,
-    @Schema(description = "출석한 세션 수")
+    @field:Schema(description = "출석한 세션 수")
     val attendanceCount: Int,
-    @Schema(description = "지각한 세션 수")
+    @field:Schema(description = "지각한 세션 수")
     val lateCount: Int,
-    @Schema(description = "결석한 세션 수")
+    @field:Schema(description = "결석한 세션 수")
     val absenceCount: Int,
-    @Schema(description = "지각 면제권 수")
+    @field:Schema(description = "지각 면제권 수")
     val latePassCount: Int
 ) {
 
