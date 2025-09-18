@@ -43,6 +43,11 @@ enum class ScheduleError : Error {
         override val code: String = "SCH_4000"
         override val type: ErrorType = ErrorType.WRONG_ARGUMENT
     },
+    NO_WRITER_FOR_SCHEDULE {
+        override val message: String = "일정을 작성한 작성자가 존재하지 않습니다."
+        override val code: String = "SCH_4001"
+        override val type: ErrorType = ErrorType.NOT_FOUND
+    },
 
     // 5000번대 - 세션 공지사항
     NOT_SESSION_NOTICE {

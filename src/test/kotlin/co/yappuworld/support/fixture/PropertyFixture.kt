@@ -1,6 +1,6 @@
 package co.yappuworld.support.fixture
 
-import co.yappuworld.global.security.JwtProperty
+import co.yappuworld.global.security.JwtProperties
 
 object PropertyFixture {
 
@@ -8,8 +8,8 @@ object PropertyFixture {
         secretKey: String = "thisisforlocalsecretkeyonlyusinginlocalenvironmentthisisforlocalsecretkeyonlyusinginlocal",
         accessTokenExpirationTimes: Int = 3600000,
         refreshTokenExpirationTimes: Int = 1209600000
-    ): JwtProperty =
-        JwtProperty(
+    ): JwtProperties =
+        JwtProperties(
             secretKey,
             accessTokenExpirationTimes,
             refreshTokenExpirationTimes
