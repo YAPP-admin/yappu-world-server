@@ -95,5 +95,18 @@ class AdminScheduleServiceTest @Autowired constructor(
 
                 result.data.single { it.id == notice.id }.isSelectedByOtherSession shouldBe true
             }
+
+            scenario("본인 세션에 등록된 공지사항은 선택 불가로 표현되지 않는다.") {
+                val session = scheduleRepository.save(getSessionEntityFixture())
+                val notice = noticeRepository.saveAndFlush(
+                    getNoticeEntityFixture(noticeType = NoticeType.SESSION, targetSession = session)
+                )
+
+                val result = adminScheduleService.getTargetableSessionNotices(
+                    AdminSimpleSessionNoticePageRequest(page = 1, size = 10, sessionId = session.id)
+                )
+
+                result.data.single { it.id == notice.id }.isSelectedByOtherSession shouldBe false
+            }
         }
     })

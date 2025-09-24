@@ -105,11 +105,12 @@ class AdminScheduleService(
     ): OffsetPageResponse<AdminTargetableSessionNoticeResponse> {
         val response = postFindService.findSessionNotices(request.toPageRequest(), request.search)
         return OffsetPageResponse.from(response) { notice ->
+            val isSelectedByOtherSession = notice.targetSession != null && notice.targetSession?.id != request.sessionId
             AdminTargetableSessionNoticeResponse(
                 id = notice.id,
                 title = notice.title,
                 createdAt = notice.createdAt,
-                isSelectedByOtherSession = notice.targetSession != null
+                isSelectedByOtherSession = isSelectedByOtherSession
             )
         }
     }
