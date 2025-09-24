@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
 data class AdminActivityUnitResponse(
-    @Schema(description = "ID")
+    @field:Schema(description = "ID")
     val id: UUID,
     @Schema(description = "기수", minContains = 1)
     val generation: Int,

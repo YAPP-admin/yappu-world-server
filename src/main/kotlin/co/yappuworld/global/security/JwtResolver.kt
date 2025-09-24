@@ -13,7 +13,7 @@ private val logger = KotlinLogging.logger { }
 
 @Component
 class JwtResolver(
-    private val jwtProperty: JwtProperty
+    private val jwtProperties: JwtProperties
 ) {
 
     fun extractSecurityUserOrNull(accessToken: String): SecurityUser? =
@@ -38,7 +38,7 @@ class JwtResolver(
     private fun parseToken(accessToken: String): Jwt<*, *> =
         Jwts
             .parser()
-            .verifyWith(jwtProperty.base64UrlSecretKey)
+            .verifyWith(jwtProperties.base64UrlSecretKey)
             .build()
             .parse(accessToken)
 }

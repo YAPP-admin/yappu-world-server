@@ -9,6 +9,7 @@ import java.util.UUID
 
 interface ScheduleRepository :
     JpaRepository<ScheduleEntity, UUID>,
+    //    CustomJdslJpqlExecutor,
     KotlinJdslJpqlExecutor {
 
     fun findAllByIdIn(ids: List<UUID>): List<SessionEntity>

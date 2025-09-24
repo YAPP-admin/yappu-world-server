@@ -1,6 +1,7 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.AttendancePolicy.ABSENT_AFTER_SESSION_START_HOURS
 import co.yappuworld.schedule.domain.AttendancePolicy.CHECK_IN_AVAILABLE_BEFORE_SESSION_START_MINUTES
 import co.yappuworld.schedule.domain.AttendancePolicy.LATE_AFTER_SESSION_START_MINUTES
@@ -21,6 +22,9 @@ class SessionEntity(
     override var name: String,
     override var description: String?,
     override var place: String?,
+    override var address: String? = null,
+    override var latitude: Double? = null,
+    override var longitude: Double? = null,
     override var date: LocalDate,
     override var endDate: LocalDate,
     override var time: LocalTime,
@@ -41,6 +45,12 @@ class SessionEntity(
     var sessionType: SessionType = sessionType
         private set
 
+    val startDayOfWeek: String
+        get() = date.dayOfWeek.korean()
+
+    val endDayOfWeek: String
+        get() = endDate.dayOfWeek.korean()
+
     fun update(
         name: String,
         description: String?,
@@ -55,6 +65,9 @@ class SessionEntity(
         this.name = name
         this.description = description
         this.place = place
+        this.address = address
+        this.latitude = latitude
+        this.longitude = longitude
         this.date = date
         this.endDate = endDate
         this.time = time

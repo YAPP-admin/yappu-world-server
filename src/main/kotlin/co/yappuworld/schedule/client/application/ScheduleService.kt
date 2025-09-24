@@ -2,13 +2,16 @@ package co.yappuworld.schedule.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.GenerationFindService
+import co.yappuworld.post.infrastructure.PostFindService
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
+import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponseV2
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsNoticeResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
-import co.yappuworld.schedule.client.dto.response.UpcomingSessionAttendanceResponse
-import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleFindService
@@ -26,7 +29,8 @@ class ScheduleService(
     private val scheduleFindService: ScheduleFindService,
     private val sessionFindService: SessionFindService,
     private val attendanceFindService: AttendanceFindService,
-    private val generationFindService: GenerationFindService
+    private val generationFindService: GenerationFindService,
+    private val postFindService: PostFindService
 ) {
 
     @Transactional(readOnly = true)
@@ -62,6 +66,20 @@ class ScheduleService(
         )
     }
 
+    @Transactional(readOnly = true)
+    fun getActiveGenerationSessions(
+        userId: UUID,
+        now: LocalDateTime
+    ): ActiveGenerationSessionsResponseV2 {
+        val currentGeneration = generationFindService.findActiveGenerationOrNull()
+            ?: return ActiveGenerationSessionsResponseV2.from(emptyList(), now)
+        val sessions = sessionFindService.findSessionsWithAttendanceStatus(currentGeneration, userId, now)
+        return ActiveGenerationSessionsResponseV2.from(
+            sessions = sessions,
+            now = now
+        )
+    }
+
     fun getSessions(
         userId: UUID,
         request: SessionParamRequest,
@@ -89,23 +107,42 @@ class ScheduleService(
     }
 
     @Transactional(readOnly = true)
-    fun getUpcomingSessionAttendance(
+    fun findUpcomingSessionWithAttendance(
         userId: UUID,
         now: LocalDateTime
-    ): UpcomingSessionAttendanceResponse {
-        val activeGeneration = generationFindService.findActiveGenerationOrNull()
-            ?: throw BusinessException(ScheduleError.NO_SESSION_WITHOUT_ACTIVE_GENERATION)
-        val attendee = userFindService.findSessionAttendee(userId, activeGeneration)
-        // TODO: 내가 참여하는 가장 임박한 세션으로 변경해야 함
-        val session = sessionFindService.findUpcomingSession(userId, activeGeneration, now)
-        val attendance = attendanceFindService.findSessionAttendance(userId, session.id)
+    ): UpcomingSessionResponse {
+        val sessionAttendance = sessionFindService.findUpcomingSessionAttendance(userId, now)
+            ?: throw BusinessException(ScheduleError.NO_UPCOMING_SESSION)
+        val notices = postFindService.findNoticesTargetingSession(sessionAttendance.session.id)
 
-        return UpcomingSessionAttendanceResponse.of(
-            sessionAttendance = SessionAttendance(
-                attendee = attendee,
-                session = session,
-                attendance = attendance
-            ),
+        return UpcomingSessionResponse.of(
+            sessionAttendance = sessionAttendance,
+            notices = notices,
+            now = now
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun findSessionDetails(
+        sessionId: UUID,
+        now: LocalDateTime
+    ): SessionDetailsResponse {
+        val session = sessionFindService.findSession(sessionId)
+        val notices = postFindService.findNoticesTargetingSession(sessionId)
+        val writerIds = notices.map { it.writerId }.distinct()
+        val writers = when {
+            writerIds.isEmpty() -> emptyMap()
+            else -> userFindService.findAllUserWithLastActivityUnit(writerIds).associateBy { it.userId }
+        }
+
+        val noticeResponses = notices.map { notice ->
+            SessionDetailsNoticeResponse.from(notice)
+        }
+
+        return SessionDetailsResponse.of(
+            session = session,
+            notices = notices,
+            writers = writers,
             now = now
         )
     }

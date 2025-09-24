@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate
  */
 @Component
 class DiscordClient(
-    private val discordProperty: DiscordProperty
+    private val discordProperties: DiscordProperties
 ) {
 
     fun send(content: String) {
@@ -22,7 +22,7 @@ class DiscordClient(
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
 
         RestTemplate().postForObject(
-            discordProperty.webhook,
+            discordProperties.webhook,
             HttpEntity(message, headers),
             Unit::class.java
         )
@@ -33,7 +33,7 @@ class DiscordClient(
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
 
         RestTemplate().postForObject(
-            discordProperty.webhook,
+            discordProperties.webhook,
             HttpEntity(message, headers),
             Unit::class.java
         )

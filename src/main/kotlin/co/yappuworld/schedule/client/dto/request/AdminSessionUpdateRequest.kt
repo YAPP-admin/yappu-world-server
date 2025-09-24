@@ -8,26 +8,34 @@ import java.time.LocalTime
 import java.util.UUID
 
 data class AdminSessionUpdateRequest(
-    @Schema(description = "세션 ID")
+    @field:Schema(description = "세션 ID")
     val id: UUID,
-    @Schema(description = "세션 이름", example = "데모데이")
+    @field:Schema(description = "세션 이름", example = "데모데이")
     val name: String,
-    @Schema(description = "기수", example = "25")
+    @field:Schema(description = "기수", example = "25")
     val generation: Int,
-    @Schema(description = "장소", example = "마루 180")
+    @field:Schema(description = "장소", example = "마루 180")
     val place: String?,
-    @Schema(description = "세션 시작일", example = "2025-02-25")
+    @param:Schema(description = "주소", nullable = false, example = "서울특별시 종로구 종로 33")
+    val address: String? = null,
+    @param:Schema(description = "경도", nullable = false, example = "126.981437983842")
+    val longitude: Double? = null,
+    @param:Schema(description = "위도", nullable = false, example = "37.5720065838703")
+    val latitude: Double? = null,
+    @field:Schema(description = "세션 시작일", example = "2025-02-25")
     val date: LocalDate,
-    @Schema(description = "세션 종료일", example = "2025-02-25")
+    @field:Schema(description = "세션 종료일", example = "2025-02-25")
     val endDate: LocalDate,
-    @Schema(description = "시작 시간", example = "14:00:00", type = "string")
+    @field:Schema(description = "시작 시간", example = "14:00:00", type = "string")
     val time: LocalTime,
-    @Schema(description = "종료 시간", example = "17:00:00", type = "string")
+    @field:Schema(description = "종료 시간", example = "17:00:00", type = "string")
     val endTime: LocalTime,
-    @Schema(description = "세션 종류", example = "OFFLINE")
+    @field:Schema(description = "세션 종류", example = "OFFLINE")
     val sessionType: SessionType,
-    @Schema(description = "세션 참석자 ID", nullable = false)
-    val sessionAttendeeIds: List<UUID>
+    @field:Schema(description = "세션 참석자 ID", nullable = false)
+    val sessionAttendeeIds: List<UUID>,
+    @field:Schema(description = "세션 공지사항 ID", nullable = false)
+    val noticeIds: List<UUID>
 ) {
 
     fun applyTo(session: SessionEntity) {

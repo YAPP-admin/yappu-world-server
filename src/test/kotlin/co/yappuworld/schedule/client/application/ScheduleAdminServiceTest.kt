@@ -4,9 +4,9 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
+import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.AttendanceRepository
 import co.yappuworld.schedule.infrastructure.ScheduleRepository
-import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.support.environment.SpringBootTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleDtoFixture.getAdminSessionCreateRequestFixture
@@ -20,6 +20,7 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
@@ -28,21 +29,21 @@ class ScheduleAdminServiceTest @Autowired constructor(
     private val userRepository: UserRepository,
     private val activityUnitRepository: ActivityUnitRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val attendanceRepository: AttendanceRepository
+    private val attendanceFindService: AttendanceFindService,
+    private val attendanceRepository: AttendanceRepository,
+    private val entityManager: EntityManager
 ) : SpringBootTestFeatureSpec({
 
         feature("세션 생성") {
 
             scenario("세션을 생성하면 해당 세션에 참석하는 유저들의 출석 정보가 생성된다") {
-                // given
                 val users = userRepository.saveAll(listOf(getUserEntityFixture(), getUserEntityFixture()))
                 val request = getAdminSessionCreateRequestFixture(attendeeIds = users.map { it.id })
 
-                // when
                 val scheduleId = adminScheduleService.createSchedule(request)
 
                 val userIds = users.map { user -> user.id }
-                val result = attendanceRepository.findAllByScheduleId(scheduleId)
+                val result = attendanceFindService.findAllBySessionId(scheduleId)
                 result.shouldHaveSize(2)
                 result.shouldForAll {
                     it.userId in userIds
@@ -54,32 +55,31 @@ class ScheduleAdminServiceTest @Autowired constructor(
         feature("세션 삭제") {
 
             scenario("존재하지 않는 세션에 대한 삭제를 요청하면 예외가 발생한다.") {
-                // given
                 val request = AdminSessionDeleteRequest(ids = listOf(UUID.randomUUID()))
 
-                // when, then
                 shouldThrowExactly<BusinessException> {
                     adminScheduleService.deleteSessions(request)
                 }.error shouldBe ScheduleError.CONTAIN_IMPROPER_ID_FOR_DELETE_SESSION
             }
 
-            scenario("세션 삭제 시, 출석 정보도 함께 삭제된다.") {
-                // given
-                val sessions = listOf(getSessionEntityFixture(), getSessionEntityFixture())
-                    .also { scheduleRepository.saveAll(it) }
+            scenario("출석 정보도 함께 삭제된다.") {
                 val users = userRepository.saveAll(listOf(getUserEntityFixture(), getUserEntityFixture()))
-                listOf(
-                    AttendanceEntity(userId = users[0].id, scheduleId = sessions[0].id),
-                    AttendanceEntity(userId = users[0].id, scheduleId = sessions[1].id),
-                    AttendanceEntity(userId = users[1].id, scheduleId = sessions[1].id)
-                ).also { attendanceRepository.saveAll(it) }
+                val sessions =
+                    scheduleRepository.saveAll(listOf(getSessionEntityFixture(), getSessionEntityFixture()))
 
-                // when
+                entityManager.flush()
+                entityManager.clear()
+
+                attendanceRepository.saveAllAndFlush(
+                    listOf(
+                        getAttendanceEntityFixture(userId = users[0].id, session = sessions[0]),
+                        getAttendanceEntityFixture(userId = users[0].id, session = sessions[1]),
+                        getAttendanceEntityFixture(userId = users[1].id, session = sessions[0])
+                    )
+                )
+
                 adminScheduleService.deleteSessions(AdminSessionDeleteRequest(ids = sessions.map { it.id }))
-
-                // then
-                attendanceRepository.findAllByScheduleId(sessions[0].id).shouldHaveSize(0)
-                attendanceRepository.findAllByScheduleId(sessions[1].id).shouldHaveSize(0)
+                attendanceFindService.findAllBySessionId(sessions[0].id).shouldHaveSize(0)
             }
         }
 
@@ -98,8 +98,8 @@ class ScheduleAdminServiceTest @Autowired constructor(
                 )
                 val session = getSessionEntityFixture()
                 val attendances = listOf(
-                    getAttendanceEntityFixture(userId = user1.id, scheduleId = session.id),
-                    getAttendanceEntityFixture(userId = user2.id, scheduleId = session.id)
+                    getAttendanceEntityFixture(userId = user1.id, session = session),
+                    getAttendanceEntityFixture(userId = user2.id, session = session)
                 )
 
                 userRepository.saveAll(listOf(user1, user2))

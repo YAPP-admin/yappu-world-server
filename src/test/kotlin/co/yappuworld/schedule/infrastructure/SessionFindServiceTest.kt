@@ -10,12 +10,14 @@ import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
+import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -24,10 +26,12 @@ import java.util.UUID
 
 class SessionFindServiceTest @Autowired constructor(
     private val scheduleRepository: ScheduleRepository,
-    private val attendanceRepository: AttendanceRepository
+    private val attendanceRepository: AttendanceRepository,
+    private val entityManager: EntityManager,
+    private val context: JpqlRenderContext
 ) : CustomDataJpaTestFeatureSpec({
 
-        val sessionFindService = SessionFindService(scheduleRepository)
+        val sessionFindService = SessionFindService(scheduleRepository, entityManager, context)
 
         feature("findSessionsWithAttendanceStatus") {
 
@@ -95,7 +99,7 @@ class SessionFindServiceTest @Autowired constructor(
                         endDate = now.toLocalDate().minusDays(1)
                     )
                     sessions.add(session)
-                    attendances.add(getAttendanceEntityFixture(status[it], userId, session.id))
+                    attendances.add(getAttendanceEntityFixture(status[it], userId, session))
                 }
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)
@@ -132,7 +136,7 @@ class SessionFindServiceTest @Autowired constructor(
                 ).also { scheduleRepository.saveAll(it) }
                 getAttendanceEntityFixture(
                     userId = user.id,
-                    scheduleId = sessions[0].id,
+                    session = sessions[0],
                     status = AttendanceStatus.PENDING
                 ).also { attendanceRepository.saveAndFlush(it) }
 
@@ -163,7 +167,7 @@ class SessionFindServiceTest @Autowired constructor(
                     )
                 ).also { scheduleRepository.saveAll(it) }
                 sessions
-                    .map { getAttendanceEntityFixture(userId = user.id, scheduleId = it.id) }
+                    .map { getAttendanceEntityFixture(userId = user.id, session = it) }
                     .also {
                         it[0].updateStatus(AttendanceStatus.ON_TIME)
                         attendanceRepository.saveAllAndFlush(it)
@@ -195,7 +199,7 @@ class SessionFindServiceTest @Autowired constructor(
                         endDate = now.toLocalDate().minusDays(1)
                     )
                     sessions.add(session)
-                    attendances.add(getAttendanceEntityFixture(status[it], userId, session.id))
+                    attendances.add(getAttendanceEntityFixture(status[it], userId, session))
                 }
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)
@@ -237,17 +241,17 @@ class SessionFindServiceTest @Autowired constructor(
                         getAttendanceEntityFixture(
                             status = AttendanceStatus.PENDING,
                             userId = user1.id,
-                            scheduleId = tomorrowSession.id
+                            session = tomorrowSession
                         ),
                         getAttendanceEntityFixture(
                             status = AttendanceStatus.PENDING,
                             userId = user1.id,
-                            scheduleId = nextWeekSession.id
+                            session = nextWeekSession
                         ),
                         getAttendanceEntityFixture(
                             status = AttendanceStatus.PENDING,
                             userId = user2.id,
-                            scheduleId = nextWeekSession.id
+                            session = nextWeekSession
                         )
                     )
                 )

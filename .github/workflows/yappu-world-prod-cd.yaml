@@ -43,6 +43,7 @@ jobs:
                     discord.webhook: ${{secrets.DISCORD_WEBHOOK_URL_IN_PROD}}
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
                     admin.domain: ${{ secrets.PROD_ADMIN_DOMAIN }}
+                    kakao.rest_api_key: ${{ secrets.KAKAO_REST_API_KEY }}
 
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build -x test -Dspring.profiles.active=prod
@@ -130,27 +131,3 @@ jobs:
                     config-name: release-drafter-config.yaml
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    dev_rebase_prod:
-        needs: build
-        permissions:
-            contents: write
-            pull-requests: write
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v4
-                with:
-                    ssh-key: ${{ secrets.DEPLOY_KEY }}
-                    fetch-depth: 0
-
-            -   name: Set up Git
-                run: |
-                    git config user.name "github-actions[bot]"
-                    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-            -   name: Dev branch rebase prod
-                run: |
-                    git fetch
-                    git checkout -b dev origin/dev
-                    git rebase origin/prod
-                    git push origin dev --force-with-lease

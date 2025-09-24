@@ -78,6 +78,9 @@ CREATE TABLE schedules
     name         varchar(32) NOT NULL,
     description  varchar(256),
     place        varchar(32),
+    address      varchar(64),
+    longitude    double,
+    latitude     double,
     date         date        NOT NULL,
     end_date     date        NOT NULL,
     time         time(6),
@@ -101,7 +104,8 @@ CREATE TABLE posts
     content_summary varchar(255),
     display_target  varchar(255),
     writer_id       binary(16) NOT NULL,
-    is_active       tinyint(1)  NOT NULL
+    is_active       tinyint(1) NOT NULL,
+    session_id      binary(16)
 );
 
 DROP TABLE IF EXISTS generations;

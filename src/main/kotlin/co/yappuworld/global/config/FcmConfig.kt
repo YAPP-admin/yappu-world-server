@@ -1,6 +1,6 @@
 package co.yappuworld.global.config
 
-import co.yappuworld.external.fcm.FcmProperty
+import co.yappuworld.external.fcm.FcmProperties
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class FcmConfig(
-    private val fcmProperty: FcmProperty
+    private val fcmProperties: FcmProperties
 ) {
 
     @Bean
@@ -33,7 +33,7 @@ class FcmConfig(
         FirebaseApp.initializeApp(
             FirebaseOptions
                 .builder()
-                .setCredentials(GoogleCredentials.fromStream(fcmProperty.toInputStream()))
+                .setCredentials(GoogleCredentials.fromStream(fcmProperties.toInputStream()))
                 .build()
         )
 }

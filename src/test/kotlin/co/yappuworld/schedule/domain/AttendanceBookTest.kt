@@ -48,32 +48,32 @@ class AttendanceBookTest :
             val attendances = listOf(
                 getAttendanceEntityFixture(
                     userId = users[0].userId,
-                    scheduleId = sessions[0].id,
+                    session = sessions[0],
                     status = AttendanceStatus.ON_TIME
                 ),
                 getAttendanceEntityFixture(
                     userId = users[0].userId,
-                    scheduleId = sessions[1].id,
+                    session = sessions[1],
                     status = AttendanceStatus.LATE
                 ),
                 getAttendanceEntityFixture(
                     userId = users[1].userId,
-                    scheduleId = sessions[0].id,
+                    session = sessions[0],
                     status = AttendanceStatus.ABSENT
                 ),
                 getAttendanceEntityFixture(
                     userId = users[1].userId,
-                    scheduleId = sessions[1].id,
+                    session = sessions[1],
                     status = AttendanceStatus.PENDING
                 ),
                 getAttendanceEntityFixture(
                     userId = users[2].userId,
-                    scheduleId = sessions[1].id,
+                    session = sessions[1],
                     status = AttendanceStatus.LATE
                 ),
                 getAttendanceEntityFixture(
                     userId = users[2].userId,
-                    scheduleId = sessions[2].id,
+                    session = sessions[2],
                     status = AttendanceStatus.PENDING
                 )
             )
@@ -220,7 +220,7 @@ class AttendanceBookTest :
                 for (user in users) {
                     for (session in sessions) {
                         val expected = attendanceBook.getStatus(session.id, user.userId)
-                        val attendance = attendances.find { it.userId == user.userId && it.scheduleId == session.id }
+                        val attendance = attendances.find { it.userId == user.userId && it.session.id == session.id }
                         val actual = when (attendance?.status == AttendanceStatus.PENDING && session.isFinished(now)) {
                             true -> AttendanceStatus.ABSENT
                             false -> attendance?.status

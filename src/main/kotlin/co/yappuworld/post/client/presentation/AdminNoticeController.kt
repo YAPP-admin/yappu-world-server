@@ -10,6 +10,7 @@ import co.yappuworld.post.client.dto.request.AdminNoticePageRequest
 import co.yappuworld.post.client.dto.request.AdminNoticeUpdateRequest
 import co.yappuworld.post.client.dto.response.AdminNoticeDetailResponse
 import co.yappuworld.post.client.dto.response.AdminNoticeSummaryResponse
+import co.yappuworld.post.domain.NoticeType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
@@ -35,12 +36,21 @@ class AdminNoticeController(
     override fun createNotice(
         securityUser: SecurityUser,
         request: AdminNoticeCreateRequest
-    ): ResponseEntity<Unit> =
-        adminNoticeService.createNotice(securityUser.userId, request).let { noticeId ->
-            ResponseEntity.created(URI.create("/admin/v1/notices/$noticeId")).build()
+    ): ResponseEntity<Unit> {
+        if (request.sessionId != null) {
+            require(request.type == NoticeType.SESSION) { "세션 공지사항만 대상 세션이 존재할 수 있습니다." }
         }
 
+        return adminNoticeService.createNotice(securityUser.userId, request).let { noticeId ->
+            ResponseEntity.created(URI.create("/admin/v1/notices/$noticeId")).build()
+        }
+    }
+
     override fun updateNotice(request: AdminNoticeUpdateRequest): ResponseEntity<Unit> {
+        if (request.sessionId != null) {
+            require(request.type == NoticeType.SESSION) { "세션 공지사항만 대상 세션이 존재할 수 있습니다." }
+        }
+
         adminNoticeService.updateNotice(request)
         return ResponseEntity.noContent().build()
     }

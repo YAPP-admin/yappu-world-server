@@ -3,6 +3,7 @@ package co.yappuworld.schedule.infrastructure
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getSessionAttendanceFixture
+import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.inspectors.shouldForAll
@@ -10,10 +11,11 @@ import io.kotest.matchers.collections.shouldNotBeIn
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.UUID
+import org.springframework.data.repository.findByIdOrNull
 
 class AttendanceCommandServiceTest @Autowired constructor(
-    private val attendanceRepository: AttendanceRepository
+    private val attendanceRepository: AttendanceRepository,
+    private val sessionRepository: ScheduleRepository
 ) : CustomDataJpaTestFeatureSpec({
 
         val attendanceCommandService = AttendanceCommandService(attendanceRepository)
@@ -21,7 +23,8 @@ class AttendanceCommandServiceTest @Autowired constructor(
         feature("도메인 모델로부터 새로운 출석 정보를 저장") {
 
             scenario("출석 정보가 있으면 정상적으로 저장된다.") {
-                val attendance = getAttendanceEntityFixture()
+                val session = sessionRepository.save(getSessionEntityFixture())
+                val attendance = attendanceRepository.saveAndFlush(getAttendanceEntityFixture(session = session))
 
                 shouldNotThrowAny {
                     attendanceCommandService.checkIn(
@@ -29,11 +32,7 @@ class AttendanceCommandServiceTest @Autowired constructor(
                     )
                 }
 
-                attendanceRepository
-                    .findByUserIdAndScheduleId(
-                        userId = attendance.userId,
-                        scheduleId = attendance.scheduleId
-                    ).shouldNotBeNull()
+                attendanceRepository.findByIdOrNull(attendance.id).shouldNotBeNull()
             }
         }
 
@@ -46,11 +45,13 @@ class AttendanceCommandServiceTest @Autowired constructor(
             }
 
             scenario("세션이 여러개면, 해당 세션의 모든 출석 정보를 삭제한다.") {
-                val sessionIds = List(2) { UUID.randomUUID() }
+                val sessions = List(2) { getSessionEntityFixture() }
+                sessionRepository.saveAll(sessions)
                 attendanceRepository.saveAllAndFlush(
-                    sessionIds.map { getAttendanceEntityFixture(scheduleId = it) }
+                    sessions.map { getAttendanceEntityFixture(session = it) }
                 )
 
+                val sessionIds = sessions.map { it.id }
                 attendanceCommandService.deleteAllInSessions(sessionIds)
 
                 val result = attendanceRepository.findAll()

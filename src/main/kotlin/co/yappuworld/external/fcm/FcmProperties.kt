@@ -7,7 +7,7 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
 @ConfigurationProperties(prefix = "fcm")
-data class FcmProperty(
+data class FcmProperties(
     @JsonProperty("type")
     val type: String,
     @JsonProperty("project_id")

@@ -1,21 +1,28 @@
 package co.yappuworld.schedule.client.application
 
+import co.yappuworld.external.map.MapClient
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
+import co.yappuworld.post.infrastructure.PostCommandService
+import co.yappuworld.post.infrastructure.PostFindService
+import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.schedule.client.dto.request.AdminSessionCreateRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionDeleteRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionEligibleUsersParamRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionPageRequest
 import co.yappuworld.schedule.client.dto.request.AdminSessionUpdateRequest
+import co.yappuworld.schedule.client.dto.request.AdminSimpleSessionNoticePageRequest
 import co.yappuworld.schedule.client.dto.response.AdminSessionDetailResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionEligibleUsersResponse
 import co.yappuworld.schedule.client.dto.response.AdminSessionOverviewResponse
+import co.yappuworld.schedule.client.dto.response.AdminTargetableSessionNoticeResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.AttendanceCommandService
 import co.yappuworld.schedule.infrastructure.AttendanceFindService
 import co.yappuworld.schedule.infrastructure.ScheduleCommandService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
@@ -28,18 +35,23 @@ class AdminScheduleService(
     private val scheduleCommandService: ScheduleCommandService,
     private val attendanceFindService: AttendanceFindService,
     private val attendanceCommandService: AttendanceCommandService,
-    private val userFindService: UserFindService
+    private val userFindService: UserFindService,
+    private val postFindService: PostFindService,
+    private val postCommandService: PostCommandService,
+    private val mapClient: MapClient
 ) {
 
     @Transactional
     fun createSchedule(request: AdminSessionCreateRequest): UUID {
         val schedule = request.toDomain()
+        updateAddress(schedule, request.address, request.latitude, request.longitude)
+
         scheduleCommandService.save(schedule)
 
-        request.sessionAttendeeIds
-            .takeIf { it.isNotEmpty() }
-            ?.map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = schedule.id) }
-            ?.also { attendanceCommandService.saveAll(it) }
+        if (schedule is SessionEntity) {
+            createAttendance(request.sessionAttendeeIds, schedule)
+            linkSessionAndNotice(request.noticeIds, schedule)
+        }
 
         return schedule.id
     }
@@ -53,9 +65,10 @@ class AdminScheduleService(
 
     @Transactional(readOnly = true)
     fun getSession(id: UUID): AdminSessionDetailResponse =
-        AdminSessionDetailResponse(
+        AdminSessionDetailResponse.from(
             session = sessionFindService.findSession(id),
-            attendees = attendanceFindService.findAttendees(id)
+            attendees = attendanceFindService.findAttendees(id),
+            notices = postFindService.findNoticesTargetingSession(id)
         )
 
     /**
@@ -76,12 +89,77 @@ class AdminScheduleService(
     fun updateSession(request: AdminSessionUpdateRequest) {
         val session = sessionFindService.findSession(request.id)
         request.applyTo(session)
+        updateAddress(session, request.address, request.latitude, request.longitude)
+
         handleAttendee(session, request.sessionAttendeeIds)
+        adjustLinkBetweenSessionAndNotice(request.noticeIds, session)
     }
 
     @Transactional(readOnly = true)
     fun getSessionEligibleUsers(request: AdminSessionEligibleUsersParamRequest): AdminSessionEligibleUsersResponse =
         AdminSessionEligibleUsersResponse.from(userFindService.findActiveUsersOfGeneration(request.generation))
+
+    @Transactional(readOnly = true)
+    fun getTargetableSessionNotices(
+        request: AdminSimpleSessionNoticePageRequest
+    ): OffsetPageResponse<AdminTargetableSessionNoticeResponse> {
+        val response = postFindService.findSessionNotices(request.toPageRequest(), request.search)
+        return OffsetPageResponse.from(response) { notice ->
+            val isSelectedByOtherSession = notice.targetSession != null && notice.targetSession?.id != request.sessionId
+            AdminTargetableSessionNoticeResponse(
+                id = notice.id,
+                title = notice.title,
+                createdAt = notice.createdAt,
+                isSelectedByOtherSession = isSelectedByOtherSession
+            )
+        }
+    }
+
+    private fun createAttendance(
+        attendeeIds: List<UUID>,
+        session: SessionEntity
+    ) {
+        attendeeIds
+            .takeIf { it.isNotEmpty() }
+            ?.map { attendeeId -> AttendanceEntity(userId = attendeeId, session = session) }
+            ?.also { attendanceCommandService.saveAll(it) }
+    }
+
+    private fun linkSessionAndNotice(
+        noticeIds: List<UUID>,
+        session: SessionEntity
+    ) {
+        val notices = postFindService.findAllByIdIn(noticeIds)
+
+        if (notices.any { it !is NoticeEntity }) {
+            throw BusinessException(ScheduleError.NOT_SESSION_NOTICE)
+        }
+
+        notices.filterIsInstance<NoticeEntity>().onEach { notice -> notice.targetSession(session) }
+        postCommandService.saveAll(notices)
+    }
+
+    private fun updateAddress(
+        schedule: ScheduleEntity,
+        address: String?,
+        latitude: Double?,
+        longitude: Double?
+    ) {
+        if (schedule.address == address) return
+
+        if (address == null) {
+            schedule.updateAddressAndCoordinates(null, null, null)
+            return
+        }
+
+        if (latitude != null && longitude != null) {
+            schedule.updateAddressAndCoordinates(address, latitude, longitude)
+            return
+        }
+
+        val response = mapClient.convertAddressToCoordinates(address)
+        schedule.updateAddressAndCoordinates(response.addressName, response.latitude, response.longitude)
+    }
 
     private fun handleAttendee(
         session: SessionEntity,
@@ -92,7 +170,7 @@ class AdminScheduleService(
 
         val toCreate = requestSessionAttendeeIds
             .filterNot { attendeeId -> attendeeId in attendeeIds }
-            .map { attendeeId -> AttendanceEntity(userId = attendeeId, scheduleId = session.id) }
+            .map { attendeeId -> AttendanceEntity(userId = attendeeId, session = session) }
 
         if (toCreate.isNotEmpty()) attendanceCommandService.saveAll(toCreate)
 
@@ -100,5 +178,20 @@ class AdminScheduleService(
             .filterNot { attendance -> attendance.userId in requestSessionAttendeeIds }
 
         if (toDelete.isNotEmpty()) attendanceCommandService.deleteAll(toDelete)
+    }
+
+    private fun adjustLinkBetweenSessionAndNotice(
+        noticeIds: List<UUID>,
+        session: SessionEntity
+    ) {
+        val notices = postFindService.findNoticesTargetingSession(session.id, noticeIds)
+        notices.onEach { notice ->
+            when (notice.id in noticeIds) {
+                true -> notice.targetSession(session)
+                false -> notice.detachSession()
+            }
+        }
+
+        postCommandService.saveAll(notices)
     }
 }

@@ -2,12 +2,18 @@ package co.yappuworld.schedule.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.LocalDateRange
+import co.yappuworld.operation.domain.GenerationEntity
+import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
+import com.linecorp.kotlinjdsl.dsl.jpql.jpql
 import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicatable
+import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
+import com.linecorp.kotlinjdsl.support.spring.data.jpa.extension.createQuery
+import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -20,7 +26,9 @@ import java.util.UUID
 @Service
 @Transactional(readOnly = true)
 class SessionFindService(
-    private val scheduleRepository: ScheduleRepository
+    private val scheduleRepository: ScheduleRepository,
+    private val entityManager: EntityManager,
+    private val context: JpqlRenderContext
 ) {
 
     fun findSession(id: UUID): SessionEntity =
@@ -38,7 +46,7 @@ class SessionFindService(
                     .from(
                         entity(SessionEntity::class),
                         innerJoin(AttendanceEntity::class)
-                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)))
+                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::session)(SessionEntity::getId)))
                     ).where(
                         and(
                             path(SessionEntity::generation).equal(activeGeneration),
@@ -75,7 +83,7 @@ class SessionFindService(
                         entity(SessionEntity::class),
                         leftJoin(AttendanceEntity::class).on(
                             and(
-                                path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)),
+                                path(SessionEntity::getId).equal(path(AttendanceEntity::session)(SessionEntity::getId)),
                                 path(AttendanceEntity::userId).equal(userId)
                             )
                         )
@@ -94,7 +102,7 @@ class SessionFindService(
                     .from(
                         entity(AttendanceEntity::class),
                         innerJoin(SessionEntity::class)
-                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::scheduleId)))
+                            .on(path(SessionEntity::getId).equal(path(AttendanceEntity::session)(SessionEntity::getId)))
                     ).whereAnd(
                         path(AttendanceEntity::userId).equal(userId),
                         path(SessionEntity::generation).equal(generation),
@@ -163,4 +171,72 @@ class SessionFindService(
 
         return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
     }
+
+    fun findSessionAttendance(
+        userId: UUID,
+        sessionId: UUID
+    ): SessionAttendance? {
+        //        return scheduleRepository
+        //            .singleOrNull {
+        //                selectNew<SessionAttendance>(
+        //                    entity(SessionEntity::class),
+        //                    entity(AttendanceEntity::class)
+        //                ).from(
+        //                    entity(SessionEntity::class),
+        //                    innerJoin(AttendanceEntity::class)
+        //                        .on(path(AttendanceEntity::session)(SessionEntity::getId).eq(path(SessionEntity::getId)))
+        //                ).whereAnd(
+        //                    path(SessionEntity::getId).eq(sessionId),
+        //                    path(AttendanceEntity::userId).eq(userId)
+        //                )
+        //            }
+
+        val query = jpql {
+            selectNew<SessionAttendance>(
+                entity(SessionEntity::class),
+                entity(AttendanceEntity::class)
+            ).from(
+                entity(SessionEntity::class),
+                innerJoin(AttendanceEntity::class)
+                    .on(path(AttendanceEntity::session)(SessionEntity::getId).eq(path(SessionEntity::getId)))
+            ).whereAnd(
+                path(SessionEntity::getId).eq(sessionId),
+                path(AttendanceEntity::userId).eq(userId)
+            )
+        }
+        return entityManager.createQuery(query, context).singleResult
+    }
+
+    fun findUpcomingSessionAttendance(
+        userId: UUID,
+        now: LocalDateTime
+    ): SessionAttendance? =
+        scheduleRepository
+            .findAll(limit = 1) {
+                selectNew<SessionAttendance>(
+                    entity(SessionEntity::class),
+                    entity(AttendanceEntity::class)
+                ).from(
+                    entity(SessionEntity::class),
+                    innerJoin(AttendanceEntity::class)
+                        .on(path(AttendanceEntity::session)(SessionEntity::getId).eq(path(SessionEntity::getId))),
+                    innerJoin(GenerationEntity::class)
+                        .on(path(GenerationEntity::value).equal(path(SessionEntity::generation)))
+                ).where(
+                    and(
+                        path(AttendanceEntity::userId).equal(userId),
+                        path(GenerationEntity::isActive).eq(true),
+                        or(
+                            path(SessionEntity::endDate).greaterThan(now.toLocalDate()),
+                            and(
+                                path(SessionEntity::endDate).equal(now.toLocalDate()),
+                                path(SessionEntity::endTime).greaterThan(now.toLocalTime())
+                            )
+                        )
+                    )
+                ).orderBy(
+                    path(SessionEntity::date).asc(),
+                    path(SessionEntity::time).asc()
+                )
+            }.firstOrNull()
 }

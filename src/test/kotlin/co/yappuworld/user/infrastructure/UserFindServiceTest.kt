@@ -4,13 +4,17 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
+import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserRole
 import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -22,7 +26,6 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 import java.util.UUID
 
 class UserFindServiceTest @Autowired constructor(
@@ -224,10 +227,11 @@ class UserFindServiceTest @Autowired constructor(
             }
         }
 
-        feature("유저의 마지막 활동 내역을 페이지로 조회") {
+        feature("findAllUserWithLastActivityUnit(pageable)") {
 
             scenario("데이터가 없으면 빈 페이지 반환") {
-                userFindService.findAllUserWithLastActivityUnit(PageRequest.of(0, 10)).let {
+                val request = AdminUserPageRequest(page = 1, size = 10)
+                userFindService.findAllUserWithLastActivityUnit(request).let {
                     it.content.shouldHaveSize(0)
                     it.number shouldBe 0
                     it.totalElements shouldBe 0
@@ -242,8 +246,9 @@ class UserFindServiceTest @Autowired constructor(
                 userRepository.saveAllAndFlush(users)
                 activityUnitRepository.saveAll(activityUnits)
 
+                val request = AdminUserPageRequest(page = 1, size = 10)
                 userFindService
-                    .findAllUserWithLastActivityUnit(PageRequest.of(0, 10))
+                    .findAllUserWithLastActivityUnit(request)
                     .let { result ->
                         result.content.shouldHaveSize(4)
                         result.content
@@ -263,8 +268,9 @@ class UserFindServiceTest @Autowired constructor(
                 userRepository.saveAllAndFlush(users)
                 activityUnitRepository.saveAllAndFlush(activityUnits)
 
+                val request = AdminUserPageRequest(page = 2, size = 10)
                 userFindService
-                    .findAllUserWithLastActivityUnit(PageRequest.of(1, 10))
+                    .findAllUserWithLastActivityUnit(request)
                     .let { result ->
                         result.content.shouldHaveSize(1)
                         result.content.last().userId shouldBeIn users.map { it.id }
@@ -273,6 +279,38 @@ class UserFindServiceTest @Autowired constructor(
                         result.totalElements shouldBe 11
                         result.totalPages shouldBe 2
                     }
+            }
+
+            scenario("AND 조건으로 쿼리 대상이 조회된다.") {
+                val user = getUserEntityFixture(role = UserRole.STAFF)
+                val activityUnit =
+                    getActivityUnitEntityFixture(generation = 25, position = Position.ANDROID, userId = user.id)
+                userRepository.saveAndFlush(user)
+                activityUnitRepository.saveAndFlush(activityUnit)
+
+                forAll(
+                    row(user.name, Position.ANDROID, 25, UserRole.STAFF),
+                    row(user.name, null, null, null),
+                    row(null, Position.ANDROID, null, null),
+                    row(null, null, 25, null),
+                    row(null, null, null, UserRole.STAFF)
+                ) { name: String?, position: Position?, generation: Int?, role: UserRole? ->
+                    val request = AdminUserPageRequest(
+                        name = name,
+                        position = position,
+                        generation = generation,
+                        page = 1,
+                        size = 10
+                    )
+
+                    userFindService.findAllUserWithLastActivityUnit(request).let { result ->
+                        result.content.shouldHaveSize(1)
+                        result.content.first().userId shouldBe user.id
+                        result.content.first().lastActiveGeneration shouldBe 25
+                        result.content.first().lastActivePosition shouldBe Position.ANDROID
+                        result.content.first().role shouldBe UserRole.STAFF
+                    }
+                }
             }
         }
 

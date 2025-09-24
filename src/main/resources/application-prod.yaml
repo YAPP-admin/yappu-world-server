@@ -55,3 +55,7 @@ logging:
 
 admin:
     domain: ${PROD_DOMAIN_ADMIN}
+
+kakao:
+    map_api_host: https://dapi.kakao.com
+    rest_api_key: ${KAKAO_REST_API_KEY}

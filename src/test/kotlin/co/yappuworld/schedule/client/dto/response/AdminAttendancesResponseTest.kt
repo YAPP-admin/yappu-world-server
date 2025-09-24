@@ -35,10 +35,10 @@ class AdminAttendancesResponseTest :
                 getUserWithActivityUnitFixture()
             )
             val attendances = listOf(
-                getAttendanceEntityFixture(scheduleId = sessions[0].id, userId = users[0].userId, status = ON_TIME),
-                getAttendanceEntityFixture(scheduleId = sessions[0].id, userId = users[1].userId, status = LATE),
-                getAttendanceEntityFixture(scheduleId = sessions[0].id, userId = users[2].userId, status = ON_TIME),
-                getAttendanceEntityFixture(scheduleId = sessions[1].id, userId = users[2].userId, status = ABSENT)
+                getAttendanceEntityFixture(session = sessions[0], userId = users[0].userId, status = ON_TIME),
+                getAttendanceEntityFixture(session = sessions[0], userId = users[1].userId, status = LATE),
+                getAttendanceEntityFixture(session = sessions[0], userId = users[2].userId, status = ON_TIME),
+                getAttendanceEntityFixture(session = sessions[1], userId = users[2].userId, status = ABSENT)
             )
             /**
              *         세션1    세션2    세션3
