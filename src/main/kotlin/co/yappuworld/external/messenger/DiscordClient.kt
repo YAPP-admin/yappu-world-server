@@ -1,7 +1,7 @@
-package co.yappuworld.external.discord
+package co.yappuworld.external.messenger
 
-import co.yappuworld.external.discord.dto.DiscordEmbed
-import co.yappuworld.external.discord.dto.DiscordMessage
+import co.yappuworld.external.messenger.dto.DiscordEmbed
+import co.yappuworld.external.messenger.dto.DiscordMessage
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -15,9 +15,9 @@ import org.springframework.web.client.RestTemplate
 @Component
 class DiscordClient(
     private val discordProperties: DiscordProperties
-) {
+) : MessengerClient {
 
-    fun send(content: String) {
+    override fun send(content: String) {
         val message = jacksonObjectMapper().writeValueAsString(DiscordMessage(content))
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
 
@@ -28,7 +28,7 @@ class DiscordClient(
         )
     }
 
-    fun send(embed: DiscordEmbed) {
+    override fun send(embed: DiscordEmbed) {
         val message = jacksonObjectMapper().writeValueAsString(DiscordMessage.of(embed))
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
 
