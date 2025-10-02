@@ -1,10 +1,11 @@
 package co.yappuworld.external.messenger
 
 import co.yappuworld.external.messenger.dto.DiscordMessage
-import co.yappuworld.external.messenger.dto.MessageContent
-import co.yappuworld.external.messenger.dto.EmbedMessage
 import co.yappuworld.external.messenger.dto.DiscordEmbed
 import co.yappuworld.external.messenger.dto.DiscordEmbedField
+import co.yappuworld.external.messenger.dto.EmbedMessage
+import co.yappuworld.external.messenger.dto.MessageContent
+import co.yappuworld.external.messenger.dto.TextMessage
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -20,37 +21,21 @@ class DiscordClient(
     private val discordProperties: DiscordProperties
 ) : MessengerClient {
 
-    override fun send(content: String) {
-        val message = jacksonObjectMapper().writeValueAsString(DiscordMessage(content))
+    override fun send(content: MessageContent) {
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
+        val message = when (content) {
+            is TextMessage -> DiscordMessage(content = content.text)
+            is EmbedMessage -> DiscordMessage.of(content.toDiscordEmbed())
+            else -> throw IllegalArgumentException(
+                "지원하지 않는 메시지 타입입니다: ${content::class.simpleName}"
+            )
+        }
 
         RestTemplate().postForObject(
             discordProperties.webhook,
-            HttpEntity(message, headers),
+            HttpEntity(jacksonObjectMapper().writeValueAsString(message), headers),
             Unit::class.java
         )
-    }
-
-    override fun send(content: MessageContent) {
-        when (content) {
-            is EmbedMessage -> {
-                val discordEmbed = content.toDiscordEmbed()
-                val message = jacksonObjectMapper()
-                    .writeValueAsString(DiscordMessage.of(discordEmbed))
-                val headers = HttpHeaders().apply {
-                    contentType = MediaType.APPLICATION_JSON
-                }
-
-                RestTemplate().postForObject(
-                    discordProperties.webhook,
-                    HttpEntity(message, headers),
-                    Unit::class.java
-                )
-            }
-
-            else -> throw IllegalArgumentException("지원하지 않는 메세지 타입입니다.")
-
-        }
     }
 
     private fun EmbedMessage.toDiscordEmbed() =

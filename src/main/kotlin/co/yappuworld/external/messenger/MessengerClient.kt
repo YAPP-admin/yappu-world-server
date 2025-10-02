@@ -4,7 +4,5 @@ import co.yappuworld.external.messenger.dto.MessageContent
 
 interface MessengerClient {
 
-    fun send(content: String)
-
     fun send(content: MessageContent)
 }

@@ -2,6 +2,10 @@ package co.yappuworld.external.messenger.dto
 
 interface MessageContent
 
+data class TextMessage(
+    val text: String
+) : MessageContent
+
 data class EmbedMessage(
     val title: String? = null,
     val description: String? = null,
