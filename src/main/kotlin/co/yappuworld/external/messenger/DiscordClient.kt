@@ -1,7 +1,10 @@
 package co.yappuworld.external.messenger
 
-import co.yappuworld.external.messenger.dto.DiscordEmbed
 import co.yappuworld.external.messenger.dto.DiscordMessage
+import co.yappuworld.external.messenger.dto.MessageContent
+import co.yappuworld.external.messenger.dto.EmbedMessage
+import co.yappuworld.external.messenger.dto.DiscordEmbed
+import co.yappuworld.external.messenger.dto.DiscordEmbedField
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -28,14 +31,35 @@ class DiscordClient(
         )
     }
 
-    override fun send(embed: DiscordEmbed) {
-        val message = jacksonObjectMapper().writeValueAsString(DiscordMessage.of(embed))
-        val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
+    override fun send(content: MessageContent) {
+        when (content) {
+            is EmbedMessage -> {
+                val discordEmbed = content.toDiscordEmbed()
+                val message = jacksonObjectMapper()
+                    .writeValueAsString(DiscordMessage.of(discordEmbed))
+                val headers = HttpHeaders().apply {
+                    contentType = MediaType.APPLICATION_JSON
+                }
 
-        RestTemplate().postForObject(
-            discordProperties.webhook,
-            HttpEntity(message, headers),
-            Unit::class.java
-        )
+                RestTemplate().postForObject(
+                    discordProperties.webhook,
+                    HttpEntity(message, headers),
+                    Unit::class.java
+                )
+            }
+
+            else -> throw IllegalArgumentException("Unsupported message type")
+
+        }
     }
+
+    private fun EmbedMessage.toDiscordEmbed() =
+        DiscordEmbed.info(
+            title = this.title,
+            description = this.description,
+            url = this.url,
+            fields = this.fields.map {
+                DiscordEmbedField(it.name, it.value, it.inline)
+            }
+        )
 }

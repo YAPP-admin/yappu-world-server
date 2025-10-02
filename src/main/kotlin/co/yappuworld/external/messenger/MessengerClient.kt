@@ -1,10 +1,10 @@
 package co.yappuworld.external.messenger
 
-import co.yappuworld.external.messenger.dto.DiscordEmbed
+import co.yappuworld.external.messenger.dto.MessageContent
 
 interface MessengerClient {
 
     fun send(content: String)
 
-    fun send(embed: DiscordEmbed)
+    fun send(content: MessageContent)
 }

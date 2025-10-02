@@ -6,11 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class DiscordClientTest @Autowired constructor(
-    private val messengerClient: MessengerClient
+    private val discordClient: DiscordClient
 ) {
 
     @Test
     fun test() {
-        messengerClient.send("테스트 컨텐츠")
+        discordClient.send("테스트 컨텐츠")
     }
 }
