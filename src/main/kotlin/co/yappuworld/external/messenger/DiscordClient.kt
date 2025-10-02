@@ -48,7 +48,7 @@ class DiscordClient(
                 )
             }
 
-            else -> throw IllegalArgumentException("Unsupported message type")
+            else -> throw IllegalArgumentException("지원하지 않는 메세지 타입입니다.")
 
         }
     }
