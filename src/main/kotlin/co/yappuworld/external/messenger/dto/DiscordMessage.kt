@@ -1,4 +1,4 @@
-package co.yappuworld.external.discord.dto
+package co.yappuworld.external.messenger.dto
 
 data class DiscordMessage(
     val content: String? = null,

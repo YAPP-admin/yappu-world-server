@@ -1,6 +1,6 @@
 package co.yappuworld.global.config
 
-import co.yappuworld.external.discord.DiscordProperties
+import co.yappuworld.external.messenger.DiscordProperties
 import co.yappuworld.external.fcm.FcmProperties
 import co.yappuworld.external.map.KakaoProperties
 import co.yappuworld.global.property.AdminProperties
