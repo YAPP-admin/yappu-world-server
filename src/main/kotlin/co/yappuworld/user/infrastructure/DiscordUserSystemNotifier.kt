@@ -2,7 +2,7 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.external.messenger.MessengerClient
 import co.yappuworld.external.messenger.dto.EmbedField
-import co.yappuworld.external.messenger.dto.EmbedMessage
+import co.yappuworld.external.messenger.dto.DiscordEmbedMessage
 import co.yappuworld.global.property.AdminProperties
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import org.springframework.context.annotation.Primary
@@ -17,7 +17,7 @@ class DiscordUserSystemNotifier(
 
     override fun notifySignUpRequestReceived(signUpApplication: SignUpApplicationEntity) {
         messengerClient.send(
-            EmbedMessage(
+            DiscordEmbedMessage(
                 title = "💡 회원가입 신청을 확인해주세요 💡",
                 url = "${adminProperties.domain}/admin/members/application",
                 fields = listOf(

@@ -6,7 +6,7 @@ data class TextMessage(
     val text: String
 ) : MessageContent
 
-data class EmbedMessage(
+data class DiscordEmbedMessage(
     val title: String? = null,
     val description: String? = null,
     val url: String? = null,

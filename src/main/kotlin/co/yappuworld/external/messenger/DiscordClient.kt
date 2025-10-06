@@ -3,7 +3,7 @@ package co.yappuworld.external.messenger
 import co.yappuworld.external.messenger.dto.DiscordMessage
 import co.yappuworld.external.messenger.dto.DiscordEmbed
 import co.yappuworld.external.messenger.dto.DiscordEmbedField
-import co.yappuworld.external.messenger.dto.EmbedMessage
+import co.yappuworld.external.messenger.dto.DiscordEmbedMessage
 import co.yappuworld.external.messenger.dto.MessageContent
 import co.yappuworld.external.messenger.dto.TextMessage
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -25,7 +25,7 @@ class DiscordClient(
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
         val message = when (content) {
             is TextMessage -> DiscordMessage(content = content.text)
-            is EmbedMessage -> DiscordMessage.of(content.toDiscordEmbed())
+            is DiscordEmbedMessage -> DiscordMessage.of(content.toDiscordEmbed())
             else -> throw IllegalArgumentException(
                 "지원하지 않는 메시지 타입입니다: ${content::class.simpleName}"
             )
@@ -38,7 +38,7 @@ class DiscordClient(
         )
     }
 
-    private fun EmbedMessage.toDiscordEmbed() =
+    private fun DiscordEmbedMessage.toDiscordEmbed() =
         DiscordEmbed.info(
             title = this.title,
             description = this.description,
