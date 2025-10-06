@@ -1,4 +1,4 @@
-package co.yappuworld.external.discord.dto
+package co.yappuworld.external.messenger.dto
 
 import co.yappuworld.global.util.DatetimeUtils.getCurrentZonedTimeInKST
 import java.time.format.DateTimeFormatter
