@@ -9,6 +9,7 @@ import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponseV2
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import jakarta.validation.Valid
@@ -72,6 +73,16 @@ class ScheduleController(
         ResponseEntity.ok(
             SuccessResponse(
                 scheduleService.findSessionDetails(sessionId, getCurrentDateTimeInKST())
+            )
+        )
+
+    override fun getSessionDetailsV2(
+        securityUser: SecurityUser,
+        sessionId: UUID
+    ): ResponseEntity<SuccessResponse<SessionDetailsResponseV2>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                scheduleService.findSessionDetailsV2(sessionId, getCurrentDateTimeInKST())
             )
         )
 }

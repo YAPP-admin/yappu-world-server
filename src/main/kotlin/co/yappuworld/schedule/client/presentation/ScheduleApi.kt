@@ -8,6 +8,7 @@ import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponseV2
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -402,4 +403,12 @@ interface ScheduleApi {
         @AuthenticationPrincipal securityUser: SecurityUser,
         @PathVariable sessionId: UUID
     ): ResponseEntity<SuccessResponse<SessionDetailsResponse>>
+
+    @Operation(summary = "세션 상세 조회 (ISO 8601)")
+    @ApiResponses()
+    @GetMapping("/v2/sessions/{sessionId}")
+    fun getSessionDetailsV2(
+        @AuthenticationPrincipal securityUser: SecurityUser,
+        @PathVariable sessionId: UUID
+    ): ResponseEntity<SuccessResponse<SessionDetailsResponseV2>>
 }
