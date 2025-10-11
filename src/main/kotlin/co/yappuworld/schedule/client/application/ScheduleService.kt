@@ -10,6 +10,7 @@ import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsRespon
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsNoticeResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponseV2
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import co.yappuworld.schedule.domain.vo.ScheduleError
@@ -140,6 +141,27 @@ class ScheduleService(
         }
 
         return SessionDetailsResponse.of(
+            session = session,
+            notices = notices,
+            writers = writers,
+            now = now
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun findSessionDetailsV2(
+        sessionId: UUID,
+        now: LocalDateTime
+    ): SessionDetailsResponseV2 {
+        val session = sessionFindService.findSession(sessionId)
+        val notices = postFindService.findNoticesTargetingSession(sessionId)
+        val writerIds = notices.map { it.writerId }.distinct()
+        val writers = when {
+            writerIds.isEmpty() -> emptyMap()
+            else -> userFindService.findAllUserWithLastActivityUnit(writerIds).associateBy { it.userId }
+        }
+
+        return SessionDetailsResponseV2.of(
             session = session,
             notices = notices,
             writers = writers,
