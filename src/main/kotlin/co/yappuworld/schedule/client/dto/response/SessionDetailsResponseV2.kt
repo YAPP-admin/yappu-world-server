@@ -8,6 +8,8 @@ import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.UUID
 
 data class SessionDetailsResponseV2(
@@ -18,11 +20,11 @@ data class SessionDetailsResponseV2(
     @field:Schema(description = "세션 제목", example = "개발 세션")
     val title: String,
     @field:Schema(description = "세션 시작 일시", example = "2024-01-01T09:00:00+09:00")
-    val startDateTime: LocalDateTime,
+    val startDateTime: ZonedDateTime,
     @field:Schema(description = "시작 요일", example = "월")
     val startDayOfWeek: String,
     @field:Schema(description = "세션 종료 일시", example = "2024-12-31T18:00:00+09:00")
-    val endDateTime: LocalDateTime,
+    val endDateTime: ZonedDateTime,
     @field:Schema(description = "종료 요일", example = "토")
     val endDayOfWeek: String,
     @field:Schema(description = "장소 이름", nullable = true)
@@ -47,9 +49,9 @@ data class SessionDetailsResponseV2(
                 id = session.id,
                 progressPhase = session.getSessionProgressPhase(now),
                 title = session.name,
-                startDateTime = LocalDateTime.of(session.date, session.time),
+                startDateTime = LocalDateTime.of(session.date, session.time).atZone(ZoneId.of("Asia/Seoul")),
                 startDayOfWeek = session.startDayOfWeek,
-                endDateTime = LocalDateTime.of(session.endDate, session.endTime),
+                endDateTime = LocalDateTime.of(session.endDate, session.endTime).atZone(ZoneId.of("Asia/Seoul")),
                 endDayOfWeek = session.endDayOfWeek,
                 place = session.place,
                 address = session.address,
