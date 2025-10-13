@@ -411,6 +411,10 @@ interface ScheduleApi {
     @ApiResponses(
         value = [
             ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true
+            ),
+            ApiResponse(
                 responseCode = "404",
                 content = [
                     Content(
