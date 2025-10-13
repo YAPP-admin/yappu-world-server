@@ -8,6 +8,7 @@ import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
+import co.yappuworld.schedule.client.dto.response.SessionDetailsResponseV2
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
 import co.yappuworld.schedule.client.dto.response.UpcomingSessionResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -402,4 +403,38 @@ interface ScheduleApi {
         @AuthenticationPrincipal securityUser: SecurityUser,
         @PathVariable sessionId: UUID
     ): ResponseEntity<SuccessResponse<SessionDetailsResponse>>
+
+    @Operation(
+        summary = "세션 상세 조회",
+        description = "세션 일시 필드 ISO 8601 형식으로 제공"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "404",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "일정을 작성한 작성자가 존재하지 않는 경우",
+                                value = """
+                                    {
+                                        "message": "일정을 작성한 작성자가 존재하지 않습니다.",
+                                        "errorCode": "SCH_4001",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v2/sessions/{sessionId}")
+    fun getSessionDetailsV2(
+        @AuthenticationPrincipal securityUser: SecurityUser,
+        @PathVariable sessionId: UUID
+    ): ResponseEntity<SuccessResponse<SessionDetailsResponseV2>>
 }
