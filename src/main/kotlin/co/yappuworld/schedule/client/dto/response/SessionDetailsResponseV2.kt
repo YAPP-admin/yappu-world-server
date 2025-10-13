@@ -17,11 +17,11 @@ data class SessionDetailsResponseV2(
     val progressPhase: SessionProgressPhase,
     @field:Schema(description = "세션 제목", example = "개발 세션")
     val title: String,
-    @field:Schema(description = "세션 시작 일시", example = "2024-01-01T09:00:00+09:00")
+    @field:Schema(description = "세션 시작 일시", example = "2024-01-01T09:00:00")
     val startDateTime: LocalDateTime,
     @field:Schema(description = "시작 요일", example = "월")
     val startDayOfWeek: String,
-    @field:Schema(description = "세션 종료 일시", example = "2024-12-31T18:00:00+09:00")
+    @field:Schema(description = "세션 종료 일시", example = "2024-12-31T18:00:00")
     val endDateTime: LocalDateTime,
     @field:Schema(description = "종료 요일", example = "토")
     val endDayOfWeek: String,
