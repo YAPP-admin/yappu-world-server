@@ -1,5 +1,6 @@
 package co.yappuworld.operation.client.application
 
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.operation.client.dto.request.AdminGenerationActiveUpdateRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationDeleteRequest
@@ -7,6 +8,7 @@ import co.yappuworld.operation.client.dto.request.AdminGenerationPageRequest
 import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
+import co.yappuworld.operation.domain.OperationError
 import co.yappuworld.operation.infrastructure.GenerationCommandService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.operation.infrastructure.GenerationRepository
@@ -35,6 +37,10 @@ class AdminUserOperationService(
 
     @Transactional
     fun registerGeneration(request: AdminGenerationRegisterRequest) {
+        if (generationFindService.existsGeneration(request.generation)) {
+            throw BusinessException(OperationError.EXISTS_GENERATION)
+        }
+
         generationRepository.save(request.toDomain())
         if (request.isActive) {
             generationActiveStateManager.activate(request.generation)
