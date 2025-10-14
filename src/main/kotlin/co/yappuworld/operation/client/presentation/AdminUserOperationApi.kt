@@ -85,6 +85,26 @@ interface AdminUserOperationApi {
             ApiResponse(
                 responseCode = "201",
                 content = [Content()]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "이미 존재하는 기수를 등록 시도",
+                                value = """
+                                {
+                                    "errorCode": "OPR_1004",
+                                    "message": "이미 존재하는 기수입니다.",
+                                    "isSuccess": false
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
             )
         ]
     )

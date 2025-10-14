@@ -25,5 +25,10 @@ enum class OperationError : Error {
         override val message: String = "활성화 된 기수는 삭제할 수 없습니다."
         override val code: String = "OPR_1003"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    EXISTS_GENERATION {
+        override val message: String = "이미 존재하는 기수입니다."
+        override val code: String = "OPR_1004"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }
