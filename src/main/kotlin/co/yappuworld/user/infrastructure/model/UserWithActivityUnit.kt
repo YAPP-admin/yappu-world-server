@@ -21,4 +21,6 @@ data class UserWithActivityUnit(
             position = position,
             userId = userId
         )
+
+    fun canCheckIn() = role in listOf(UserRole.ACTIVE, UserRole.STAFF)
 }
