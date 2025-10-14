@@ -18,5 +18,7 @@ class GenerationFindService(
         generationRepository.getGenerationOrNullByIsActiveIsTrue()?.value
             ?: throw BusinessException(AttendanceError.NO_ACTIVE_GENERATION)
 
+    fun existsGeneration(value: Int): Boolean = generationRepository.existsById(value)
+
     fun findGenerations(values: List<Int>): List<GenerationEntity> = generationRepository.findAllByValueIn(values)
 }
