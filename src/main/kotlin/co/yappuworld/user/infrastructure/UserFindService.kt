@@ -119,7 +119,9 @@ class UserFindService(
             .filterNotNull()
 
     fun findSessionAttendeesOfGeneration(generation: Int): List<Attendee> =
-        findActiveUsersOfGeneration(generation).map { Attendee.from(it, generation) }
+        findActiveUsersOfGeneration(generation)
+            .filter { it.canCheckIn() }
+            .map { Attendee.from(it, generation) }
 
     fun findSessionAttendee(
         userId: UUID,
