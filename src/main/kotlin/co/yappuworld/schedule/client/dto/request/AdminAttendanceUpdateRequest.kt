@@ -6,22 +6,30 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
 data class AdminAttendanceUpdateRequest(
-    @Schema(description = "업데이트 목록")
-    val targets: List<AdminAttendanceUpdateTargetRequest>
+    @param:Schema(description = "기수")
+    val generation: Int,
+    @param:Schema(description = "업데이트 목록")
+    val attendances: List<AdminAttendanceUpdateTargetRequest>,
+    @param:Schema(description = "지각 면제권 업데이트 목록")
+    val latePasses: List<AdminLatePassUpdateTargetRequest>
 ) {
 
     @JsonIgnore
-    val size = targets.size
-
-    @JsonIgnore
-    fun getSessionAndUserIdPairs(): List<Pair<UUID, UUID>> = targets.map { it.sessionId to it.userId }
+    fun getSessionAndUserIdPairs(): List<Pair<UUID, UUID>> = attendances.map { it.sessionId to it.userId }
 }
 
 data class AdminAttendanceUpdateTargetRequest(
-    @Schema(description = "유저 ID")
+    @param:Schema(description = "유저 ID")
     val userId: UUID,
-    @Schema(description = "세션 ID")
+    @param:Schema(description = "세션 ID")
     val sessionId: UUID,
-    @Schema(description = "업데이트 상태")
+    @param:Schema(description = "업데이트 상태")
     val attendanceStatus: AttendanceStatus
+)
+
+data class AdminLatePassUpdateTargetRequest(
+    @param:Schema(description = "유저 ID")
+    val userId: UUID,
+    @param:Schema(description = "지각 면제권 개수")
+    val latePassCount: Int
 )
