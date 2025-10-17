@@ -17,4 +17,9 @@ class LatePassFindService(
     ): Int = latePassRepository.countAllByGenerationAndUserId(generation, userId)
 
     fun findLatePasses(generation: Int): List<LatePassEntity> = latePassRepository.findAllByGeneration(generation)
+
+    fun findLatePasses(
+        generation: Int,
+        userIds: List<UUID>
+    ): List<LatePassEntity> = latePassRepository.findAllByGenerationAndUserIdIn(generation, userIds)
 }
