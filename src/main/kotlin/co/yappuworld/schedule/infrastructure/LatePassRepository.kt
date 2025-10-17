@@ -12,4 +12,9 @@ interface LatePassRepository : JpaRepository<LatePassEntity, Long> {
     ): Int
 
     fun findAllByGeneration(generation: Int): List<LatePassEntity>
+
+    fun findAllByGenerationAndUserIdIn(
+        generation: Int,
+        userIds: Collection<UUID>
+    ): List<LatePassEntity>
 }

@@ -10,10 +10,14 @@ import java.util.UUID
 @Table(name = "late_passes")
 class LatePassEntity(
     val userId: UUID,
-    val generation: Int,
-    reason: String? = null
+    val generation: Int
 ) : BaseEntity() {
 
-    @Column(name = "reason")
-    val reason: String? = reason
+    @Column(name = "count", nullable = false)
+    var count: Int = 0
+        private set
+
+    fun updateCount(latePassCount: Int) {
+        this.count = latePassCount
+    }
 }
