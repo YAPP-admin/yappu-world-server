@@ -67,9 +67,7 @@ class AttendanceBook(
         attendees = attendees,
         sessions = sessions,
         attendances = attendances,
-        latePassCountByUserId = latePasses
-            .groupBy { it.userId }
-            .mapValues { (_, latePasses) -> latePasses.size },
+        latePassCountByUserId = latePasses.associate { it.userId to it.count },
         now = now
     )
 

@@ -6,10 +6,10 @@ import java.util.UUID
 
 interface LatePassRepository : JpaRepository<LatePassEntity, Long> {
 
-    fun countAllByGenerationAndUserId(
+    fun findByGenerationAndUserId(
         generation: Int,
         userId: UUID
-    ): Int
+    ): LatePassEntity?
 
     fun findAllByGeneration(generation: Int): List<LatePassEntity>
 
