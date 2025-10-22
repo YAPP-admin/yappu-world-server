@@ -24,16 +24,16 @@ class SessionWithAttendanceDto(
     val generation: Int,
     val sessionType: SessionType,
     val checkedInAt: LocalDateTime?,
-    attendanceStatus: AttendanceStatus?
+    private val _attendanceStatus: AttendanceStatus?
 ) {
 
-    var attendanceStatus: String? = attendanceStatus?.label
+    var attendanceStatus: String? = _attendanceStatus?.label
         private set
 
-    val attendanceStatusType: AttendanceStatus? = attendanceStatus
+    val attendanceStatusType: AttendanceStatus? = _attendanceStatus
 
     fun resolveAttendanceStatusOfPastSessions(now: LocalDateTime) {
-        if (attendanceStatus == null && isFinished(now)) {
+        if (checkedInAt == null && isFinished(now)) {
             attendanceStatus = AttendanceStatus.ABSENT.label
         }
     }
