@@ -29,7 +29,7 @@ class CustomAttendanceDsl : Jpql() {
             path(SessionEntity::endTime),
             path(SessionEntity::generation),
             path(SessionEntity::sessionType),
-            path(AttendanceEntity::createdAt),
+            path(AttendanceEntity::userCheckedInAt),
             path(AttendanceEntity::status)
         )
 }
