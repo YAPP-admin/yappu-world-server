@@ -85,7 +85,7 @@ object ScheduleFixture {
             endTime = endTime,
             generation = generation,
             sessionType = sessionType,
-            attendanceStatus = attendanceStatus,
+            _attendanceStatus = attendanceStatus,
             checkedInAt = checkedInAt
         )
 }
