@@ -169,6 +169,6 @@ CREATE TABLE team_members
     id               binary(16) PRIMARY KEY,
     created_at       datetime(6),
     updated_at       datetime(6),
-    activity_unit_id binary(16),
-    team_id          binary(16)
+    activity_unit_id binary(16) NOT NULL,
+    team_id          binary(16) NOT NULL
 );

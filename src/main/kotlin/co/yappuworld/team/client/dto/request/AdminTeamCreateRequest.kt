@@ -16,7 +16,7 @@ data class AdminTeamCreateRequest(
 
 data class AdminServiceCreateRequest(
     @Schema(description = "서비스 이름")
-    val name: String,
+    val name: String?,
     @Schema(description = "앱 플랫폼 여부")
     val hasApp: Boolean,
     @Schema(description = "웹 플랫폼 여부")

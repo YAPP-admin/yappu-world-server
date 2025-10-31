@@ -1,6 +1,5 @@
 package co.yappuworld.team.client.application
 
-import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.team.client.dto.request.AdminTeamPageRequest
 import co.yappuworld.team.client.dto.request.AdminTeamCreateRequest
@@ -13,7 +12,6 @@ import co.yappuworld.team.client.dto.response.AdminServiceResponse
 import co.yappuworld.team.client.dto.response.AdminServiceLinksResponse
 import co.yappuworld.team.client.dto.response.AdminTeamMemberResponse
 import co.yappuworld.team.client.dto.response.UserTeamResponse
-import co.yappuworld.team.domain.vo.TeamError
 import co.yappuworld.team.infrastructure.TeamFindService
 import co.yappuworld.team.infrastructure.TeamCommandService
 import co.yappuworld.team.infrastructure.TeamMemberFindService
@@ -114,7 +112,7 @@ class AdminTeamService(
     fun updateTeam(request: AdminTeamUpdateRequest) {
         val team = teamFindService.findTeam(request.id)
 
-        val service = request.service?.let { updateService(team, it) }
+        val service = request.service?.let { updateService(team, it) } ?: team.service
 
         team.update(
             generation = request.generation,
@@ -142,7 +140,18 @@ class AdminTeamService(
                     )
                 }
             )
-        } ?: throw BusinessException(TeamError.SERVICE_NOT_FOUND)
+        } ?: ServiceEntity(
+            name = request.name,
+            hasApp = request.hasApp,
+            hasWeb = request.hasWeb,
+            serviceLinks = request.serviceLinks?.let {
+                ServiceLinks(
+                    googleStore = it.googleStore,
+                    appStore = it.appStore,
+                    web = it.web
+                )
+            }
+        ).also { serviceCommandService.save(it) }
 
     private fun updateTeamMembers(
         team: TeamEntity,

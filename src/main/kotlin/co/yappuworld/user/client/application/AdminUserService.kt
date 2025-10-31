@@ -142,11 +142,9 @@ class AdminUserService(
                     }
                 }
                 toCreate.ifNotEmpty {
-                    toCreate.ifNotEmpty {
-                        it.forEach { request ->
-                            val activityUnit = activityUnitCommandService.save(request.toActivityUnit(userId))
-                            adminTeamService.assignTeamToActivityUnit(activityUnit.id, request.teamId)
-                        }
+                    it.forEach { request ->
+                        val activityUnit = activityUnitCommandService.save(request.toActivityUnit(userId))
+                        adminTeamService.assignTeamToActivityUnit(activityUnit.id, request.teamId)
                     }
                 }
             }
