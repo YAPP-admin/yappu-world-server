@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS config;
+ DROP TABLE IF EXISTS config;
 CREATE TABLE config
 (
     name       varchar(64) PRIMARY KEY,
@@ -139,3 +139,36 @@ create table late_passes
     generation int NOT NULL,
     count      int NOT NULL DEFAULT 0
 );
+
+drop table if exists services;
+CREATE TABLE services
+(
+    id              binary(16) PRIMARY KEY,
+    created_at      datetime(6),
+    updated_at      datetime(6),
+    has_app         boolean NOT NULL DEFAULT FALSE,
+    has_web         boolean NOT NULL DEFAULT FALSE,
+    name            varchar(255) DEFAULT NULL,
+    service_links   json DEFAULT NULL
+)
+
+drop table if exists teams;
+CREATE TABLE teams
+(
+    id              binary(16) PRIMARY KEY,
+    created_at      datetime(6),
+    updated_at      datetime(6),
+    generation      int NOT NULL,
+    name            varchar(255) NOT NULL,
+    service_id      binary(16) DEFAULT NULL
+)
+
+drop table if exists team_members;
+CREATE TABLE team_members
+(
+    id                  binary(16) PRIMARY KEY,
+    created_at          datetime(6),
+    updated_at          datetime(6),
+    activity_unit_id    binary(16),
+    team_id             binary(16)
+)
