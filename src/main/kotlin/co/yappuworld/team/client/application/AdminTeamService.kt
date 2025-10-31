@@ -157,9 +157,9 @@ class AdminTeamService(
         team: TeamEntity,
         activityUnitIds: List<UUID>
     ) {
-        val existingMemberIds = teamMemberFindService.findActivityUnitIdsByTeam(team)
-        if (existingMemberIds.isNotEmpty()) {
-            teamMemberCommandService.deleteAll(existingMemberIds)
+        val existingActivityUnitIds = teamMemberFindService.findActivityUnitIdsByTeam(team)
+        if (existingActivityUnitIds.isNotEmpty()) {
+            teamMemberCommandService.deleteAll(existingActivityUnitIds)
         }
         createTeamMembers(team, activityUnitIds)
     }
