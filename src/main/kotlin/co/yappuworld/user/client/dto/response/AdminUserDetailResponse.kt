@@ -54,16 +54,27 @@ data class AdminUserDetailActivityUnitResponse(
     @Schema(description = "직군")
     val position: String,
     @Schema(description = "활동 중인지 여부")
-    val isActive: Boolean
+    val isActive: Boolean,
+    @Schema(description = "팀 정보")
+    val team: AdminUserDetailTeamResponse? = null
 ) {
 
     constructor(
         activityUnit: ActivityUnitEntity,
-        activeGeneration: Int?
+        activeGeneration: Int?,
+        team: AdminUserDetailTeamResponse? = null
     ) : this(
         id = activityUnit.id,
         generation = activityUnit.generation,
         position = activityUnit.position.label,
-        isActive = activityUnit.generation == activeGeneration
+        isActive = activityUnit.generation == activeGeneration,
+        team = team
     )
 }
+
+data class AdminUserDetailTeamResponse(
+    @Schema(description = "팀 ID")
+    val id: UUID,
+    @Schema(description = "팀 이름")
+    val name: String
+)

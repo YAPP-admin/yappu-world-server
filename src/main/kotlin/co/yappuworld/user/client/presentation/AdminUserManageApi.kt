@@ -53,13 +53,21 @@ interface AdminUserManageApi {
                                                     "id": "7f1080cb-0579-11f0-bb9e-0242ac120003",
                                                     "generation": 25,
                                                     "position": "PM",
-                                                    "isActive": true
+                                                    "isActive": true,
+                                                    "team": {
+                                                      "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef56gh78",
+                                                      "name": "string"
+                                                    }
                                                 },
                                                 {
                                                     "id": "7f1080cb-0579-11f0-bb9e-0242ac120002",
                                                     "generation": 1,
                                                     "position": "PM",
-                                                    "isActive": false
+                                                    "isActive": false,
+                                                    "team": {
+                                                      "id": "7f1080cb-0579-11f0-bb9e-0242ac120002",
+                                                      "name": "string"
+                                                    }
                                                 }
                                             ]
                                         },
