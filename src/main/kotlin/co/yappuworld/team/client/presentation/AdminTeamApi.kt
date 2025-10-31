@@ -201,9 +201,7 @@ interface AdminTeamApi {
                                             "members": [
                                                 {
                                                     "id": "member-uuid",
-                                                    "activityUnitId": "activity-uuid",
-                                                    "memberName": "홍길동",
-                                                    "memberEmail": "hong@yapp.co.kr"
+                                                    "activityUnitId": "activity-uuid"
                                                 }
                                             ],
                                             "createdAt": "2025-01-01T00:00:00",
