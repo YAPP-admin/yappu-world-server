@@ -163,31 +163,6 @@ interface OperationApi {
     fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationResponse>>
 
     @Operation(summary = "이용 문의 링크")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                useReturnTypeSchema = true,
-                content = [
-                    Content(
-                        examples = [
-                            ExampleObject(
-                                name = "이용 문의 링크 조회",
-                                value = """
-                                    {
-                                        "data": {
-                                            "link": "https://yapp.co.kr"
-                                        },
-                                        "isSuccess": true
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
     @GetMapping("/v1/operations/links/usage-inquiry")
     fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 
