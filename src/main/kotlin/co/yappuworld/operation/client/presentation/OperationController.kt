@@ -86,4 +86,13 @@ class OperationController(
                 )
             )
         )
+
+    override fun getBasicRuleLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
+        ResponseEntity.ok(
+            SuccessResponse(
+                OperationLinkResponse(
+                    configInquiryComponent.findConfigBy("basicRuleLink").value
+                )
+            )
+        )
 }
