@@ -163,89 +163,18 @@ interface OperationApi {
     fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationResponse>>
 
     @Operation(summary = "이용 문의 링크")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                useReturnTypeSchema = true,
-                content = [
-                    Content(
-                        examples = [
-                            ExampleObject(
-                                name = "이용 문의 링크 조회",
-                                value = """
-                                    {
-                                        "data": {
-                                            "link": "https://yapp.co.kr"
-                                        },
-                                        "isSuccess": true
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
     @GetMapping("/v1/operations/links/usage-inquiry")
     fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 
     @Operation(summary = "이용 약관 링크")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                useReturnTypeSchema = true,
-                content = [
-                    Content(
-                        examples = [
-                            ExampleObject(
-                                name = "이용 약관 링크 조회",
-                                value = """
-                                    {
-                                        "data": {
-                                            "link": "https://yapp.co.kr"
-                                        },
-                                        "isSuccess": true
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
     @GetMapping("/v1/operations/links/terms-of-service")
     fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 
     @Operation(summary = "개인정보 처리방침 링크")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                useReturnTypeSchema = true,
-                content = [
-                    Content(
-                        examples = [
-                            ExampleObject(
-                                name = "개인정보 처리방침 링크 조회",
-                                value = """
-                                    {
-                                        "data": {
-                                            "link": "https://yapp.co.kr"
-                                        },
-                                        "isSuccess": true
-                                    }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
-    )
     @GetMapping("/v1/operations/links/privacy-policy")
     fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
+
+    @Operation(summary = "기본 규칙 링크")
+    @GetMapping("/v1/operations/links/basic-rule")
+    fun getBasicRuleLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>>
 }

@@ -61,28 +61,22 @@ class OperationController(
     }
 
     override fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
-        ResponseEntity.ok(
-            SuccessResponse(
-                OperationLinkResponse(
-                    configInquiryComponent.findConfigBy("usageInquiryLink").value
-                )
-            )
-        )
+        getLinkByConfigKey("usageInquiryLink")
 
     override fun getTermsOfServiceLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
-        ResponseEntity.ok(
-            SuccessResponse(
-                OperationLinkResponse(
-                    configInquiryComponent.findConfigBy("termsOfServiceLink").value
-                )
-            )
-        )
+        getLinkByConfigKey("termsOfServiceLink")
 
     override fun getPrivacyPolicyLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
+        getLinkByConfigKey("privacyPolicyLink")
+
+    override fun getBasicRuleLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
+        getLinkByConfigKey("basicRuleLink")
+
+    private fun getLinkByConfigKey(configKey: String): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
         ResponseEntity.ok(
             SuccessResponse(
                 OperationLinkResponse(
-                    configInquiryComponent.findConfigBy("privacyPolicyLink").value
+                    configInquiryComponent.findConfigBy(configKey).value
                 )
             )
         )
