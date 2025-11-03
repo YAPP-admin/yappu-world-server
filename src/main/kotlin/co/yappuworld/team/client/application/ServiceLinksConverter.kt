@@ -9,10 +9,10 @@ import jakarta.persistence.Converter
 class ServiceLinksConverter : AttributeConverter<ServiceLinks?, String?> {
     private val objectMapper = jacksonObjectMapper()
 
-    override fun convertToDatabaseColumn(attribute: ServiceLinks?): String =
+    override fun convertToDatabaseColumn(attribute: ServiceLinks?): String? =
         attribute?.let {
             objectMapper.writeValueAsString(it)
-        } ?: "{}"
+        }
 
     override fun convertToEntityAttribute(dbData: String?): ServiceLinks? =
         dbData?.let {

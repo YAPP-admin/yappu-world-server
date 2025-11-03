@@ -3,8 +3,8 @@ package co.yappuworld.team.infrastructure
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.team.domain.vo.ServicePlatform
 import co.yappuworld.team.domain.vo.TeamError
-import co.yappuworld.team.infrastructure.entity.ServiceEntity
 import co.yappuworld.team.infrastructure.entity.TeamEntity
+import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.jpa.TeamRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -34,13 +34,18 @@ class TeamFindService(
         teamRepository
             .findPage(pageable) {
                 select(entity(TeamEntity::class))
-                    .from(entity(TeamEntity::class))
-                    .whereAnd(
+                    .from(
+                        entity(TeamEntity::class),
+                        leftJoin(TeamServiceEntity::class).on(
+                            path(TeamEntity::getId)
+                                .equal(path(TeamServiceEntity::team)(TeamEntity::getId))
+                        )
+                    ).whereAnd(
                         generation?.let { path(TeamEntity::generation).equal(it) },
                         platform?.let {
                             when (it) {
-                                ServicePlatform.APP -> path(TeamEntity::service)(ServiceEntity::hasApp).equal(true)
-                                ServicePlatform.WEB -> path(TeamEntity::service)(ServiceEntity::hasWeb).equal(true)
+                                ServicePlatform.APP -> path(TeamServiceEntity::hasApp).equal(true)
+                                ServicePlatform.WEB -> path(TeamServiceEntity::hasWeb).equal(true)
                             }
                         }
                     ).orderBy(*CustomTeamDsl().teamSorting(platform).toTypedArray())
@@ -48,5 +53,5 @@ class TeamFindService(
                 PageImpl(page.content.filterNotNull(), page.pageable, page.totalElements)
             }
 
-    fun findByGeneration(generation: Int): List<TeamEntity> = teamRepository.findByGeneration(generation)
+    fun findTeams(generation: Int): List<TeamEntity> = teamRepository.findByGeneration(generation)
 }

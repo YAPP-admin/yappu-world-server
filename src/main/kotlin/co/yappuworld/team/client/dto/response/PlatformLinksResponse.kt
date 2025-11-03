@@ -15,12 +15,12 @@ data class PlatformLinksResponse(
     companion object {
         fun from(serviceLinks: ServiceLinks?): PlatformLinksResponse? {
             if (serviceLinks == null) return null
-            if (serviceLinks.appStore == null && serviceLinks.googleStore == null && serviceLinks.web == null) {
+            if (serviceLinks.appStore == null && serviceLinks.googlePlay == null && serviceLinks.web == null) {
                 return null
             }
             return PlatformLinksResponse(
                 app_store = serviceLinks.appStore,
-                google_play = serviceLinks.googleStore,
+                google_play = serviceLinks.googlePlay,
                 web = serviceLinks.web
             )
         }

@@ -13,13 +13,13 @@ class TeamMemberFindService(
     private val teamMemberRepository: TeamMemberRepository
 ) {
 
-    fun findByTeam(team: TeamEntity): List<TeamMemberEntity> = teamMemberRepository.findByTeam(team)
+    fun findMembers(team: TeamEntity): List<TeamMemberEntity> = teamMemberRepository.findByTeam(team)
 
-    fun findActivityUnitIdsByTeam(team: TeamEntity): List<UUID> =
+    fun findActivityUnitIds(team: TeamEntity): List<UUID> =
         teamMemberRepository.findByTeam(team).map {
             it.activityUnitId
         }
 
-    fun findByActivityUnitIdOrNull(activityUnitId: UUID): TeamMemberEntity? =
+    fun findMemberOrNull(activityUnitId: UUID): TeamMemberEntity? =
         teamMemberRepository.findByActivityUnitId(activityUnitId)
 }

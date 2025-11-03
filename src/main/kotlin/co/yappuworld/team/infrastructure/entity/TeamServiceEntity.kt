@@ -5,16 +5,25 @@ import co.yappuworld.team.client.application.ServiceLinksConverter
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "services")
-class ServiceEntity(
+@Table(name = "team_services")
+class TeamServiceEntity(
+    team: TeamEntity,
     name: String? = null,
     hasApp: Boolean = false,
     hasWeb: Boolean = false,
     serviceLinks: ServiceLinks? = null
 ) : BaseEntity() {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
+    var team: TeamEntity = team
+        private set
 
     var name: String? = name
         private set
@@ -33,7 +42,7 @@ class ServiceEntity(
         private set
 
     fun update(
-        name: String,
+        name: String?,
         hasApp: Boolean,
         hasWeb: Boolean,
         serviceLinks: ServiceLinks?

@@ -1,7 +1,7 @@
 package co.yappuworld.team.infrastructure
 
 import co.yappuworld.team.domain.vo.ServicePlatform
-import co.yappuworld.team.infrastructure.entity.ServiceEntity
+import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.entity.TeamEntity
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.JpqlDsl
@@ -18,7 +18,7 @@ class CustomTeamDsl : Jpql() {
         listOfNotNull(
             path(TeamEntity::generation).desc(),
             if (platform == null) {
-                caseWhen(path(TeamEntity::service)(ServiceEntity::hasApp).equal(true))
+                caseWhen(path(TeamServiceEntity::hasApp).equal(true))
                     .then(1)
                     .`else`(2)
                     .asc()

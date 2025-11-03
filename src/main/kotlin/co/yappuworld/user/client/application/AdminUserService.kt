@@ -137,14 +137,14 @@ class AdminUserService(
                     updateOrDeleteActivityUnit(userId, it)
                     it.forEach { request ->
                         request.id?.let { activityUnitId ->
-                            adminTeamService.assignTeamToActivityUnit(activityUnitId, request.teamId)
+                            adminTeamService.assignMemberToTeam(activityUnitId, request.teamId)
                         }
                     }
                 }
                 toCreate.ifNotEmpty {
                     it.forEach { request ->
                         val activityUnit = activityUnitCommandService.save(request.toActivityUnit(userId))
-                        adminTeamService.assignTeamToActivityUnit(activityUnit.id, request.teamId)
+                        adminTeamService.assignMemberToTeam(activityUnit.id, request.teamId)
                     }
                 }
             }
