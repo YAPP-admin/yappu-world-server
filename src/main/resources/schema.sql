@@ -140,18 +140,6 @@ create table late_passes
     count      int NOT NULL DEFAULT 0
 );
 
-DROP TABLE IF EXISTS services;
-CREATE TABLE services
-(
-    id              binary(16) PRIMARY KEY,
-    created_at      datetime(6),
-    updated_at      datetime(6),
-    has_app         tinyint(1) NOT NULL DEFAULT 0,
-    has_web         tinyint(1) NOT NULL DEFAULT 0,
-    name            varchar(255) DEFAULT NULL,
-    service_links   json DEFAULT NULL
-);
-
 DROP TABLE IF EXISTS teams;
 CREATE TABLE teams
 (
@@ -160,7 +148,19 @@ CREATE TABLE teams
     updated_at  datetime(6),
     generation  int NOT NULL,
     name        varchar(255) NOT NULL,
-    service_id  binary(16) DEFAULT NULL
+);
+
+DROP TABLE IF EXISTS services;
+CREATE TABLE team_services
+(
+    id              binary(16) PRIMARY KEY,
+    created_at      datetime(6),
+    updated_at      datetime(6),
+    has_app         tinyint(1) NOT NULL DEFAULT 0,
+    has_web         tinyint(1) NOT NULL DEFAULT 0,
+    name            varchar(255) DEFAULT NULL,
+    service_links   json DEFAULT NULL,
+    team_id         binary(16) NOT NULL
 );
 
 DROP TABLE IF EXISTS team_members;
