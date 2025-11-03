@@ -23,5 +23,5 @@ data class AdminTeamCreateRequest(
     @field:Schema(description = "웹 사이트 링크")
     val webLink: String?,
     @field:Schema(description = "팀원 활동 이력 ID 목록")
-    val activityUnitIds: List<UUID>
+    val activityUnitIds: List<UUID>? = null
 )

@@ -9,8 +9,7 @@ import jakarta.persistence.Table
 @Table(name = "teams")
 class TeamEntity(
     generation: Int,
-    name: String,
-    service: TeamServiceEntity? = null
+    name: String
 ) : BaseEntity() {
 
     @Column(nullable = false)

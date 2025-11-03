@@ -86,7 +86,14 @@ class AdminTeamService(
         ).also { teamCommandService.save(it) }
 
         createService(team, request)
-        createTeamMembers(team, request.activityUnitIds)
+
+        request.activityUnitIds?.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
+            activityUnitIds.forEach { activityUnitId ->
+                activityUnitFindService.findActivityUnit(activityUnitId)
+                    ?: throw BusinessException(TeamError.INVALID_TEAM_MEMBERS)
+            }
+            createTeamMembers(team, activityUnitIds)
+        }
 
         return team.id
     }
@@ -101,7 +108,14 @@ class AdminTeamService(
         )
 
         updateService(team, request)
-        updateTeamMembers(team, request.activityUnitIds)
+
+        request.activityUnitIds.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
+            activityUnitIds.forEach { activityUnitId ->
+                activityUnitFindService.findActivityUnit(activityUnitId)
+                    ?: throw BusinessException(TeamError.INVALID_TEAM_MEMBERS)
+            }
+            updateTeamMembers(team, activityUnitIds)
+        }
     }
 
     @Transactional

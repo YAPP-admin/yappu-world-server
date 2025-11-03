@@ -38,7 +38,7 @@ class TeamFindService(
                         entity(TeamEntity::class),
                         leftJoin(TeamServiceEntity::class).on(
                             path(TeamEntity::getId)
-                                .equal(path(TeamServiceEntity::team)(TeamEntity::getId))
+                                .equal(path(TeamServiceEntity::team).path(TeamEntity::getId))
                         )
                     ).whereAnd(
                         generation?.let { path(TeamEntity::generation).equal(it) },
