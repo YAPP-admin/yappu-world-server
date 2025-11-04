@@ -106,11 +106,14 @@ class AdminTeamService(
 
         updateService(team, request)
 
-        request.activityUnitIds?.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
-            validateActivityUnits(activityUnitIds)
-            updateTeamMembers(team, activityUnitIds)
-        } ?: run {
-            deleteTeamMembers(team)
+        request.activityUnitIds?.let { activityUnitIds ->
+            when (activityUnitIds.isEmpty()) {
+                true -> deleteTeamMembers(team)
+                false -> {
+                    validateActivityUnits(activityUnitIds)
+                    updateTeamMembers(team, activityUnitIds)
+                }
+            }
         }
     }
 
