@@ -1,14 +1,18 @@
 package co.yappuworld.team.client.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
 import java.util.UUID
 
 data class AdminTeamUpdateRequest(
     @field:Schema(description = "팀 ID")
     val id: UUID,
     @field:Schema(description = "기수")
+    @field:Positive
     val generation: Int,
     @field:Schema(description = "팀 이름")
+    @field:NotBlank
     val name: String,
     @field:Schema(description = "서비스 이름")
     val serviceName: String?,
@@ -23,5 +27,5 @@ data class AdminTeamUpdateRequest(
     @field:Schema(description = "웹 사이트 링크")
     val webLink: String?,
     @field:Schema(description = "팀원 활동 이력 ID 목록")
-    val activityUnitIds: List<UUID>
+    val activityUnitIds: List<UUID>? = null
 )

@@ -30,5 +30,10 @@ enum class TeamError : Error {
         override val message: String = "삭제 요청이 유효하지 않습니다."
         override val code: String = "TEAM_1003"
         override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    INVALID_ACTIVITY_UNIT {
+        override val message: String = "존재하지 않는 활동 이력 ID입니다."
+        override val code: String = "TEAM_1004"
+        override val type: ErrorType = ErrorType.WRONG_STATE
     }
 }

@@ -88,10 +88,7 @@ class AdminTeamService(
         createService(team, request)
 
         request.activityUnitIds?.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
-            activityUnitIds.forEach { activityUnitId ->
-                activityUnitFindService.findActivityUnit(activityUnitId)
-                    ?: throw BusinessException(TeamError.INVALID_TEAM_MEMBERS)
-            }
+            validateActivityUnits(activityUnitIds)
             createTeamMembers(team, activityUnitIds)
         }
 
@@ -109,12 +106,11 @@ class AdminTeamService(
 
         updateService(team, request)
 
-        request.activityUnitIds.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
-            activityUnitIds.forEach { activityUnitId ->
-                activityUnitFindService.findActivityUnit(activityUnitId)
-                    ?: throw BusinessException(TeamError.INVALID_TEAM_MEMBERS)
-            }
+        request.activityUnitIds?.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
+            validateActivityUnits(activityUnitIds)
             updateTeamMembers(team, activityUnitIds)
+        } ?: run {
+            deleteTeamMembers(team)
         }
     }
 
@@ -122,24 +118,8 @@ class AdminTeamService(
     fun deleteTeam(teamId: UUID) {
         val team = teamFindService.findTeam(teamId)
 
-        val members = teamMemberFindService.findMembers(team)
-        if (members.isNotEmpty()) {
-            val memberIds = members.map { it.id }
-            try {
-                teamMemberCommandService.deleteAll(memberIds)
-            } catch (e: IllegalArgumentException) {
-                throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
-            }
-        }
-
-        val service = teamServiceFindService.findServiceOrNull(team)
-        service?.let {
-            try {
-                teamServiceCommandService.delete(it.id)
-            } catch (e: IllegalArgumentException) {
-                throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
-            }
-        }
+        deleteTeamMembers(team)
+        deleteTeamService(team)
 
         teamCommandService.delete(teamId)
     }
@@ -180,6 +160,13 @@ class AdminTeamService(
                 activityUnitId = activityUnitId
             )
             teamMemberCommandService.save(teamMember)
+        }
+    }
+
+    private fun validateActivityUnits(activityUnitIds: List<UUID>) {
+        activityUnitIds.forEach { activityUnitId ->
+            activityUnitFindService.findActivityUnit(activityUnitId)
+                ?: throw BusinessException(TeamError.INVALID_ACTIVITY_UNIT)
         }
     }
 
@@ -251,6 +238,11 @@ class AdminTeamService(
         team: TeamEntity,
         activityUnitIds: List<UUID>
     ) {
+        deleteTeamMembers(team)
+        createTeamMembers(team, activityUnitIds)
+    }
+
+    private fun deleteTeamMembers(team: TeamEntity) {
         val existingMembers = teamMemberFindService.findMembers(team)
         if (existingMembers.isNotEmpty()) {
             val memberIds = existingMembers.map { it.id }
@@ -260,7 +252,17 @@ class AdminTeamService(
                 throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
             }
         }
-        createTeamMembers(team, activityUnitIds)
+    }
+
+    private fun deleteTeamService(team: TeamEntity) {
+        val service = teamServiceFindService.findServiceOrNull(team)
+        service?.let {
+            try {
+                teamServiceCommandService.delete(it.id)
+            } catch (e: IllegalArgumentException) {
+                throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
+            }
+        }
     }
 
     private fun toServiceResponse(teamServiceEntity: TeamServiceEntity): AdminTeamServiceResponse =
@@ -278,15 +280,19 @@ class AdminTeamService(
         teamServiceFindService.findServiceOrNull(team)?.let { toServiceResponse(it) }
 
     private fun getTeamMembers(team: TeamEntity): List<AdminTeamMemberResponse> {
-        val teamMembers = teamMemberFindService.findMembers(team)
+        val teamMembers = teamMemberFindService
+            .findMembers(team)
+            .takeIf { it.isNotEmpty() } ?: return emptyList()
 
-        val activityUnits = teamMembers.mapNotNull { member ->
-            activityUnitFindService.findActivityUnit(
-                member.activityUnitId
-            )
-        }
+        val activityUnits = teamMembers
+            .mapNotNull { member ->
+                activityUnitFindService.findActivityUnit(
+                    member.activityUnitId
+                )
+            }.takeIf { it.isNotEmpty() } ?: return emptyList()
 
-        val users = userFindService.findAllByIdIn(activityUnits.map { it.userId }).associate { it.id to it }
+        val userIds = activityUnits.map { it.userId }
+        val users = userFindService.findAllByIdIn(userIds).associateBy { it.id }
         val activityUnitMap = activityUnits.associateBy { it.id }
 
         return teamMembers.mapNotNull { member ->

@@ -2,8 +2,10 @@ package co.yappuworld.team.infrastructure
 
 import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
+import co.yappuworld.support.fixture.TeamFixture
 import co.yappuworld.support.fixture.TeamFixture.getTeamEntityFixture
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceEntityFixture
+import co.yappuworld.support.fixture.TeamFixture.saveTeamsWithServices
 import co.yappuworld.team.domain.vo.ServicePlatform
 import co.yappuworld.team.infrastructure.jpa.TeamServiceRepository
 import co.yappuworld.team.infrastructure.jpa.TeamRepository
@@ -46,20 +48,14 @@ class TeamFindServiceTest @Autowired constructor(
             }
 
             scenario("기수로 필터링") {
-                teamRepository
-                    .saveAll(
-                        List(7) { index ->
-                            getTeamEntityFixture(generation = 35, name = "35기팀$index")
-                        } + List(8) { index ->
-                            getTeamEntityFixture(generation = 36, name = "36기팀$index")
-                        }
-                    ).also { teams ->
-                        serviceRepository.saveAll(
-                            teams.map { team ->
-                                getTeamServiceEntityFixture(team = team)
-                            }
-                        )
+                teamRepository.saveTeamsWithServices(
+                    serviceRepository,
+                    teams = List(7) { index ->
+                        TeamFixture.TeamData(35, "35기팀$index")
+                    } + List(8) { index ->
+                        TeamFixture.TeamData(36, "36기팀$index")
                     }
+                )
 
                 val pageable = PageRequest.of(0, 5)
                 val result = teamFindService.findTeams(35, null, pageable)
@@ -70,29 +66,15 @@ class TeamFindServiceTest @Autowired constructor(
             }
 
             scenario("플랫폼 필터링 시 기수 내림차순, 팀 이름 내림차순으로 정렬") {
-                val testData = listOf(
-                    35 to "A팀",
-                    35 to "C팀",
-                    37 to "B팀",
-                    37 to "D팀"
+                teamRepository.saveTeamsWithServices(
+                    serviceRepository,
+                    teams = listOf(
+                        TeamFixture.TeamData(35, "A팀", hasApp = true),
+                        TeamFixture.TeamData(35, "C팀", hasApp = true),
+                        TeamFixture.TeamData(37, "B팀", hasApp = true, hasWeb = true),
+                        TeamFixture.TeamData(37, "D팀", hasApp = true, hasWeb = true)
+                    )
                 )
-
-                teamRepository
-                    .saveAll(
-                        testData.map { (generation, name) ->
-                            getTeamEntityFixture(generation = generation, name = name)
-                        }
-                    ).also { teams ->
-                        serviceRepository.saveAll(
-                            teams.map { team ->
-                                getTeamServiceEntityFixture(
-                                    team = team,
-                                    hasApp = true,
-                                    hasWeb = team.name in listOf("B팀", "D팀")
-                                )
-                            }
-                        )
-                    }
 
                 val pageable = PageRequest.of(0, 10)
                 val result = teamFindService.findTeams(null, ServicePlatform.APP, pageable)
