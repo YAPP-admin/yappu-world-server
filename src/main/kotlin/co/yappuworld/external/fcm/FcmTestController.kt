@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.context.annotation.Profile
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -15,7 +16,8 @@ private val logger = KotlinLogging.logger { }
 @Tag(name = "FCM 테스트용", description = "_")
 @RestController
 class FcmTestController(
-    private val fcmClient: FcmClient
+    private val fcmClient: FcmClient,
+    private val jdbcTemplate: JdbcTemplate
 ) {
 
     data class SingleFcm(

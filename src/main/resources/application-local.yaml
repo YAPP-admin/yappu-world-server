@@ -6,8 +6,8 @@ spring:
 
     docker:
         compose:
+            enabled: false
             service: yappu-world-server
-            enabled: true
             lifecycle-management: none
             #            stop:
             #                command: down

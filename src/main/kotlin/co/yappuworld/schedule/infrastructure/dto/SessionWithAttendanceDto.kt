@@ -4,6 +4,8 @@ import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -26,6 +28,31 @@ class SessionWithAttendanceDto(
     val checkedInAt: LocalDateTime?,
     private val _attendanceStatus: AttendanceStatus?
 ) {
+
+    companion object {
+
+        fun from(
+            session: SessionEntity,
+            attendance: AttendanceEntity?
+        ): SessionWithAttendanceDto =
+            SessionWithAttendanceDto(
+                id = session.id,
+                name = session.name,
+                description = session.description,
+                place = session.place,
+                address = session.address,
+                latitude = session.latitude,
+                longitude = session.longitude,
+                date = session.date,
+                endDate = session.endDate,
+                time = session.time,
+                endTime = session.endTime,
+                generation = session.generation,
+                sessionType = session.sessionType,
+                checkedInAt = attendance?.userCheckedInAt,
+                _attendanceStatus = attendance?.status
+            )
+    }
 
     var attendanceStatus: String? = _attendanceStatus?.label
         private set

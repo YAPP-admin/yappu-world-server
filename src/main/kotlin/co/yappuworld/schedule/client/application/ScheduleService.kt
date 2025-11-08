@@ -8,7 +8,6 @@ import co.yappuworld.schedule.client.dto.request.SessionParamRequest
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponse
 import co.yappuworld.schedule.client.dto.response.ActiveGenerationSessionsResponseV2
 import co.yappuworld.schedule.client.dto.response.SchedulePageResponse
-import co.yappuworld.schedule.client.dto.response.SessionDetailsNoticeResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsResponse
 import co.yappuworld.schedule.client.dto.response.SessionDetailsResponseV2
 import co.yappuworld.schedule.client.dto.response.SessionOverviewResponse
@@ -50,7 +49,7 @@ class ScheduleService(
                 .map { it.id }
         )
 
-        return SchedulePageResponse.from(userWithActivityUnits, schedules, attendances, request, now)
+        return SchedulePageResponse.from(schedules, attendances, request, now)
     }
 
     @Transactional(readOnly = true)
@@ -134,10 +133,6 @@ class ScheduleService(
         val writers = when {
             writerIds.isEmpty() -> emptyMap()
             else -> userFindService.findAllUserWithLastActivityUnit(writerIds).associateBy { it.userId }
-        }
-
-        val noticeResponses = notices.map { notice ->
-            SessionDetailsNoticeResponse.from(notice)
         }
 
         return SessionDetailsResponse.of(
