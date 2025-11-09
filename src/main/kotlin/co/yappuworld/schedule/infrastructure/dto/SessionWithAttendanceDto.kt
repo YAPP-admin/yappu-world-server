@@ -2,8 +2,11 @@ package co.yappuworld.schedule.infrastructure.dto
 
 import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
+import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -27,13 +30,38 @@ class SessionWithAttendanceDto(
     private val _attendanceStatus: AttendanceStatus?
 ) {
 
+    companion object {
+
+        fun from(
+            session: SessionEntity,
+            attendance: AttendanceEntity?
+        ): SessionWithAttendanceDto =
+            SessionWithAttendanceDto(
+                id = session.id,
+                name = session.name,
+                description = session.description,
+                place = session.place,
+                address = session.address,
+                latitude = session.latitude,
+                longitude = session.longitude,
+                date = session.date,
+                endDate = session.endDate,
+                time = session.time,
+                endTime = session.endTime,
+                generation = session.generation,
+                sessionType = session.sessionType,
+                checkedInAt = attendance?.userCheckedInAt,
+                _attendanceStatus = attendance?.status
+            )
+    }
+
     var attendanceStatus: String? = _attendanceStatus?.label
         private set
 
     val attendanceStatusType: AttendanceStatus? = _attendanceStatus
 
     fun resolveAttendanceStatusOfPastSessions(now: LocalDateTime) {
-        if (checkedInAt == null && isFinished(now)) {
+        if (attendanceStatusType == AttendanceStatus.PENDING && checkedInAt == null && isFinished(now)) {
             attendanceStatus = AttendanceStatus.ABSENT.label
         }
     }
@@ -51,6 +79,14 @@ class SessionWithAttendanceDto(
 
     fun isToday(now: LocalDateTime): Boolean =
         date.isBeforeOrEqual(now.toLocalDate()) && now.toLocalDate().isBeforeOrEqual(endDate)
+
+    fun getScheduleProgressPhase(now: LocalDateTime): ScheduleProgressPhase =
+        when {
+            isFinished(now) -> ScheduleProgressPhase.DONE
+            isOnGoing(now) -> ScheduleProgressPhase.ONGOING
+            isToday(now) -> ScheduleProgressPhase.TODAY
+            else -> ScheduleProgressPhase.PENDING
+        }
 
     fun getSessionProgressPhase(now: LocalDateTime): SessionProgressPhase =
         when {

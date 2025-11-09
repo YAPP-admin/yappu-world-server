@@ -3,15 +3,13 @@ package co.yappuworld.schedule.client.dto.response
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
-import co.yappuworld.schedule.domain.vo.AttendanceStatus.ABSENT
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.vo.ScheduleType
 import co.yappuworld.schedule.domain.vo.SessionType
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
-import co.yappuworld.schedule.infrastructure.entity.TaskEntity
-import co.yappuworld.user.domain.model.UserWithActivityUnits
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -25,21 +23,22 @@ data class SchedulePageResponse(
 
     companion object {
         fun from(
-            userWithActivityUnits: UserWithActivityUnits,
             schedules: List<ScheduleEntity>,
             attendances: List<AttendanceEntity>,
             request: SchedulePageRequest,
             now: LocalDateTime
         ): SchedulePageResponse {
             val attendanceBySessionId = attendances.associateBy { it.session.id }
-            val scheduleWithAttendance = schedules.map { Pair(it, attendanceBySessionId[it.id]) }
-            val scheduleByDate = scheduleWithAttendance.groupBy { (schedule, _) -> schedule.date }
+            // TODO: 일단 세션 뿐이니, 세션으로만 변환, 추후에 다른 Schedule도 처리하도록 변경 필요
+            val scheduleWithAttendance = schedules.map {
+                SessionWithAttendanceDto.from(it as SessionEntity, attendanceBySessionId[it.id])
+            }
+            val scheduleByDate = scheduleWithAttendance.groupBy { it.date }
 
             return LocalDateRange(request.from, request.toInclusive.plusDays(1))
                 .map { date ->
                     DateGroupedScheduleResponse(
                         date = date,
-                        userWithActivityUnits = userWithActivityUnits,
                         scheduleWithAttendance = scheduleByDate[date] ?: emptyList(),
                         now = now
                     )
@@ -61,14 +60,13 @@ data class DateGroupedScheduleResponse(
 
     constructor(
         date: LocalDate,
-        userWithActivityUnits: UserWithActivityUnits,
-        scheduleWithAttendance: List<Pair<ScheduleEntity, AttendanceEntity?>>,
+        scheduleWithAttendance: List<SessionWithAttendanceDto>,
         now: LocalDateTime
     ) : this(
         date = date,
         isToday = date.isEqual(now.toLocalDate()),
         dayOfTheWeek = date.dayOfWeek.korean(),
-        schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, userWithActivityUnits, now) }
+        schedules = scheduleWithAttendance.map { SimpleScheduleResponse.from(it, now) }
     )
 }
 
@@ -103,41 +101,30 @@ data class SimpleScheduleResponse(
 
     companion object {
         fun from(
-            scheduleWithAttendance: Pair<ScheduleEntity, AttendanceEntity?>,
-            userWithActivityUnits: UserWithActivityUnits,
+            scheduleWithAttendance: SessionWithAttendanceDto,
             now: LocalDateTime
-        ): SimpleScheduleResponse =
-            when (scheduleWithAttendance.first) {
-                is SessionEntity -> convertSession(scheduleWithAttendance, userWithActivityUnits, now)
-                is TaskEntity -> TODO()
-                else -> TODO()
-            }
+        ): SimpleScheduleResponse = convertSession(scheduleWithAttendance, now)
 
         private fun convertSession(
-            sessionWithAttendance: Pair<ScheduleEntity, AttendanceEntity?>,
-            userWithActivityUnits: UserWithActivityUnits,
+            sessionWithAttendance: SessionWithAttendanceDto,
             now: LocalDateTime
         ): SimpleScheduleResponse =
-            sessionWithAttendance.let { (s, attendance) ->
-                val session = s as SessionEntity
+            sessionWithAttendance.let {
+                it.resolveAttendanceStatusOfPastSessions(now)
                 SimpleScheduleResponse(
-                    id = session.id,
-                    name = session.name,
-                    place = session.place,
-                    date = session.date,
-                    startDayOfTheWeek = session.date.dayOfWeek.korean(),
-                    endDate = session.endDate,
-                    endDayOfTheWeek = session.endDate.dayOfWeek.korean(),
-                    time = session.time,
-                    endTime = session.endTime,
+                    id = it.id,
+                    name = it.name,
+                    place = it.place,
+                    date = it.date,
+                    startDayOfTheWeek = it.date.dayOfWeek.korean(),
+                    endDate = it.endDate,
+                    endDayOfTheWeek = it.endDate.dayOfWeek.korean(),
+                    time = it.time,
+                    endTime = it.endTime,
                     scheduleType = ScheduleType.SESSION,
-                    sessionType = session.sessionType,
-                    scheduleProgressPhase = session.getProgressPhase(now),
-                    attendanceStatus = ABSENT.label.takeIf {
-                        attendance == null &&
-                            session.isFinished(now) &&
-                            session.generation in userWithActivityUnits.activityUnits.map { it.generation }
-                    }
+                    sessionType = it.sessionType,
+                    scheduleProgressPhase = it.getScheduleProgressPhase(now),
+                    attendanceStatus = it.attendanceStatus
                 )
             }
     }
