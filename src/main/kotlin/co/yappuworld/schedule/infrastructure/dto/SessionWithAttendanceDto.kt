@@ -2,6 +2,7 @@ package co.yappuworld.schedule.infrastructure.dto
 
 import co.yappuworld.global.util.DatetimeUtils.isBeforeOrEqual
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
@@ -78,6 +79,14 @@ class SessionWithAttendanceDto(
 
     fun isToday(now: LocalDateTime): Boolean =
         date.isBeforeOrEqual(now.toLocalDate()) && now.toLocalDate().isBeforeOrEqual(endDate)
+
+    fun getScheduleProgressPhase(now: LocalDateTime): ScheduleProgressPhase =
+        when {
+            isFinished(now) -> ScheduleProgressPhase.DONE
+            isOnGoing(now) -> ScheduleProgressPhase.ONGOING
+            isToday(now) -> ScheduleProgressPhase.TODAY
+            else -> ScheduleProgressPhase.PENDING
+        }
 
     fun getSessionProgressPhase(now: LocalDateTime): SessionProgressPhase =
         when {

@@ -3,8 +3,8 @@ package co.yappuworld.schedule.client.dto.response
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
+import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.vo.ScheduleType
-import co.yappuworld.schedule.domain.vo.SessionProgressPhase
 import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
@@ -94,7 +94,7 @@ data class SimpleScheduleResponse(
     @field:Schema(description = "세션 종류", nullable = true)
     val sessionType: SessionType?,
     @field:Schema(description = "일정 진행 상태")
-    val scheduleProgressPhase: SessionProgressPhase,
+    val scheduleProgressPhase: ScheduleProgressPhase,
     @field:Schema(description = "출석 상태", nullable = true, allowableValues = ["출석", "지각", "결석", "조퇴", "공결"])
     val attendanceStatus: String?
 ) {
@@ -110,6 +110,7 @@ data class SimpleScheduleResponse(
             now: LocalDateTime
         ): SimpleScheduleResponse =
             sessionWithAttendance.let {
+                it.resolveAttendanceStatusOfPastSessions(now)
                 SimpleScheduleResponse(
                     id = it.id,
                     name = it.name,
@@ -122,7 +123,7 @@ data class SimpleScheduleResponse(
                     endTime = it.endTime,
                     scheduleType = ScheduleType.SESSION,
                     sessionType = it.sessionType,
-                    scheduleProgressPhase = it.getSessionProgressPhase(now),
+                    scheduleProgressPhase = it.getScheduleProgressPhase(now),
                     attendanceStatus = it.attendanceStatus
                 )
             }
