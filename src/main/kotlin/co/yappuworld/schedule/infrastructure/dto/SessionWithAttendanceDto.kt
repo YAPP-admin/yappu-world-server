@@ -61,7 +61,7 @@ class SessionWithAttendanceDto(
     val attendanceStatusType: AttendanceStatus? = _attendanceStatus
 
     fun resolveAttendanceStatusOfPastSessions(now: LocalDateTime) {
-        if (checkedInAt == null && isFinished(now)) {
+        if (attendanceStatusType == AttendanceStatus.PENDING && checkedInAt == null && isFinished(now)) {
             attendanceStatus = AttendanceStatus.ABSENT.label
         }
     }
