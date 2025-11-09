@@ -13,6 +13,8 @@ interface SignUpApplicationRepository :
 
     fun findAllByIdIn(ids: List<UUID>): List<SignUpApplicationEntity>
 
+    fun findAllByApplicantEmailIn(emails: List<String>): List<SignUpApplicationEntity>
+
     @Query(value = "select get_lock(:email, :timeoutSeconds)", nativeQuery = true)
     fun getLock(
         @Param("email") email: String,
