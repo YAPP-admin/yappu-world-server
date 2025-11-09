@@ -16,10 +16,10 @@ spring:
                 in-tests: false
             file: docker/docker-compose-local.yaml
 
-#    datasource:
-#        url: jdbc:mysql://localhost:3306/yappu_world
-#        username: yapp
-#        password: yapp
+    datasource:
+        url: jdbc:mysql://localhost:3306/yappu_world
+        username: yapp
+        password: yapp
 
     sql:
         init:
