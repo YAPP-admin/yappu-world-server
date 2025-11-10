@@ -29,11 +29,11 @@ class TeamServiceEntity(
     var name: String? = name
         private set
 
-    @Column(name = "has_app")
+    @Column(name = "has_app", nullable = false)
     var hasApp: Boolean = hasApp
         private set
 
-    @Column(name = "has_web")
+    @Column(name = "has_web", nullable = false)
     var hasWeb: Boolean = hasWeb
         private set
 

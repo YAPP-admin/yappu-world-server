@@ -1,6 +1,5 @@
 package co.yappuworld.team.infrastructure
 
-import co.yappuworld.support.environment.CustomDataJpaTest
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.TeamFixture.getTeamEntityFixture
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceEntityFixture
@@ -12,7 +11,6 @@ import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 
-@CustomDataJpaTest
 class TeamFindServiceTest @Autowired constructor(
     private val teamRepository: TeamRepository,
     private val serviceRepository: TeamServiceRepository
