@@ -35,5 +35,10 @@ enum class TeamError : Error {
         override val message: String = "존재하지 않는 활동 이력 ID입니다."
         override val code: String = "TEAM_1004"
         override val type: ErrorType = ErrorType.WRONG_STATE
+    },
+    INVALID_ACTIVITY_UNIT_GENERATION {
+        override val message: String = "팀 기수와 활동 이력의 기수가 일치하지 않습니다."
+        override val code: String = "TEAM_1005"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     }
 }

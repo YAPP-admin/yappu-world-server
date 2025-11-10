@@ -1,7 +1,6 @@
 package co.yappuworld.team.client.dto.response
 
-import co.yappuworld.team.infrastructure.entity.TeamEntity
-import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
+import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -22,18 +21,15 @@ data class AdminTeamResponse(
     val platformLinks: PlatformLinksResponse?
 ) {
     companion object {
-        fun from(
-            team: TeamEntity,
-            service: TeamServiceEntity? = null
-        ): AdminTeamResponse =
+        fun from(dto: TeamWithServiceDto): AdminTeamResponse =
             AdminTeamResponse(
-                teamId = team.id,
-                generation = team.generation,
-                name = team.name,
-                serviceName = service?.name,
-                hasApp = service?.hasApp ?: false,
-                hasWeb = service?.hasWeb ?: false,
-                platformLinks = service?.serviceLinks?.let {
+                teamId = dto.teamId,
+                generation = dto.generation,
+                name = dto.teamName,
+                serviceName = dto.serviceName,
+                hasApp = dto.hasApp ?: false,
+                hasWeb = dto.hasWeb ?: false,
+                platformLinks = dto.serviceLinks?.let {
                     PlatformLinksResponse.from(it)
                 }
             )

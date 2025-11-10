@@ -16,5 +16,9 @@ interface TeamRepository :
         name: String
     ): Boolean
 
-    fun findByGeneration(generation: Int): List<TeamEntity>
+    fun existsByGenerationAndNameAndIdNot(
+        generation: Int,
+        name: String,
+        id: UUID
+    ): Boolean
 }

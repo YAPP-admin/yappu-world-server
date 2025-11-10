@@ -4,17 +4,13 @@ import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.jpa.TeamServiceRepository
 import org.springframework.stereotype.Service
-import java.util.UUID
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class TeamServiceFindService(
     private val teamServiceRepository: TeamServiceRepository
 ) {
 
-    fun findServiceOrNull(team: TeamEntity): TeamServiceEntity? = teamServiceRepository.findByTeam(team).firstOrNull()
-
-    fun findServices(teamIds: List<UUID>): List<TeamServiceEntity> {
-        if (teamIds.isEmpty()) return emptyList()
-        return teamServiceRepository.findByTeamIdIn(teamIds)
-    }
+    fun findServiceOrNull(team: TeamEntity): TeamServiceEntity? = teamServiceRepository.findByTeam(team).singleOrNull()
 }

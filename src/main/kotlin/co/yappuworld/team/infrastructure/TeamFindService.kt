@@ -1,6 +1,7 @@
 package co.yappuworld.team.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
 import co.yappuworld.team.domain.vo.ServicePlatform
 import co.yappuworld.team.domain.vo.TeamError
 import co.yappuworld.team.infrastructure.entity.TeamEntity
@@ -24,16 +25,32 @@ class TeamFindService(
         teamRepository.findByIdOrNull(id)
             ?: throw BusinessException(TeamError.TEAM_NOT_FOUND)
 
+    fun findTeamWithService(id: UUID): TeamWithServiceDto =
+        teamRepository
+            .findAll(CustomTeamDsl) {
+                selectTeamWithService()
+                    .from(
+                        entity(TeamEntity::class),
+                        leftJoin(TeamServiceEntity::class).on(
+                            path(TeamEntity::getId)
+                                .equal(path(TeamServiceEntity::team).path(TeamEntity::getId))
+                        )
+                    ).where(
+                        path(TeamEntity::getId).equal(id)
+                    )
+            }.singleOrNull()
+            ?: throw BusinessException(TeamError.TEAM_NOT_FOUND)
+
     fun existsName(name: String): Boolean = teamRepository.existsTeamByName(name)
 
     fun findTeams(
         generation: Int?,
         platform: ServicePlatform?,
         pageable: Pageable
-    ): Page<TeamEntity> =
+    ): Page<TeamWithServiceDto> =
         teamRepository
-            .findPage(pageable) {
-                select(entity(TeamEntity::class))
+            .findPage(CustomTeamDsl, pageable) {
+                selectTeamWithService()
                     .from(
                         entity(TeamEntity::class),
                         leftJoin(TeamServiceEntity::class).on(
@@ -48,10 +65,8 @@ class TeamFindService(
                                 ServicePlatform.WEB -> path(TeamServiceEntity::hasWeb).equal(true)
                             }
                         }
-                    ).orderBy(*CustomTeamDsl().teamSorting(platform).toTypedArray())
+                    ).orderBy(*teamSorting(platform).toTypedArray())
             }.let { page ->
                 PageImpl(page.content.filterNotNull(), page.pageable, page.totalElements)
             }
-
-    fun findTeams(generation: Int): List<TeamEntity> = teamRepository.findByGeneration(generation)
 }

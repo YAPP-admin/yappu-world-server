@@ -66,7 +66,7 @@ interface AdminUserManageApi {
                                                     "isActive": false,
                                                     "team": {
                                                       "id": "7f1080cb-0579-11f0-bb9e-0242ac120002",
-                                                      "name": "string"
+                                                      "name": "팀 이름"
                                                     }
                                                 }
                                             ]

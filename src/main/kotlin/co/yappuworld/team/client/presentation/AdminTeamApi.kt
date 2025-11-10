@@ -200,8 +200,9 @@ interface AdminTeamApi {
                                             },
                                             "members": [
                                                 {
-                                                    "id": "member-uuid",
-                                                    "activityUnitId": "activity-uuid"
+                                                    "activityUnitId": "activity-uuid",
+                                                    "name": "홍길동",
+                                                    "position": "PM"
                                                 }
                                             ],
                                             "createdAt": "2025-01-01T00:00:00",

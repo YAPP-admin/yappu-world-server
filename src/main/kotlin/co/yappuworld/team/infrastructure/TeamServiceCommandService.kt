@@ -14,8 +14,8 @@ class TeamServiceCommandService(
 
     fun save(service: TeamServiceEntity): TeamServiceEntity = serviceRepository.save(service)
 
-    fun delete(id: UUID) {
-        serviceRepository.deleteById(id)
+    fun delete(entity: TeamServiceEntity) {
+        serviceRepository.delete(entity)
     }
 
     fun deleteAll(ids: List<UUID>) {

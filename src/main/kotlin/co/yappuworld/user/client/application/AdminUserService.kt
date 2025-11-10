@@ -133,19 +133,14 @@ class AdminUserService(
         requests
             .partition { it.id == null }
             .let { (toCreate, toUpdateOrDelete) ->
-                toUpdateOrDelete.ifNotEmpty {
-                    updateOrDeleteActivityUnit(userId, it)
-                    it.forEach { request ->
-                        request.id?.let { activityUnitId ->
-                            adminTeamService.assignMemberToTeam(activityUnitId, request.teamId)
-                        }
-                    }
-                }
                 toCreate.ifNotEmpty {
                     it.forEach { request ->
                         val activityUnit = activityUnitCommandService.save(request.toActivityUnit(userId))
-                        adminTeamService.assignMemberToTeam(activityUnit.id, request.teamId)
+                        adminTeamService.assignMemberToTeam(activityUnit, request.teamId)
                     }
+                }
+                toUpdateOrDelete.ifNotEmpty {
+                    updateOrDeleteActivityUnit(userId, it)
                 }
             }
     }
@@ -167,6 +162,7 @@ class AdminUserService(
                     units.forEach { u ->
                         requestById[u.id]?.let { request ->
                             u.updateActivityUnit(request.generation, request.position)
+                            adminTeamService.assignMemberToTeam(u, request.teamId)
                         }
                     }
                     activityUnitCommandService.saveAll(units)

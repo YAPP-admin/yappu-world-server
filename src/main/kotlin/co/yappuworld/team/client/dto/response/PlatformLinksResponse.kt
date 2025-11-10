@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "플랫폼 링크")
 data class PlatformLinksResponse(
-    @Schema(description = "앱스토어 링크", example = "https://apps.apple.com")
-    val app_store: String? = null,
-    @Schema(description = "구글 플레이 링크", example = "https://play.google.com/store/apps")
-    val google_play: String? = null,
-    @Schema(description = "웹 링크", example = "https://yappworld.com")
+    @field:Schema(description = "앱스토어 링크", example = "https://apps.apple.com")
+    val appStore: String? = null,
+    @field:Schema(description = "구글 플레이 링크", example = "https://play.google.com/store/apps")
+    val googlePlay: String? = null,
+    @field:Schema(description = "웹 링크", example = "https://yappuworld.com")
     val web: String? = null
 ) {
     companion object {
@@ -19,8 +19,8 @@ data class PlatformLinksResponse(
                 return null
             }
             return PlatformLinksResponse(
-                app_store = serviceLinks.appStore,
-                google_play = serviceLinks.googlePlay,
+                appStore = serviceLinks.appStore,
+                googlePlay = serviceLinks.googlePlay,
                 web = serviceLinks.web
             )
         }

@@ -28,7 +28,11 @@ class TeamCommandService(
     }
 
     private fun validateTeamName(team: TeamEntity) {
-        val exists = teamRepository.existsByGenerationAndName(team.generation, team.name)
+        val exists = when (team.isNew()) {
+            true -> teamRepository.existsByGenerationAndName(team.generation, team.name)
+            false -> teamRepository.existsByGenerationAndNameAndIdNot(team.generation, team.name, team.id)
+        }
+
         if (exists) {
             throw BusinessException(TeamError.TEAM_ALREADY_EXISTS)
         }

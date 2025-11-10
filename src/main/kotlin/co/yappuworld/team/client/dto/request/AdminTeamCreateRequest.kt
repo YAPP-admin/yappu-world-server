@@ -1,5 +1,8 @@
 package co.yappuworld.team.client.dto.request
 
+import co.yappuworld.team.infrastructure.entity.ServiceLinks
+import co.yappuworld.team.infrastructure.entity.TeamEntity
+import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
@@ -30,4 +33,23 @@ data class AdminTeamCreateRequest(
     val webLink: String?,
     @field:Schema(description = "팀원 활동 이력 ID 목록")
     val activityUnitIds: List<UUID>? = null
-)
+) {
+    fun toTeam(): TeamEntity =
+        TeamEntity(
+            generation = generation,
+            name = name
+        )
+
+    fun toService(team: TeamEntity): TeamServiceEntity =
+        TeamServiceEntity(
+            team = team,
+            name = serviceName,
+            hasApp = hasApp,
+            hasWeb = hasWeb,
+            serviceLinks = ServiceLinks(
+                appStore = appStoreLink,
+                googlePlay = googlePlayLink,
+                web = webLink
+            )
+        )
+}

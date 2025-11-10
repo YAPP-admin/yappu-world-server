@@ -25,6 +25,7 @@ class TeamServiceEntity(
     var team: TeamEntity = team
         private set
 
+    @Column(name = "name")
     var name: String? = name
         private set
 

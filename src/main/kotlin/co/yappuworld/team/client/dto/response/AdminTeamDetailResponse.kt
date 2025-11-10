@@ -1,5 +1,7 @@
 package co.yappuworld.team.client.dto.response
 
+import co.yappuworld.team.infrastructure.dto.TeamMemberDetailDto
+import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -13,8 +15,22 @@ data class AdminTeamDetailResponse(
     @field:Schema(description = "서비스 정보")
     val service: AdminTeamServiceResponse?,
     @field:Schema(description = "팀원 목록")
-    val members: List<AdminTeamMemberResponse?>?
-)
+    val members: List<AdminTeamMemberResponse>
+) {
+    companion object {
+        fun of(
+            teamWithService: TeamWithServiceDto,
+            members: List<TeamMemberDetailDto>
+        ): AdminTeamDetailResponse =
+            AdminTeamDetailResponse(
+                id = teamWithService.teamId,
+                generation = teamWithService.generation,
+                name = teamWithService.teamName,
+                service = AdminTeamServiceResponse.from(teamWithService),
+                members = members.map { AdminTeamMemberResponse.from(it) }
+            )
+    }
+}
 
 data class AdminTeamServiceResponse(
     @field:Schema(description = "서비스 ID")
@@ -31,7 +47,22 @@ data class AdminTeamServiceResponse(
     val appStoreLink: String?,
     @field:Schema(description = "웹 사이트 링크")
     val webLink: String?
-)
+) {
+    companion object {
+        fun from(dto: TeamWithServiceDto): AdminTeamServiceResponse? =
+            dto.serviceId?.let {
+                AdminTeamServiceResponse(
+                    id = it,
+                    name = dto.serviceName,
+                    hasApp = dto.hasApp ?: false,
+                    hasWeb = dto.hasWeb ?: false,
+                    googlePlayLink = dto.serviceLinks?.googlePlay,
+                    appStoreLink = dto.serviceLinks?.appStore,
+                    webLink = dto.serviceLinks?.web
+                )
+            }
+    }
+}
 
 data class AdminTeamMemberResponse(
     @field:Schema(description = "활동 이력 ID")
@@ -40,4 +71,13 @@ data class AdminTeamMemberResponse(
     val name: String,
     @field:Schema(description = "직군")
     val position: String
-)
+) {
+    companion object {
+        fun from(dto: TeamMemberDetailDto): AdminTeamMemberResponse =
+            AdminTeamMemberResponse(
+                activityUnitId = dto.activityUnitId,
+                name = dto.userName,
+                position = dto.position
+            )
+    }
+}

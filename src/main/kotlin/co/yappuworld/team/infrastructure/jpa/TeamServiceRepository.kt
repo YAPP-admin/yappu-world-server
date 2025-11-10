@@ -7,6 +7,4 @@ import java.util.UUID
 
 interface TeamServiceRepository : JpaRepository<TeamServiceEntity, UUID> {
     fun findByTeam(team: TeamEntity): List<TeamServiceEntity>
-
-    fun findByTeamIdIn(teamIds: List<UUID>): List<TeamServiceEntity>
 }
