@@ -1,4 +1,4 @@
- DROP TABLE IF EXISTS config;
+DROP TABLE IF EXISTS config;
 CREATE TABLE config
 (
     name       varchar(64) PRIMARY KEY,
