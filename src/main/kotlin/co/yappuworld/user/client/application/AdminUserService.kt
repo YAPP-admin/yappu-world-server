@@ -12,6 +12,7 @@ import co.yappuworld.operation.client.dto.request.AdminSignupCodeDeleteRequest
 import co.yappuworld.operation.infrastructure.ConfigCommandService
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.ConfigRepository
+import co.yappuworld.team.client.application.AdminTeamService
 import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
@@ -37,6 +38,7 @@ class AdminUserService(
     private val userFindService: UserFindService,
     private val activityUnitFindService: ActivityUnitFindService,
     private val activityUnitCommandService: ActivityUnitCommandService,
+    private val adminTeamService: AdminTeamService,
     private val configRepository: ConfigRepository,
     private val jwtGenerator: JwtGenerator,
     private val jwtResolver: JwtResolver,
@@ -131,8 +133,15 @@ class AdminUserService(
         requests
             .partition { it.id == null }
             .let { (toCreate, toUpdateOrDelete) ->
-                toUpdateOrDelete.ifNotEmpty { updateOrDeleteActivityUnit(userId, it) }
-                toCreate.ifNotEmpty { activityUnitCommandService.saveAll(it.map { r -> r.toActivityUnit(userId) }) }
+                toCreate.ifNotEmpty {
+                    it.forEach { request ->
+                        val activityUnit = activityUnitCommandService.save(request.toActivityUnit(userId))
+                        adminTeamService.assignMemberToTeam(activityUnit, request.teamId)
+                    }
+                }
+                toUpdateOrDelete.ifNotEmpty {
+                    updateOrDeleteActivityUnit(userId, it)
+                }
             }
     }
 
@@ -153,6 +162,7 @@ class AdminUserService(
                     units.forEach { u ->
                         requestById[u.id]?.let { request ->
                             u.updateActivityUnit(request.generation, request.position)
+                            adminTeamService.assignMemberToTeam(u, request.teamId)
                         }
                     }
                     activityUnitCommandService.saveAll(units)
