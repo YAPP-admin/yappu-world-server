@@ -278,6 +278,7 @@ interface ScheduleApi {
                                             "relativeDays": -1,
                                             "canCheckIn": false,
                                             "status": null,
+                                            "progressPhase": "PENDING",
                                             "notices": [
                                                 {
                                                     "id": "5523a1f4-ff12-11ef-ad31-0242ac120002",
@@ -306,6 +307,7 @@ interface ScheduleApi {
                                             "relativeDays": 0,
                                             "canCheckIn": true,
                                             "status": null,
+                                            "progressPhase": "TODAY",
                                             "notices": [
                                                 {
                                                     "id": "5523a1f4-ff12-11ef-ad31-0242ac120002",
@@ -334,6 +336,7 @@ interface ScheduleApi {
                                             "relativeDays": 0,
                                             "canCheckIn": false,
                                             "status": "출석",
+                                            "progressPhase": "ONGOING",
                                             "notices": [
                                                 {
                                                     "id": "5523a1f4-ff12-11ef-ad31-0242ac120002",

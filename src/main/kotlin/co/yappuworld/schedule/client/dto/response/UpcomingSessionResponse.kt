@@ -2,6 +2,8 @@ package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.schedule.domain.SessionAttendance
+import co.yappuworld.schedule.domain.vo.SessionProgressPhase
+import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,6 +50,9 @@ data class UpcomingSessionResponse(
     val canCheckIn: Boolean,
     @field:Schema(description = "현재 출석 상태", allowableValues = ["출석", "지각", "결석", "조퇴", "공결"], nullable = true)
     val status: String?,
+    @field:Schema(description = "세션 진행 상태")
+    val progressPhase: SessionProgressPhase,
+    @field:Schema(description = "공지 사항 목록")
     val notices: List<UpcomingSessionNoticeResponse>
 ) {
 
@@ -72,6 +77,11 @@ data class UpcomingSessionResponse(
                     relativeDays = it.getRelativeDays(now.toLocalDate()),
                     canCheckIn = it.canCheckIn(now),
                     status = it.getAttendanceStatus(now),
+                    progressPhase = SessionWithAttendanceDto
+                        .from(
+                            sessionAttendance.session,
+                            sessionAttendance.attendance
+                        ).getSessionProgressPhase(now),
                     notices = notices.map { notice -> UpcomingSessionNoticeResponse(notice.id, notice.title) }
                 )
             }
