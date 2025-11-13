@@ -160,8 +160,7 @@ CREATE TABLE team_services
     has_web         tinyint(1) NOT NULL DEFAULT 0,
     name            varchar(255) DEFAULT NULL,
     service_links   json DEFAULT NULL,
-    team_id         binary(16) NOT NULL,
-    FOREIGN KEY (team_id) REFERENCES teams(id)
+    team_id         binary(16) NOT NULL
 );
 
 DROP TABLE IF EXISTS team_members;
@@ -171,6 +170,5 @@ CREATE TABLE team_members
     created_at       datetime(6),
     updated_at       datetime(6),
     activity_unit_id binary(16) NOT NULL,
-    team_id          binary(16) NOT NULL,
-    FOREIGN KEY (team_id) REFERENCES teams(id)
+    team_id          binary(16) NOT NULL
 );

@@ -22,24 +22,24 @@ CustomTeamDsl : Jpql() {
     }
 
     fun teamSorting(platform: ServicePlatform?): List<Sortable> =
-        listOfNotNull(
-            path(TeamEntity::generation).desc(),
+        buildList {
+            add(path(TeamEntity::generation).desc())
             if (platform == null) {
-                caseWhen(path(TeamServiceEntity::hasApp).equal(true))
-                    .then(1)
-                    .`else`(2)
-                    .asc()
-            } else {
-                null
-            },
-            path(TeamEntity::name).desc()
-        )
+                add(
+                    caseWhen(path(TeamServiceEntity::hasApp).equal(true))
+                        .then(1)
+                        .`else`(2)
+                        .asc()
+                )
+            }
+            add(path(TeamEntity::name).desc())
+        }
 
     fun selectTeamWithService(): SelectQueryFromStep<TeamWithServiceDto> =
         selectNew<TeamWithServiceDto>(
             path(TeamEntity::getId),
-            path(TeamEntity::generation),
             path(TeamEntity::name),
+            path(TeamEntity::generation),
             path(TeamServiceEntity::getId),
             path(TeamServiceEntity::name),
             path(TeamServiceEntity::hasApp),

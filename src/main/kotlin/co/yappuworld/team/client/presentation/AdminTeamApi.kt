@@ -135,9 +135,8 @@ interface AdminTeamApi {
             )
         ]
     )
-    @PutMapping("/admin/v1/teams/{teamId}")
+    @PutMapping("/admin/v1/teams")
     fun updateTeam(
-        @PathVariable("teamId") teamId: UUID,
         @Valid @RequestBody request: AdminTeamUpdateRequest
     ): ResponseEntity<Unit>
 

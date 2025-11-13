@@ -13,4 +13,6 @@ interface TeamMemberRepository :
     fun findByTeam(team: TeamEntity): List<TeamMemberEntity>
 
     fun findByActivityUnit(activityUnit: ActivityUnitEntity): TeamMemberEntity?
+
+    fun deleteAllByTeam(team: TeamEntity)
 }

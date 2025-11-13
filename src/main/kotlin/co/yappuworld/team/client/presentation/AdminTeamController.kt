@@ -8,9 +8,9 @@ import co.yappuworld.team.client.dto.request.AdminTeamUpdateRequest
 import co.yappuworld.team.client.dto.response.AdminTeamResponse
 import co.yappuworld.team.client.dto.response.AdminTeamDetailResponse
 import co.yappuworld.team.client.application.AdminTeamService
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 import java.util.UUID
 
 @RestController
@@ -31,15 +31,12 @@ class AdminTeamController(
         )
 
     override fun createTeam(request: AdminTeamCreateRequest): ResponseEntity<Unit> {
-        adminTeamService.createTeam(request)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        val teamId = adminTeamService.createTeam(request)
+        return ResponseEntity.created(URI("/v1/admin/teams/$teamId")).build()
     }
 
-    override fun updateTeam(
-        teamId: UUID,
-        request: AdminTeamUpdateRequest
-    ): ResponseEntity<Unit> {
-        adminTeamService.updateTeam(request.copy(id = teamId))
+    override fun updateTeam(request: AdminTeamUpdateRequest): ResponseEntity<Unit> {
+        adminTeamService.updateTeam(request)
         return ResponseEntity.noContent().build()
     }
 

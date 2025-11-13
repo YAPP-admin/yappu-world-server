@@ -61,7 +61,7 @@ class AdminTeamService(
     }
 
     @Transactional
-    fun createTeam(request: AdminTeamCreateRequest) {
+    fun createTeam(request: AdminTeamCreateRequest): UUID {
         val team = request.toTeam().also { teamCommandService.save(it) }
 
         createService(team, request)
@@ -70,6 +70,8 @@ class AdminTeamService(
             validateActivityUnits(team, activityUnitIds)
             createTeamMembers(team, activityUnitIds)
         }
+
+        return team.id
     }
 
     @Transactional
@@ -110,7 +112,7 @@ class AdminTeamService(
         teamId: UUID?
     ) {
         teamMemberFindService.findMemberOrNull(activityUnit)?.let { existingMember ->
-            teamMemberCommandService.delete(existingMember.id)
+            teamMemberCommandService.delete(existingMember)
         }
 
         if (teamId != null) {
@@ -208,19 +210,25 @@ class AdminTeamService(
         team: TeamEntity,
         activityUnitIds: List<UUID>
     ) {
-        deleteTeamMembers(team)
-        createTeamMembers(team, activityUnitIds)
+        val existingMembers = teamMemberFindService.findMembers(team)
+        val existingActivityUnitIds = existingMembers.map { it.activityUnit.id }
+
+        activityUnitIds
+            .filterNot { it in existingActivityUnitIds }
+            .takeIf { it.isNotEmpty() }
+            ?.let { createTeamMembers(team, it) }
+
+        existingMembers
+            .filterNot { it.activityUnit.id in activityUnitIds }
+            .takeIf { it.isNotEmpty() }
+            ?.let { teamMemberCommandService.deleteAll(it) }
     }
 
     private fun deleteTeamMembers(team: TeamEntity) {
-        val existingMembers = teamMemberFindService.findMembers(team)
-        if (existingMembers.isNotEmpty()) {
-            val memberIds = existingMembers.map { it.id }
-            try {
-                teamMemberCommandService.deleteAll(memberIds)
-            } catch (e: IllegalArgumentException) {
-                throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
-            }
+        try {
+            teamMemberCommandService.deleteAll(team)
+        } catch (e: IllegalArgumentException) {
+            throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
         }
     }
 

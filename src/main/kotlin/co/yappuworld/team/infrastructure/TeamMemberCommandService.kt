@@ -1,10 +1,10 @@
 package co.yappuworld.team.infrastructure
 
+import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
 import co.yappuworld.team.infrastructure.jpa.TeamMemberRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 
 @Service
 @Transactional
@@ -19,12 +19,16 @@ class TeamMemberCommandService(
         teamMemberRepository.saveAll(teamMembers)
     }
 
-    fun delete(id: UUID) {
-        teamMemberRepository.deleteById(id)
+    fun delete(teamMember: TeamMemberEntity) {
+        teamMemberRepository.delete(teamMember)
     }
 
-    fun deleteAll(ids: List<UUID>) {
-        require(ids.isNotEmpty()) { "최소 하나 이상의 삭제 대상이 필요합니다." }
-        teamMemberRepository.deleteAllById(ids)
+    fun deleteAll(teamMembers: List<TeamMemberEntity>) {
+        require(teamMembers.isNotEmpty()) { "최소 하나 이상의 삭제 대상이 필요합니다." }
+        teamMemberRepository.deleteAll(teamMembers)
+    }
+
+    fun deleteAll(team: TeamEntity) {
+        teamMemberRepository.deleteAllByTeam(team)
     }
 }
