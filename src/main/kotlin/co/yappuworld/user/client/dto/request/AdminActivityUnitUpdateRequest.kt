@@ -16,7 +16,9 @@ data class AdminActivityUnitUpdateRequest(
     val generation: Int,
     @Schema(description = "직군")
     @field:NotEmpty(message = "직군은 필수로 입력해야 합니다.")
-    val position: Position
+    val position: Position,
+    @Schema(description = "팀 ID")
+    val teamId: UUID? = null
 ) {
 
     fun toActivityUnit(userId: UUID): ActivityUnitEntity =
