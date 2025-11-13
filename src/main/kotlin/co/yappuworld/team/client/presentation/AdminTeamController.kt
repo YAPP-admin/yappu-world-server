@@ -32,7 +32,7 @@ class AdminTeamController(
 
     override fun createTeam(request: AdminTeamCreateRequest): ResponseEntity<Unit> {
         val teamId = adminTeamService.createTeam(request)
-        return ResponseEntity.created(URI("/v1/admin/teams/$teamId")).build()
+        return ResponseEntity.created(URI("/admin/v1/teams/$teamId")).build()
     }
 
     override fun updateTeam(request: AdminTeamUpdateRequest): ResponseEntity<Unit> {

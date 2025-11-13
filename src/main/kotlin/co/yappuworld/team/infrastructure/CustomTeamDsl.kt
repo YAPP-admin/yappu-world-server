@@ -37,10 +37,10 @@ CustomTeamDsl : Jpql() {
 
     fun selectTeamWithService(): SelectQueryFromStep<TeamWithServiceDto> =
         selectNew<TeamWithServiceDto>(
-            path(TeamEntity::getId),
+            path(TeamEntity::id),
             path(TeamEntity::name),
             path(TeamEntity::generation),
-            path(TeamServiceEntity::getId),
+            path(TeamServiceEntity::id),
             path(TeamServiceEntity::name),
             path(TeamServiceEntity::hasApp),
             path(TeamServiceEntity::hasWeb),
@@ -49,7 +49,7 @@ CustomTeamDsl : Jpql() {
 
     fun selectTeamMemberDetail(): SelectQueryFromStep<TeamMemberDetailDto> =
         selectNew<TeamMemberDetailDto>(
-            path(TeamMemberEntity::activityUnit).path(ActivityUnitEntity::getId),
+            path(TeamMemberEntity::activityUnit).path(ActivityUnitEntity::id),
             path(TeamMemberEntity::activityUnit).path(ActivityUnitEntity::generation),
             path(TeamMemberEntity::activityUnit).path(ActivityUnitEntity::position),
             path(UserEntity::name)

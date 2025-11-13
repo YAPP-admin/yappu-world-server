@@ -225,11 +225,7 @@ class AdminTeamService(
     }
 
     private fun deleteTeamMembers(team: TeamEntity) {
-        try {
-            teamMemberCommandService.deleteAll(team)
-        } catch (e: IllegalArgumentException) {
-            throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
-        }
+        teamMemberCommandService.deleteAll(team)
     }
 
     private fun deleteTeamService(team: TeamEntity) {
