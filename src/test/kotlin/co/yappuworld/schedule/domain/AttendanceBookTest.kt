@@ -77,12 +77,10 @@ class AttendanceBookTest :
                     status = AttendanceStatus.PENDING
                 )
             )
-            val latePassEntities = listOf(
-                LatePassEntity(
-                    userId = users[0].userId,
-                    generation = generation
-                )
-            )
+            val latePassEntity = LatePassEntity(
+                userId = users[0].userId,
+                generation = generation
+            ).apply { updateCount(1) }
 
             scenario("AttendanceBook을 생성한다.") {
                 shouldNotThrowAny {
@@ -91,7 +89,7 @@ class AttendanceBookTest :
                         attendees = users.map { getAttendeeFixture(it, generation) },
                         sessions = sessions,
                         attendances = attendances,
-                        latePasses = latePassEntities,
+                        latePasses = listOf(latePassEntity),
                         now = now
                     )
                 }
@@ -103,7 +101,7 @@ class AttendanceBookTest :
                     attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
-                    latePasses = latePassEntities,
+                    latePasses = listOf(latePassEntity),
                     now = now
                 )
 
@@ -153,7 +151,7 @@ class AttendanceBookTest :
                     attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
-                    latePasses = latePassEntities,
+                    latePasses = listOf(latePassEntity),
                     now = now
                 )
 
@@ -195,11 +193,7 @@ class AttendanceBookTest :
                         LatePassEntity(
                             userId = users[0].userId,
                             generation = generation
-                        ),
-                        LatePassEntity(
-                            userId = users[0].userId,
-                            generation = generation
-                        )
+                        ).apply { updateCount(2) }
                     ),
                     now = now
                 )
@@ -213,7 +207,7 @@ class AttendanceBookTest :
                     attendees = users.map { getAttendeeFixture(it, generation) },
                     sessions = sessions,
                     attendances = attendances,
-                    latePasses = latePassEntities,
+                    latePasses = listOf(latePassEntity),
                     now = now
                 )
 
