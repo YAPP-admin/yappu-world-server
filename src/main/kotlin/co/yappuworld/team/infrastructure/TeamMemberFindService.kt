@@ -39,4 +39,9 @@ class TeamMemberFindService(
 
     fun findMemberOrNull(activityUnit: ActivityUnitEntity): TeamMemberEntity? =
         teamMemberRepository.findByActivityUnit(activityUnit)
+
+    fun findMembers(activityUnits: List<ActivityUnitEntity>): List<TeamMemberEntity> {
+        if (activityUnits.isEmpty()) return emptyList()
+        return teamMemberRepository.findAllByActivityUnitIn(activityUnits)
+    }
 }

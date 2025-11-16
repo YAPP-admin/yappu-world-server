@@ -1,5 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
+import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
@@ -30,7 +31,8 @@ data class AdminUserDetailResponse(
     constructor(
         user: UserEntity,
         activityUnits: List<ActivityUnitEntity>,
-        activeGeneration: Int?
+        activeGeneration: Int?,
+        teams: Map<UUID, AdminUserDetailTeamResponse> = emptyMap()
     ) : this(
         id = user.id,
         name = user.name,
@@ -41,7 +43,7 @@ data class AdminUserDetailResponse(
         isActive = user.isActive,
         registrationDate = user.createdAt.toLocalDate(),
         activityUnits = activityUnits
-            .map { AdminUserDetailActivityUnitResponse(it, activeGeneration) }
+            .map { AdminUserDetailActivityUnitResponse(it, activeGeneration, team = teams[it.id]) }
             .sortedByDescending { it.generation }
     )
 }
@@ -77,4 +79,12 @@ data class AdminUserDetailTeamResponse(
     val id: UUID,
     @Schema(description = "팀 이름")
     val name: String
-)
+) {
+    companion object {
+        fun from(teamMember: TeamMemberEntity): AdminUserDetailTeamResponse =
+            AdminUserDetailTeamResponse(
+                id = teamMember.team.id,
+                name = teamMember.team.name
+            )
+    }
+}

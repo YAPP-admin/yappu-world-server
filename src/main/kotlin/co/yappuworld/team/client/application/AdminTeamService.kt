@@ -18,6 +18,7 @@ import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.entity.ServiceLinks
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
+import co.yappuworld.user.client.dto.response.AdminUserDetailTeamResponse
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import org.springframework.stereotype.Service
@@ -59,6 +60,12 @@ class AdminTeamService(
 
         return AdminTeamDetailResponse.of(teamWithService, members)
     }
+
+    @Transactional(readOnly = true)
+    fun getActivityUnitTeams(activityUnits: List<ActivityUnitEntity>): Map<UUID, AdminUserDetailTeamResponse> =
+        teamMemberFindService
+            .findMembers(activityUnits)
+            .associate { it.activityUnit.id to AdminUserDetailTeamResponse.from(it) }
 
     @Transactional
     fun createTeam(request: AdminTeamCreateRequest): UUID {

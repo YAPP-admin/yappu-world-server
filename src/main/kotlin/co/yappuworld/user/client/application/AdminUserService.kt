@@ -84,12 +84,15 @@ class AdminUserService(
     }
 
     @Transactional(readOnly = true)
-    fun getUserDetail(userId: UUID): AdminUserDetailResponse =
-        AdminUserDetailResponse(
+    fun getUserDetail(userId: UUID): AdminUserDetailResponse {
+        val activityUnits = activityUnitFindService.findActivityUnits(userId)
+        return AdminUserDetailResponse(
             user = userFindService.findUser(userId),
-            activityUnits = activityUnitFindService.findActivityUnits(userId),
-            activeGeneration = generationActiveStateManager.getActiveGenerationOrNull()
+            activityUnits = activityUnits,
+            activeGeneration = generationActiveStateManager.getActiveGenerationOrNull(),
+            teams = adminTeamService.getActivityUnitTeams(activityUnits)
         )
+    }
 
     @Transactional(readOnly = true)
     fun getUserOverviews(request: AdminUserPageRequest): OffsetPageResponse<AdminUserOverviewResponse> =
