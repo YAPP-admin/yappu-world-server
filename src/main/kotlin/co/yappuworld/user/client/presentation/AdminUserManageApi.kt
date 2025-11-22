@@ -5,6 +5,7 @@ import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
+import co.yappuworld.user.client.dto.request.AdminUserDeactivateRequest
 import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.UUID
+import org.springframework.web.bind.annotation.DeleteMapping
 
 @Tag(name = "회원 관리 API", description = "_")
 interface AdminUserManageApi {
@@ -197,5 +199,43 @@ interface AdminUserManageApi {
     @PutMapping("/admin/v1/users")
     fun updateUserDetails(
         @Valid @RequestBody request: AdminUserUpdateRequest
+    ): ResponseEntity<Unit>
+
+    @Operation(
+        summary = "회원 탈퇴 처리",
+        description = "_"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                description = "리소스를 찾을 수 없습니다.",
+                responseCode = "404",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저가 존재하지 않습니다.",
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "message": "유저가 존재하지 않습니다.",
+                                        "errorCode": "USR_0001"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @DeleteMapping("/admin/v1/users")
+    fun deactivateUser(
+        @Valid @RequestBody request: AdminUserDeactivateRequest
     ): ResponseEntity<Unit>
 }

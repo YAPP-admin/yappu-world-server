@@ -17,6 +17,7 @@ import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
+import co.yappuworld.user.client.dto.request.AdminUserDeactivateRequest
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
@@ -27,6 +28,7 @@ import co.yappuworld.user.client.dto.response.AdminUserProfileResponse
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitCommandService
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
+import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -45,7 +47,8 @@ class AdminUserService(
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
     private val generationActiveStateManager: GenerationActiveStateManager,
     private val configFindService: ConfigFindService,
-    private val configCommandService: ConfigCommandService
+    private val configCommandService: ConfigCommandService,
+    private val userCommandService: UserCommandService
 ) {
 
     @Transactional
@@ -125,6 +128,12 @@ class AdminUserService(
     @Transactional(readOnly = true)
     fun getUserProfile(userId: UUID): AdminUserProfileResponse =
         AdminUserProfileResponse(userFindService.findUserWithLastActivityUnit(userId))
+
+    @Transactional
+    fun deactivate(request: AdminUserDeactivateRequest) {
+        val user = userFindService.findUser(request.userId)
+        userCommandService.deactivate(user)
+    }
 
     private fun handleActivityUnitRequest(
         userId: UUID,

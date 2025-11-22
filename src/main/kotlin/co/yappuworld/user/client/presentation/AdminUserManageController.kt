@@ -3,13 +3,14 @@ package co.yappuworld.user.client.presentation
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.user.client.application.AdminUserService
+import co.yappuworld.user.client.dto.request.AdminUserDeactivateRequest
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
 import co.yappuworld.user.client.dto.response.AdminUserDetailResponse
 import co.yappuworld.user.client.dto.response.AdminUserOverviewResponse
+import java.util.UUID
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 @RestController
 class AdminUserManageController(
@@ -31,6 +32,11 @@ class AdminUserManageController(
     override fun updateUserDetails(request: AdminUserUpdateRequest): ResponseEntity<Unit> {
         request.checkRequest()
         adminUserService.updateUserDetails(request)
+        return ResponseEntity.noContent().build()
+    }
+
+    override fun deactivateUser(request: AdminUserDeactivateRequest): ResponseEntity<Unit> {
+        adminUserService.deactivate(request)
         return ResponseEntity.noContent().build()
     }
 }
