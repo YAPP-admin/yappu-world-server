@@ -23,25 +23,13 @@ class TeamMemberFindService(
             selectTeamMemberDetail()
                 .from(
                     entity(TeamMemberEntity::class),
-                    join(ActivityUnitEntity::class).on(
-                        path(TeamMemberEntity::activityUnit)
-                            .path(ActivityUnitEntity::getId)
-                            .equal(path(ActivityUnitEntity::getId))
-                    ),
                     join(UserEntity::class).on(
-                        path(ActivityUnitEntity::userId)
+                        path(TeamMemberEntity::activityUnit)
+                            .path(ActivityUnitEntity::userId)
                             .equal(path(UserEntity::getId))
                     )
                 ).where(
                     path(TeamMemberEntity::team).path(TeamEntity::getId).equal(teamId)
                 )
         }
-
-    fun findMemberOrNull(activityUnit: ActivityUnitEntity): TeamMemberEntity? =
-        teamMemberRepository.findByActivityUnit(activityUnit)
-
-    fun findMembers(activityUnits: List<ActivityUnitEntity>): List<TeamMemberEntity> {
-        if (activityUnits.isEmpty()) return emptyList()
-        return teamMemberRepository.findAllByActivityUnitIn(activityUnits)
-    }
 }

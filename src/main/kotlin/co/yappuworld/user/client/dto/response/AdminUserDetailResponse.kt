@@ -1,6 +1,5 @@
 package co.yappuworld.user.client.dto.response
 
-import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
@@ -31,8 +30,7 @@ data class AdminUserDetailResponse(
     constructor(
         user: UserEntity,
         activityUnits: List<ActivityUnitEntity>,
-        activeGeneration: Int?,
-        teams: Map<UUID, AdminUserDetailTeamResponse> = emptyMap()
+        activeGeneration: Int?
     ) : this(
         id = user.id,
         name = user.name,
@@ -43,7 +41,7 @@ data class AdminUserDetailResponse(
         isActive = user.isActive,
         registrationDate = user.createdAt.toLocalDate(),
         activityUnits = activityUnits
-            .map { AdminUserDetailActivityUnitResponse(it, activeGeneration, team = teams[it.id]) }
+            .map { AdminUserDetailActivityUnitResponse(it, activeGeneration) }
             .sortedByDescending { it.generation }
     )
 }
@@ -63,14 +61,13 @@ data class AdminUserDetailActivityUnitResponse(
 
     constructor(
         activityUnit: ActivityUnitEntity,
-        activeGeneration: Int?,
-        team: AdminUserDetailTeamResponse? = null
+        activeGeneration: Int?
     ) : this(
         id = activityUnit.id,
         generation = activityUnit.generation,
         position = activityUnit.position.label,
         isActive = activityUnit.generation == activeGeneration,
-        team = team
+        team = AdminUserDetailTeamResponse.from(activityUnit)
     )
 }
 
@@ -81,10 +78,13 @@ data class AdminUserDetailTeamResponse(
     val name: String
 ) {
     companion object {
-        fun from(teamMember: TeamMemberEntity): AdminUserDetailTeamResponse =
-            AdminUserDetailTeamResponse(
-                id = teamMember.team.id,
-                name = teamMember.team.name
+        fun from(activityUnit: ActivityUnitEntity): AdminUserDetailTeamResponse? {
+            val team = activityUnit.teamMember?.team ?: return null
+
+            return AdminUserDetailTeamResponse(
+                id = team.id,
+                name = team.name
             )
+        }
     }
 }

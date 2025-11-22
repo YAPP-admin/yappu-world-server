@@ -18,7 +18,6 @@ import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.entity.ServiceLinks
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
-import co.yappuworld.user.client.dto.response.AdminUserDetailTeamResponse
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import org.springframework.stereotype.Service
@@ -60,12 +59,6 @@ class AdminTeamService(
 
         return AdminTeamDetailResponse.of(teamWithService, members)
     }
-
-    @Transactional(readOnly = true)
-    fun getActivityUnitTeams(activityUnits: List<ActivityUnitEntity>): Map<UUID, AdminUserDetailTeamResponse> =
-        teamMemberFindService
-            .findMembers(activityUnits)
-            .associate { it.activityUnit.id to AdminUserDetailTeamResponse.from(it) }
 
     @Transactional
     fun createTeam(request: AdminTeamCreateRequest): UUID {
@@ -118,17 +111,15 @@ class AdminTeamService(
         activityUnit: ActivityUnitEntity,
         teamId: UUID?
     ) {
-        teamMemberFindService.findMemberOrNull(activityUnit)?.let { existingMember ->
+        activityUnit.teamMember?.let { existingMember ->
             teamMemberCommandService.delete(existingMember)
         }
 
         if (teamId != null) {
             val team = teamFindService.findTeam(teamId)
-            val teamMember = TeamMemberEntity(
-                team = team,
-                activityUnit = activityUnit
-            )
-            teamMemberCommandService.save(teamMember)
+            TeamMemberEntity(team = team, activityUnit = activityUnit).also {
+                teamMemberCommandService.save(it)
+            }
         }
     }
 

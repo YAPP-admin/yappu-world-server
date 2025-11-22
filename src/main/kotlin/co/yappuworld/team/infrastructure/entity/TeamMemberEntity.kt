@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Table
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.JoinColumn
 
 @Entity
@@ -20,8 +21,17 @@ class TeamMemberEntity(
     var team: TeamEntity = team
         private set
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "activity_unit_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_unit_id", unique = true)
     var activityUnit: ActivityUnitEntity = activityUnit
         private set
+
+    init {
+        this.activityUnit = activityUnit
+        activityUnit.teamMember = this
+    }
+
+    fun removeActivityUnit() {
+        this.activityUnit.teamMember = null
+    }
 }
