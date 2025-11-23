@@ -146,8 +146,7 @@ jobs:
                     if [ ! -z "$RULE_ID" ] && [ "$RULE_ID" != "null" ]; then
                       ~/bin/oci network nsg rules remove \
                         --nsg-id ${{ secrets.OCI_PROD_NSG_OCID }} \
-                        --security-rule-ids "[\"$RULE_ID\"]" \
-                        --force
+                        --security-rule-ids "[\"$RULE_ID\"]"
                     fi
 
             -   name: Cleanup
