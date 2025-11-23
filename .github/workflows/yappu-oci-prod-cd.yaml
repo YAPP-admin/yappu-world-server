@@ -87,13 +87,20 @@ jobs:
                 run: |
                     ~/bin/oci network nsg rules add \
                       --nsg-id ${{ secrets.OCI_PROD_NSG_OCID }} \
-                      --direction INGRESS \
-                      --protocol 6 \
-                      --source ${{ steps.ip.outputs.ipv4 }}/32 \
-                      --source-type CIDR_BLOCK \
-                      --tcp-options '{"destinationPortRange": {"min": 22, "max": 22}}' \
-                      --description "GitHub Actions temporary access" \
-                      --is-stateless false
+                      --security-rules '[{
+                        "direction": "INGRESS",
+                        "protocol": "6",
+                        "source": "${{ steps.ip.outputs.ipv4 }}/32",
+                        "sourceType": "CIDR_BLOCK",
+                        "tcpOptions": {
+                          "destinationPortRange": {
+                            "min": 22,
+                            "max": 22
+                          }
+                        },
+                        "description": "GitHub Actions temporary access",
+                        "isStateless": false
+                      }]'
 
             -   name: Wait for NSG rule to propagate
                 run: sleep 10
