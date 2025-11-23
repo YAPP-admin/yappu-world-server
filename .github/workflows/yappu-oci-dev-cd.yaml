@@ -1,0 +1,171 @@
+name: yappu-world-oci-dev-cd
+
+on:
+    push:
+        branches:
+            - dev
+            - infra/oci-cd
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   name: Set up JDK 21
+                uses: actions/setup-java@v4
+                with:
+                    java-version: '21'
+                    distribution: 'liberica'
+                    cache: gradle
+
+            -   name: Setup Gradle
+                uses: gradle/actions/setup-gradle@v3
+
+            -   name: Copy Secrets
+                uses: microsoft/variable-substitution@v1
+                with:
+                    files:
+                        ./src/main/resources/application-dev.yaml
+                env:
+                    server.port: ${{ secrets.DEV_SERVER_PORT }}
+                    spring.datasource.url: ${{ secrets.DEV_DB_URL }}
+                    spring.datasource.username: ${{ secrets.DEV_DB_USERNAME }}
+                    spring.datasource.password: ${{ secrets.DEV_DB_PASSWORD }}
+                    jwt.secret_key: ${{ secrets.DEV_JWT_SECRET_KEY }}
+                    jwt.access_token_expiration_times: ${{ secrets.DEV_ACCESS_TOKEN_EXPIRATION_TIMES }}
+                    jwt.refresh_token_expiration_times: ${{ secrets.DEV_REFRESH_TOKEN_EXPIRATION_TIMES }}
+                    fcm.private_key_id: ${{secrets.FCM_PRIVATE_KEY_ID}}
+                    fcm.private_key: ${{secrets.FCM_PRIVATE_KEY}}
+                    fcm.client_email: ${{secrets.FCM_CLIENT_EMAIL}}
+                    fcm.client_id: ${{secrets.FCM_CLIENT_ID}}
+                    fcm.client_x509_cert_url: ${{secrets.FCM_X509_CERT_URL}}
+                    discord.webhook: ${{secrets.DISCORD_WEBHOOK_URL_IN_DEV}}
+                    sentry.dsn: ${{secrets.SENTRY_DSN}}
+                    admin.domain: ${{ secrets.DEV_ADMIN_DOMAIN }}
+                    kakao.rest_api_key: ${{ secrets.KAKAO_REST_API_KEY }}
+
+            -   name: Build with Gradle Wrapper
+                run: ./gradlew clean build -x test -Dspring.profiles.active=dev
+
+            -   name: Prepare File for Deployment
+                run: |
+                    mkdir -p deployment/dev/build/libs
+                    cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/dev/
+                    cp -r ./build/libs/yappu-world-dev.jar deployment/dev/build/libs
+
+            # Github Action 실행 서버 IP 추출
+            -   name: Get Github Actions IP
+                id: ip
+                uses: candidob/get-runner-ip@v1.0.0
+
+            # OCI CLI 설정
+            -   name: Setup OCI CLI
+                run: |
+                    mkdir -p ~/.oci
+                    echo "${{ secrets.OCI_CLI_KEY_CONTENT }}" > ~/.oci/key.pem
+                    chmod 600 ~/.oci/key.pem
+
+                    cat > ~/.oci/config << EOF
+                    [DEFAULT]
+                    user=${{ secrets.OCI_CLI_USER }}
+                    fingerprint=${{ secrets.OCI_CLI_FINGERPRINT }}
+                    tenancy=${{ secrets.OCI_CLI_TENANCY }}
+                    region=${{ secrets.OCI_CLI_REGION }}
+                    key_file=~/.oci/key.pem
+                    EOF
+
+                    chmod 600 ~/.oci/config
+
+                    # OCI CLI 설치
+                    curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh | bash -s -- --accept-all-defaults
+                    echo "$HOME/bin" >> $GITHUB_PATH
+                    ~/bin/oci --version
+
+            # NSG에 Github Action 서버를 등록
+            -   name: Add Github Actions IP to OCI NSG
+                run: |
+                    ~/bin/oci network nsg rules add \
+                      --nsg-id ${{ secrets.OCI_DEV_NSG_OCID }} \
+                      --direction INGRESS \
+                      --protocol 6 \
+                      --source ${{ steps.ip.outputs.ipv4 }}/32 \
+                      --source-type CIDR_BLOCK \
+                      --tcp-options '{"destinationPortRange": {"min": 22, "max": 22}}' \
+                      --description "GitHub Actions temporary access" \
+                      --is-stateless false
+
+            -   name: Wait for NSG rule to propagate
+                run: sleep 10
+
+            -   name: Setup SSH Key
+                run: |
+                    mkdir -p ~/.ssh
+                    echo "${{ secrets.OCI_DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/oci_dev_key
+                    chmod 600 ~/.ssh/oci_dev_key
+
+            -   name: Upload files to OCI Instance
+                uses: appleboy/scp-action@v0.1.7
+                with:
+                    host: ${{ secrets.OCI_DEV_INSTANCE_IP }}
+                    username: ubuntu
+                    key: ${{ secrets.OCI_DEV_SSH_PRIVATE_KEY }}
+                    source: "deployment/dev/*"
+                    target: "/home/ubuntu"
+
+            -   name: Deploy using Docker Compose
+                uses: appleboy/ssh-action@v1.0.3
+                with:
+                    host: ${{ secrets.OCI_DEV_INSTANCE_IP }}
+                    username: ubuntu
+                    key: ${{ secrets.OCI_DEV_SSH_PRIVATE_KEY }}
+                    script: |
+                        cd /home/ubuntu/deployment/dev
+                        docker-compose -f docker-compose-dev.yaml down
+                        docker system prune -f
+                        docker-compose -f docker-compose-dev.yaml build --no-cache
+                        docker-compose -f docker-compose-dev.yaml up -d
+
+            -   name: Remove Github Actions IP from OCI NSG
+                if: always()
+                run: |
+                    # NSG 규칙 ID 찾기
+                    RULE_ID=$(~/bin/oci network nsg rules list \
+                      --nsg-id ${{ secrets.OCI_DEV_NSG_OCID }} \
+                      --all \
+                      --query "data[?source=='${{ steps.ip.outputs.ipv4 }}/32' && direction=='INGRESS'].id | [0]" \
+                      --raw-output)
+
+                    if [ ! -z "$RULE_ID" ] && [ "$RULE_ID" != "null" ]; then
+                      ~/bin/oci network nsg rules remove \
+                        --nsg-id ${{ secrets.OCI_DEV_NSG_OCID }} \
+                        --security-rule-ids "[\"$RULE_ID\"]" \
+                        --force
+                    fi
+
+            -   name: Cleanup
+                if: always()
+                run: |
+                    rm -f ~/.oci/key.pem
+                    rm -f ~/.ssh/oci_dev_key
+
+            # Discord Notification
+            -   name: CD Success Notification
+                uses: sarisia/actions-status-discord@v1
+                if: success()
+                with:
+                    title: ✅ OCI 개발 환경 배포 성공 ✅
+                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                    color: 0x00FF00
+                    username: 페페훅
+
+            -   name: CD Failure Notification
+                uses: sarisia/actions-status-discord@v1
+                if: failure()
+                with:
+                    title: ❗️OCI 개발 환경 배포 실패 ❗️
+                    webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                    color: 0xFF0000
+                    username: 페페훅
