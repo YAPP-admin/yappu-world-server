@@ -53,8 +53,8 @@ jobs:
             -   name: Prepare File for Deployment
                 run: |
                     mkdir -p deployment/dev/build/libs
-                    cp ./docker/dockerfile-dev ./docker/docker-compose-dev.yaml deployment/dev/
-                    cp -r ./build/libs/yappu-world-dev.jar deployment/dev/build/libs
+                    cp ./docker/dockerfile-dev-oci ./docker/docker-compose-dev-oci.yaml deployment/dev/
+                    cp -r ./build/libs/yappu-world-dev-oci.jar deployment/dev/build/libs
 
             # Github Action 실행 서버 IP 추출
             -   name: Get Github Actions IP
@@ -130,10 +130,10 @@ jobs:
                     key: ${{ secrets.OCI_DEV_SSH_PRIVATE_KEY }}
                     script: |
                         cd /home/ubuntu/deployment/dev
-                        docker-compose -f docker-compose-dev.yaml down
+                        docker-compose -f docker-compose-dev-oci.yaml down
                         docker system prune -f
-                        docker-compose -f docker-compose-dev.yaml build --no-cache
-                        docker-compose -f docker-compose-dev.yaml up -d
+                        docker-compose -f docker-compose-dev-oci.yaml build --no-cache
+                        docker-compose -f docker-compose-dev-oci.yaml up -d
 
             -   name: Remove Github Actions IP from OCI NSG
                 if: always()
