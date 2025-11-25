@@ -27,11 +27,11 @@ jobs:
                 uses: microsoft/variable-substitution@v1
                 with:
                     files:
-                        ./src/main/resources/application-prod.yaml
+                        ./src/main/resources/application-prod-oci.yaml
                 env:
-                    spring.datasource.url: ${{ secrets.PROD_DB_URL }}
-                    spring.datasource.username: ${{ secrets.PROD_DB_USERNAME }}
-                    spring.datasource.password: ${{ secrets.PROD_DB_PASSWORD }}
+                    spring.datasource.url: ${{ secrets.PROD_OCI_DB_URL }}
+                    spring.datasource.username: ${{ secrets.PROD_OCI_DB_USERNAME }}
+                    spring.datasource.password: ${{ secrets.PROD_OCI_DB_PASSWORD }}
                     jwt.secret_key: ${{ secrets.PROD_JWT_SECRET_KEY }}
                     jwt.access_token_expiration_times: ${{ secrets.PROD_ACCESS_TOKEN_EXPIRATION_TIMES }}
                     jwt.refresh_token_expiration_times: ${{ secrets.PROD_REFRESH_TOKEN_EXPIRATION_TIMES }}
@@ -46,7 +46,7 @@ jobs:
                     kakao.rest_api_key: ${{ secrets.KAKAO_REST_API_KEY }}
 
             -   name: Build with Gradle Wrapper
-                run: ./gradlew clean build -x test -Dspring.profiles.active=prod
+                run: ./gradlew clean build -x test -Dspring.profiles.active=prod-oci
 
             -   name: Prepare File for Deployment
                 run: |
