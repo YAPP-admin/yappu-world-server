@@ -17,7 +17,6 @@ import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpCodeUpdateRequest
-import co.yappuworld.user.client.dto.request.AdminUserDeactivateRequest
 import co.yappuworld.user.client.dto.request.AdminUserPageRequest
 import co.yappuworld.user.client.dto.request.AdminUserUpdateRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
@@ -130,8 +129,8 @@ class AdminUserService(
         AdminUserProfileResponse(userFindService.findUserWithLastActivityUnit(userId))
 
     @Transactional
-    fun deactivate(request: AdminUserDeactivateRequest) {
-        val user = userFindService.findUser(request.userId)
+    fun deactivate(userId: UUID) {
+        val user = userFindService.findUser(userId)
         userCommandService.deactivate(user)
     }
 
