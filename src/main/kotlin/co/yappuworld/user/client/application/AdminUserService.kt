@@ -27,6 +27,7 @@ import co.yappuworld.user.client.dto.response.AdminUserProfileResponse
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.ActivityUnitCommandService
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
+import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -45,7 +46,8 @@ class AdminUserService(
     private val userLoginPermissionChecker: UserLoginPermissionChecker,
     private val generationActiveStateManager: GenerationActiveStateManager,
     private val configFindService: ConfigFindService,
-    private val configCommandService: ConfigCommandService
+    private val configCommandService: ConfigCommandService,
+    private val userCommandService: UserCommandService
 ) {
 
     @Transactional
@@ -125,6 +127,12 @@ class AdminUserService(
     @Transactional(readOnly = true)
     fun getUserProfile(userId: UUID): AdminUserProfileResponse =
         AdminUserProfileResponse(userFindService.findUserWithLastActivityUnit(userId))
+
+    @Transactional
+    fun deactivate(userId: UUID) {
+        val user = userFindService.findUser(userId)
+        userCommandService.deactivate(user)
+    }
 
     private fun handleActivityUnitRequest(
         userId: UUID,

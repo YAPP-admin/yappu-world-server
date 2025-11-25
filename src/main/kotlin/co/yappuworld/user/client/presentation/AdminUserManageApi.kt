@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -197,5 +198,43 @@ interface AdminUserManageApi {
     @PutMapping("/admin/v1/users")
     fun updateUserDetails(
         @Valid @RequestBody request: AdminUserUpdateRequest
+    ): ResponseEntity<Unit>
+
+    @Operation(
+        summary = "회원 탈퇴 처리",
+        description = "_"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                content = [Content()]
+            ),
+            ApiResponse(
+                description = "리소스를 찾을 수 없습니다.",
+                responseCode = "404",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저가 존재하지 않습니다.",
+                                value = """
+                                    {
+                                        "isSuccess": false,
+                                        "message": "유저가 존재하지 않습니다.",
+                                        "errorCode": "USR_0001"
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @DeleteMapping("/admin/v1/users/{userId}")
+    fun deactivateUser(
+        @PathVariable("userId") userId: UUID
     ): ResponseEntity<Unit>
 }
