@@ -33,8 +33,6 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
     runtimeOnly("com.oracle.database.security:oraclepki:23.5.0.24.07")
-    runtimeOnly("com.oracle.database.security:osdt_core:23.5.0.24.07")
-    runtimeOnly("com.oracle.database.security:osdt_cert:23.5.0.24.07")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.linecorp.kotlin-jdsl:jpql-dsl:3.5.5")
     implementation("com.linecorp.kotlin-jdsl:jpql-render:3.5.5")
