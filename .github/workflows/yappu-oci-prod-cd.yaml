@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - prod
+            - infra/oci-cd
 
 jobs:
     build:
