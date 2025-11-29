@@ -219,7 +219,13 @@ class AdminTeamService(
         existingMembers
             .filterNot { it.activityUnit.id in activityUnitIds }
             .takeIf { it.isNotEmpty() }
-            ?.let { teamMemberCommandService.deleteAll(it) }
+            ?.let {
+                try {
+                    teamMemberCommandService.deleteAll(it)
+                } catch (e: IllegalArgumentException) {
+                    throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
+                }
+            }
     }
 
     private fun deleteTeamMembers(team: TeamEntity) {

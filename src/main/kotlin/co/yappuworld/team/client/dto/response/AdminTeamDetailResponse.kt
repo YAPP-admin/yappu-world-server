@@ -77,7 +77,7 @@ data class AdminTeamMemberResponse(
             AdminTeamMemberResponse(
                 activityUnitId = dto.activityUnitId,
                 name = dto.userName,
-                position = dto.position
+                position = dto.position.label
             )
     }
 }
