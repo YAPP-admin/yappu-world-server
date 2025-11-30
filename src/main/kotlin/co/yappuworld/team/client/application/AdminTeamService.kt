@@ -111,17 +111,15 @@ class AdminTeamService(
         activityUnit: ActivityUnitEntity,
         teamId: UUID?
     ) {
-        teamMemberFindService.findMemberOrNull(activityUnit)?.let { existingMember ->
+        activityUnit.teamMember?.let { existingMember ->
             teamMemberCommandService.delete(existingMember)
         }
 
         if (teamId != null) {
             val team = teamFindService.findTeam(teamId)
-            val teamMember = TeamMemberEntity(
-                team = team,
-                activityUnit = activityUnit
-            )
-            teamMemberCommandService.save(teamMember)
+            TeamMemberEntity(team = team, activityUnit = activityUnit).also {
+                teamMemberCommandService.save(it)
+            }
         }
     }
 
@@ -221,7 +219,13 @@ class AdminTeamService(
         existingMembers
             .filterNot { it.activityUnit.id in activityUnitIds }
             .takeIf { it.isNotEmpty() }
-            ?.let { teamMemberCommandService.deleteAll(it) }
+            ?.let {
+                try {
+                    teamMemberCommandService.deleteAll(it)
+                } catch (e: IllegalArgumentException) {
+                    throw BusinessException(TeamError.INVALID_DELETE_REQUEST)
+                }
+            }
     }
 
     private fun deleteTeamMembers(team: TeamEntity) {

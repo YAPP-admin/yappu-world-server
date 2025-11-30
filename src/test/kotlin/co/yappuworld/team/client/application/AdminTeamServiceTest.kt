@@ -66,7 +66,7 @@ class AdminTeamServiceTest @Autowired constructor(
         }
 
         fun getTeamByActivityUnit(activityUnit: ActivityUnitEntity): UserTeamResponse? {
-            val teamMember = teamMemberRepository.findByActivityUnit(activityUnit) ?: return null
+            val teamMember = activityUnit.teamMember ?: return null
 
             return UserTeamResponse(
                 id = teamMember.team.id,
