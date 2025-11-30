@@ -20,15 +20,18 @@ class TeamMemberCommandService(
     }
 
     fun delete(teamMember: TeamMemberEntity) {
+        teamMember.removeActivityUnit()
         teamMemberRepository.delete(teamMember)
     }
 
     fun deleteAll(teamMembers: List<TeamMemberEntity>) {
         require(teamMembers.isNotEmpty()) { "최소 하나 이상의 삭제 대상이 필요합니다." }
+        teamMembers.forEach { it.removeActivityUnit() }
         teamMemberRepository.deleteAll(teamMembers)
     }
 
     fun deleteAll(team: TeamEntity) {
+        teamMemberRepository.findByTeam(team).forEach { it.removeActivityUnit() }
         teamMemberRepository.deleteAllByTeam(team)
     }
 }

@@ -61,14 +61,13 @@ data class AdminUserDetailActivityUnitResponse(
 
     constructor(
         activityUnit: ActivityUnitEntity,
-        activeGeneration: Int?,
-        team: AdminUserDetailTeamResponse? = null
+        activeGeneration: Int?
     ) : this(
         id = activityUnit.id,
         generation = activityUnit.generation,
         position = activityUnit.position.label,
         isActive = activityUnit.generation == activeGeneration,
-        team = team
+        team = AdminUserDetailTeamResponse.from(activityUnit)
     )
 }
 
@@ -77,4 +76,15 @@ data class AdminUserDetailTeamResponse(
     val id: UUID,
     @Schema(description = "팀 이름")
     val name: String
-)
+) {
+    companion object {
+        fun from(activityUnit: ActivityUnitEntity): AdminUserDetailTeamResponse? {
+            val team = activityUnit.teamMember?.team ?: return null
+
+            return AdminUserDetailTeamResponse(
+                id = team.id,
+                name = team.name
+            )
+        }
+    }
+}
