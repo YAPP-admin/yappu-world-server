@@ -8,6 +8,7 @@ import co.yappuworld.schedule.domain.AttendancePolicy.LATE_AFTER_SESSION_START_M
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.SessionType
+import jakarta.persistence.Column
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -25,8 +26,10 @@ class SessionEntity(
     override var address: String? = null,
     override var latitude: Double? = null,
     override var longitude: Double? = null,
+    @field:Column(name = "start_date")
     override var date: LocalDate,
     override var endDate: LocalDate,
+    @field:Column(name = "start_time")
     override var time: LocalTime,
     override var endTime: LocalTime,
     override var isAllDay: Boolean,
