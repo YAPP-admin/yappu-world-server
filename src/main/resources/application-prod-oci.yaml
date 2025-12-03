@@ -14,6 +14,11 @@ spring:
         url: ${PROD_OCI_DB_URL}?TNS_ADMIN=/wallet
         username: ${PROD_OCI_DB_USERNAME}
         password: ${PROD_OCI_DB_PASSWORD}
+        hikari:
+            maximum-pool-size: 3
+            minimum-idle: 1
+            connection-timeout: 30000
+            idle-timeout: 600000
 
 jwt:
     secret_key: ${PROD_JWT_SECRET_KEY}
