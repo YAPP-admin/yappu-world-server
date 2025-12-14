@@ -54,6 +54,7 @@ dependencies {
 
     // logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
+    implementation("com.github.loki4j:loki-logback-appender:2.0.1")
 
     // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
