@@ -8,4 +8,54 @@
             <appender-ref ref="CONSOLE" />
         </root>
     </springProfile>
+
+    <springProfile name="dev-loki">
+        <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>http://10.0.0.119:3100/loki/api/v1/push</url>
+            </http>
+            <labels>
+                app=yappu-world
+                host=${HOSTNAME}
+                level=%level
+                env=dev
+            </labels>
+            <message>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </message>
+        </appender>
+
+        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOKI" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod-loki">
+        <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>http://10.0.0.119:3100/loki/api/v1/push</url>
+            </http>
+            <labels>
+                app=yappu-world
+                host=${HOSTNAME}
+                level=%level
+                env=prod
+            </labels>
+            <message>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </message>
+        </appender>
+
+        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOKI" />
+        </root>
+    </springProfile>
 </configuration>

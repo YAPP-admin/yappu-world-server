@@ -51,9 +51,13 @@ sentry:
 
 management:
     endpoints:
+        enabled-by-default: true
         web:
             exposure:
-                include: prometheus
+                include: health, info, prometheus
+    endpoint:
+        health:
+            show-details: always
 
 logging:
     level:
