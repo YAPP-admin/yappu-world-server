@@ -30,10 +30,11 @@ class SignUpExecutor(
 ) {
 
     fun submit(application: SignUpApplicationEntity) {
-        executeWithLock(application.applicantEmail) {
-            checkSubmitApplicationAvailability(application)
-            signUpApplicationCommandService.submit(application)
-        }
+        // TODO: MySQL -> Oracle 변경하면서 lock 기능 쓰기 어려운 상황이고 해결 필요
+        // executeWithLock(application.applicantEmail) {
+        checkSubmitApplicationAvailability(application)
+        signUpApplicationCommandService.submit(application)
+        //  }
     }
 
     fun signUp(
