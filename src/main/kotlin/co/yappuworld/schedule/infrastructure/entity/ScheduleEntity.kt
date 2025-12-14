@@ -38,10 +38,8 @@ abstract class ScheduleEntity : BaseEntity() {
     abstract var address: String?
     abstract var latitude: Double?
     abstract var longitude: Double?
-
     abstract val date: LocalDate
     abstract val endDate: LocalDate
-
     abstract val time: LocalTime
     abstract val endTime: LocalTime
     abstract val isAllDay: Boolean

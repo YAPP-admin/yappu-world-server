@@ -1,6 +1,8 @@
 package co.yappuworld.schedule.infrastructure.entity
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.global.persistence.converter.LocalDateStringConverter
+import co.yappuworld.global.persistence.converter.LocalTimeStringConverter
 import co.yappuworld.global.util.DatetimeUtils.korean
 import co.yappuworld.schedule.domain.AttendancePolicy.ABSENT_AFTER_SESSION_START_HOURS
 import co.yappuworld.schedule.domain.AttendancePolicy.CHECK_IN_AVAILABLE_BEFORE_SESSION_START_MINUTES
@@ -8,6 +10,8 @@ import co.yappuworld.schedule.domain.AttendancePolicy.LATE_AFTER_SESSION_START_M
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.SessionType
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -25,9 +29,17 @@ class SessionEntity(
     override var address: String? = null,
     override var latitude: Double? = null,
     override var longitude: Double? = null,
+    @field:Column(name = "START_DATE")
+    @get:Convert(converter = LocalDateStringConverter::class)
     override var date: LocalDate,
+    @field:Column(name = "END_DATE")
+    @get:Convert(converter = LocalDateStringConverter::class)
     override var endDate: LocalDate,
+    @field:Column(name = "START_TIME")
+    @get:Convert(converter = LocalTimeStringConverter::class)
     override var time: LocalTime,
+    @field:Column(name = "END_TIME")
+    @get:Convert(converter = LocalTimeStringConverter::class)
     override var endTime: LocalTime,
     override var isAllDay: Boolean,
     generation: Int,

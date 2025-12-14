@@ -7,4 +7,6 @@ spring:
             local: console-logging, secret-local
             test: console-logging
             dev: console-logging
+            dev-oci: console-logging
             prod: console-logging, sentry-logging
+            prod-oci: console-logging, sentry-logging
