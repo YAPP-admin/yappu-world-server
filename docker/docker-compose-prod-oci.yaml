@@ -1,0 +1,11 @@
+services:
+    app:
+        image: yappu-world-prod-oci
+        container_name: yappu-world-prod-oci
+        build:
+            context: .
+            dockerfile: dockerfile-prod-oci
+        ports:
+            - '8080:8080'
+        volumes:
+            - /opt/oracle/wallet:/wallet:ro

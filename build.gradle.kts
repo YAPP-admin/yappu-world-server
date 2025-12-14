@@ -31,6 +31,8 @@ dependencies {
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
     runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("com.oracle.database.jdbc:ojdbc11")
+    runtimeOnly("com.oracle.database.security:oraclepki:23.5.0.24.07")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.linecorp.kotlin-jdsl:jpql-dsl:3.5.5")
     implementation("com.linecorp.kotlin-jdsl:jpql-render:3.5.5")
@@ -52,6 +54,7 @@ dependencies {
 
     // logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
+    implementation("com.github.loki4j:loki-logback-appender:2.0.1")
 
     // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
