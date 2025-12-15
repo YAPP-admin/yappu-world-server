@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-// 이것만 수정하면 됨
 @Service
 @Transactional(readOnly = true)
 class ScheduleFindService(
