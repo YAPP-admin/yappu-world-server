@@ -6,6 +6,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.global.security.Token
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
@@ -288,6 +289,52 @@ interface AdminUserAuthApi {
     @GetMapping("/admin/v1/auth/applications")
     fun getSignUpApplications(
         @Valid @ParameterObject request: AdminSignUpApplicationPageRequest
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>>
+
+    @Operation(summary = "회원가입 신청서 목록")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                value = """
+                                    {
+                                        "data": {
+                                            "data": {
+                                                "applicationId": "01954809-38fd-1268-e0d6-d3fda39f6b4c",
+                                                "name": "홍길동",
+                                                "email": "email@email.com",
+                                                "applicationDate": "2025-03-04",
+                                                "activityUnit": {
+                                                    "generation": 1,
+                                                    "position": {
+                                                        "name": "PM",
+                                                        "label": "PM"
+                                                    }
+                                                },
+                                                "status": "대기"
+                                            },
+                                            "totalCount": 3,
+                                            "page": 1,
+                                            "size": 1
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/admin/v2/auth/applications")
+    fun getSignUpApplicationsV2(
+        @Valid @ParameterObject request: AdminSignUpApplicationSearchPageRequest
     ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>>
 
     @Operation(summary = "회원가입 신청서 상세")

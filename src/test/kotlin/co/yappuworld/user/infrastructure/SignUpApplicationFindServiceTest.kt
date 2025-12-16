@@ -2,7 +2,11 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamsFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import io.kotest.assertions.throwables.shouldNotThrowAny
@@ -185,6 +189,86 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                     it.totalElements shouldBe 11
                     it.number shouldBe 1
                     it.numberOfElements shouldBe 1
+                }
+            }
+        }
+
+        feature("가입 신청서 검색 필터링 조회") {
+
+            scenario("모든 필터가 null이면 전체 조회") {
+                val applications = List(5) { getSignUpApplicationEntityFixture() }
+                signUpApplicationRepository.saveAllAndFlush(applications)
+
+                val request = AdminSignUpApplicationSearchPageRequest(page = 1, size = 10)
+
+                signUpApplicationFindService.findSignUpApplicationsV2(request, request.toPageRequest()).let {
+                    it.content.shouldHaveSize(5)
+                    it.totalElements shouldBe 5
+                }
+            }
+
+            scenario("모든 필터 조합") {
+                val matchingApp = getSignUpApplicationEntityFixture(
+                    name = "홍길동",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 6, position = Position.PM)
+                    )
+                )
+                val differentName = getSignUpApplicationEntityFixture(
+                    name = "김땡땡",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 6, position = Position.PM)
+                    )
+                )
+                val differentGenAndApproved = getSignUpApplicationEntityFixture(
+                    name = "홍길동",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 7, position = Position.ANDROID)
+                    )
+                ).apply { approve() }
+
+                signUpApplicationRepository.saveAllAndFlush(
+                    listOf(matchingApp, differentName, differentGenAndApproved)
+                )
+
+                val request = AdminSignUpApplicationSearchPageRequest(
+                    page = 1,
+                    size = 10,
+                    name = "홍길",
+                    status = "PENDING",
+                    generation = 6,
+                    position = "PM"
+                )
+
+                signUpApplicationFindService.findSignUpApplicationsV2(request, request.toPageRequest()).let {
+                    it.content.shouldHaveSize(1)
+                    it.content.first().id shouldBe matchingApp.id
+                }
+            }
+
+            scenario("필터링 결과가 없으면 빈 페이지") {
+                val app = getSignUpApplicationEntityFixture(name = "홍길동")
+                signUpApplicationRepository.saveAndFlush(app)
+
+                val request = AdminSignUpApplicationSearchPageRequest(page = 1, size = 10, name = "김땡땡")
+
+                signUpApplicationFindService.findSignUpApplicationsV2(request, request.toPageRequest()).let {
+                    it.content.shouldBeEmpty()
+                    it.totalElements.shouldBeZero()
+                    it.totalPages.shouldBeZero()
+                }
+            }
+
+            scenario("빈 문자열로 이름 검색 시 전체 조회") {
+                val applications = List(3) { getSignUpApplicationEntityFixture() }
+                signUpApplicationRepository.saveAllAndFlush(applications)
+
+                val request = AdminSignUpApplicationSearchPageRequest(page = 1, size = 10, name = "")
+                val pageRequest = request.toPageRequest()
+
+                signUpApplicationFindService.findSignUpApplicationsV2(request, pageRequest).let {
+                    it.content.shouldHaveSize(3)
+                    it.totalElements shouldBe 3
                 }
             }
         }

@@ -8,6 +8,7 @@ import co.yappuworld.user.client.application.AdminSignUpService
 import co.yappuworld.user.client.application.AdminUserService
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
 import co.yappuworld.user.client.dto.request.LoginRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
@@ -54,6 +55,13 @@ class AdminUserAuthController(
     ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>> =
         ResponseEntity.ok(
             SuccessResponse(adminSignUpService.getSignUpApplications(request))
+        )
+
+    override fun getSignUpApplicationsV2(
+        request: AdminSignUpApplicationSearchPageRequest
+    ): ResponseEntity<SuccessResponse<OffsetPageResponse<AdminSignUpApplicationOverviewResponse>>> =
+        ResponseEntity.ok(
+            SuccessResponse(adminSignUpService.getSignUpApplicationsV2(request))
         )
 
     override fun getSignUpApplication(

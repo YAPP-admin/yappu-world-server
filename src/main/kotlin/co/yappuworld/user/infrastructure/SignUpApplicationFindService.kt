@@ -1,11 +1,14 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
+import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -64,4 +67,37 @@ class SignUpApplicationFindService(
 
     fun findSignUpApplications(pageRequest: PageRequest): Page<SignUpApplicationEntity> =
         signUpApplicationRepository.findAll(pageRequest)
+
+    fun findSignUpApplicationsV2(
+        request: AdminSignUpApplicationSearchPageRequest,
+        pageRequest: PageRequest
+    ): Page<SignUpApplicationEntity> {
+        val status = request.status?.let { SignUpApplicationStatus.valueOf(it) }
+        val position = request.position?.let { Position.valueOf(it) }
+
+        val applications = signUpApplicationRepository
+            .findAll {
+                select(entity(SignUpApplicationEntity::class))
+                    .from(entity(SignUpApplicationEntity::class))
+                    .whereAnd(
+                        status?.let { path(SignUpApplicationEntity::status).equal(it) }
+                    ).orderBy(path(SignUpApplicationEntity::createdAt).desc())
+            }.filterNotNull()
+            .filter { request.name?.let { name -> it.details.name.contains(name) } ?: true }
+            .filter {
+                request.generation?.let { generation ->
+                    it.details.activityUnits.any { unit ->
+                        unit.generation ==
+                            generation
+                    }
+                }
+                    ?: true
+            }.filter { position?.let { pos -> it.details.activityUnits.any { unit -> unit.position == pos } } ?: true }
+
+        return PageImpl(
+            applications.drop(pageRequest.offset.toInt()).take(pageRequest.pageSize),
+            pageRequest,
+            applications.size.toLong()
+        )
+    }
 }
