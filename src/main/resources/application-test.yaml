@@ -5,21 +5,20 @@ spring:
                 enabled: true
     docker:
         compose:
-            file: docker/docker-compose-test.yaml
-            enabled: true
-            lifecycle-management: start-and-stop
-            stop:
-                command: down
-                timeout: 1m
-            skip:
-                in-tests: false
+            enabled: false
     datasource:
-        url: jdbc:mysql://mysql:3306/yappu_world
-        username: yapp
-        password: yapp
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:testdb;MODE=Oracle;DATABASE_TO_LOWER=TRUE;NON_KEYWORDS=VALUE
+        username: sa
+        password:
     sql:
         init:
             mode: always
+    jpa:
+        database-platform: org.hibernate.dialect.OracleDialect
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
 
 jwt:
     secret_key: ${DEV_JWT_SECRET_KEY}
