@@ -21,7 +21,7 @@ CREATE TABLE users
     role         varchar(16) NOT NULL,
     gender       varchar(8),
     phone_number varchar(16),
-    is_active    BOOLEAN  NOT NULL
+    is_active    NUMBER(1)  NOT NULL
 );
 
 DROP TABLE IF EXISTS sign_up_application;
@@ -54,8 +54,8 @@ CREATE TABLE user_alarm_settings
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     user_id    binary(16) NOT NULL,
-    device     BOOLEAN  NOT NULL,
-    master     BOOLEAN  NOT NULL
+    device     NUMBER(1)  NOT NULL,
+    master     NUMBER(1)  NOT NULL
 );
 
 DROP TABLE IF EXISTS user_devices;
@@ -74,18 +74,18 @@ CREATE TABLE schedules
     id           binary(16) PRIMARY KEY,
     created_at   TIMESTAMP,
     updated_at   TIMESTAMP,
-    is_deleted   BOOLEAN  NOT NULL,
+    is_deleted   NUMBER(1)  NOT NULL,
     name         varchar(32) NOT NULL,
     description  varchar(256),
     place        varchar(32),
     address      varchar(64),
     longitude    double,
     latitude     double,
-    date         date        NOT NULL,
-    end_date     date        NOT NULL,
-    time         varchar(32),
+    start_date   varchar(10) NOT NULL,
+    end_date     varchar(10) NOT NULL,
+    start_time   varchar(32),
     end_time     varchar(32),
-    is_all_day   BOOLEAN  NOT NULL,
+    is_all_day   NUMBER(1)  NOT NULL,
     generation   int,
     type         varchar(32) NOT NULL,
     session_type varchar(32)
@@ -104,7 +104,7 @@ CREATE TABLE posts
     content_summary varchar(255),
     display_target  varchar(255),
     writer_id       binary(16) NOT NULL,
-    is_active       BOOLEAN NOT NULL,
+    is_active       NUMBER(1) NOT NULL,
     session_id      binary(16)
 );
 
@@ -112,9 +112,9 @@ DROP TABLE IF EXISTS generations;
 CREATE TABLE generations
 (
     value      int PRIMARY KEY,
-    start_date date,
-    end_date   date,
-    is_active  BOOLEAN  NOT NULL
+    start_date varchar(10),
+    end_date   varchar(10),
+    is_active  NUMBER(1)  NOT NULL
 );
 
 drop table if exists attendances;
@@ -156,8 +156,8 @@ CREATE TABLE team_services
     id              binary(16) PRIMARY KEY,
     created_at      TIMESTAMP,
     updated_at      TIMESTAMP,
-    has_app         BOOLEAN NOT NULL DEFAULT 0,
-    has_web         BOOLEAN NOT NULL DEFAULT 0,
+    has_app         NUMBER(1) NOT NULL DEFAULT 0,
+    has_web         NUMBER(1) NOT NULL DEFAULT 0,
     name            varchar(255) DEFAULT NULL,
     service_links   json DEFAULT NULL,
     team_id         binary(16) NOT NULL

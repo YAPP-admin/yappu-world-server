@@ -4,6 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.client.dto.param.GenerationActivationControlResult
 import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.operation.domain.OperationError
+import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.operation.infrastructure.GenerationRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.repository.findByIdOrNull
@@ -14,6 +15,7 @@ private val logger = KotlinLogging.logger { }
 
 @Component
 class GenerationActiveStateManager(
+    private val generationFindService: GenerationFindService,
     private val generationRepository: GenerationRepository
 ) {
 
@@ -39,9 +41,9 @@ class GenerationActiveStateManager(
     fun getActiveGenerationOrNull(): Int? = generationRepository.getGenerationOrNullByIsActiveIsTrue()?.value
 
     private fun deactivateGeneration(targetGenerationValue: Int? = null): Int? {
-        if (!generationRepository.existsGenerationByIsActiveIsTrue()) return null
+        if (!generationFindService.existsActiveGeneration()) return null
 
-        val activeGenerations = generationRepository.findAllByIsActiveIsTrue()
+        val activeGenerations = generationFindService.findAllActiveGeneration()
         checkDeactivatingConsistency(activeGenerations, targetGenerationValue)
 
         return activeGenerations

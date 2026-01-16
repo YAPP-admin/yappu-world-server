@@ -16,13 +16,13 @@ spring:
 
     sql:
         init:
-            mode: never
+            mode: always
 
     jpa:
         open-in-view: false
         database-platform: org.hibernate.dialect.OracleDialect
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: none
         show-sql: true
 
     h2:

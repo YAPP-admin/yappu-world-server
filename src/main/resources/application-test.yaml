@@ -17,7 +17,7 @@ spring:
     jpa:
         database-platform: org.hibernate.dialect.OracleDialect
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: none
         show-sql: true
 
 jwt:
