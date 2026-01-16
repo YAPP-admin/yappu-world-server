@@ -63,7 +63,7 @@ class SignUpExecutorConcurrencyTest @Autowired constructor(
             signUpApplicationRepository.deleteAll(applications)
         }
 
-        feature("동시에 같은 이메일로") {
+        xfeature("동시에 같은 이메일로 - MySQL Named Lock 사용으로 H2에서 비활성화") {
 
             scenario("회원가입") {
                 val threadCount = 20
