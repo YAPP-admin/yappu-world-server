@@ -13,6 +13,8 @@ spring:
         url: ${PROD_DB_URL}
         username: ${PROD_DB_USERNAME}
         password: ${PROD_DB_PASSWORD}
+        hikari:
+            connection-init-sql: "ALTER SESSION DISABLE PARALLEL QUERY PARALLEL DML"
 
 jwt:
     secret_key: ${PROD_JWT_SECRET_KEY}
