@@ -19,6 +19,7 @@ spring:
             minimum-idle: 1
             connection-timeout: 30000
             idle-timeout: 600000
+            connection-init-sql: "BEGIN EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL QUERY'; EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML'; END;"
 
 jwt:
     secret_key: ${DEV_JWT_SECRET_KEY}
