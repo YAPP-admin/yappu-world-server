@@ -6,7 +6,5 @@ spring:
         group:
             local: console-logging, secret-local
             test: console-logging
-            dev: console-logging
             dev-oci: dev-loki
-            prod: console-logging
             prod-oci: prod-loki
