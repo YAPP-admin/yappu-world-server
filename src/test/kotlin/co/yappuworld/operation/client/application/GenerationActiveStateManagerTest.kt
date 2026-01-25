@@ -2,6 +2,7 @@ package co.yappuworld.operation.client.application
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.domain.GenerationEntity
+import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import io.kotest.assertions.throwables.shouldThrow
@@ -17,7 +18,8 @@ class GenerationActiveStateManagerTest @Autowired constructor(
     private val repository: GenerationRepository
 ) : CustomDataJpaTestFeatureSpec({
 
-        val generationActiveStateManager = GenerationActiveStateManager(repository)
+        val generationFindService = GenerationFindService(repository)
+        val generationActiveStateManager = GenerationActiveStateManager(generationFindService, repository)
 
         beforeEach {
             fun saveNotExist(generation: GenerationEntity) {

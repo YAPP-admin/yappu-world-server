@@ -1,15 +1,15 @@
 services:
-    mysql:
-        image: mysql:8.1
+    oracle:
+        image: gvenzl/oracle-xe:21-slim-faststart
         environment:
-            MYSQL_DATABASE: yappu_world
-            MYSQL_USER: yapp
-            MYSQL_PASSWORD: yapp
-            MYSQL_ROOT_PASSWORD: yapp
+            ORACLE_PASSWORD: test1234
+            APP_USER: testuser
+            APP_USER_PASSWORD: test1234
         ports:
-            - '3306:3306'
-        restart: always
-        command:
-            - --character-set-server=utf8mb4
-            - --collation-server=utf8mb4_unicode_ci
-            - --skip-character-set-client-handshake
+            - '1521:1521'
+        healthcheck:
+            test: ["CMD-SHELL", "healthcheck.sh"]
+            interval: 10s
+            timeout: 5s
+            retries: 30
+            start_period: 60s

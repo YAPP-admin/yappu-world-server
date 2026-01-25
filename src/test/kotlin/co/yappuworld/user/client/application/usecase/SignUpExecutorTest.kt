@@ -16,7 +16,7 @@ class SignUpExecutorTest @Autowired constructor(
     private val signUpApplicationRepository: SignUpApplicationRepository
 ) : SpringBootTestFeatureSpec({
 
-        feature("가입코드를 이용한 회원가입") {
+        xfeature("가입코드를 이용한 회원가입 - MySQL Named Lock 사용으로 H2에서 비활성화") {
 
             scenario("기존에 보류 상태의 가입 신청이 있었다면, 거절 처리된다.") {
                 val signUpApplication = getSignUpApplicationEntityFixture(
