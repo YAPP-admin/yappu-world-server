@@ -53,6 +53,7 @@ object UserFixture {
                 fcmToken = fcmToken,
                 masterAlarmToggle = masterAlarmToggle
             ),
+            applicantName = name,
             status = status,
             applicantEmail = email,
             rejectReason = rejectReason

@@ -22,6 +22,8 @@ class SignUpApplicationEntity(
     @Column(columnDefinition = "JSON")
     @Convert(converter = ApplicationDetailsConverter::class)
     val details: ApplicationDetails,
+    @Column(name = "applicant_name")
+    var applicantName: String,
     status: SignUpApplicationStatus,
     rejectReason: String?
 ) : BaseEntity() {
@@ -35,6 +37,7 @@ class SignUpApplicationEntity(
     constructor(application: ApplicationDetails) : this(
         application.email,
         application,
+        application.name,
         SignUpApplicationStatus.PENDING,
         null
     )
@@ -67,5 +70,12 @@ class SignUpApplicationEntity(
 
     fun isProcessed(): Boolean = this.status != SignUpApplicationStatus.PENDING
 
-    fun getApplicantName(): String = this.details.name
+    fun toSignUpApplicationActivityUnits(): List<SignUpApplicationActivityUnitEntity> =
+        details.activityUnits.map {
+            SignUpApplicationActivityUnitEntity(
+                applicationId = id,
+                generation = it.generation,
+                position = it.position
+            )
+        }
 }

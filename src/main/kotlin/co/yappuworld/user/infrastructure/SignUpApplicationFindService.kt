@@ -1,11 +1,12 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.entity.SignUpApplicationActivityUnitEntity
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -65,34 +66,48 @@ class SignUpApplicationFindService(
         signUpApplicationRepository.findByIdOrNull(applicationId)
             ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
 
-    fun findSignUpApplications(pageRequest: PageRequest): Page<SignUpApplicationEntity> =
-        signUpApplicationRepository.findAll(pageRequest)
-
-    fun findSignUpApplicationsV2(
-        request: AdminSignUpApplicationSearchPageRequest,
+    fun findSignUpApplications(
+        request: AdminSignUpApplicationPageRequest,
         pageRequest: PageRequest
     ): Page<SignUpApplicationEntity> {
         val status = request.status?.let { SignUpApplicationStatus.valueOf(it) }
         val position = request.position?.let { Position.valueOf(it) }
+        val hasActivityUnitFilter = request.generation != null || position != null
 
         val applications = signUpApplicationRepository
             .findAll {
                 select(entity(SignUpApplicationEntity::class))
-                    .from(entity(SignUpApplicationEntity::class))
-                    .whereAnd(
-                        status?.let { path(SignUpApplicationEntity::status).equal(it) }
+                    .from(
+                        entity(SignUpApplicationEntity::class),
+                        *listOfNotNull(
+                            hasActivityUnitFilter.takeIf { it }?.let {
+                                leftJoin(SignUpApplicationActivityUnitEntity::class).on(
+                                    path(SignUpApplicationActivityUnitEntity::applicationId)
+                                        .equal(path(SignUpApplicationEntity::getId))
+                                )
+                            }
+                        ).toTypedArray()
+                    ).whereAnd(
+                        *buildList {
+                            status?.let { add(path(SignUpApplicationEntity::status).equal(it)) }
+                            request.name?.takeIf { it.isNotBlank() }?.let {
+                                add(
+                                    path(SignUpApplicationEntity::applicantName).like("%$it%")
+                                )
+                            }
+                            when {
+                                hasActivityUnitFilter -> {
+                                    request.generation?.let {
+                                        add(
+                                            path(SignUpApplicationActivityUnitEntity::generation).equal(it)
+                                        )
+                                    }
+                                    position?.let { add(path(SignUpApplicationActivityUnitEntity::position).equal(it)) }
+                                }
+                            }
+                        }.toTypedArray()
                     ).orderBy(path(SignUpApplicationEntity::createdAt).desc())
-            }.filterNotNull()
-            .filter { request.name?.let { name -> it.details.name.contains(name) } ?: true }
-            .filter {
-                request.generation?.let { generation ->
-                    it.details.activityUnits.any { unit ->
-                        unit.generation ==
-                            generation
-                    }
-                }
-                    ?: true
-            }.filter { position?.let { pos -> it.details.activityUnits.any { unit -> unit.position == pos } } ?: true }
+            }.distinct()
 
         return PageImpl(
             applications.drop(pageRequest.offset.toInt()).take(pageRequest.pageSize),

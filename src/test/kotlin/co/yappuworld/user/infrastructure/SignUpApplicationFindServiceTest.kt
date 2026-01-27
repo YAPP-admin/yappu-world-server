@@ -5,9 +5,10 @@ import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamsFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
-import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -20,11 +21,11 @@ import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 import java.util.UUID
 
 class SignUpApplicationFindServiceTest @Autowired constructor(
-    private val signUpApplicationRepository: SignUpApplicationRepository
+    private val signUpApplicationRepository: SignUpApplicationRepository,
+    private val signUpApplicationActivityUnitRepository: SignUpApplicationActivityUnitRepository
 ) : CustomDataJpaTestFeatureSpec({
 
         val signUpApplicationFindService = SignUpApplicationFindService(signUpApplicationRepository)
@@ -140,8 +141,9 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
         feature("가입 신청서 페이지 조회") {
 
             scenario("가입 신청서가 없으면 빈 페이지") {
-                val pageRequest = PageRequest.of(0, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldBeEmpty()
                     it.totalPages.shouldBeZero()
                     it.totalElements.shouldBeZero()
@@ -154,8 +156,8 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val signUpApplications = List(10) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
-                val pageRequest = PageRequest.of(0, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldHaveSize(10)
                     it.totalPages shouldBe 1
                     it.totalElements shouldBe 10
@@ -168,8 +170,8 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val signUpApplications = List(11) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
-                val pageRequest = PageRequest.of(0, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldHaveSize(10)
                     it.totalPages shouldBe 2
                     it.totalElements shouldBe 11
@@ -182,8 +184,8 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val signUpApplications = List(11) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
-                val pageRequest = PageRequest.of(1, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
+                val request = AdminSignUpApplicationPageRequest(page = 2, size = 10)
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldHaveSize(1)
                     it.totalPages shouldBe 2
                     it.totalElements shouldBe 11
@@ -199,9 +201,9 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val applications = List(5) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(applications)
 
-                val request = AdminSignUpApplicationSearchPageRequest(page = 1, size = 10)
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
 
-                signUpApplicationFindService.findSignUpApplicationsV2(request, request.toPageRequest()).let {
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldHaveSize(5)
                     it.totalElements shouldBe 5
                 }
@@ -227,11 +229,15 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                     )
                 ).apply { approve() }
 
-                signUpApplicationRepository.saveAllAndFlush(
+                val apps = signUpApplicationRepository.saveAllAndFlush(
                     listOf(matchingApp, differentName, differentGenAndApproved)
                 )
 
-                val request = AdminSignUpApplicationSearchPageRequest(
+                signUpApplicationActivityUnitRepository.saveAllAndFlush(
+                    apps.flatMap { it.toSignUpApplicationActivityUnits() }
+                )
+
+                val request = AdminSignUpApplicationPageRequest(
                     page = 1,
                     size = 10,
                     name = "홍길",
@@ -240,7 +246,7 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                     position = "PM"
                 )
 
-                signUpApplicationFindService.findSignUpApplicationsV2(request, request.toPageRequest()).let {
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldHaveSize(1)
                     it.content.first().id shouldBe matchingApp.id
                 }
@@ -250,9 +256,9 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val app = getSignUpApplicationEntityFixture(name = "홍길동")
                 signUpApplicationRepository.saveAndFlush(app)
 
-                val request = AdminSignUpApplicationSearchPageRequest(page = 1, size = 10, name = "김땡땡")
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, name = "김땡땡")
 
-                signUpApplicationFindService.findSignUpApplicationsV2(request, request.toPageRequest()).let {
+                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
                     it.content.shouldBeEmpty()
                     it.totalElements.shouldBeZero()
                     it.totalPages.shouldBeZero()
@@ -263,10 +269,10 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val applications = List(3) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(applications)
 
-                val request = AdminSignUpApplicationSearchPageRequest(page = 1, size = 10, name = "")
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, name = "")
                 val pageRequest = request.toPageRequest()
 
-                signUpApplicationFindService.findSignUpApplicationsV2(request, pageRequest).let {
+                signUpApplicationFindService.findSignUpApplications(request, pageRequest).let {
                     it.content.shouldHaveSize(3)
                     it.totalElements shouldBe 3
                 }

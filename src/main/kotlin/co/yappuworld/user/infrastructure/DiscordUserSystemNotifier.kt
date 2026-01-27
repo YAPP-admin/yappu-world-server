@@ -27,7 +27,7 @@ class DiscordUserSystemNotifier(
                     ),
                     EmbedField(
                         name = "유저 이름",
-                        value = signUpApplication.getApplicantName()
+                        value = signUpApplication.applicantName
                     )
                 )
             )

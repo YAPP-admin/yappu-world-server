@@ -3,7 +3,6 @@ package co.yappuworld.user.client.application
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.user.client.application.usecase.SignUpExecutor
 import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
-import co.yappuworld.user.client.dto.request.AdminSignUpApplicationSearchPageRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationApproveRequest
 import co.yappuworld.user.client.dto.request.SignUpApplicationRejectRequest
 import co.yappuworld.user.client.dto.response.AdminSignUpApplicationOverviewResponse
@@ -41,15 +40,7 @@ class AdminSignUpService(
         request: AdminSignUpApplicationPageRequest
     ): OffsetPageResponse<AdminSignUpApplicationOverviewResponse> =
         signUpApplicationFindService
-            .findSignUpApplications(request.toPageRequest())
-            .let { result -> OffsetPageResponse.from(result) { AdminSignUpApplicationOverviewResponse(it) } }
-
-    @Transactional(readOnly = true)
-    fun getSignUpApplicationsV2(
-        request: AdminSignUpApplicationSearchPageRequest
-    ): OffsetPageResponse<AdminSignUpApplicationOverviewResponse> =
-        signUpApplicationFindService
-            .findSignUpApplicationsV2(request, request.toPageRequest())
+            .findSignUpApplications(request, request.toPageRequest())
             .let { OffsetPageResponse.from(it) { AdminSignUpApplicationOverviewResponse(it) } }
 
     @Transactional
