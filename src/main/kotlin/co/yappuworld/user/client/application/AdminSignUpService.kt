@@ -40,7 +40,7 @@ class AdminSignUpService(
         request: AdminSignUpApplicationPageRequest
     ): OffsetPageResponse<AdminSignUpApplicationOverviewResponse> =
         signUpApplicationFindService
-            .findSignUpApplications(request.toPageRequest())
+            .findSignUpApplications(request, request.toPageRequest())
             .let { result -> OffsetPageResponse.from(result) { AdminSignUpApplicationOverviewResponse(it) } }
 
     @Transactional
