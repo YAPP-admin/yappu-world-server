@@ -2,6 +2,7 @@ package co.yappuworld.user.client.dto.request
 
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
+import co.yappuworld.user.infrastructure.model.SignUpApplicationSearchParam
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import org.springframework.data.domain.PageRequest
@@ -24,4 +25,12 @@ data class AdminSignUpApplicationPageRequest(
 ) {
 
     fun toPageRequest(): PageRequest = PageRequest.of(page - 1, size)
+
+    fun toSearchParam(): SignUpApplicationSearchParam =
+        SignUpApplicationSearchParam(
+            name = name,
+            status = status,
+            generation = generation,
+            position = position
+        )
 }

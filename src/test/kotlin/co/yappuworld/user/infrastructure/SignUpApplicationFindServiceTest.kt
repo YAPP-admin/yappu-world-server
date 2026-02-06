@@ -144,13 +144,17 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
             scenario("가입 신청서가 없으면 빈 페이지") {
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
 
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldBeEmpty()
-                    it.totalPages.shouldBeZero()
-                    it.totalElements.shouldBeZero()
-                    it.number.shouldBeZero()
-                    it.numberOfElements.shouldBeZero()
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldBeEmpty()
+                        it.totalPages.shouldBeZero()
+                        it.totalElements.shouldBeZero()
+                        it.number.shouldBeZero()
+                        it.numberOfElements.shouldBeZero()
+                    }
             }
 
             scenario("가입 신청서가 10개 있을 때, 10개 1페이지 조회하는 경우") {
@@ -158,13 +162,17 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldHaveSize(10)
-                    it.totalPages shouldBe 1
-                    it.totalElements shouldBe 10
-                    it.number.shouldBeZero()
-                    it.numberOfElements shouldBe 10
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(10)
+                        it.totalPages shouldBe 1
+                        it.totalElements shouldBe 10
+                        it.number.shouldBeZero()
+                        it.numberOfElements shouldBe 10
+                    }
             }
 
             scenario("가입 신청서가 11개 있을 때, 10개 1페이지 조회하는 경우") {
@@ -172,13 +180,17 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldHaveSize(10)
-                    it.totalPages shouldBe 2
-                    it.totalElements shouldBe 11
-                    it.number.shouldBeZero()
-                    it.numberOfElements shouldBe 10
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(10)
+                        it.totalPages shouldBe 2
+                        it.totalElements shouldBe 11
+                        it.number.shouldBeZero()
+                        it.numberOfElements shouldBe 10
+                    }
             }
 
             scenario("가입 신청서가 11개 있을 때, 10개 2페이지 조회하는 경우") {
@@ -186,13 +198,17 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
                 val request = AdminSignUpApplicationPageRequest(page = 2, size = 10)
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldHaveSize(1)
-                    it.totalPages shouldBe 2
-                    it.totalElements shouldBe 11
-                    it.number shouldBe 1
-                    it.numberOfElements shouldBe 1
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(1)
+                        it.totalPages shouldBe 2
+                        it.totalElements shouldBe 11
+                        it.number shouldBe 1
+                        it.numberOfElements shouldBe 1
+                    }
             }
         }
 
@@ -204,10 +220,14 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
 
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
 
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldHaveSize(5)
-                    it.totalElements shouldBe 5
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(5)
+                        it.totalElements shouldBe 5
+                    }
             }
 
             scenario("모든 필터 조합") {
@@ -247,10 +267,14 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                     position = Position.PM
                 )
 
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldHaveSize(1)
-                    it.content.first().id shouldBe matchingApp.id
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(1)
+                        it.content.first().id shouldBe matchingApp.id
+                    }
             }
 
             scenario("필터링 결과가 없으면 빈 페이지") {
@@ -259,11 +283,15 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
 
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, name = "김땡땡")
 
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldBeEmpty()
-                    it.totalElements.shouldBeZero()
-                    it.totalPages.shouldBeZero()
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldBeEmpty()
+                        it.totalElements.shouldBeZero()
+                        it.totalPages.shouldBeZero()
+                    }
             }
 
             scenario("빈 문자열로 이름 검색 시 전체 조회") {
@@ -273,7 +301,7 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, name = "")
                 val pageRequest = request.toPageRequest()
 
-                signUpApplicationFindService.findSignUpApplications(request, pageRequest).let {
+                signUpApplicationFindService.findSignUpApplications(request.toSearchParam(), pageRequest).let {
                     it.content.shouldHaveSize(3)
                     it.totalElements shouldBe 3
                 }
@@ -296,11 +324,15 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
 
                 val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, generation = 6)
 
-                signUpApplicationFindService.findSignUpApplications(request, request.toPageRequest()).let {
-                    it.content.shouldHaveSize(1)
-                    it.content.first().id shouldBe appWithMultipleUnits.id
-                    it.totalElements shouldBe 1
-                }
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(1)
+                        it.content.first().id shouldBe appWithMultipleUnits.id
+                        it.totalElements shouldBe 1
+                    }
             }
         }
     })

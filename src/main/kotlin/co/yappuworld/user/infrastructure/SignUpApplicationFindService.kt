@@ -1,11 +1,11 @@
 package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
-import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationActivityUnitEntity
+import co.yappuworld.user.infrastructure.model.SignUpApplicationSearchParam
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -66,10 +66,10 @@ class SignUpApplicationFindService(
             ?: throw BusinessException(UserError.NOT_FOUND_SIGN_UP_APPLICATION)
 
     fun findSignUpApplications(
-        request: AdminSignUpApplicationPageRequest,
+        param: SignUpApplicationSearchParam,
         pageRequest: PageRequest
     ): Page<SignUpApplicationEntity> {
-        val hasActivityUnitFilter = request.generation != null || request.position != null
+        val hasActivityUnitFilter = param.generation != null || param.position != null
 
         val applications = signUpApplicationRepository
             .findAll {
@@ -86,20 +86,20 @@ class SignUpApplicationFindService(
                         ).toTypedArray()
                     ).whereAnd(
                         *buildList {
-                            request.status?.let { add(path(SignUpApplicationEntity::status).equal(it)) }
-                            request.name?.takeIf { it.isNotBlank() }?.let {
+                            param.status?.let { add(path(SignUpApplicationEntity::status).equal(it)) }
+                            param.name?.takeIf { it.isNotBlank() }?.let {
                                 add(
                                     path(SignUpApplicationEntity::applicantName).like("%$it%")
                                 )
                             }
                             when {
                                 hasActivityUnitFilter -> {
-                                    request.generation?.let {
+                                    param.generation?.let {
                                         add(
                                             path(SignUpApplicationActivityUnitEntity::generation).equal(it)
                                         )
                                     }
-                                    request.position?.let {
+                                    param.position?.let {
                                         add(
                                             path(SignUpApplicationActivityUnitEntity::position).equal(it)
                                         )
