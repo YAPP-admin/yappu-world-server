@@ -1,5 +1,8 @@
 package co.yappuworld.user.client.dto.request
 
+import co.yappuworld.user.domain.vo.Position
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
+import co.yappuworld.user.infrastructure.model.SignUpApplicationSearchParam
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import org.springframework.data.domain.PageRequest
@@ -10,8 +13,24 @@ data class AdminSignUpApplicationPageRequest(
     val page: Int,
     @field:Schema(description = "페이지 당 데이터 개수", required = true)
     @field:Min(value = 1L)
-    val size: Int
+    val size: Int,
+    @field:Schema(description = "이름 검색어", example = "홍길동")
+    val name: String? = null,
+    @field:Schema(description = "상태 필터", example = "PENDING")
+    val status: SignUpApplicationStatus? = null,
+    @field:Schema(description = "직군 필터", example = "PM")
+    val position: Position? = null,
+    @field:Schema(description = "기수 필터", example = "6")
+    val generation: Int? = null
 ) {
 
     fun toPageRequest(): PageRequest = PageRequest.of(page - 1, size)
+
+    fun toSearchParam(): SignUpApplicationSearchParam =
+        SignUpApplicationSearchParam(
+            name = name,
+            status = status,
+            generation = generation,
+            position = position
+        )
 }
