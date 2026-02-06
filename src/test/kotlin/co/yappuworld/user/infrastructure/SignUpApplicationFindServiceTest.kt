@@ -2,8 +2,14 @@ package co.yappuworld.user.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamFixture
+import co.yappuworld.support.fixture.UserFixture.getActivityUnitParamsFixture
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
+import co.yappuworld.user.client.dto.request.AdminSignUpApplicationPageRequest
+import co.yappuworld.user.domain.vo.Position
+import co.yappuworld.user.domain.vo.SignUpApplicationStatus
 import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.infrastructure.jpa.SignUpApplicationActivityUnitRepository
 import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -16,11 +22,11 @@ import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 import java.util.UUID
 
 class SignUpApplicationFindServiceTest @Autowired constructor(
-    private val signUpApplicationRepository: SignUpApplicationRepository
+    private val signUpApplicationRepository: SignUpApplicationRepository,
+    private val signUpApplicationActivityUnitRepository: SignUpApplicationActivityUnitRepository
 ) : CustomDataJpaTestFeatureSpec({
 
         val signUpApplicationFindService = SignUpApplicationFindService(signUpApplicationRepository)
@@ -136,56 +142,197 @@ class SignUpApplicationFindServiceTest @Autowired constructor(
         feature("가입 신청서 페이지 조회") {
 
             scenario("가입 신청서가 없으면 빈 페이지") {
-                val pageRequest = PageRequest.of(0, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
-                    it.content.shouldBeEmpty()
-                    it.totalPages.shouldBeZero()
-                    it.totalElements.shouldBeZero()
-                    it.number.shouldBeZero()
-                    it.numberOfElements.shouldBeZero()
-                }
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldBeEmpty()
+                        it.totalPages.shouldBeZero()
+                        it.totalElements.shouldBeZero()
+                        it.number.shouldBeZero()
+                        it.numberOfElements.shouldBeZero()
+                    }
             }
 
             scenario("가입 신청서가 10개 있을 때, 10개 1페이지 조회하는 경우") {
                 val signUpApplications = List(10) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
-                val pageRequest = PageRequest.of(0, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
-                    it.content.shouldHaveSize(10)
-                    it.totalPages shouldBe 1
-                    it.totalElements shouldBe 10
-                    it.number.shouldBeZero()
-                    it.numberOfElements shouldBe 10
-                }
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(10)
+                        it.totalPages shouldBe 1
+                        it.totalElements shouldBe 10
+                        it.number.shouldBeZero()
+                        it.numberOfElements shouldBe 10
+                    }
             }
 
             scenario("가입 신청서가 11개 있을 때, 10개 1페이지 조회하는 경우") {
                 val signUpApplications = List(11) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
-                val pageRequest = PageRequest.of(0, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
-                    it.content.shouldHaveSize(10)
-                    it.totalPages shouldBe 2
-                    it.totalElements shouldBe 11
-                    it.number.shouldBeZero()
-                    it.numberOfElements shouldBe 10
-                }
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(10)
+                        it.totalPages shouldBe 2
+                        it.totalElements shouldBe 11
+                        it.number.shouldBeZero()
+                        it.numberOfElements shouldBe 10
+                    }
             }
 
             scenario("가입 신청서가 11개 있을 때, 10개 2페이지 조회하는 경우") {
                 val signUpApplications = List(11) { getSignUpApplicationEntityFixture() }
                 signUpApplicationRepository.saveAllAndFlush(signUpApplications)
 
-                val pageRequest = PageRequest.of(1, 10)
-                signUpApplicationFindService.findSignUpApplications(pageRequest).let {
-                    it.content.shouldHaveSize(1)
-                    it.totalPages shouldBe 2
-                    it.totalElements shouldBe 11
-                    it.number shouldBe 1
-                    it.numberOfElements shouldBe 1
+                val request = AdminSignUpApplicationPageRequest(page = 2, size = 10)
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(1)
+                        it.totalPages shouldBe 2
+                        it.totalElements shouldBe 11
+                        it.number shouldBe 1
+                        it.numberOfElements shouldBe 1
+                    }
+            }
+        }
+
+        feature("가입 신청서 검색 필터링 조회") {
+
+            scenario("모든 필터가 null이면 전체 조회") {
+                val applications = List(5) { getSignUpApplicationEntityFixture() }
+                signUpApplicationRepository.saveAllAndFlush(applications)
+
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10)
+
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(5)
+                        it.totalElements shouldBe 5
+                    }
+            }
+
+            scenario("모든 필터 조합") {
+                val matchingApp = getSignUpApplicationEntityFixture(
+                    name = "홍길동",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 6, position = Position.PM)
+                    )
+                )
+                val differentName = getSignUpApplicationEntityFixture(
+                    name = "김땡땡",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 6, position = Position.PM)
+                    )
+                )
+                val differentGenAndApproved = getSignUpApplicationEntityFixture(
+                    name = "홍길동",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 7, position = Position.ANDROID)
+                    )
+                ).apply { approve() }
+
+                val apps = signUpApplicationRepository.saveAllAndFlush(
+                    listOf(matchingApp, differentName, differentGenAndApproved)
+                )
+
+                signUpApplicationActivityUnitRepository.saveAllAndFlush(
+                    apps.flatMap { it.toSignUpApplicationActivityUnits() }
+                )
+
+                val request = AdminSignUpApplicationPageRequest(
+                    page = 1,
+                    size = 10,
+                    name = "홍길",
+                    status = SignUpApplicationStatus.PENDING,
+                    generation = 6,
+                    position = Position.PM
+                )
+
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(1)
+                        it.content.first().id shouldBe matchingApp.id
+                    }
+            }
+
+            scenario("필터링 결과가 없으면 빈 페이지") {
+                val app = getSignUpApplicationEntityFixture(name = "홍길동")
+                signUpApplicationRepository.saveAndFlush(app)
+
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, name = "김땡땡")
+
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldBeEmpty()
+                        it.totalElements.shouldBeZero()
+                        it.totalPages.shouldBeZero()
+                    }
+            }
+
+            scenario("빈 문자열로 이름 검색 시 전체 조회") {
+                val applications = List(3) { getSignUpApplicationEntityFixture() }
+                signUpApplicationRepository.saveAllAndFlush(applications)
+
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, name = "")
+                val pageRequest = request.toPageRequest()
+
+                signUpApplicationFindService.findSignUpApplications(request.toSearchParam(), pageRequest).let {
+                    it.content.shouldHaveSize(3)
+                    it.totalElements shouldBe 3
                 }
+            }
+
+            scenario("activity_unit이 여러 개인 가입신청서 필터링 시 중복 없이 조회") {
+                val appWithMultipleUnits = getSignUpApplicationEntityFixture(
+                    name = "홍길동",
+                    activityUnitParams = getActivityUnitParamsFixture(
+                        getActivityUnitParamFixture(generation = 6, position = Position.PM),
+                        getActivityUnitParamFixture(generation = 7, position = Position.ANDROID),
+                        getActivityUnitParamFixture(generation = 8, position = Position.WEB)
+                    )
+                )
+
+                val apps = signUpApplicationRepository.saveAllAndFlush(listOf(appWithMultipleUnits))
+                signUpApplicationActivityUnitRepository.saveAllAndFlush(
+                    apps.flatMap { it.toSignUpApplicationActivityUnits() }
+                )
+
+                val request = AdminSignUpApplicationPageRequest(page = 1, size = 10, generation = 6)
+
+                signUpApplicationFindService
+                    .findSignUpApplications(
+                        request.toSearchParam(),
+                        request.toPageRequest()
+                    ).let {
+                        it.content.shouldHaveSize(1)
+                        it.content.first().id shouldBe appWithMultipleUnits.id
+                        it.totalElements shouldBe 1
+                    }
             }
         }
     })
