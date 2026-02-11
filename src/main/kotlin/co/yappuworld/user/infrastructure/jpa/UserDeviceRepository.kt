@@ -7,4 +7,6 @@ import java.util.UUID
 interface UserDeviceRepository : JpaRepository<UserDeviceEntity, UUID> {
 
     fun findUserDeviceOrNullByUserId(userId: UUID): UserDeviceEntity?
+
+    fun deleteByUserId(userId: UUID)
 }

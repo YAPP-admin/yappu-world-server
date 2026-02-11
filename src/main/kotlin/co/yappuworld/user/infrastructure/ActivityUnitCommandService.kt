@@ -21,4 +21,6 @@ class ActivityUnitCommandService(
         require(ids.isNotEmpty()) { "최소 하나 이상의 삭제 아이템이 필요합니다." }
         activityUnitRepository.deleteAllById(ids)
     }
+
+    fun save(activityUnit: ActivityUnitEntity): ActivityUnitEntity = activityUnitRepository.save(activityUnit)
 }

@@ -7,4 +7,6 @@ import java.util.UUID
 interface UserAlarmSettingRepository : JpaRepository<UserAlarmSettingEntity, UUID> {
 
     fun findUserAlarmSettingOrNullByUserId(userId: UUID): UserAlarmSettingEntity?
+
+    fun deleteByUserId(userId: UUID)
 }

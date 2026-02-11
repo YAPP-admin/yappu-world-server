@@ -50,16 +50,22 @@ class SessionFindServiceTest @Autowired constructor(
                     .shouldNotBeEmpty()
             }
 
-            scenario("세션은 있는데 출석이 없으면 결석이다.") {
+            scenario("참석자로 지정된 세션에서 출석 기록이 없다면 결석 처리가 된다.") {
+                val userId = UUID.randomUUID()
                 val session = getSessionEntityFixture(generation = 4)
                     .also { scheduleRepository.save(it) }
+                attendanceRepository.saveAndFlush(
+                    getAttendanceEntityFixture(
+                        userId = userId,
+                        session = session
+                    )
+                )
 
+                val now = LocalDateTime.of(session.date.plusDays(1), session.time)
                 val result = sessionFindService
-                    .findSessionsWithAttendanceStatus(
-                        4,
-                        UUID.randomUUID(),
-                        LocalDateTime.of(session.date.plusDays(1), session.time)
-                    ).first()
+                    .findSessionsWithAttendanceStatus(4, userId, now)
+                    .first()
+                    .also { it.resolveAttendanceStatusOfPastSessions(now) }
 
                 result.attendanceStatus shouldBe AttendanceStatus.ABSENT.label
                 result.checkedInAt.shouldBeNull()
@@ -99,7 +105,10 @@ class SessionFindServiceTest @Autowired constructor(
                         endDate = now.toLocalDate().minusDays(1)
                     )
                     sessions.add(session)
-                    attendances.add(getAttendanceEntityFixture(status[it], userId, session))
+                    attendances.add(
+                        getAttendanceEntityFixture(status[it], userId, session)
+                            .also { attendance -> attendance.checkIn(status[it], now) }
+                    )
                 }
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)
@@ -143,7 +152,7 @@ class SessionFindServiceTest @Autowired constructor(
                 sessionFindService.findAttendancesHistories(generation = 4, userId = user.id, now = now).let {
                     it.shouldHaveSize(1)
                     it[0].id shouldBe sessions[0].id
-                    it[0].attendanceStatus shouldBe AttendanceStatus.PENDING.label
+                    it[0].attendanceStatus shouldBe AttendanceStatus.ABSENT.label
                 }
             }
 
@@ -199,7 +208,10 @@ class SessionFindServiceTest @Autowired constructor(
                         endDate = now.toLocalDate().minusDays(1)
                     )
                     sessions.add(session)
-                    attendances.add(getAttendanceEntityFixture(status[it], userId, session))
+                    attendances.add(
+                        getAttendanceEntityFixture(status[it], userId, session)
+                            .also { attendance -> attendance.checkIn(status[it], now) }
+                    )
                 }
                 scheduleRepository.saveAll(sessions)
                 attendanceRepository.saveAll(attendances)

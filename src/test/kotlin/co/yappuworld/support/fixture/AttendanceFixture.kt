@@ -43,9 +43,9 @@ object AttendanceFixture {
         userId: UUID = UUID.randomUUID(),
         session: SessionEntity = getSessionEntityFixture()
     ) = AttendanceEntity(
-        status = status,
         userId = userId,
-        session = session
+        session = session,
+        status = status
     )
 
     fun getAttendanceBookFixture(

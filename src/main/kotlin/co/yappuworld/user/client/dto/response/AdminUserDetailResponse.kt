@@ -54,7 +54,9 @@ data class AdminUserDetailActivityUnitResponse(
     @Schema(description = "직군")
     val position: String,
     @Schema(description = "활동 중인지 여부")
-    val isActive: Boolean
+    val isActive: Boolean,
+    @Schema(description = "팀 정보")
+    val team: AdminUserDetailTeamResponse? = null
 ) {
 
     constructor(
@@ -64,6 +66,25 @@ data class AdminUserDetailActivityUnitResponse(
         id = activityUnit.id,
         generation = activityUnit.generation,
         position = activityUnit.position.label,
-        isActive = activityUnit.generation == activeGeneration
+        isActive = activityUnit.generation == activeGeneration,
+        team = AdminUserDetailTeamResponse.from(activityUnit)
     )
+}
+
+data class AdminUserDetailTeamResponse(
+    @Schema(description = "팀 ID")
+    val id: UUID,
+    @Schema(description = "팀 이름")
+    val name: String
+) {
+    companion object {
+        fun from(activityUnit: ActivityUnitEntity): AdminUserDetailTeamResponse? {
+            val team = activityUnit.teamMember?.team ?: return null
+
+            return AdminUserDetailTeamResponse(
+                id = team.id,
+                name = team.name
+            )
+        }
+    }
 }

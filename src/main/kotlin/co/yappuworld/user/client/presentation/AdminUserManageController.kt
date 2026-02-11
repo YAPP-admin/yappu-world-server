@@ -33,4 +33,9 @@ class AdminUserManageController(
         adminUserService.updateUserDetails(request)
         return ResponseEntity.noContent().build()
     }
+
+    override fun deactivateUser(userId: UUID): ResponseEntity<Unit> {
+        adminUserService.deactivate(userId)
+        return ResponseEntity.noContent().build()
+    }
 }
