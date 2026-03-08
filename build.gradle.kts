@@ -8,17 +8,19 @@ plugins {
     id("io.sentry.jvm.gradle") version "5.2.0"
 }
 
-group = "co"
-version = "0.0.1-SNAPSHOT"
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    group = "co"
+    version = "0.0.1-SNAPSHOT"
+
+    repositories {
+        mavenCentral()
+    }
 }
 
 dependencies {
@@ -108,5 +110,49 @@ tasks {
         debug = true
         org = "yapp-co"
         projectName = "yappu-world-server"
+    }
+}
+
+subprojects {
+    apply(plugin = "kotlin")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "io.spring.dependency-management")
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
+        }
+    }
+
+    dependencies {
+        implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
+
+        // test
+        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        testImplementation("io.mockk:mockk:1.13.14")
+        testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
+        testImplementation("io.kotest:kotest-assertions-core:5.9.1")
+        testImplementation("io.kotest:kotest-property:5.9.1")
+    }
+
+    tasks {
+        test { useJUnitPlatform() }
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.addAll("-Xjsr305=strict")
+        }
+    }
+
+    ktlint {
+        version.set("1.5.0")
     }
 }
