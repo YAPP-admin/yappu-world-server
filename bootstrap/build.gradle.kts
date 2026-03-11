@@ -10,7 +10,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":common"))
 
-    runtimeOnly(libs.spring.boot.docker.compose)
+    developmentOnly(libs.spring.boot.docker.compose)
 
     // apm
     implementation(libs.spring.boot.starter.actuator)
