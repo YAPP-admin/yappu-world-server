@@ -1,14 +1,14 @@
 plugins {
-    kotlin("plugin.spring")
+    alias(libs.plugins.kotlin.spring)
 }
 
 dependencies {
     implementation(project(":domain"))
     implementation(project(":common"))
 
-    implementation("org.springframework:spring-context")
-    implementation("org.springframework:spring-tx")
+    implementation(libs.spring.context)
+    implementation(libs.spring.tx)
 
     // test
-    testImplementation("org.springframework:spring-test")
+    testImplementation(libs.spring.test)
 }

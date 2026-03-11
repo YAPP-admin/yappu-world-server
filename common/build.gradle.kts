@@ -1,15 +1,14 @@
 plugins {
-    kotlin("plugin.spring")
+    alias(libs.plugins.kotlin.spring)
 }
 
 dependencies {
-    implementation("org.springframework:spring-context")
+    implementation(libs.spring.context)
 
     // jwt
-    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
+    implementation(libs.jjwt.api)
+    runtimeOnly(libs.bundles.jjwt.runtime)
 
     // test
-    testImplementation("org.springframework:spring-test")
+    testImplementation(libs.spring.test)
 }

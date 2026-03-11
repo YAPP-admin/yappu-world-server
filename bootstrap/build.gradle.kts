@@ -1,6 +1,6 @@
 plugins {
-    kotlin("plugin.spring")
-    id("org.springframework.boot")
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
 }
 
 dependencies {
@@ -10,32 +10,21 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":common"))
 
-    implementation("org.springframework.boot:spring-boot-starter")
-    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
+    runtimeOnly(libs.spring.boot.docker.compose)
 
     // apm
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    implementation(libs.spring.boot.starter.actuator)
+    runtimeOnly(libs.micrometer.prometheus)
 
     // logging
-    implementation("com.github.loki4j:loki-logback-appender:2.0.1")
+    implementation(libs.loki.logback.appender)
 
     // test
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.kotest.extensions.spring)
 }
 
 tasks {
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events("passed", "skipped", "failed")
-            showExceptions = true
-            showCauses = true
-            showStackTraces = true
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        }
-    }
     bootJar {
         archiveBaseName = "yappu-world"
 
