@@ -105,7 +105,7 @@ tasks {
 }
 
 subprojects {
-    apply(plugin = "kotlin")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "io.spring.dependency-management")
 
