@@ -471,3 +471,11 @@ gradle-app.setting
 
 application-secret-local.yaml
 .secrets
+
+### AI Tools ###
+# Claude Code 개인 설정 (팀 설정인 CLAUDE.md, .claude/settings.json은 커밋 대상)
+.claude/settings.local.json
+.claude/todos/
+
+# Codex 로컬 설정
+.codex/

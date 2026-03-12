@@ -13,7 +13,7 @@ import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
 import co.yappuworld.user.infrastructure.entity.UserAlarmSettingEntity
 import co.yappuworld.user.infrastructure.entity.UserDeviceEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnit
 import java.util.UUID
 
 object UserFixture {

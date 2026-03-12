@@ -10,7 +10,7 @@ import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnit
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.jpql

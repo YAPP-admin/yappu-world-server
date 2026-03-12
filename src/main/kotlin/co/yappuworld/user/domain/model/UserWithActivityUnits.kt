@@ -1,7 +1,6 @@
 package co.yappuworld.user.domain.model
 
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
 import java.util.UUID
 
 class UserWithActivityUnits(
