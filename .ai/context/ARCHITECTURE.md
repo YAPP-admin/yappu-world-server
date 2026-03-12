@@ -11,7 +11,7 @@
 - **인증**: JWT (jjwt 0.12.5)
 - **API 문서**: SpringDoc OpenAPI 2.7.0
 - **테스트**: JUnit 5 + Kotest 5.9.1 (FeatureSpec) + MockK 1.13.14
-- **코드 품질**: ktlint 1.5.0 (pre-commit hook 활성)
+- **코드 품질**: ktlint 1.5.0 (커밋 전 검증 절차 운영)
 - **모니터링**: Sentry, Prometheus, Loki
 - **외부 연동**: Firebase FCM, Kakao Map API, Discord Webhook
 
@@ -69,7 +69,8 @@ yappu-world-server/
 ## 계층 간 의존성
 
 - `presentation` → `application` → `infrastructure` 방향으로만 의존
-- `domain` 패키지는 다른 도메인의 `domain` 패키지에 의존하지 않는다
+- `domain` 패키지는 `client`, `infrastructure` 같은 바깥 계층에 의존하지 않는다
+- 다른 도메인의 `domain` 패키지 참조는 가능하지만, 필요한 범위로 최소화한다
 - Controller는 반드시 Api interface를 구현하고, 비즈니스 로직은 Service에 위임한다
 - infrastructure의 FindService/CommandService가 JPA Repository를 감싸서 제공한다. Controller나 Service에서 JPA Repository를 직접 사용하지 않는다
 
