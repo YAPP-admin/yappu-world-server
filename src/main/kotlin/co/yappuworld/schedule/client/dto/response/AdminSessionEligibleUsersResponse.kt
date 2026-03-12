@@ -1,7 +1,7 @@
 package co.yappuworld.schedule.client.dto.response
 
 import co.yappuworld.user.domain.vo.Position
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnit
 import java.util.UUID
 
 data class AdminSessionEligibleUsersResponse(

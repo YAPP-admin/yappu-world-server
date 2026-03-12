@@ -3,7 +3,7 @@ package co.yappuworld.user.infrastructure
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnit
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.JpqlDsl
 import com.linecorp.kotlinjdsl.dsl.jpql.select.SelectQueryGroupByStep

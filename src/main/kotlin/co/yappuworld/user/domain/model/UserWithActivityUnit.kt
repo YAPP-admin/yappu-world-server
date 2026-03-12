@@ -1,4 +1,4 @@
-package co.yappuworld.user.infrastructure.model
+package co.yappuworld.user.domain.model
 
 import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.vo.Position

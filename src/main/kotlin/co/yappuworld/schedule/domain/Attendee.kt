@@ -6,7 +6,7 @@ import co.yappuworld.user.domain.model.ActivityUnit
 import co.yappuworld.user.domain.model.UserWithActivityUnits
 import co.yappuworld.user.domain.vo.Position
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.model.UserWithActivityUnit
+import co.yappuworld.user.domain.model.UserWithActivityUnit
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 
