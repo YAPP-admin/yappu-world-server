@@ -387,6 +387,25 @@ class SessionFindServiceTest @Autowired constructor(
                     }
             }
 
+            scenario("제목 검색어 앞뒤 공백은 제거 후 조회된다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(name = "25기 오프라인 세션"),
+                        getSessionEntityFixture(name = "25기 온라인 세션")
+                    )
+                )
+
+                sessionFindService
+                    .findSessions(
+                        pageRequest = PageRequest.of(0, 10),
+                        title = "  오프라인  "
+                    ).content
+                    .let {
+                        it.shouldHaveSize(1)
+                        it.first().name shouldBe "25기 오프라인 세션"
+                    }
+            }
+
             scenario("세션 타입과 기수를 함께 필터링할 수 있다.") {
                 scheduleRepository.saveAllAndFlush(
                     listOf(

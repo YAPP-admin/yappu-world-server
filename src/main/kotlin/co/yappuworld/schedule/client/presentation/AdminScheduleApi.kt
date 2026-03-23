@@ -134,12 +134,12 @@ interface AdminScheduleApi {
                                 name = "잘못된 페이지 크기 파라미터",
                                 value = """
                                     {
-                                        "message": "페이지 당 데이터 개수는 1 이상이어야 합니다.",
+                                        "message": "페이지 당 데이터 수는 1 이상이어야 합니다.",
                                         "errorCode": "GLB_0002",
                                         "errors": [
                                             {
                                                 "field": "size",
-                                                "message": "페이지 당 데이터 개수는 1 이상이어야 합니다."
+                                                "message": "페이지 당 데이터 수는 1 이상이어야 합니다."
                                             }
                                         ],
                                         "isSuccess": false

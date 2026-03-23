@@ -129,9 +129,11 @@ class SessionFindService(
         generation: Int? = null,
         sessionType: SessionType? = null
     ): Page<SessionEntity> {
+        val trimmedTitle = title?.trim()
+
         val result = scheduleRepository.findPage(pageRequest) {
             val predicates = buildList<Predicatable> {
-                title?.takeIf { it.isNotBlank() }?.let { add(path(SessionEntity::name).like("%$it%")) }
+                trimmedTitle?.takeIf { it.isNotBlank() }?.let { add(path(SessionEntity::name).like("%$it%")) }
                 generation?.let { add(path(SessionEntity::generation).equal(it)) }
                 sessionType?.let { add(path(SessionEntity::sessionType).equal(it)) }
             }
@@ -170,21 +172,6 @@ class SessionFindService(
         userId: UUID,
         sessionId: UUID
     ): SessionAttendance? {
-        //        return scheduleRepository
-        //            .singleOrNull {
-        //                selectNew<SessionAttendance>(
-        //                    entity(SessionEntity::class),
-        //                    entity(AttendanceEntity::class)
-        //                ).from(
-        //                    entity(SessionEntity::class),
-        //                    innerJoin(AttendanceEntity::class)
-        //                        .on(path(AttendanceEntity::session)(SessionEntity::getId).eq(path(SessionEntity::getId)))
-        //                ).whereAnd(
-        //                    path(SessionEntity::getId).eq(sessionId),
-        //                    path(AttendanceEntity::userId).eq(userId)
-        //                )
-        //            }
-
         val query = jpql {
             selectNew<SessionAttendance>(
                 entity(SessionEntity::class),

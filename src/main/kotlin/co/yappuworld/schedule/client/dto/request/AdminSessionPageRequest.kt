@@ -17,6 +17,7 @@ data class AdminSessionPageRequest(
     @field:Min(value = 1L, message = "페이지 당 데이터 수는 1 이상이어야 합니다.")
     val size: Int,
     @field:Schema(description = "기수", nullable = true, example = "25")
+    @field:Min(value = 1L, message = "기수는 1 이상이어야 합니다.")
     val generation: Int? = null
 ) {
 
