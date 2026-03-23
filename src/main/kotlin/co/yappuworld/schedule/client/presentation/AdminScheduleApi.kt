@@ -78,7 +78,7 @@ interface AdminScheduleApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "목록 제공",
+                                name = "제목 검색 및 필터 적용 예시",
                                 value = """
                                     {
                                         "data": {
@@ -87,27 +87,18 @@ interface AdminScheduleApi {
                                                     "id": "f70dd406-ffe4-11ef-ad31-0242ac120002",
                                                     "generation": 25,
                                                     "type": "OFFLINE",
-                                                    "title": "OT",
+                                                    "title": "25기 오프라인 세션",
                                                     "place": "강북노동자복지관",
-                                                    "date": "2024-11-01",
+                                                    "date": "2025-02-15",
+                                                    "endDate": "2025-02-15",
                                                     "time": "14:00:00",
                                                     "endTime": "18:00:00"
-                                                },
-                                                {
-                                                    "id": "f70dd5ff-ffe4-11ef-ad31-0242ac120002",
-                                                    "generation": 25,
-                                                    "type": "TEAM",
-                                                    "title": "팀세션",
-                                                    "place": null,
-                                                    "date": "2024-11-01",
-                                                    "time": null,
-                                                    "endTime": null
                                                 }
                                             ],
-                                            "totalCount": 3,
-                                            "totalPages": 2,
+                                            "totalCount": 1,
+                                            "totalPages": 1,
                                             "page": 1,
-                                            "size": 2
+                                            "size": 20
                                         },
                                         "isSuccess": true
                                     }

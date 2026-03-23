@@ -4,6 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.util.LocalDateRange
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
+import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
@@ -19,6 +20,7 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -360,6 +362,51 @@ class SessionFindServiceTest @Autowired constructor(
                     it[3].date shouldBe LocalDate.of(2024, 12, 14)
                     it[4].date shouldBe LocalDate.of(2024, 12, 15)
                 }
+            }
+        }
+
+        feature("어드민 세션 목록 필터 조회") {
+
+            scenario("제목 검색어가 포함된 세션만 조회된다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(name = "25기 오프라인 세션"),
+                        getSessionEntityFixture(name = "25기 온라인 세션"),
+                        getSessionEntityFixture(name = "정기 팀 회의")
+                    )
+                )
+
+                sessionFindService
+                    .findSessions(
+                        pageRequest = PageRequest.of(0, 10),
+                        title = "오프라인"
+                    ).content
+                    .let {
+                        it.shouldHaveSize(1)
+                        it.first().name shouldBe "25기 오프라인 세션"
+                    }
+            }
+
+            scenario("세션 타입과 기수를 함께 필터링할 수 있다.") {
+                scheduleRepository.saveAllAndFlush(
+                    listOf(
+                        getSessionEntityFixture(generation = 25, sessionType = SessionType.OFFLINE),
+                        getSessionEntityFixture(generation = 25, sessionType = SessionType.ONLINE),
+                        getSessionEntityFixture(generation = 26, sessionType = SessionType.OFFLINE)
+                    )
+                )
+
+                sessionFindService
+                    .findSessions(
+                        pageRequest = PageRequest.of(0, 10),
+                        generation = 25,
+                        sessionType = SessionType.OFFLINE
+                    ).content
+                    .let {
+                        it.shouldHaveSize(1)
+                        it.first().generation shouldBe 25
+                        it.first().sessionType shouldBe SessionType.OFFLINE
+                    }
             }
         }
     })
