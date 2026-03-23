@@ -4,6 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
+import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponseV2
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
@@ -13,8 +14,11 @@ import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.support.fixture.ScheduleFixture.getSessionWithAttendanceFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrow
@@ -110,6 +114,46 @@ class AttendanceServiceTest :
                         }.error.shouldBe(AttendanceError.ATTENDANCE_CODE_NOT_MATCH)
                     }
                 }
+            }
+        }
+
+        feature("출석 내역 조회 v2") {
+
+            scenario("활성 기수의 전체 세션 출석 이력을 상태값과 함께 조회한다.") {
+                val now = LocalDateTime.of(2025, 2, 15, 15, 0)
+                val sessions = listOf(
+                    getSessionWithAttendanceFixture(attendanceStatus = AttendanceStatus.LATE),
+                    getSessionWithAttendanceFixture(
+                        attendanceStatus = AttendanceStatus.PENDING,
+                        checkedInAt = null,
+                        date = now.toLocalDate().plusDays(1),
+                        endDate = now.toLocalDate().plusDays(1)
+                    )
+                )
+                every { generationFindService.findActiveGeneration() } returns activeGeneration
+                every {
+                    sessionFindService.findSessionsWithAttendanceStatus(
+                        generation = activeGeneration,
+                        userId = user.id,
+                        now = now
+                    )
+                } returns sessions
+                every { userFindService.findSessionAttendee(user.id, activeGeneration) } returns
+                    getAttendeeFixture(getUserWithActivityUnitFixture(generation = activeGeneration), activeGeneration)
+
+                attendanceService.getAttendancesHistoryV2(user.id, now) shouldBe
+                    AttendancesHistoryResponseV2.of(sessions, now)
+            }
+
+            scenario("활성 기수의 참가자가 아니면 예외가 발생한다.") {
+                val now = LocalDateTime.of(2025, 2, 15, 15, 0)
+                every { generationFindService.findActiveGeneration() } returns activeGeneration
+                every { userFindService.findSessionAttendee(user.id, activeGeneration) } throws
+                    BusinessException(AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION)
+
+                shouldThrow<BusinessException> {
+                    attendanceService.getAttendancesHistoryV2(user.id, now)
+                }.error shouldBe AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION
             }
         }
     })

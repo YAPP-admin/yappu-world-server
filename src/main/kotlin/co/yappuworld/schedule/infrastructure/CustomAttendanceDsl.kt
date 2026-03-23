@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.infrastructure
 
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.schedule.infrastructure.dto.UserSessionAttendance
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
@@ -14,8 +14,8 @@ class CustomAttendanceDsl : Jpql() {
         override fun newInstance(): CustomAttendanceDsl = CustomAttendanceDsl()
     }
 
-    fun selectSessionWithAttendance(): SelectQueryFromStep<SessionWithAttendanceDto> =
-        selectNew<SessionWithAttendanceDto>(
+    fun selectSessionWithAttendance(): SelectQueryFromStep<UserSessionAttendance> =
+        selectNew<UserSessionAttendance>(
             path(SessionEntity::getId),
             path(SessionEntity::name),
             path(SessionEntity::description),

@@ -7,7 +7,7 @@ import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
 import co.yappuworld.schedule.domain.vo.SessionType
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.schedule.infrastructure.dto.UserSessionAttendance
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
 import com.linecorp.kotlinjdsl.dsl.jpql.jpql
@@ -76,7 +76,7 @@ class SessionFindService(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
-    ): List<SessionWithAttendanceDto> =
+    ): List<UserSessionAttendance> =
         scheduleRepository
             .findAll(CustomAttendanceDsl) {
                 selectSessionWithAttendance()
@@ -96,7 +96,7 @@ class SessionFindService(
         generation: Int,
         userId: UUID,
         now: LocalDateTime
-    ): List<SessionWithAttendanceDto> =
+    ): List<UserSessionAttendance> =
         scheduleRepository
             .findAll(CustomAttendanceDsl) {
                 selectSessionWithAttendance()

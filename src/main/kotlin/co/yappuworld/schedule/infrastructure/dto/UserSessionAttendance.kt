@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
-class SessionWithAttendanceDto(
+class UserSessionAttendance(
     val id: UUID,
     val name: String,
     val description: String?,
@@ -35,8 +35,8 @@ class SessionWithAttendanceDto(
         fun from(
             session: SessionEntity,
             attendance: AttendanceEntity?
-        ): SessionWithAttendanceDto =
-            SessionWithAttendanceDto(
+        ): UserSessionAttendance =
+            UserSessionAttendance(
                 id = session.id,
                 name = session.name,
                 description = session.description,
@@ -59,6 +59,18 @@ class SessionWithAttendanceDto(
         private set
 
     val attendanceStatusType: AttendanceStatus? = _attendanceStatus
+
+    fun resolveAttendanceStatus(now: LocalDateTime): AttendanceStatus? =
+        when {
+            attendanceStatusType == null -> null
+            attendanceStatusType == AttendanceStatus.PENDING && !isFinished(now) -> null
+            attendanceStatusType == AttendanceStatus.PENDING &&
+                checkedInAt == null &&
+                isFinished(
+                    now
+                ) -> AttendanceStatus.ABSENT
+            else -> attendanceStatusType
+        }
 
     fun resolveAttendanceStatusOfPastSessions(now: LocalDateTime) {
         if (attendanceStatusType == AttendanceStatus.PENDING && checkedInAt == null && isFinished(now)) {

@@ -7,6 +7,7 @@ import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponse
 import co.yappuworld.schedule.client.dto.response.AttendanceStatisticsResponseV2
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
+import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponseV2
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -190,7 +191,8 @@ interface AttendanceApi {
                                             "attendanceCount": 10,
                                             "lateCount": 3,
                                             "absenceCount": 2,
-                                            "latePassCount": 1
+                                            "latePassCount": 1,
+                                            "summaryStatus": "INCOMPLETE"
                                         },
                                         "isSuccess": true
                                     }
@@ -201,7 +203,7 @@ interface AttendanceApi {
                 ]
             ),
             ApiResponse(
-                responseCode = "404",
+                responseCode = "409",
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -227,7 +229,7 @@ interface AttendanceApi {
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<AttendanceStatisticsResponse>>
 
-    @Operation(summary = "나의 출석 통계")
+    @Operation(summary = "나의 출석 통계 (V2)")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -259,7 +261,7 @@ interface AttendanceApi {
                 ]
             ),
             ApiResponse(
-                responseCode = "404",
+                responseCode = "409",
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -354,4 +356,76 @@ interface AttendanceApi {
     fun getAttendancesHistory(
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<SuccessResponse<AttendancesHistoryResponse>>
+
+    @Operation(summary = "출석 내역 조회 (V2)")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        schema = Schema(implementation = AttendancesHistoryResponseV2::class),
+                        examples = [
+                            ExampleObject(
+                                name = "세션 출석 이력 조회",
+                                value = """
+                                    {
+                                        "data": {
+                                            "histories": [
+                                                {
+                                                    "sessionId": "c076cadd-1b30-11f0-add0-0242ac140002",
+                                                    "title": "OT",
+                                                    "sessionType": "OFFLINE",
+                                                    "startAt": "2025-04-17T13:00:00",
+                                                    "endAt": "2025-04-17T18:00:00",
+                                                    "checkedInAt": "2025-04-17T13:18:17",
+                                                    "attendanceStatus": "ON_TIME",
+                                                    "progressPhase": "DONE"
+                                                },
+                                                {
+                                                    "sessionId": "c076ff63-1b30-11f0-add0-0242ac140002",
+                                                    "title": "팀 매칭",
+                                                    "sessionType": "TEAM",
+                                                    "startAt": "2025-04-24T13:00:00",
+                                                    "endAt": "2025-04-24T18:00:00",
+                                                    "checkedInAt": null,
+                                                    "attendanceStatus": null,
+                                                    "progressPhase": "PENDING"
+                                                }
+                                            ]
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "활성화 된 기수 없음",
+                                value = """
+                                    {
+                                        "errorCode": "ATD_2002",
+                                        "message": "활성화 된 기수가 없어서 출석 관련 처리가 불가합니다.",
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v2/attendances/history")
+    fun getAttendancesHistoryV2(
+        @AuthenticationPrincipal securityUser: SecurityUser
+    ): ResponseEntity<SuccessResponse<AttendancesHistoryResponseV2>>
 }

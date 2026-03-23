@@ -5,6 +5,7 @@ import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
 import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponse
+import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponseV2
 import co.yappuworld.schedule.domain.AttendanceBook
 import co.yappuworld.schedule.domain.UserAttendanceStatistics
 import co.yappuworld.schedule.domain.vo.AttendanceError
@@ -84,6 +85,22 @@ class AttendanceService(
         )
 
         return AttendancesHistoryResponse.of(sessionsWithAttendance)
+    }
+
+    @Transactional(readOnly = true)
+    fun getAttendancesHistoryV2(
+        userId: UUID,
+        now: LocalDateTime
+    ): AttendancesHistoryResponseV2 {
+        val activeGeneration = generationFindService.findActiveGeneration()
+        userFindService.findSessionAttendee(userId, activeGeneration)
+        val sessionsWithAttendance = sessionFindService.findSessionsWithAttendanceStatus(
+            generation = activeGeneration,
+            userId = userId,
+            now = now
+        )
+
+        return AttendancesHistoryResponseV2.of(sessionsWithAttendance, now)
     }
 
     private fun checkAttendanceCode(attendanceCode: String) {

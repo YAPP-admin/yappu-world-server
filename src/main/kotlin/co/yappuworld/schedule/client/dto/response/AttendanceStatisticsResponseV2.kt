@@ -20,7 +20,9 @@ data class AttendanceStatisticsResponseV2(
     @field:Schema(description = "결석한 세션 수")
     val absenceCount: Int,
     @field:Schema(description = "지각 면제권 수")
-    val latePassCount: Int
+    val latePassCount: Int,
+    @field:Schema(description = "출석 현황 상태", allowableValues = ["GOOD", "CAUTION", "INCOMPLETE"])
+    val summaryStatus: AttendanceSummaryStatus
 ) {
 
     companion object {
@@ -37,7 +39,8 @@ data class AttendanceStatisticsResponseV2(
                     attendanceCount = it.onTimeCount,
                     lateCount = it.lateCount,
                     absenceCount = it.absentCount,
-                    latePassCount = it.latePassCount
+                    latePassCount = it.latePassCount,
+                    summaryStatus = AttendanceSummaryStatus.from(it)
                 )
             }
     }

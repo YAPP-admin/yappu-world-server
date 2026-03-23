@@ -1,6 +1,6 @@
 package co.yappuworld.schedule.client.dto.response
 
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.schedule.infrastructure.dto.UserSessionAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import java.util.UUID
@@ -11,7 +11,7 @@ data class AttendancesHistoryResponse(
 ) {
 
     companion object {
-        fun of(sessions: List<SessionWithAttendanceDto>): AttendancesHistoryResponse =
+        fun of(sessions: List<UserSessionAttendance>): AttendancesHistoryResponse =
             AttendancesHistoryResponse(sessions.map { AttendanceHistoryResponse(it) })
     }
 }
@@ -27,7 +27,7 @@ data class AttendanceHistoryResponse(
     val attendanceStatus: String?
 ) {
 
-    constructor(session: SessionWithAttendanceDto) : this(
+    constructor(session: UserSessionAttendance) : this(
         sessionId = session.id,
         name = session.name,
         checkedInAt = session.checkedInAt,

@@ -6,7 +6,7 @@ import co.yappuworld.schedule.client.dto.request.SchedulePageRequest
 import co.yappuworld.schedule.domain.vo.ScheduleProgressPhase
 import co.yappuworld.schedule.domain.vo.ScheduleType
 import co.yappuworld.schedule.domain.vo.SessionType
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.schedule.infrastructure.dto.UserSessionAttendance
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.ScheduleEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
@@ -29,9 +29,8 @@ data class SchedulePageResponse(
             now: LocalDateTime
         ): SchedulePageResponse {
             val attendanceBySessionId = attendances.associateBy { it.session.id }
-            // TODO: 일단 세션 뿐이니, 세션으로만 변환, 추후에 다른 Schedule도 처리하도록 변경 필요
-            val scheduleWithAttendance = schedules.map {
-                SessionWithAttendanceDto.from(it as SessionEntity, attendanceBySessionId[it.id])
+            val scheduleWithAttendance = schedules.filterIsInstance<SessionEntity>().map {
+                UserSessionAttendance.from(it, attendanceBySessionId[it.id])
             }
             val scheduleByDate = scheduleWithAttendance.groupBy { it.date }
 
@@ -60,7 +59,7 @@ data class DateGroupedScheduleResponse(
 
     constructor(
         date: LocalDate,
-        scheduleWithAttendance: List<SessionWithAttendanceDto>,
+        scheduleWithAttendance: List<UserSessionAttendance>,
         now: LocalDateTime
     ) : this(
         date = date,
@@ -101,12 +100,12 @@ data class SimpleScheduleResponse(
 
     companion object {
         fun from(
-            scheduleWithAttendance: SessionWithAttendanceDto,
+            scheduleWithAttendance: UserSessionAttendance,
             now: LocalDateTime
         ): SimpleScheduleResponse = convertSession(scheduleWithAttendance, now)
 
         private fun convertSession(
-            sessionWithAttendance: SessionWithAttendanceDto,
+            sessionWithAttendance: UserSessionAttendance,
             now: LocalDateTime
         ): SimpleScheduleResponse =
             sessionWithAttendance.let {
