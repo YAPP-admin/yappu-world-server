@@ -64,7 +64,11 @@ class UserSessionAttendance(
         when {
             attendanceStatusType == null -> null
             attendanceStatusType == AttendanceStatus.PENDING && !isFinished(now) -> null
-            attendanceStatusType == AttendanceStatus.PENDING && isFinished(now) -> AttendanceStatus.ABSENT
+            attendanceStatusType == AttendanceStatus.PENDING &&
+                checkedInAt == null &&
+                isFinished(
+                    now
+                ) -> AttendanceStatus.ABSENT
             else -> attendanceStatusType
         }
 

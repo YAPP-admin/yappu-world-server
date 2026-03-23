@@ -14,9 +14,11 @@ import co.yappuworld.schedule.infrastructure.LatePassFindService
 import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
+import co.yappuworld.support.fixture.AttendanceFixture.getAttendeeFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionWithAttendanceFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
+import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
 import co.yappuworld.user.infrastructure.UserFindService
 import io.kotest.assertions.throwables.shouldThrow
@@ -136,9 +138,22 @@ class AttendanceServiceTest :
                         now = now
                     )
                 } returns sessions
+                every { userFindService.findSessionAttendee(user.id, activeGeneration) } returns
+                    getAttendeeFixture(getUserWithActivityUnitFixture(generation = activeGeneration), activeGeneration)
 
                 attendanceService.getAttendancesHistoryV2(user.id, now) shouldBe
                     AttendancesHistoryResponseV2.of(sessions, now)
+            }
+
+            scenario("활성 기수의 참가자가 아니면 예외가 발생한다.") {
+                val now = LocalDateTime.of(2025, 2, 15, 15, 0)
+                every { generationFindService.findActiveGeneration() } returns activeGeneration
+                every { userFindService.findSessionAttendee(user.id, activeGeneration) } throws
+                    BusinessException(AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION)
+
+                shouldThrow<BusinessException> {
+                    attendanceService.getAttendancesHistoryV2(user.id, now)
+                }.error shouldBe AttendanceError.NO_ATTENDEE_POSITION_ACTIVITY_IN_GENERATION
             }
         }
     })

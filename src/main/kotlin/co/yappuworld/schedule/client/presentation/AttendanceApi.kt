@@ -170,7 +170,7 @@ interface AttendanceApi {
         @AuthenticationPrincipal securityUser: SecurityUser
     ): ResponseEntity<Unit>
 
-    @Operation(summary = "나의 출석 통계 (V2)")
+    @Operation(summary = "나의 출석 통계")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -203,7 +203,7 @@ interface AttendanceApi {
                 ]
             ),
             ApiResponse(
-                responseCode = "404",
+                responseCode = "409",
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),
@@ -261,7 +261,7 @@ interface AttendanceApi {
                 ]
             ),
             ApiResponse(
-                responseCode = "404",
+                responseCode = "409",
                 content = [
                     Content(
                         schema = Schema(implementation = ErrorResponse::class),

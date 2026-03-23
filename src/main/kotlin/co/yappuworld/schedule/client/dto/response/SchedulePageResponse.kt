@@ -29,9 +29,8 @@ data class SchedulePageResponse(
             now: LocalDateTime
         ): SchedulePageResponse {
             val attendanceBySessionId = attendances.associateBy { it.session.id }
-            // TODO: 일단 세션 뿐이니, 세션으로만 변환, 추후에 다른 Schedule도 처리하도록 변경 필요
-            val scheduleWithAttendance = schedules.map {
-                UserSessionAttendance.from(it as SessionEntity, attendanceBySessionId[it.id])
+            val scheduleWithAttendance = schedules.filterIsInstance<SessionEntity>().map {
+                UserSessionAttendance.from(it, attendanceBySessionId[it.id])
             }
             val scheduleByDate = scheduleWithAttendance.groupBy { it.date }
 
