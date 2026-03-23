@@ -6,6 +6,7 @@ import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
 import co.yappuworld.schedule.domain.vo.ScheduleError
+import co.yappuworld.schedule.domain.vo.SessionType
 import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
 import co.yappuworld.schedule.infrastructure.entity.AttendanceEntity
 import co.yappuworld.schedule.infrastructure.entity.SessionEntity
@@ -122,10 +123,24 @@ class SessionFindService(
 
     fun findSessions(ids: List<UUID>): List<SessionEntity> = scheduleRepository.findAllByIdIn(ids)
 
-    fun findSessions(pageRequest: PageRequest): Page<SessionEntity> {
+    fun findSessions(
+        pageRequest: PageRequest,
+        title: String? = null,
+        generation: Int? = null,
+        sessionType: SessionType? = null
+    ): Page<SessionEntity> {
+        val trimmedTitle = title?.trim()
+
         val result = scheduleRepository.findPage(pageRequest) {
+            val predicates = buildList<Predicatable> {
+                trimmedTitle?.takeIf { it.isNotBlank() }?.let { add(path(SessionEntity::name).like("%$it%")) }
+                generation?.let { add(path(SessionEntity::generation).equal(it)) }
+                sessionType?.let { add(path(SessionEntity::sessionType).equal(it)) }
+            }
+
             select(entity(SessionEntity::class))
                 .from(entity(SessionEntity::class))
+                .whereAnd(*predicates.toTypedArray())
                 .orderBy(
                     path(SessionEntity::date).desc(),
                     path(SessionEntity::time).desc(),
@@ -153,44 +168,10 @@ class SessionFindService(
                     .orderBy(*sessionSorting().toTypedArray())
             }.filterNotNull()
 
-    fun findSessionsInGeneration(
-        pageRequest: PageRequest,
-        generation: Int
-    ): Page<SessionEntity> {
-        val result = scheduleRepository.findPage(pageRequest) {
-            select(entity(SessionEntity::class))
-                .from(entity(SessionEntity::class))
-                .where(path(SessionEntity::generation).equal(generation))
-                .orderBy(
-                    path(SessionEntity::date).desc(),
-                    path(SessionEntity::time).desc(),
-                    path(SessionEntity::endDate).desc(),
-                    path(SessionEntity::endTime).desc()
-                )
-        }
-
-        return PageImpl(result.content.filterNotNull(), result.pageable, result.totalElements)
-    }
-
     fun findSessionAttendance(
         userId: UUID,
         sessionId: UUID
     ): SessionAttendance? {
-        //        return scheduleRepository
-        //            .singleOrNull {
-        //                selectNew<SessionAttendance>(
-        //                    entity(SessionEntity::class),
-        //                    entity(AttendanceEntity::class)
-        //                ).from(
-        //                    entity(SessionEntity::class),
-        //                    innerJoin(AttendanceEntity::class)
-        //                        .on(path(AttendanceEntity::session)(SessionEntity::getId).eq(path(SessionEntity::getId)))
-        //                ).whereAnd(
-        //                    path(SessionEntity::getId).eq(sessionId),
-        //                    path(AttendanceEntity::userId).eq(userId)
-        //                )
-        //            }
-
         val query = jpql {
             selectNew<SessionAttendance>(
                 entity(SessionEntity::class),

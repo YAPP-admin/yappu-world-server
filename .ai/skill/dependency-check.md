@@ -7,7 +7,7 @@ description: 코드 변경 후 패키지 의존 관계 규칙 위반 여부 검�
 
 ## 의존 방향
 
-```
+```text
 presentation → application → infrastructure
                                 ↑
                              domain (어디서든 참조 가능하나, domain이 다른 계층을 참조하면 안 됨)

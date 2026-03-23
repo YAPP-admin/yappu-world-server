@@ -78,7 +78,7 @@ interface AdminScheduleApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "목록 제공",
+                                name = "제목 검색 및 필터 적용 예시",
                                 value = """
                                     {
                                         "data": {
@@ -87,27 +87,18 @@ interface AdminScheduleApi {
                                                     "id": "f70dd406-ffe4-11ef-ad31-0242ac120002",
                                                     "generation": 25,
                                                     "type": "OFFLINE",
-                                                    "title": "OT",
+                                                    "title": "25기 오프라인 세션",
                                                     "place": "강북노동자복지관",
-                                                    "date": "2024-11-01",
+                                                    "date": "2025-02-15",
+                                                    "endDate": "2025-02-15",
                                                     "time": "14:00:00",
                                                     "endTime": "18:00:00"
-                                                },
-                                                {
-                                                    "id": "f70dd5ff-ffe4-11ef-ad31-0242ac120002",
-                                                    "generation": 25,
-                                                    "type": "TEAM",
-                                                    "title": "팀세션",
-                                                    "place": null,
-                                                    "date": "2024-11-01",
-                                                    "time": null,
-                                                    "endTime": null
                                                 }
                                             ],
-                                            "totalCount": 3,
-                                            "totalPages": 2,
+                                            "totalCount": 1,
+                                            "totalPages": 1,
                                             "page": 1,
-                                            "size": 2
+                                            "size": 20
                                         },
                                         "isSuccess": true
                                     }
@@ -124,11 +115,53 @@ interface AdminScheduleApi {
                         schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "세션 시작 일시가 종료 일시보다 늦을 수 없음",
+                                name = "잘못된 페이지 파라미터",
                                 value = """
                                     {
-                                        "message": "시작 시간이 종료 시간보다 늦을 수 없습니다.",
-                                        "errorCode": "SCH_4000",
+                                        "message": "페이지 번호는 1 이상이어야 합니다.",
+                                        "errorCode": "GLB_0002",
+                                        "errors": [
+                                            {
+                                                "field": "page",
+                                                "message": "페이지 번호는 1 이상이어야 합니다."
+                                            }
+                                        ],
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "잘못된 페이지 크기 파라미터",
+                                value = """
+                                    {
+                                        "message": "페이지 당 데이터 수는 1 이상이어야 합니다.",
+                                        "errorCode": "GLB_0002",
+                                        "errors": [
+                                            {
+                                                "field": "size",
+                                                "message": "페이지 당 데이터 수는 1 이상이어야 합니다."
+                                            }
+                                        ],
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "500",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "서버 오류",
+                                value = """
+                                    {
+                                        "message": "서버 에러가 발생했습니다.",
+                                        "errorCode": "GLB_0001",
                                         "isSuccess": false
                                     }
                                 """

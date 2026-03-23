@@ -21,7 +21,7 @@
 
 현재 멀티모듈 전환이 진행 중이다. 대부분의 비즈니스 로직은 아직 `src/`에 존재한다.
 
-```
+```text
 yappu-world-server/
 ├── src/                         ← ★ 현재 모든 비즈니스 로직이 여기 있음
 ├── bootstrap/                   ← Spring Boot Application 진입점
@@ -38,7 +38,7 @@ yappu-world-server/
 
 모든 도메인은 `src/main/kotlin/co/yappuworld/` 아래에서 동일한 계층 구조를 따른다:
 
-```
+```text
 {domain}/
 ├── client/
 │   ├── presentation/           ← Controller + Swagger Api interface

@@ -58,10 +58,13 @@ class AdminScheduleService(
 
     @Transactional(readOnly = true)
     fun getSessions(request: AdminSessionPageRequest): OffsetPageResponse<AdminSessionOverviewResponse> =
-        when (request.generation != null) {
-            true -> sessionFindService.findSessionsInGeneration(request.toPageRequest(), request.generation)
-            false -> sessionFindService.findSessions(request.toPageRequest())
-        }.let { OffsetPageResponse.from(it) { session -> AdminSessionOverviewResponse(session) } }
+        sessionFindService
+            .findSessions(
+                pageRequest = request.toPageRequest(),
+                title = request.title,
+                generation = request.generation,
+                sessionType = request.type
+            ).let { OffsetPageResponse.from(it) { session -> AdminSessionOverviewResponse(session) } }
 
     @Transactional(readOnly = true)
     fun getSession(id: UUID): AdminSessionDetailResponse =
