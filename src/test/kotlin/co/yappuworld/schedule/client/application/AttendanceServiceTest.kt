@@ -4,6 +4,7 @@ import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.schedule.client.dto.request.AttendanceRequest
+import co.yappuworld.schedule.client.dto.response.AttendancesHistoryResponseV2
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.AttendanceError
 import co.yappuworld.schedule.domain.vo.AttendanceStatus
@@ -14,6 +15,7 @@ import co.yappuworld.schedule.infrastructure.SessionFindService
 import co.yappuworld.support.fixture.AttendanceFixture
 import co.yappuworld.support.fixture.AttendanceFixture.getAttendanceEntityFixture
 import co.yappuworld.support.fixture.ScheduleFixture.getSessionEntityFixture
+import co.yappuworld.support.fixture.ScheduleFixture.getSessionWithAttendanceFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitFixture
 import co.yappuworld.support.fixture.UserFixture.getUserWithActivityUnitsFixture
 import co.yappuworld.user.infrastructure.UserFindService
@@ -110,6 +112,33 @@ class AttendanceServiceTest :
                         }.error.shouldBe(AttendanceError.ATTENDANCE_CODE_NOT_MATCH)
                     }
                 }
+            }
+        }
+
+        feature("출석 내역 조회 v2") {
+
+            scenario("활성 기수의 전체 세션 출석 이력을 상태값과 함께 조회한다.") {
+                val now = LocalDateTime.of(2025, 2, 15, 15, 0)
+                val sessions = listOf(
+                    getSessionWithAttendanceFixture(attendanceStatus = AttendanceStatus.LATE),
+                    getSessionWithAttendanceFixture(
+                        attendanceStatus = AttendanceStatus.PENDING,
+                        checkedInAt = null,
+                        date = now.toLocalDate().plusDays(1),
+                        endDate = now.toLocalDate().plusDays(1)
+                    )
+                )
+                every { generationFindService.findActiveGeneration() } returns activeGeneration
+                every {
+                    sessionFindService.findSessionsWithAttendanceStatus(
+                        generation = activeGeneration,
+                        userId = user.id,
+                        now = now
+                    )
+                } returns sessions
+
+                attendanceService.getAttendancesHistoryV2(user.id, now) shouldBe
+                    AttendancesHistoryResponseV2.of(sessions, now)
             }
         }
     })

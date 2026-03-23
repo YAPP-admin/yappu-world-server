@@ -3,7 +3,7 @@ package co.yappuworld.schedule.client.dto.response
 import co.yappuworld.post.infrastructure.entity.NoticeEntity
 import co.yappuworld.schedule.domain.SessionAttendance
 import co.yappuworld.schedule.domain.vo.SessionProgressPhase
-import co.yappuworld.schedule.infrastructure.dto.SessionWithAttendanceDto
+import co.yappuworld.schedule.infrastructure.dto.UserSessionAttendance
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -77,7 +77,7 @@ data class UpcomingSessionResponse(
                     relativeDays = it.getRelativeDays(now.toLocalDate()),
                     canCheckIn = it.canCheckIn(now),
                     status = it.getAttendanceStatus(now),
-                    progressPhase = SessionWithAttendanceDto
+                    progressPhase = UserSessionAttendance
                         .from(
                             sessionAttendance.session,
                             sessionAttendance.attendance
