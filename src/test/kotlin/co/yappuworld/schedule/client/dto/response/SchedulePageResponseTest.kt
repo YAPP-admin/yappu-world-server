@@ -21,16 +21,12 @@ class SchedulePageResponseTest :
                     request = request,
                     now = now
                 )
+                val todaySchedules = response.dates
+                    .first { it.date == now.toLocalDate() }
+                    .schedules
 
-                response.dates
-                    .first { it.date == now.toLocalDate() }
-                    .schedules
-                    .shouldHaveSize(1)
-                response.dates
-                    .first { it.date == now.toLocalDate() }
-                    .schedules
-                    .single()
-                    .name shouldBe "OT"
+                todaySchedules.shouldHaveSize(1)
+                todaySchedules.single().name shouldBe "OT"
                 response.dates
                     .filter { it.date != now.toLocalDate() }
                     .flatMap { it.schedules }
