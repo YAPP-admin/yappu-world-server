@@ -115,11 +115,53 @@ interface AdminScheduleApi {
                         schema = Schema(implementation = ErrorResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "세션 시작 일시가 종료 일시보다 늦을 수 없음",
+                                name = "잘못된 페이지 파라미터",
                                 value = """
                                     {
-                                        "message": "시작 시간이 종료 시간보다 늦을 수 없습니다.",
-                                        "errorCode": "SCH_4000",
+                                        "message": "페이지 번호는 1 이상이어야 합니다.",
+                                        "errorCode": "GLB_0002",
+                                        "errors": [
+                                            {
+                                                "field": "page",
+                                                "message": "페이지 번호는 1 이상이어야 합니다."
+                                            }
+                                        ],
+                                        "isSuccess": false
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "잘못된 페이지 크기 파라미터",
+                                value = """
+                                    {
+                                        "message": "페이지 당 데이터 개수는 1 이상이어야 합니다.",
+                                        "errorCode": "GLB_0002",
+                                        "errors": [
+                                            {
+                                                "field": "size",
+                                                "message": "페이지 당 데이터 개수는 1 이상이어야 합니다."
+                                            }
+                                        ],
+                                        "isSuccess": false
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "500",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "서버 오류",
+                                value = """
+                                    {
+                                        "message": "서버 에러가 발생했습니다.",
+                                        "errorCode": "GLB_0001",
                                         "isSuccess": false
                                     }
                                 """

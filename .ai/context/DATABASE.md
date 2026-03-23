@@ -121,7 +121,7 @@ abstract class BaseEntity : Persistable<UUID> {
 
 JPA Repository를 직접 노출하지 않고, FindService/CommandService로 래핑한다.
 
-```
+```text
 infrastructure/
 ├── jpa/
 │   └── {Domain}Repository.kt       ← interface, Spring Data JPA
