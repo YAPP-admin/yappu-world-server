@@ -8,15 +8,12 @@ import co.yappuworld.team.client.dto.request.AdminTeamUpdateRequest
 import co.yappuworld.team.client.dto.response.AdminTeamResponse
 import co.yappuworld.team.client.dto.response.AdminTeamDetailResponse
 import co.yappuworld.team.domain.vo.TeamError
-import co.yappuworld.team.infrastructure.TeamServiceFindService
 import co.yappuworld.team.infrastructure.TeamFindService
 import co.yappuworld.team.infrastructure.TeamCommandService
 import co.yappuworld.team.infrastructure.TeamServiceCommandService
 import co.yappuworld.team.infrastructure.TeamMemberCommandService
 import co.yappuworld.team.infrastructure.TeamMemberFindService
 import co.yappuworld.team.infrastructure.entity.TeamEntity
-import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
-import co.yappuworld.team.infrastructure.entity.ServiceLinks
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
 import co.yappuworld.user.infrastructure.ActivityUnitFindService
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
@@ -29,7 +26,6 @@ class AdminTeamService(
     private val teamFindService: TeamFindService,
     private val teamMemberFindService: TeamMemberFindService,
     private val teamCommandService: TeamCommandService,
-    private val teamServiceFindService: TeamServiceFindService,
     private val teamServiceCommandService: TeamServiceCommandService,
     private val teamMemberCommandService: TeamMemberCommandService,
     private val activityUnitFindService: ActivityUnitFindService
@@ -64,8 +60,6 @@ class AdminTeamService(
     fun createTeam(request: AdminTeamCreateRequest): UUID {
         val team = request.toTeam().also { teamCommandService.save(it) }
 
-        createService(team, request)
-
         request.activityUnitIds?.takeIf { it.isNotEmpty() }?.let { activityUnitIds ->
             validateActivityUnits(team, activityUnitIds)
             createTeamMembers(team, activityUnitIds)
@@ -80,10 +74,10 @@ class AdminTeamService(
 
         team.update(
             generation = request.generation,
-            name = request.name
+            name = request.name,
+            hasApp = request.hasApp,
+            hasWeb = request.hasWeb
         )
-
-        updateService(team, request)
 
         request.activityUnitIds?.let { activityUnitIds ->
             when (activityUnitIds.isEmpty()) {
@@ -101,7 +95,7 @@ class AdminTeamService(
         val team = teamFindService.findTeam(teamId)
 
         deleteTeamMembers(team)
-        deleteTeamService(team)
+        teamServiceCommandService.deleteAll(team)
 
         teamCommandService.delete(teamId)
     }
@@ -137,23 +131,6 @@ class AdminTeamService(
         }
     }
 
-    private fun createService(
-        team: TeamEntity,
-        request: AdminTeamCreateRequest
-    ) {
-        TeamServiceEntity(
-            team = team,
-            name = request.serviceName,
-            hasApp = request.hasApp,
-            hasWeb = request.hasWeb,
-            serviceLinks = ServiceLinks(
-                googlePlay = request.googlePlayLink,
-                appStore = request.appStoreLink,
-                web = request.webLink
-            )
-        ).also { teamServiceCommandService.save(it) }
-    }
-
     private fun createTeamMembers(
         team: TeamEntity,
         activityUnitIds: List<UUID>
@@ -169,38 +146,6 @@ class AdminTeamService(
             teamMemberCommandService.saveAll(teamMembers)
         } catch (e: IllegalArgumentException) {
             throw BusinessException(TeamError.INVALID_TEAM_MEMBERS)
-        }
-    }
-
-    private fun updateService(
-        team: TeamEntity,
-        request: AdminTeamUpdateRequest
-    ) {
-        val existingService = teamServiceFindService.findServiceOrNull(team)
-
-        if (existingService != null) {
-            existingService.update(
-                name = request.serviceName,
-                hasApp = request.hasApp,
-                hasWeb = request.hasWeb,
-                serviceLinks = ServiceLinks(
-                    googlePlay = request.googlePlayLink,
-                    appStore = request.appStoreLink,
-                    web = request.webLink
-                )
-            )
-        } else {
-            TeamServiceEntity(
-                team = team,
-                name = request.serviceName,
-                hasApp = request.hasApp,
-                hasWeb = request.hasWeb,
-                serviceLinks = ServiceLinks(
-                    googlePlay = request.googlePlayLink,
-                    appStore = request.appStoreLink,
-                    web = request.webLink
-                )
-            ).also { teamServiceCommandService.save(it) }
         }
     }
 
@@ -230,11 +175,5 @@ class AdminTeamService(
 
     private fun deleteTeamMembers(team: TeamEntity) {
         teamMemberCommandService.deleteAll(team)
-    }
-
-    private fun deleteTeamService(team: TeamEntity) {
-        teamServiceFindService.findServiceOrNull(team)?.let { service ->
-            teamServiceCommandService.delete(service)
-        }
     }
 }

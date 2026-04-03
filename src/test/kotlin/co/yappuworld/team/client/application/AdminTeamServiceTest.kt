@@ -7,7 +7,6 @@ import co.yappuworld.team.infrastructure.TeamFindService
 import co.yappuworld.team.infrastructure.TeamCommandService
 import co.yappuworld.team.infrastructure.TeamMemberFindService
 import co.yappuworld.team.infrastructure.TeamMemberCommandService
-import co.yappuworld.team.infrastructure.TeamServiceFindService
 import co.yappuworld.team.infrastructure.TeamServiceCommandService
 import co.yappuworld.team.infrastructure.jpa.TeamServiceRepository
 import co.yappuworld.team.infrastructure.jpa.TeamMemberRepository
@@ -42,7 +41,6 @@ class AdminTeamServiceTest @Autowired constructor(
             val teamFindService = TeamFindService(teamRepository)
             val teamMemberFindService = TeamMemberFindService(teamMemberRepository)
             val teamCommandService = TeamCommandService(teamRepository)
-            val teamServiceFindService = TeamServiceFindService(serviceRepository)
             val serviceCommandService = TeamServiceCommandService(serviceRepository)
             val teamMemberCommandService = TeamMemberCommandService(teamMemberRepository)
             val activityUnitFindService = ActivityUnitFindService(activityUnitRepository)
@@ -51,7 +49,6 @@ class AdminTeamServiceTest @Autowired constructor(
                 teamFindService,
                 teamMemberFindService,
                 teamCommandService,
-                teamServiceFindService,
                 serviceCommandService,
                 teamMemberCommandService,
                 activityUnitFindService

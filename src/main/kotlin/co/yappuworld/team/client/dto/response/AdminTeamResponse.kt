@@ -16,9 +16,7 @@ data class AdminTeamResponse(
     @field:Schema(description = "앱 플랫폼 여부", example = "true")
     val hasApp: Boolean,
     @field:Schema(description = "웹 플랫폼 여부", example = "false")
-    val hasWeb: Boolean,
-    @field:Schema(description = "플랫폼 링크")
-    val platformLinks: PlatformLinksResponse?
+    val hasWeb: Boolean
 ) {
     companion object {
         fun from(dto: TeamWithServiceDto): AdminTeamResponse =
@@ -27,11 +25,8 @@ data class AdminTeamResponse(
                 generation = dto.generation,
                 name = dto.teamName,
                 serviceName = dto.serviceName,
-                hasApp = dto.hasApp ?: false,
-                hasWeb = dto.hasWeb ?: false,
-                platformLinks = dto.serviceLinks?.let {
-                    PlatformLinksResponse.from(it)
-                }
+                hasApp = dto.hasApp,
+                hasWeb = dto.hasWeb
             )
     }
 }

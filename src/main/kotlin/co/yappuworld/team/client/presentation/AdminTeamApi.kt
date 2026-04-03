@@ -48,11 +48,7 @@ interface AdminTeamApi {
                                                     "name": "야뿌월드",
                                                     "serviceName": "YAPP World",
                                                     "hasApp": true,
-                                                    "hasWeb": false,
-                                                    "platformLinks": {
-                                                        "app_store": "https://apps.apple.com",
-                                                        "google_play": "https://play.google.com/store/apps"
-                                                    }
+                                                    "hasWeb": false
                                                 }
                                             ],
                                             "totalCount": 100,
@@ -190,22 +186,17 @@ interface AdminTeamApi {
                                             "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef56gh78",
                                             "generation": 35,
                                             "teamName": "야뿌월드",
+                                            "hasApp": true,
+                                            "hasWeb": false,
+                                            "serviceId": "a1b2c3d4-e5f6-7890-ab12-cd34ef56gh91",
                                             "serviceName": "YAPP World",
-                                            "platforms": ["APP", "WEB"],
-                                            "serviceLinks": {
-                                                "googleStore": "https://play.google.com/store/apps",
-                                                "appStore": "https://apps.apple.com",
-                                                "web": "https://yappworld.com"
-                                            },
                                             "members": [
                                                 {
                                                     "activityUnitId": "activity-uuid",
                                                     "name": "홍길동",
                                                     "position": "PM"
                                                 }
-                                            ],
-                                            "createdAt": "2025-01-01T00:00:00",
-                                            "updatedAt": "2025-01-01T00:00:00"
+                                            ]
                                         },
                                         "isSuccess": true
                                     }
