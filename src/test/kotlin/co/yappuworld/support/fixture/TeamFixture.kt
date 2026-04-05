@@ -7,11 +7,15 @@ import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 object TeamFixture {
     fun getTeamEntityFixture(
         generation: Int = 35,
-        name: String = "테스트팀"
+        name: String = "테스트팀",
+        hasApp: Boolean = false,
+        hasWeb: Boolean = true
     ): TeamEntity =
         TeamEntity(
             generation = generation,
-            name = name
+            name = name,
+            hasApp = hasApp,
+            hasWeb = hasWeb
         )
 
     fun getTeamServiceEntityFixture(

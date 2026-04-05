@@ -9,7 +9,9 @@ import jakarta.persistence.Table
 @Table(name = "teams")
 class TeamEntity(
     generation: Int,
-    name: String
+    name: String,
+    hasApp: Boolean = false,
+    hasWeb: Boolean = false
 ) : BaseEntity() {
 
     @Column(nullable = false)
@@ -20,11 +22,23 @@ class TeamEntity(
     var name: String = name
         private set
 
+    @Column(name = "has_app", nullable = false)
+    var hasApp: Boolean = hasApp
+        private set
+
+    @Column(name = "has_web", nullable = false)
+    var hasWeb: Boolean = hasWeb
+        private set
+
     fun update(
         generation: Int,
-        name: String
+        name: String,
+        hasApp: Boolean,
+        hasWeb: Boolean
     ) {
         this.generation = generation
         this.name = name
+        this.hasApp = hasApp
+        this.hasWeb = hasWeb
     }
 }

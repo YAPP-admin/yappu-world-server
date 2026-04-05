@@ -1,7 +1,7 @@
 package co.yappuworld.team.infrastructure
 
 import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
-import co.yappuworld.team.domain.vo.ServicePlatform
+import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.infrastructure.dto.TeamMemberDetailDto
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.entity.TeamEntity
@@ -21,12 +21,12 @@ CustomTeamDsl : Jpql() {
         override fun newInstance(): CustomTeamDsl = CustomTeamDsl()
     }
 
-    fun teamSorting(platform: ServicePlatform?): List<Sortable> =
+    fun teamSorting(platform: Platform?): List<Sortable> =
         buildList {
             add(path(TeamEntity::generation).desc())
             if (platform == null) {
                 add(
-                    caseWhen(path(TeamServiceEntity::hasApp).equal(true))
+                    caseWhen(path(TeamEntity::hasApp).equal(true))
                         .then(1)
                         .`else`(2)
                         .asc()
@@ -40,11 +40,10 @@ CustomTeamDsl : Jpql() {
             path(TeamEntity::getId),
             path(TeamEntity::name),
             path(TeamEntity::generation),
+            path(TeamEntity::hasApp),
+            path(TeamEntity::hasWeb),
             path(TeamServiceEntity::getId),
-            path(TeamServiceEntity::name),
-            path(TeamServiceEntity::hasApp),
-            path(TeamServiceEntity::hasWeb),
-            path(TeamServiceEntity::serviceLinks)
+            path(TeamServiceEntity::name)
         )
 
     fun selectTeamMemberDetail(): SelectQueryFromStep<TeamMemberDetailDto> =

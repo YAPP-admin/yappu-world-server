@@ -1,5 +1,6 @@
 package co.yappuworld.team.infrastructure
 
+import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.jpa.TeamServiceRepository
 import org.springframework.stereotype.Service
@@ -20,5 +21,9 @@ class TeamServiceCommandService(
     fun deleteAll(services: List<TeamServiceEntity>) {
         require(services.isNotEmpty()) { "최소 하나 이상의 삭제 대상이 필요합니다." }
         serviceRepository.deleteAll(services)
+    }
+
+    fun deleteAll(team: TeamEntity) {
+        serviceRepository.deleteAllByTeam(team)
     }
 }

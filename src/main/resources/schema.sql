@@ -159,7 +159,9 @@ CREATE TABLE teams
     created_at  TIMESTAMP,
     updated_at  TIMESTAMP,
     generation  int NOT NULL,
-    name        varchar(255) NOT NULL
+    name        varchar(255) NOT NULL,
+    has_app     NUMBER(1) NOT NULL DEFAULT 0,
+    has_web     NUMBER(1) NOT NULL DEFAULT 0
 );
 
 DROP TABLE IF EXISTS team_services;

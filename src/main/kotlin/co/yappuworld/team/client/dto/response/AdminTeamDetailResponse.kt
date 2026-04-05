@@ -12,8 +12,14 @@ data class AdminTeamDetailResponse(
     val generation: Int,
     @field:Schema(description = "팀 이름")
     val name: String,
-    @field:Schema(description = "서비스 정보")
-    val service: AdminTeamServiceResponse?,
+    @field:Schema(description = "앱 플랫폼 여부")
+    val hasApp: Boolean,
+    @field:Schema(description = "웹 플랫폼 여부")
+    val hasWeb: Boolean,
+    @field:Schema(description = "서비스 ID")
+    val serviceId: UUID?,
+    @field:Schema(description = "서비스명")
+    val serviceName: String?,
     @field:Schema(description = "팀원 목록")
     val members: List<AdminTeamMemberResponse>
 ) {
@@ -26,41 +32,12 @@ data class AdminTeamDetailResponse(
                 id = teamWithService.teamId,
                 generation = teamWithService.generation,
                 name = teamWithService.teamName,
-                service = AdminTeamServiceResponse.from(teamWithService),
+                hasApp = teamWithService.hasApp,
+                hasWeb = teamWithService.hasWeb,
+                serviceId = teamWithService.serviceId,
+                serviceName = teamWithService.serviceName,
                 members = members.map { AdminTeamMemberResponse.from(it) }
             )
-    }
-}
-
-data class AdminTeamServiceResponse(
-    @field:Schema(description = "서비스 ID")
-    val id: UUID,
-    @field:Schema(description = "서비스 이름")
-    val name: String?,
-    @field:Schema(description = "앱 플랫폼 여부")
-    val hasApp: Boolean,
-    @field:Schema(description = "웹 플랫폼 여부")
-    val hasWeb: Boolean,
-    @field:Schema(description = "구글 플레이 스토어 링크")
-    val googlePlayLink: String?,
-    @field:Schema(description = "앱스토어 링크")
-    val appStoreLink: String?,
-    @field:Schema(description = "웹 사이트 링크")
-    val webLink: String?
-) {
-    companion object {
-        fun from(dto: TeamWithServiceDto): AdminTeamServiceResponse? =
-            dto.serviceId?.let {
-                AdminTeamServiceResponse(
-                    id = it,
-                    name = dto.serviceName,
-                    hasApp = dto.hasApp ?: false,
-                    hasWeb = dto.hasWeb ?: false,
-                    googlePlayLink = dto.serviceLinks?.googlePlay,
-                    appStoreLink = dto.serviceLinks?.appStore,
-                    webLink = dto.serviceLinks?.web
-                )
-            }
     }
 }
 

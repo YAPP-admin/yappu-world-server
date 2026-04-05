@@ -2,7 +2,7 @@ package co.yappuworld.team.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
-import co.yappuworld.team.domain.vo.ServicePlatform
+import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.domain.vo.TeamError
 import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
@@ -45,7 +45,7 @@ class TeamFindService(
 
     fun findTeams(
         generation: Int?,
-        platform: ServicePlatform?,
+        platform: Platform?,
         pageable: Pageable
     ): Page<TeamWithServiceDto> =
         teamRepository
@@ -61,8 +61,8 @@ class TeamFindService(
                         generation?.let { path(TeamEntity::generation).equal(it) },
                         platform?.let {
                             when (it) {
-                                ServicePlatform.APP -> path(TeamServiceEntity::hasApp).equal(true)
-                                ServicePlatform.WEB -> path(TeamServiceEntity::hasWeb).equal(true)
+                                Platform.APP -> path(TeamEntity::hasApp).equal(true)
+                                Platform.WEB -> path(TeamEntity::hasWeb).equal(true)
                             }
                         }
                     ).orderBy(*teamSorting(platform).toTypedArray())
