@@ -20,7 +20,7 @@ spring:
         
     datasource:
         driver-class-name: oracle.jdbc.OracleDriver
-        url: ${DEV_OCI_DB_URL}?TNS_ADMIN=/wallet
+        url: ${DEV_OCI_DB_URL}
         username: ${DEV_OCI_DB_USERNAME}
         password: ${DEV_OCI_DB_PASSWORD}
         hikari:

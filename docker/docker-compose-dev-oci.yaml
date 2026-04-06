@@ -7,5 +7,3 @@ services:
             dockerfile: dockerfile-dev-oci
         ports:
             - '8080:8080'
-        volumes:
-            - /opt/oracle/wallet:/wallet:ro
