@@ -17,7 +17,10 @@ class TeamServiceEntity(
     name: String? = null,
     hasApp: Boolean = false,
     hasWeb: Boolean = false,
-    serviceLinks: ServiceLinks? = null
+    serviceLinks: ServiceLinks? = null,
+    summary: String? = null,
+    description: String? = null,
+    isOperating: Boolean = false
 ) : BaseEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,15 +45,35 @@ class TeamServiceEntity(
     var serviceLinks: ServiceLinks? = serviceLinks
         private set
 
+    @Column(name = "summary")
+    var summary: String? = summary
+        private set
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    var description: String? = description
+        private set
+
+    @Column(name = "is_operating", nullable = false)
+    var isOperating: Boolean = isOperating
+        private set
+
     fun update(
+        team: TeamEntity,
         name: String?,
         hasApp: Boolean,
         hasWeb: Boolean,
-        serviceLinks: ServiceLinks?
+        serviceLinks: ServiceLinks?,
+        summary: String?,
+        description: String?,
+        isOperating: Boolean
     ) {
+        this.team = team
         this.name = name
         this.hasApp = hasApp
         this.hasWeb = hasWeb
         this.serviceLinks = serviceLinks
+        this.summary = summary
+        this.description = description
+        this.isOperating = isOperating
     }
 }

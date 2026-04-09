@@ -13,6 +13,7 @@ import co.yappuworld.operation.infrastructure.ConfigCommandService
 import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.ConfigRepository
 import co.yappuworld.team.client.application.AdminTeamService
+import co.yappuworld.team.infrastructure.TeamServiceFindService
 import co.yappuworld.user.client.application.usecase.UserLoginPermissionChecker
 import co.yappuworld.user.client.dto.request.AdminActivityUnitUpdateRequest
 import co.yappuworld.user.client.dto.request.AdminReissueTokenRequest
@@ -47,7 +48,8 @@ class AdminUserService(
     private val generationActiveStateManager: GenerationActiveStateManager,
     private val configFindService: ConfigFindService,
     private val configCommandService: ConfigCommandService,
-    private val userCommandService: UserCommandService
+    private val userCommandService: UserCommandService,
+    private val teamServiceFindService: TeamServiceFindService
 ) {
 
     @Transactional
@@ -86,12 +88,21 @@ class AdminUserService(
     }
 
     @Transactional(readOnly = true)
-    fun getUserDetail(userId: UUID): AdminUserDetailResponse =
-        AdminUserDetailResponse(
-            user = userFindService.findUser(userId),
-            activityUnits = activityUnitFindService.findActivityUnits(userId),
-            activeGeneration = generationActiveStateManager.getActiveGenerationOrNull()
+    fun getUserDetail(userId: UUID): AdminUserDetailResponse {
+        val user = userFindService.findUser(userId)
+        val activityUnits = activityUnitFindService.findActivityUnits(userId)
+        val activeGeneration = generationActiveStateManager.getActiveGenerationOrNull()
+
+        val teams = activityUnits.mapNotNull { it.teamMember?.team }
+        val services = teamServiceFindService.findTeamServices(teams).associateBy { it.team.id }
+
+        return AdminUserDetailResponse(
+            user = user,
+            activityUnits = activityUnits,
+            activeGeneration = activeGeneration,
+            services = services
         )
+    }
 
     @Transactional(readOnly = true)
     fun getUserOverviews(request: AdminUserPageRequest): OffsetPageResponse<AdminUserOverviewResponse> =

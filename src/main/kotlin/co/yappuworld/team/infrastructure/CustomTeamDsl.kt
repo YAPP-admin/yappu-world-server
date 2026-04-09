@@ -3,6 +3,7 @@ package co.yappuworld.team.infrastructure
 import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
 import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.infrastructure.dto.TeamMemberDetailDto
+import co.yappuworld.team.infrastructure.dto.TeamServiceListDto
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
@@ -52,5 +53,17 @@ CustomTeamDsl : Jpql() {
             path(TeamMemberEntity::activityUnit).path(ActivityUnitEntity::generation),
             path(TeamMemberEntity::activityUnit).path(ActivityUnitEntity::position),
             path(UserEntity::name)
+        )
+
+    fun selectTeamServiceList(): SelectQueryFromStep<TeamServiceListDto> =
+        selectNew<TeamServiceListDto>(
+            path(TeamServiceEntity::getId),
+            path(TeamEntity::name),
+            path(TeamEntity::generation),
+            path(TeamServiceEntity::name),
+            path(TeamServiceEntity::hasApp),
+            path(TeamServiceEntity::hasWeb),
+            path(TeamServiceEntity::summary),
+            path(TeamServiceEntity::isOperating)
         )
 }

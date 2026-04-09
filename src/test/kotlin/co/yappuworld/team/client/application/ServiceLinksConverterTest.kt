@@ -134,11 +134,16 @@ class ServiceLinksConverterTest @Autowired constructor(
                 serviceRepository.save(service)
 
                 service.update(
+                    team = team,
                     name = "업데이트된 서비스",
                     hasApp = true,
                     hasWeb = false,
-                    serviceLinks = null
+                    serviceLinks = null,
+                    summary = null,
+                    description = null,
+                    isOperating = false
                 )
+
                 serviceRepository.save(service)
 
                 val found = serviceRepository.findById(service.id).get()
