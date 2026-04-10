@@ -46,6 +46,6 @@ class TeamServiceFindService(
                         generation?.let { path(TeamEntity::generation).equal(it) }
                     ).orderBy(path(TeamEntity::generation).desc())
             }.let { page ->
-                PageImpl(page.content.filterNotNull(), page.pageable, page.totalElements)
+                PageImpl(page.content, page.pageable, page.totalElements)
             }
 }
