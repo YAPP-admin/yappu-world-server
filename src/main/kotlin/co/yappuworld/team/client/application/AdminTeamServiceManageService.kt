@@ -43,9 +43,10 @@ class AdminTeamServiceManageService(
     }
 
     @Transactional
-    fun createTeamService(request: AdminTeamServiceCreateRequest) {
+    fun createTeamService(request: AdminTeamServiceCreateRequest): UUID {
         val team = teamFindService.findTeam(request.teamId)
-        request.toService(team).also { teamServiceCommandService.save(it) }
+        val service = request.toService(team).also { teamServiceCommandService.save(it) }
+        return service.id
     }
 
     @Transactional

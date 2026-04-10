@@ -27,8 +27,8 @@ class AdminTeamServiceController(
         ResponseEntity.ok(SuccessResponse(adminTeamServiceManageService.getTeamService(serviceId)))
 
     override fun createTeamService(request: AdminTeamServiceCreateRequest): ResponseEntity<Unit> {
-        adminTeamServiceManageService.createTeamService(request)
-        return ResponseEntity.created(URI("/admin/v1/team-services")).build()
+        val serviceId = adminTeamServiceManageService.createTeamService(request)
+        return ResponseEntity.created(URI("/admin/v1/team-services/$serviceId")).build()
     }
 
     override fun updateTeamService(request: AdminTeamServiceUpdateRequest): ResponseEntity<Unit> {

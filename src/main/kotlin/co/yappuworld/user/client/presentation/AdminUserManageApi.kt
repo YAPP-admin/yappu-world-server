@@ -56,9 +56,9 @@ interface AdminUserManageApi {
                                                     "position": "PM",
                                                     "isActive": true,
                                                     "team": {
-                                                      "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef56gh78",
+                                                      "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef56ab78",
                                                       "name": "야뿌월드 1팀",
-                                                      "serviceId": "a1b2c3d4-e5f6-7890-ab12-cd34ef56gh11",
+                                                      "serviceId": "a1b2c3d4-e5f6-7890-ab12-cd34ef56ab11",
                                                       "serviceName": "YAPP World"
                                                     }
                                                 },

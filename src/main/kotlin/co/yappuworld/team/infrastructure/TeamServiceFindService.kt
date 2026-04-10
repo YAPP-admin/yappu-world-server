@@ -37,7 +37,7 @@ class TeamServiceFindService(
                 selectTeamServiceList()
                     .from(
                         entity(TeamServiceEntity::class),
-                        leftJoin(TeamEntity::class).on(
+                        join(TeamEntity::class).on(
                             path(TeamServiceEntity::team)
                                 .path(TeamEntity::getId)
                                 .equal(path(TeamEntity::getId))

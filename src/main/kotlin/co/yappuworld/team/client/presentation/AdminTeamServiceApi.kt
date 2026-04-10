@@ -10,7 +10,6 @@ import co.yappuworld.team.client.dto.response.AdminTeamServiceResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -33,7 +32,6 @@ interface AdminTeamServiceApi {
             responseCode = "200",
             content = [
                 Content(
-                    schema = Schema(implementation = OffsetPageResponse::class),
                     examples = [
                         ExampleObject(
                             name = "팀 서비스 목록 조회",
@@ -78,7 +76,6 @@ interface AdminTeamServiceApi {
                 responseCode = "200",
                 content = [
                     Content(
-                        schema = Schema(implementation = AdminTeamServiceDetailResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "팀 서비스 상세 조회",
@@ -112,7 +109,7 @@ interface AdminTeamServiceApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "서비스를 찾을 수 없음",
+                                name = "서비스를 찾을 수 없습니다.",
                                 value = """
                                 {
                                     "message": "서비스를 찾을 수 없습니다.",
@@ -142,7 +139,7 @@ interface AdminTeamServiceApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "팀을 찾을 수 없음",
+                                name = "팀을 찾을 수 없습니다.",
                                 value = """
                                     {
                                         "message": "팀을 찾을 수 없습니다.",
@@ -172,7 +169,7 @@ interface AdminTeamServiceApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "서비스를 찾을 수 없음",
+                                name = "서비스를 찾을 수 없습니다.",
                                 value = """
                                     {
                                         "message": "서비스를 찾을 수 없습니다.",
@@ -202,7 +199,7 @@ interface AdminTeamServiceApi {
                     Content(
                         examples = [
                             ExampleObject(
-                                name = "서비스를 찾을 수 없음",
+                                name = "서비스를 찾을 수 없습니다.",
                                 value = """
                                     {
                                         "message": "서비스를 찾을 수 없습니다.",
