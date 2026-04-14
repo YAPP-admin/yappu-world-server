@@ -2,7 +2,7 @@ package co.yappuworld.team.infrastructure.dto
 
 import java.util.UUID
 
-data class TeamServiceListDto(
+data class TeamServiceSummary(
     val serviceId: UUID,
     val teamName: String,
     val generation: Int,

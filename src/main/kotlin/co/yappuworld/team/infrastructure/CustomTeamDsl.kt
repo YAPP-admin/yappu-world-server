@@ -3,7 +3,7 @@ package co.yappuworld.team.infrastructure
 import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
 import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.infrastructure.dto.TeamMemberDetailDto
-import co.yappuworld.team.infrastructure.dto.TeamServiceListDto
+import co.yappuworld.team.infrastructure.dto.TeamServiceSummary
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
@@ -55,8 +55,8 @@ CustomTeamDsl : Jpql() {
             path(UserEntity::name)
         )
 
-    fun selectTeamServiceList(): SelectQueryFromStep<TeamServiceListDto> =
-        selectNew<TeamServiceListDto>(
+    fun selectTeamServices(): SelectQueryFromStep<TeamServiceSummary> =
+        selectNew<TeamServiceSummary>(
             path(TeamServiceEntity::getId),
             path(TeamEntity::name),
             path(TeamEntity::generation),

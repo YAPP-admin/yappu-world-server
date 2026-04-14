@@ -2,7 +2,7 @@ package co.yappuworld.team.infrastructure
 
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.team.domain.vo.TeamError
-import co.yappuworld.team.infrastructure.dto.TeamServiceListDto
+import co.yappuworld.team.infrastructure.dto.TeamServiceSummary
 import co.yappuworld.team.infrastructure.entity.TeamEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.team.infrastructure.jpa.TeamServiceRepository
@@ -31,10 +31,10 @@ class TeamServiceFindService(
     fun findTeamServices(
         generation: Int?,
         pageable: Pageable
-    ): Page<TeamServiceListDto> =
+    ): Page<TeamServiceSummary> =
         teamServiceRepository
             .findPage(CustomTeamDsl, pageable) {
-                selectTeamServiceList()
+                selectTeamServices()
                     .from(
                         entity(TeamServiceEntity::class),
                         join(TeamEntity::class).on(

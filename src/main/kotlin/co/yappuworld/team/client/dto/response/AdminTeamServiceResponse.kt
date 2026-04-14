@@ -1,6 +1,6 @@
 package co.yappuworld.team.client.dto.response
 
-import co.yappuworld.team.infrastructure.dto.TeamServiceListDto
+import co.yappuworld.team.infrastructure.dto.TeamServiceSummary
 import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
@@ -23,16 +23,16 @@ data class AdminTeamServiceResponse(
     val isOperating: Boolean
 ) {
     companion object {
-        fun from(dto: TeamServiceListDto): AdminTeamServiceResponse =
+        fun from(summary: TeamServiceSummary): AdminTeamServiceResponse =
             AdminTeamServiceResponse(
-                serviceId = dto.serviceId,
-                generation = dto.generation,
-                teamName = dto.teamName,
-                serviceName = dto.serviceName,
-                hasApp = dto.hasApp,
-                hasWeb = dto.hasWeb,
-                summary = dto.summary,
-                isOperating = dto.isOperating
+                serviceId = summary.serviceId,
+                generation = summary.generation,
+                teamName = summary.teamName,
+                serviceName = summary.serviceName,
+                hasApp = summary.hasApp,
+                hasWeb = summary.hasWeb,
+                summary = summary.summary,
+                isOperating = summary.isOperating
             )
     }
 }

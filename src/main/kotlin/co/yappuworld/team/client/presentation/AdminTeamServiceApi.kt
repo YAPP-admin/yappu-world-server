@@ -134,6 +134,47 @@ interface AdminTeamServiceApi {
         value = [
             ApiResponse(responseCode = "201", content = [Content()]),
             ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "소개글 길이 초과",
+                                value = """
+                                {
+                                    "message": "소개 글은 500자 이하여야 합니다.",
+                                    "errorCode": "COM_0002",
+                                    "errors": [
+                                        {
+                                            "field": "summary",
+                                            "message": "소개 글은 500자 이하여야 합니다."
+                                        }
+                                    ],
+                                    "isSuccess": false
+                                }
+                            """
+                            ),
+                            ExampleObject(
+                                name = "유효하지 않은 URL",
+                                value = """
+                                {
+                                    "message": "유효한 URL 형식이어야 합니다",
+                                    "errorCode": "COM_0002",
+                                    "errors": [
+                                        {
+                                            "field": "googlePlayLink",
+                                            "message": "유효한 URL 형식이어야 합니다"
+                                        }
+                                    ],
+                                    "isSuccess": false
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            ApiResponse(
                 responseCode = "404",
                 content = [
                     Content(
@@ -163,6 +204,47 @@ interface AdminTeamServiceApi {
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", content = [Content()]),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "소개글 길이 초과",
+                                value = """
+                                {
+                                    "message": "소개 글은 500자 이하여야 합니다.",
+                                    "errorCode": "COM_0002",
+                                    "errors": [
+                                        {
+                                            "field": "summary",
+                                            "message": "소개 글은 500자 이하여야 합니다."
+                                        }
+                                    ],
+                                    "isSuccess": false
+                                }
+                            """
+                            ),
+                            ExampleObject(
+                                name = "유효하지 않은 URL",
+                                value = """
+                                {
+                                    "message": "유효한 URL 형식이어야 합니다",
+                                    "errorCode": "COM_0002",
+                                    "errors": [
+                                        {
+                                            "field": "googlePlayLink",
+                                            "message": "유효한 URL 형식이어야 합니다"
+                                        }
+                                    ],
+                                    "isSuccess": false
+                                }
+                            """
+                            )
+                        ]
+                    )
+                ]
+            ),
             ApiResponse(
                 responseCode = "404",
                 content = [
