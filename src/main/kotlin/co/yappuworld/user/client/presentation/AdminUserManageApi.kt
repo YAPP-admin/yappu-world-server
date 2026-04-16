@@ -56,8 +56,10 @@ interface AdminUserManageApi {
                                                     "position": "PM",
                                                     "isActive": true,
                                                     "team": {
-                                                      "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef56gh78",
-                                                      "name": "야뿌월드 1팀"
+                                                      "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef56ab78",
+                                                      "name": "야뿌월드 1팀",
+                                                      "serviceId": "a1b2c3d4-e5f6-7890-ab12-cd34ef56ab11",
+                                                      "serviceName": "YAPP World"
                                                     }
                                                 },
                                                 {
@@ -67,7 +69,9 @@ interface AdminUserManageApi {
                                                     "isActive": false,
                                                     "team": {
                                                       "id": "7f1080cb-0579-11f0-bb9e-0242ac120002",
-                                                      "name": "야뿌월드 2팀"
+                                                      "name": "야뿌월드 2팀",
+                                                      "serviceId": "7f1080cb-0579-11f0-bb9e-0242ac120091",
+                                                      "serviceName": "YAPP"
                                                     }
                                                 }
                                             ]

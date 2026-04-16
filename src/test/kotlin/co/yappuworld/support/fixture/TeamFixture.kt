@@ -25,7 +25,10 @@ object TeamFixture {
         hasWeb: Boolean = false,
         googlePlayLink: String? = null,
         appStoreLink: String? = null,
-        webLink: String? = null
+        webLink: String? = null,
+        summary: String? = null,
+        description: String? = null,
+        isOperating: Boolean = false
     ): TeamServiceEntity {
         val serviceLinks = if (googlePlayLink != null || appStoreLink != null || webLink != null) {
             ServiceLinks(
@@ -42,7 +45,10 @@ object TeamFixture {
             name = name,
             hasApp = hasApp,
             hasWeb = hasWeb,
-            serviceLinks = serviceLinks
+            serviceLinks = serviceLinks,
+            summary = summary,
+            description = description,
+            isOperating = isOperating
         )
     }
 

@@ -1,5 +1,6 @@
 package co.yappuworld.user.client.dto.response
 
+import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 import co.yappuworld.user.infrastructure.entity.ActivityUnitEntity
 import co.yappuworld.user.infrastructure.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
@@ -30,7 +31,8 @@ data class AdminUserDetailResponse(
     constructor(
         user: UserEntity,
         activityUnits: List<ActivityUnitEntity>,
-        activeGeneration: Int?
+        activeGeneration: Int?,
+        services: Map<UUID, TeamServiceEntity>
     ) : this(
         id = user.id,
         name = user.name,
@@ -41,8 +43,13 @@ data class AdminUserDetailResponse(
         isActive = user.isActive,
         registrationDate = user.createdAt.toLocalDate(),
         activityUnits = activityUnits
-            .map { AdminUserDetailActivityUnitResponse(it, activeGeneration) }
-            .sortedByDescending { it.generation }
+            .map {
+                AdminUserDetailActivityUnitResponse(
+                    activityUnit = it,
+                    activeGeneration = activeGeneration,
+                    service = services[it.teamMember?.team?.id]
+                )
+            }.sortedByDescending { it.generation }
     )
 }
 
@@ -61,13 +68,14 @@ data class AdminUserDetailActivityUnitResponse(
 
     constructor(
         activityUnit: ActivityUnitEntity,
-        activeGeneration: Int?
+        activeGeneration: Int?,
+        service: TeamServiceEntity?
     ) : this(
         id = activityUnit.id,
         generation = activityUnit.generation,
         position = activityUnit.position.label,
         isActive = activityUnit.generation == activeGeneration,
-        team = AdminUserDetailTeamResponse.from(activityUnit)
+        team = AdminUserDetailTeamResponse.from(activityUnit, service)
     )
 }
 
@@ -75,15 +83,24 @@ data class AdminUserDetailTeamResponse(
     @Schema(description = "팀 ID")
     val id: UUID,
     @Schema(description = "팀 이름")
-    val name: String
+    val name: String,
+    @Schema(description = "서비스 ID")
+    val serviceId: UUID?,
+    @Schema(description = "서비스 이름")
+    val serviceName: String?
 ) {
     companion object {
-        fun from(activityUnit: ActivityUnitEntity): AdminUserDetailTeamResponse? {
+        fun from(
+            activityUnit: ActivityUnitEntity,
+            service: TeamServiceEntity?
+        ): AdminUserDetailTeamResponse? {
             val team = activityUnit.teamMember?.team ?: return null
 
             return AdminUserDetailTeamResponse(
                 id = team.id,
-                name = team.name
+                name = team.name,
+                serviceId = service?.id,
+                serviceName = service?.name
             )
         }
     }
