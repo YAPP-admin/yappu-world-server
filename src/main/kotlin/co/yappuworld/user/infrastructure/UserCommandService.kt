@@ -32,10 +32,6 @@ class UserCommandService(
             userDeviceRepository.save(UserDeviceEntity(user.id, application.getFcmToken()))
         }
 
-    fun getLock(email: String): Int? = userRepository.getLock(email)
-
-    fun releaseLock(email: String): Int? = userRepository.releaseLock(email)
-
     fun deactivate(user: UserEntity) {
         user.withdraw()
         userDeviceRepository.deleteByUserId(user.id)

@@ -6,7 +6,11 @@ import io.kotest.extensions.spring.SpringTestLifecycleMode
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
+@SpringBootTest(
+    properties = [
+        "app.lock.signup-email.strategy=fake"
+    ]
+)
 @Transactional
 abstract class SpringBootTestFeatureSpec(
     body: FeatureSpec.() -> Unit

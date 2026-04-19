@@ -48,6 +48,14 @@ CREATE TABLE sign_up_application_activity_unit
     position        varchar(16) NOT NULL
 );
 
+DROP TABLE IF EXISTS sign_up_email_lock;
+CREATE TABLE sign_up_email_lock
+(
+    lock_key   varchar(320) PRIMARY KEY,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
 DROP TABLE IF EXISTS activity_units;
 CREATE TABLE activity_units
 (

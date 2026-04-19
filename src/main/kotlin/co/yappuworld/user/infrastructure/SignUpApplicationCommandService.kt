@@ -23,8 +23,4 @@ class SignUpApplicationCommandService(
     fun update(signUpApplication: SignUpApplicationEntity) {
         signUpApplicationRepository.save(signUpApplication)
     }
-
-    fun getLock(email: String): Int? = signUpApplicationRepository.getLock(email)
-
-    fun releaseLock(email: String): Int? = signUpApplicationRepository.releaseLock(email)
 }

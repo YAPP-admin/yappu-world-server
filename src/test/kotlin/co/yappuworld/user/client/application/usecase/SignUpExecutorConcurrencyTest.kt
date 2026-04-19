@@ -4,66 +4,70 @@ import co.yappuworld.global.util.DatetimeUtils.getCurrentDateTimeInKST
 import co.yappuworld.support.environment.SpringBootTestFeatureSpec
 import co.yappuworld.support.fixture.UserFixture.getSignUpApplicationEntityFixture
 import co.yappuworld.user.domain.vo.UserRole
-import co.yappuworld.user.infrastructure.jpa.ActivityUnitRepository
-import co.yappuworld.user.infrastructure.jpa.SignUpApplicationRepository
-import co.yappuworld.user.infrastructure.jpa.UserAlarmSettingRepository
-import co.yappuworld.user.infrastructure.jpa.UserDeviceRepository
-import co.yappuworld.user.infrastructure.jpa.UserRepository
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.core.JdbcTemplate
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 class SignUpExecutorConcurrencyTest @Autowired constructor(
     private val signUpExecutor: SignUpExecutor,
-    private val userRepository: UserRepository,
-    private val signUpApplicationRepository: SignUpApplicationRepository,
-    private val activityUnitRepository: ActivityUnitRepository,
-    private val userDeviceRepository: UserDeviceRepository,
-    private val userAlarmSettingRepository: UserAlarmSettingRepository
+    private val jdbcTemplate: JdbcTemplate
 ) : SpringBootTestFeatureSpec({
 
-        afterTest {
-            userRepository
-                .findUserOrNullByEmail("concurrency-test")
-                ?.let { user ->
-                    val activityUnits = activityUnitRepository.findAllByUserId(user.id)
-                    activityUnitRepository.deleteAll(activityUnits)
+        fun countUsersByEmail(email: String): Int =
+            jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM USERS WHERE EMAIL = ?",
+                Int::class.java,
+                email
+            ) ?: 0
 
-                    userDeviceRepository
-                        .findUserDeviceOrNullByUserId(user.id)
-                        ?.let { userDeviceRepository.delete(it) }
+        fun countSignUpApplicationsByEmail(email: String): Int =
+            jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM SIGN_UP_APPLICATION WHERE APPLICANT_EMAIL = ?",
+                Int::class.java,
+                email
+            ) ?: 0
 
-                    userAlarmSettingRepository
-                        .findUserAlarmSettingOrNullByUserId(user.id)
-                        ?.let { userAlarmSettingRepository.delete(it) }
-
-                    userRepository.delete(user)
-                }
-
-            userRepository
-                .findUserOrNullByEmail("abcde@gmail.com")
-                ?.let { user ->
-                    val activityUnits = activityUnitRepository.findAllByUserId(user.id)
-                    activityUnitRepository.deleteAll(activityUnits)
-
-                    userDeviceRepository
-                        .findUserDeviceOrNullByUserId(user.id)
-                        ?.let { userDeviceRepository.delete(it) }
-
-                    userAlarmSettingRepository
-                        .findUserAlarmSettingOrNullByUserId(user.id)
-                        ?.let { userAlarmSettingRepository.delete(it) }
-
-                    userRepository.delete(user)
-                }
-
-            val testEmails = listOf("concurrency-test", "abcde@gmail.com")
-            val applications = signUpApplicationRepository.findAllByApplicantEmailIn(testEmails)
-            signUpApplicationRepository.deleteAll(applications)
+        fun deleteUsersByEmails(vararg emails: String) {
+            val placeholders = emails.joinToString(",") { "?" }
+            jdbcTemplate.update(
+                "DELETE FROM ACTIVITY_UNITS WHERE USER_ID IN (SELECT ID FROM USERS WHERE EMAIL IN ($placeholders))",
+                *emails
+            )
+            jdbcTemplate.update(
+                "DELETE FROM USER_DEVICES WHERE USER_ID IN (SELECT ID FROM USERS WHERE EMAIL IN ($placeholders))",
+                *emails
+            )
+            jdbcTemplate.update(
+                "DELETE FROM USER_ALARM_SETTINGS WHERE USER_ID IN (SELECT ID FROM USERS WHERE EMAIL IN ($placeholders))",
+                *emails
+            )
+            jdbcTemplate.update("DELETE FROM USERS WHERE EMAIL IN ($placeholders)", *emails)
         }
 
-        xfeature("동시에 같은 이메일로 - MySQL Named Lock 사용으로 H2에서 비활성화") {
+        fun deleteSignUpApplicationsByEmails(vararg emails: String) {
+            val placeholders = emails.joinToString(",") { "?" }
+            jdbcTemplate.update(
+                """
+                DELETE FROM SIGN_UP_APPLICATION_ACTIVITY_UNIT
+                WHERE APPLICATION_ID IN (
+                    SELECT ID
+                    FROM SIGN_UP_APPLICATION
+                    WHERE APPLICANT_EMAIL IN ($placeholders)
+                )
+                """.trimIndent(),
+                *emails
+            )
+            jdbcTemplate.update("DELETE FROM SIGN_UP_APPLICATION WHERE APPLICANT_EMAIL IN ($placeholders)", *emails)
+        }
+
+        afterTest {
+            deleteUsersByEmails("concurrency-test", "abcde@gmail.com")
+            deleteSignUpApplicationsByEmails("concurrency-test", "abcde@gmail.com")
+        }
+
+        feature("동시에 같은 이메일로 회원 가입을 처리한다") {
 
             scenario("회원가입") {
                 val threadCount = 20
@@ -88,7 +92,7 @@ class SignUpExecutorConcurrencyTest @Autowired constructor(
                 }
 
                 latch.await()
-                userRepository.count() shouldBe 1
+                countUsersByEmail("concurrency-test") shouldBe 1
             }
 
             scenario("가입 신청") {
@@ -110,7 +114,7 @@ class SignUpExecutorConcurrencyTest @Autowired constructor(
                 }
 
                 latch.await()
-                signUpApplicationRepository.count() shouldBe 1
+                countSignUpApplicationsByEmail("abcde@gmail.com") shouldBe 1
             }
         }
     })

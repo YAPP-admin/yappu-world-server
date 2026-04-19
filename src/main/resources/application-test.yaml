@@ -59,3 +59,9 @@ admin:
 kakao:
     map_api_host: https://dapi.kakao.com
     rest_api_key: ${KAKAO_REST_API_KEY}
+
+app:
+    lock:
+        signup-email:
+            strategy: fake
+            timeout-seconds: 3
