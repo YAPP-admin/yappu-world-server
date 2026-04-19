@@ -47,3 +47,9 @@ management:
         web:
             exposure:
                 exclude: "*"
+
+app:
+    lock:
+        signup-email:
+            strategy: none
+            timeout-seconds: 3

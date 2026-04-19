@@ -11,6 +11,7 @@ import co.yappuworld.user.infrastructure.SignUpApplicationCommandService
 import co.yappuworld.user.infrastructure.SignUpApplicationFindService
 import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserFindService
+import co.yappuworld.user.infrastructure.lock.NoopSignUpEmailLockExecutor
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FeatureSpec
@@ -31,6 +32,7 @@ class SignUpFacadeUnitTest :
         val userCommandService = mockk<UserCommandService>()
         val signUpApplicationFindService = mockk<SignUpApplicationFindService>()
         val signUpApplicationCommandService = mockk<SignUpApplicationCommandService>()
+        val signUpEmailLockExecutor = NoopSignUpEmailLockExecutor()
         val jwtGenerator = mockk<JwtGenerator>()
 
         val executor = SignUpExecutor(
@@ -38,12 +40,11 @@ class SignUpFacadeUnitTest :
             userCommandService,
             signUpApplicationFindService,
             signUpApplicationCommandService,
+            signUpEmailLockExecutor,
             jwtGenerator
         )
 
         feature("가입 신청서 제출") {
-
-            every { signUpApplicationCommandService.getLock(any()) } returns 1
 
             scenario("이미 사용 중인 이메일이면 제출할 수 없다.") {
                 every { userFindService.findUserOrNull(any<String>()) } returns getUserEntityFixture()
