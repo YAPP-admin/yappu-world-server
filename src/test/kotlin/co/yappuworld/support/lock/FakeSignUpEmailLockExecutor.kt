@@ -28,7 +28,14 @@ class FakeSignUpEmailLockExecutor(
         action: () -> T
     ): T {
         val lock = locks.computeIfAbsent(email) { ReentrantLock() }
-        if (!lock.tryLock(properties.timeoutSeconds, TimeUnit.SECONDS)) {
+        val acquired = try {
+            lock.tryLock(properties.timeoutSeconds, TimeUnit.SECONDS)
+        } catch (exception: InterruptedException) {
+            Thread.currentThread().interrupt()
+            throw IllegalStateException("Interrupted while acquiring sign-up email lock", exception)
+        }
+
+        if (!acquired) {
             throw BusinessException(UserError.ALREADY_PROCESSED_EMAIL)
         }
 

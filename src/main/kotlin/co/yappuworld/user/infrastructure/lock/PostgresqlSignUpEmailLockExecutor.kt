@@ -5,6 +5,7 @@ import co.yappuworld.user.domain.vo.UserError
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
+import org.springframework.transaction.support.TransactionSynchronizationManager
 
 @Component
 @ConditionalOnProperty(
@@ -19,6 +20,11 @@ class PostgresqlSignUpEmailLockExecutor(
         email: String,
         action: () -> T
     ): T {
+        check(TransactionSynchronizationManager.isActualTransactionActive()) {
+            "PostgresqlSignUpEmailLockExecutor must be invoked within an active transaction; " +
+                "otherwise the transaction-scoped advisory lock is released immediately."
+        }
+
         if (!tryLock(email)) {
             throw BusinessException(UserError.ALREADY_PROCESSED_EMAIL)
         }
