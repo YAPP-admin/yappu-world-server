@@ -86,7 +86,7 @@ class OracleSignUpEmailLockExecutor(
                 email
             )
         } catch (exception: DataAccessException) {
-            if (exception.isOracleLockFailure()) {
+            if (exception.isOracleLockTimeout()) {
                 throw BusinessException(UserError.ALREADY_PROCESSED_EMAIL)
             }
             throw exception
@@ -110,8 +110,8 @@ class OracleSignUpEmailLockExecutor(
     private fun DataAccessException.isOracleDuplicateKey(): Boolean =
         findSqlException()?.errorCode == ORACLE_DUPLICATE_KEY_ERROR_CODE
 
-    private fun DataAccessException.isOracleLockFailure(): Boolean =
-        findSqlException()?.errorCode in ORACLE_LOCK_FAILURE_ERROR_CODES
+    private fun DataAccessException.isOracleLockTimeout(): Boolean =
+        findSqlException()?.errorCode == ORACLE_LOCK_TIMEOUT_ERROR_CODE
 
     private fun Throwable.findSqlException(): SQLException? =
         generateSequence(this) { it.cause }
@@ -123,10 +123,5 @@ class OracleSignUpEmailLockExecutor(
         private const val MAX_TIMEOUT_SECONDS = 60L
         private const val ORACLE_DUPLICATE_KEY_ERROR_CODE = 1
         private const val ORACLE_LOCK_TIMEOUT_ERROR_CODE = 30006
-        private const val ORACLE_DEADLOCK_ERROR_CODE = 60
-        private val ORACLE_LOCK_FAILURE_ERROR_CODES = setOf(
-            ORACLE_LOCK_TIMEOUT_ERROR_CODE,
-            ORACLE_DEADLOCK_ERROR_CODE
-        )
     }
 }
