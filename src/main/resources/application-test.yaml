@@ -6,6 +6,10 @@ spring:
     docker:
         compose:
             enabled: false
+
+    flyway:
+        enabled: false
+
     datasource:
         driver-class-name: org.h2.Driver
         url: jdbc:h2:mem:testdb;MODE=Oracle;DATABASE_TO_LOWER=TRUE;NON_KEYWORDS=VALUE
@@ -55,3 +59,9 @@ admin:
 kakao:
     map_api_host: https://dapi.kakao.com
     rest_api_key: ${KAKAO_REST_API_KEY}
+
+app:
+    lock:
+        signup-email:
+            strategy: fake
+            timeout-seconds: 3

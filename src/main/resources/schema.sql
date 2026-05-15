@@ -32,8 +32,28 @@ CREATE TABLE sign_up_application
     updated_at      TIMESTAMP,
     applicant_email varchar(64) NOT NULL,
     details         json        NOT NULL,
+    applicant_name  varchar(64),
     status          varchar(16) NOT NULL,
     reject_reason   varchar(128)
+);
+
+DROP TABLE IF EXISTS sign_up_application_activity_unit;
+CREATE TABLE sign_up_application_activity_unit
+(
+    id              binary(16)  PRIMARY KEY,
+    created_at      datetime(6),
+    updated_at      datetime(6),
+    application_id  binary(16)  NOT NULL,
+    generation      int         NOT NULL,
+    position        varchar(16) NOT NULL
+);
+
+DROP TABLE IF EXISTS sign_up_email_lock;
+CREATE TABLE sign_up_email_lock
+(
+    lock_key   varchar(320) PRIMARY KEY,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 DROP TABLE IF EXISTS activity_units;

@@ -11,6 +11,7 @@ import co.yappuworld.user.infrastructure.SignUpApplicationFindService
 import co.yappuworld.user.infrastructure.UserCommandService
 import co.yappuworld.user.infrastructure.UserFindService
 import co.yappuworld.user.infrastructure.entity.SignUpApplicationEntity
+import co.yappuworld.user.infrastructure.lock.SignUpEmailLockExecutor
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -26,15 +27,15 @@ class SignUpExecutor(
     private val userCommandService: UserCommandService,
     private val signUpApplicationFindService: SignUpApplicationFindService,
     private val signUpApplicationCommandService: SignUpApplicationCommandService,
+    private val signUpEmailLockExecutor: SignUpEmailLockExecutor,
     private val jwtGenerator: JwtGenerator
 ) {
 
     fun submit(application: SignUpApplicationEntity) {
-        // TODO: MySQL -> Oracle 변경하면서 lock 기능 쓰기 어려운 상황이고 해결 필요
-        // executeWithLock(application.applicantEmail) {
-        checkSubmitApplicationAvailability(application)
-        signUpApplicationCommandService.submit(application)
-        //  }
+        signUpEmailLockExecutor.executeWithLockReturning(application.applicantEmail) {
+            checkSubmitApplicationAvailability(application)
+            signUpApplicationCommandService.submit(application)
+        }
     }
 
     fun signUp(
@@ -42,7 +43,7 @@ class SignUpExecutor(
         role: UserRole,
         now: LocalDateTime
     ): Token =
-        executeWithLockReturning(application.applicantEmail) {
+        signUpEmailLockExecutor.executeWithLockReturning(application.applicantEmail) {
             checkEmailAvailability(application.applicantEmail)
             val user = userCommandService.signUp(application, role)
             rejectPendingSignUpApplication(application.applicantEmail)
@@ -62,9 +63,11 @@ class SignUpExecutor(
     ) {
         getPendingApplications(applicationIds)
             .onEach { application ->
-                checkEmailAvailability(application.applicantEmail)
-                application.approve()
-                userCommandService.signUp(application, role)
+                signUpEmailLockExecutor.executeWithLockReturning(application.applicantEmail) {
+                    checkEmailAvailability(application.applicantEmail)
+                    application.approve()
+                    userCommandService.signUp(application, role)
+                }
             }
     }
 
@@ -121,44 +124,4 @@ class SignUpExecutor(
         return applications
     }
 
-    private fun executeWithLock(
-        email: String,
-        action: () -> Unit
-    ) {
-        if (signUpApplicationCommandService.getLock(email) != 1) {
-            logger.warn { "${email}의 잠금을 획득하지 못했습니다." }
-            throw BusinessException(UserError.ALREADY_PROCESSED_EMAIL)
-        }
-
-        action()
-        /**
-         * return try {
-         *             action()
-         *         } finally {
-         *             TODO: 명시적으로 release를 처리하기 위해선 별도 클래스에서 action()을 수행해야 하고, Tx는 새롭게 열어야 함
-         *             signUpApplicationCommandService.releaseLock(email)
-         *         }
-         */
-    }
-
-    private fun <T> executeWithLockReturning(
-        email: String,
-        action: () -> T
-    ): T {
-        if (userCommandService.getLock(email) != 1) {
-            logger.warn { "${email}의 잠금을 획득하지 못했습니다." }
-            throw BusinessException(UserError.ALREADY_PROCESSED_EMAIL)
-        }
-
-        return action()
-
-        /**
-         * return try {
-         *             action()
-         *         } finally {
-         *             TODO: 명시적으로 release를 처리하기 위해선 별도 클래스에서 action()을 수행해야 하고, Tx는 새롭게 열어야 함
-         *             userCommandService.releaseLock(email)
-         *         }
-         */
-    }
 }
