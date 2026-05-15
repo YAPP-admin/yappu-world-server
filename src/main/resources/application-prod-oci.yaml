@@ -11,7 +11,7 @@ spring:
             enabled: false
     datasource:
         driver-class-name: oracle.jdbc.OracleDriver
-        url: ${PROD_OCI_DB_URL}?TNS_ADMIN=/wallet
+        url: ${PROD_OCI_DB_URL}
         username: ${PROD_OCI_DB_USERNAME}
         password: ${PROD_OCI_DB_PASSWORD}
         hikari:
