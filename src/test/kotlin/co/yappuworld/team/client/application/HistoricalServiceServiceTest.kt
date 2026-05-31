@@ -144,8 +144,10 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 result.members shouldHaveSize 2
                 result.members[0].position shouldBe "PM"
                 result.members[0].name shouldBe "김피엠"
+                result.members[0].userId shouldBe pmUser.id
                 result.members[1].position shouldBe "Server"
                 result.members[1].name shouldBe "김서버"
+                result.members[1].userId shouldBe serverUser.id
             }
         }
     })

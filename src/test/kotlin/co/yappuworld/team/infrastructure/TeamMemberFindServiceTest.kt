@@ -39,6 +39,7 @@ class TeamMemberFindServiceTest @Autowired constructor(
                 result.filterNotNull() shouldHaveSize 1
 
                 val member1 = result.find { it?.userName == "홍길동" }
+                member1?.userId shouldBe user.id
                 member1?.generation shouldBe 36
                 member1?.position shouldBe Position.IOS
                 member1?.activityUnitId shouldBe activityUnit.id

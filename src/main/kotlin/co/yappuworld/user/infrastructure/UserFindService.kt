@@ -11,6 +11,7 @@ import co.yappuworld.user.infrastructure.entity.UserEntity
 import co.yappuworld.user.infrastructure.jpa.UserRepository
 import co.yappuworld.user.infrastructure.model.ActivityUnitWithRowNumber
 import co.yappuworld.user.domain.model.UserWithActivityUnit
+import co.yappuworld.user.infrastructure.model.UserPersonProfileHistoryProjection
 import co.yappuworld.user.infrastructure.model.UserWithLastActivityUnit
 import com.linecorp.kotlinjdsl.dsl.jpql.Jpql
 import com.linecorp.kotlinjdsl.dsl.jpql.jpql
@@ -150,6 +151,13 @@ class UserFindService(
             .findAll(CustomUserDsl) { getActiveUser(userId, generation) }
             .singleOrNull()
             ?: throw BusinessException(UserError.USER_NOT_FOUND_WITH_GENERATION_ACTIVITY)
+
+    fun findUserPersonProfileHistories(userId: UUID): List<UserPersonProfileHistoryProjection> =
+        userRepository
+            .findAll(CustomUserDsl) {
+                selectUserPersonProfileHistories()
+                    .where(path(ActivityUnitEntity::userId).equal(userId))
+            }.filterNotNull()
 
     private fun Jpql.getUserWithLastActivityUnit(
         userId: UUID? = null

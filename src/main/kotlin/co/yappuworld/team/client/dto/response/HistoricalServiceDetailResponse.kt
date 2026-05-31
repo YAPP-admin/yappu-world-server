@@ -56,6 +56,8 @@ data class HistoricalServiceDetailResponse(
 }
 
 data class HistoricalServiceMemberResponse(
+    @field:Schema(description = "유저 ID")
+    val userId: UUID,
     @field:Schema(description = "활동 이력 ID")
     val activityUnitId: UUID,
     @field:Schema(description = "이름")
@@ -66,6 +68,7 @@ data class HistoricalServiceMemberResponse(
     companion object {
         fun from(dto: TeamMemberDetailDto): HistoricalServiceMemberResponse =
             HistoricalServiceMemberResponse(
+                userId = dto.userId,
                 activityUnitId = dto.activityUnitId,
                 name = dto.userName,
                 position = dto.position.label
