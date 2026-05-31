@@ -2,6 +2,7 @@ package co.yappuworld.team.infrastructure
 
 import co.yappuworld.team.infrastructure.dto.TeamWithServiceDto
 import co.yappuworld.team.domain.vo.Platform
+import co.yappuworld.team.infrastructure.dto.HistoricalServiceSummaryProjection
 import co.yappuworld.team.infrastructure.dto.TeamMemberDetailDto
 import co.yappuworld.team.infrastructure.dto.TeamServiceSummary
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
@@ -36,6 +37,21 @@ CustomTeamDsl : Jpql() {
             add(path(TeamEntity::name).desc())
         }
 
+    fun historicalServiceSorting(platform: Platform?): List<Sortable> =
+        buildList {
+            add(path(TeamEntity::generation).desc())
+            if (platform == null) {
+                add(
+                    caseWhen(path(TeamServiceEntity::hasApp).equal(true))
+                        .then(1)
+                        .`else`(2)
+                        .asc()
+                )
+            }
+            add(path(TeamServiceEntity::name).desc())
+            add(path(TeamServiceEntity::getId).desc())
+        }
+
     fun selectTeamWithService(): SelectQueryFromStep<TeamWithServiceDto> =
         selectNew<TeamWithServiceDto>(
             path(TeamEntity::getId),
@@ -65,5 +81,15 @@ CustomTeamDsl : Jpql() {
             path(TeamServiceEntity::hasWeb),
             path(TeamServiceEntity::summary),
             path(TeamServiceEntity::isOperating)
+        )
+
+    fun selectHistoricalServices(): SelectQueryFromStep<HistoricalServiceSummaryProjection> =
+        selectNew<HistoricalServiceSummaryProjection>(
+            path(TeamServiceEntity::getId),
+            path(TeamEntity::generation),
+            path(TeamServiceEntity::name),
+            path(TeamServiceEntity::hasApp),
+            path(TeamServiceEntity::hasWeb),
+            path(TeamServiceEntity::summary)
         )
 }
