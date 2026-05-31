@@ -37,6 +37,11 @@ class TeamServiceFindService(
 
     fun findTeamServices(teams: List<TeamEntity>): List<TeamServiceEntity> = teamServiceRepository.findByTeamIn(teams)
 
+    fun findTeamServices(serviceIds: Collection<UUID>): List<TeamServiceEntity> {
+        require(serviceIds.isNotEmpty()) { "서비스 조회 요청에 들어오는 ID는 최소 하나 이상이어야 합니다." }
+        return teamServiceRepository.findAllById(serviceIds)
+    }
+
     fun findHistoricalServices(
         generation: Int?,
         platform: Platform?,
