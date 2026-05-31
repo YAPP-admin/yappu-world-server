@@ -103,7 +103,7 @@ class TeamServiceFindServiceTest @Autowired constructor(
                     getTeamEntityFixture(24, "아래웹팀", hasApp = false, hasWeb = true)
                 )
 
-                val firstWebService = teamServiceRepository.save(
+                teamServiceRepository.save(
                     getTeamServiceEntityFixture(firstWebTeam, "B서비스", hasWeb = true)
                 )
                 teamServiceRepository.save(
@@ -126,7 +126,7 @@ class TeamServiceFindServiceTest @Autowired constructor(
                 val secondPage = teamServiceFindService.findHistoricalServices(
                     generation = null,
                     platform = Platform.WEB,
-                    lastServiceId = firstWebService.id,
+                    lastServiceId = firstPage.single().serviceId,
                     limit = 10
                 )
 
