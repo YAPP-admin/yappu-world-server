@@ -124,6 +124,22 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                 thumbnail?.imageUrl shouldBe "https://image.yapp.co.kr/after.png"
             }
 
+            scenario("기존 썸네일이 없으면 새 썸네일을 생성한다") {
+                val team = teamRepository.save(getTeamEntityFixture())
+                val service = teamServiceRepository.save(getTeamServiceEntityFixture(team = team))
+
+                adminTeamServiceManageService.updateTeamService(
+                    updateRequest(
+                        id = service.id,
+                        teamId = team.id,
+                        thumbnailImageUrl = "https://image.yapp.co.kr/new.png"
+                    )
+                )
+
+                val thumbnail = teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(service)
+                thumbnail?.imageUrl shouldBe "https://image.yapp.co.kr/new.png"
+            }
+
             scenario("썸네일 URL이 없으면 기존 썸네일을 삭제한다") {
                 val team = teamRepository.save(getTeamEntityFixture())
                 val service = teamServiceRepository.save(getTeamServiceEntityFixture(team = team))
