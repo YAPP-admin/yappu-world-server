@@ -7,6 +7,7 @@ import co.yappuworld.user.infrastructure.UserFindService
 import co.yappuworld.user.infrastructure.model.UserPersonProfileHistoryProjection
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.util.UUID
 
 @Service
@@ -20,10 +21,7 @@ class UserPersonProfileService(
         val user = userFindService.findUser(userId)
         val historyProjections = userFindService
             .findUserPersonProfileHistories(userId)
-            .sortedWith(
-                compareByDescending<UserPersonProfileHistoryProjection> { it.generation }
-                    .thenBy { it.position.order }
-            )
+            .sortedWith(userPersonProfileHistoryComparator())
         val servicesById = historyProjections
             .mapNotNull(UserPersonProfileHistoryProjection::serviceId)
             .distinct()
@@ -43,4 +41,11 @@ class UserPersonProfileService(
             histories = histories
         )
     }
+
+    private fun userPersonProfileHistoryComparator(): Comparator<UserPersonProfileHistoryProjection> =
+        compareByDescending<UserPersonProfileHistoryProjection> { it.generation }
+            .thenBy { it.position.order }
+            .thenByDescending { it.activityEndDate ?: LocalDate.MIN }
+            .thenByDescending { it.activityStartDate ?: LocalDate.MIN }
+            .thenByDescending { it.activityUnitId }
 }

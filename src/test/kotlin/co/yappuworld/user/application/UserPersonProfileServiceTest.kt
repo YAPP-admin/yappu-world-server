@@ -120,5 +120,63 @@ class UserPersonProfileServiceTest @Autowired constructor(
                 result.histories[1].activityEndDate shouldBe LocalDate.of(2019, 6, 30)
                 result.histories[1].service shouldBe null
             }
+
+            scenario("같은 기수와 같은 포지션의 활동 이력도 최신 활동 기준이 흔들리지 않는다") {
+                val user = userRepository.save(getUserEntityFixture(name = "김뿌야"))
+                generationRepository.save(
+                    getGenerationFixture(
+                        value = 125,
+                        startDate = LocalDate.of(2023, 11, 1),
+                        endDate = LocalDate.of(2024, 6, 30)
+                    )
+                )
+                val firstActivityUnit = activityUnitRepository.save(
+                    getActivityUnitEntityFixture(
+                        userId = user.id,
+                        generation = 125,
+                        position = Position.DESIGN
+                    )
+                )
+                val secondActivityUnit = activityUnitRepository.save(
+                    getActivityUnitEntityFixture(
+                        userId = user.id,
+                        generation = 125,
+                        position = Position.DESIGN
+                    )
+                )
+                val team = teamRepository.save(
+                    getTeamEntityFixture(
+                        generation = 125,
+                        name = "팀 이름",
+                        hasApp = true,
+                        hasWeb = false
+                    )
+                )
+                teamServiceRepository.save(
+                    getTeamServiceEntityFixture(
+                        team = team,
+                        name = "서비스명",
+                        hasApp = true,
+                        hasWeb = false
+                    )
+                )
+                teamMemberRepository.save(TeamMemberEntity(team = team, activityUnit = secondActivityUnit))
+
+                val result = userPersonProfileService.getUserPersonProfile(user.id)
+                val expectedLatestActivityUnitId = maxOf(firstActivityUnit.id, secondActivityUnit.id)
+
+                result.latestActivity?.generation shouldBe 125
+                result.latestActivity?.position shouldBe "Design"
+                result.histories shouldHaveSize 2
+                result.histories.first().activityStartDate shouldBe LocalDate.of(2023, 11, 1)
+                result
+                    .histories
+                    .first()
+                    .service
+                    ?.serviceName shouldBe when (expectedLatestActivityUnitId) {
+                    secondActivityUnit.id -> "서비스명"
+                    else -> null
+                }
+            }
         }
     })
