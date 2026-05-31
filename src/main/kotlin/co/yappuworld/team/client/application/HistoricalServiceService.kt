@@ -5,6 +5,7 @@ import co.yappuworld.team.client.dto.request.HistoricalServicesPageRequest
 import co.yappuworld.team.client.dto.response.HistoricalServiceDetailResponse
 import co.yappuworld.team.client.dto.response.HistoricalServicePageResponse
 import co.yappuworld.team.infrastructure.TeamMemberFindService
+import co.yappuworld.team.infrastructure.TeamServiceImageFindService
 import co.yappuworld.team.infrastructure.TeamServiceFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +15,8 @@ import kotlin.math.min
 @Service
 class HistoricalServiceService(
     private val teamServiceFindService: TeamServiceFindService,
-    private val teamMemberFindService: TeamMemberFindService
+    private val teamMemberFindService: TeamMemberFindService,
+    private val teamServiceImageFindService: TeamServiceImageFindService
 ) {
 
     @Transactional(readOnly = true)
@@ -27,9 +29,10 @@ class HistoricalServiceService(
             lastServiceId = request.lastCursorId,
             limit = request.limit + 1
         )
-        val data = services
-            .take(min(request.limit, services.size))
-            .map(HistoricalServicePageResponse::from)
+        val pagedServices = services.take(min(request.limit, services.size))
+        val thumbnailImageUrls = teamServiceImageFindService.findThumbnailUrls(pagedServices.map { it.serviceId })
+        val data = pagedServices
+            .map { HistoricalServicePageResponse.from(it, thumbnailImageUrls[it.serviceId]) }
 
         return CursorPageResponse(
             data = data,
@@ -43,7 +46,8 @@ class HistoricalServiceService(
     fun getHistoricalServiceDetail(serviceId: UUID): HistoricalServiceDetailResponse {
         val service = teamServiceFindService.findTeamService(serviceId)
         val members = teamMemberFindService.findTeamMembersDetail(service.team.id).filterNotNull()
+        val thumbnailImageUrl = teamServiceImageFindService.findThumbnailUrl(service)
 
-        return HistoricalServiceDetailResponse.of(service, members)
+        return HistoricalServiceDetailResponse.of(service, members, thumbnailImageUrl)
     }
 }

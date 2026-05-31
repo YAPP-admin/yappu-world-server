@@ -7,9 +7,13 @@ import co.yappuworld.team.client.dto.request.AdminTeamServiceUpdateRequest
 import co.yappuworld.team.client.dto.response.AdminTeamServiceDetailResponse
 import co.yappuworld.team.client.dto.response.AdminTeamServiceResponse
 import co.yappuworld.team.infrastructure.TeamFindService
+import co.yappuworld.team.infrastructure.TeamServiceImageCommandService
+import co.yappuworld.team.infrastructure.TeamServiceImageFindService
 import co.yappuworld.team.infrastructure.TeamServiceCommandService
 import co.yappuworld.team.infrastructure.TeamServiceFindService
 import co.yappuworld.team.infrastructure.entity.ServiceLinks
+import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
+import co.yappuworld.team.infrastructure.entity.TeamServiceImageEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -18,7 +22,9 @@ import java.util.UUID
 class AdminTeamServiceManageService(
     private val teamFindService: TeamFindService,
     private val teamServiceFindService: TeamServiceFindService,
-    private val teamServiceCommandService: TeamServiceCommandService
+    private val teamServiceCommandService: TeamServiceCommandService,
+    private val teamServiceImageFindService: TeamServiceImageFindService,
+    private val teamServiceImageCommandService: TeamServiceImageCommandService
 ) {
 
     @Transactional(readOnly = true)
@@ -39,13 +45,15 @@ class AdminTeamServiceManageService(
     @Transactional(readOnly = true)
     fun getTeamService(serviceId: UUID): AdminTeamServiceDetailResponse {
         val service = teamServiceFindService.findTeamService(serviceId)
-        return AdminTeamServiceDetailResponse.from(service)
+        val thumbnailImageUrl = teamServiceImageFindService.findThumbnailUrl(service)
+        return AdminTeamServiceDetailResponse.from(service, thumbnailImageUrl)
     }
 
     @Transactional
     fun createTeamService(request: AdminTeamServiceCreateRequest): UUID {
         val team = teamFindService.findTeam(request.teamId)
         val service = request.toService(team).also { teamServiceCommandService.save(it) }
+        createThumbnail(service, request.thumbnailImageUrl?.trim()?.takeIf { it.isNotEmpty() })
         return service.id
     }
 
@@ -67,11 +75,39 @@ class AdminTeamServiceManageService(
             description = request.description,
             isOperating = request.isOperating
         )
+        updateThumbnail(service, request.thumbnailImageUrl?.trim()?.takeIf { it.isNotEmpty() })
     }
 
     @Transactional
     fun deleteTeamService(serviceId: UUID) {
         val service = teamServiceFindService.findTeamService(serviceId)
+        teamServiceImageCommandService.deleteAll(service)
         teamServiceCommandService.delete(service)
+    }
+
+    private fun createThumbnail(
+        service: TeamServiceEntity,
+        thumbnailImageUrl: String?
+    ) {
+        thumbnailImageUrl?.let {
+            teamServiceImageCommandService.save(
+                TeamServiceImageEntity(
+                    teamService = service,
+                    imageUrl = it,
+                    isThumbnail = true
+                )
+            )
+        }
+    }
+
+    private fun updateThumbnail(
+        service: TeamServiceEntity,
+        thumbnailImageUrl: String?
+    ) {
+        val thumbnail = teamServiceImageFindService.findThumbnail(service)
+
+        thumbnailImageUrl
+            ?.let { thumbnail?.updateImageUrl(it) ?: createThumbnail(service, it) }
+            ?: thumbnail?.let { teamServiceImageCommandService.delete(it) }
     }
 }

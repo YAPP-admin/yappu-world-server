@@ -2,6 +2,7 @@ package co.yappuworld.support.fixture
 
 import co.yappuworld.team.infrastructure.entity.ServiceLinks
 import co.yappuworld.team.infrastructure.entity.TeamEntity
+import co.yappuworld.team.infrastructure.entity.TeamServiceImageEntity
 import co.yappuworld.team.infrastructure.entity.TeamServiceEntity
 
 object TeamFixture {
@@ -64,5 +65,18 @@ object TeamFixture {
             googlePlay = null,
             appStore = null,
             web = null
+        )
+
+    fun getTeamServiceImageEntityFixture(
+        teamService: TeamServiceEntity,
+        imageUrl: String = "https://image.yapp.co.kr/thumbnail.png",
+        isThumbnail: Boolean = true,
+        displayOrder: Int = 0
+    ): TeamServiceImageEntity =
+        TeamServiceImageEntity(
+            teamService = teamService,
+            imageUrl = imageUrl,
+            isThumbnail = isThumbnail,
+            displayOrder = displayOrder
         )
 }

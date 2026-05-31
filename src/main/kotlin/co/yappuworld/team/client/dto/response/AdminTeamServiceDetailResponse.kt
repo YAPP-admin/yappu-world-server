@@ -23,6 +23,8 @@ data class AdminTeamServiceDetailResponse(
     val appStoreLink: String?,
     @field:Schema(description = "웹 링크")
     val webLink: String?,
+    @field:Schema(description = "썸네일 이미지 URL")
+    val thumbnailImageUrl: String?,
     @field:Schema(description = "서비스 소개")
     val summary: String?,
     @field:Schema(description = "상세설명")
@@ -31,20 +33,24 @@ data class AdminTeamServiceDetailResponse(
     val isOperating: Boolean
 ) {
     companion object {
-        fun from(entity: TeamServiceEntity): AdminTeamServiceDetailResponse =
+        fun from(
+            service: TeamServiceEntity,
+            thumbnailImageUrl: String?
+        ): AdminTeamServiceDetailResponse =
             AdminTeamServiceDetailResponse(
-                serviceId = entity.id,
-                generation = entity.team.generation,
-                teamName = entity.team.name,
-                serviceName = entity.name,
-                hasApp = entity.hasApp,
-                hasWeb = entity.hasWeb,
-                googlePlayLink = entity.serviceLinks?.googlePlay,
-                appStoreLink = entity.serviceLinks?.appStore,
-                webLink = entity.serviceLinks?.web,
-                summary = entity.summary,
-                description = entity.description,
-                isOperating = entity.isOperating
+                serviceId = service.id,
+                generation = service.team.generation,
+                teamName = service.team.name,
+                serviceName = service.name,
+                hasApp = service.hasApp,
+                hasWeb = service.hasWeb,
+                googlePlayLink = service.serviceLinks?.googlePlay,
+                appStoreLink = service.serviceLinks?.appStore,
+                webLink = service.serviceLinks?.web,
+                thumbnailImageUrl = thumbnailImageUrl,
+                summary = service.summary,
+                description = service.description,
+                isOperating = service.isOperating
             )
     }
 }

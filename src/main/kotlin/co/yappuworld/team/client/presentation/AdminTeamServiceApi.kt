@@ -91,6 +91,7 @@ interface AdminTeamServiceApi {
                                         "googlePlayLink": "https://play.google.com/store/apps",
                                         "appStoreLink": "https://apps.apple.com",
                                         "webLink": null,
+                                        "thumbnailImageUrl": "https://image.yapp.co.kr/service-thumbnail.png",
                                         "isOperating": true,
                                         "summary": "서비스 소개입니다.",
                                         "description": "상세 설명입니다."

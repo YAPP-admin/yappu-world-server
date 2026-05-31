@@ -2,14 +2,17 @@ package co.yappuworld.team.client.application
 
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.TeamFixture.getTeamEntityFixture
+import co.yappuworld.support.fixture.TeamFixture.getTeamServiceImageEntityFixture
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
 import co.yappuworld.team.client.dto.request.HistoricalServicesPageRequest
 import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.infrastructure.TeamMemberFindService
+import co.yappuworld.team.infrastructure.TeamServiceImageFindService
 import co.yappuworld.team.infrastructure.TeamServiceFindService
 import co.yappuworld.team.infrastructure.entity.TeamMemberEntity
+import co.yappuworld.team.infrastructure.jpa.TeamServiceImageRepository
 import co.yappuworld.team.infrastructure.jpa.TeamMemberRepository
 import co.yappuworld.team.infrastructure.jpa.TeamRepository
 import co.yappuworld.team.infrastructure.jpa.TeamServiceRepository
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class HistoricalServiceServiceTest @Autowired constructor(
     private val teamRepository: TeamRepository,
     private val teamServiceRepository: TeamServiceRepository,
+    private val teamServiceImageRepository: TeamServiceImageRepository,
     private val teamMemberRepository: TeamMemberRepository,
     private val userRepository: UserRepository,
     private val activityUnitRepository: ActivityUnitRepository
@@ -32,7 +36,8 @@ class HistoricalServiceServiceTest @Autowired constructor(
         beforeEach {
             historicalServiceService = HistoricalServiceService(
                 teamServiceFindService = TeamServiceFindService(teamServiceRepository),
-                teamMemberFindService = TeamMemberFindService(teamMemberRepository)
+                teamMemberFindService = TeamMemberFindService(teamMemberRepository),
+                teamServiceImageFindService = TeamServiceImageFindService(teamServiceImageRepository)
             )
         }
 
@@ -41,12 +46,18 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 val targetTeam = teamRepository.save(getTeamEntityFixture(generation = 25, name = "타겟팀"))
                 val filteredOutTeam = teamRepository.save(getTeamEntityFixture(generation = 24, name = "제외팀"))
 
-                teamServiceRepository.save(
+                val targetService = teamServiceRepository.save(
                     getTeamServiceEntityFixture(
                         team = targetTeam,
                         name = "타겟 서비스",
                         hasApp = true,
                         summary = "한 줄 소개"
+                    )
+                )
+                teamServiceImageRepository.save(
+                    getTeamServiceImageEntityFixture(
+                        teamService = targetService,
+                        imageUrl = "https://image.yapp.co.kr/target.png"
                     )
                 )
                 teamServiceRepository.save(
@@ -64,7 +75,7 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 result.data shouldHaveSize 1
                 result.data.single().serviceName shouldBe "타겟 서비스"
                 result.data.single().summary shouldBe "한 줄 소개"
-                result.data.single().thumbnailImageUrl shouldBe null
+                result.data.single().thumbnailImageUrl shouldBe "https://image.yapp.co.kr/target.png"
                 result.limit shouldBe 20
                 result.hasNext shouldBe false
             }
@@ -134,13 +145,19 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 )
                 teamMemberRepository.save(TeamMemberEntity(team = team, activityUnit = serverActivityUnit))
                 teamMemberRepository.save(TeamMemberEntity(team = team, activityUnit = pmActivityUnit))
+                teamServiceImageRepository.save(
+                    getTeamServiceImageEntityFixture(
+                        teamService = service,
+                        imageUrl = "https://image.yapp.co.kr/detail.png"
+                    )
+                )
 
                 val result = historicalServiceService.getHistoricalServiceDetail(service.id)
 
                 result.generation shouldBe 17
                 result.serviceName shouldBe "상세 서비스"
                 result.webLink shouldBe "https://yapp.co.kr"
-                result.thumbnailImageUrl shouldBe null
+                result.thumbnailImageUrl shouldBe "https://image.yapp.co.kr/detail.png"
                 result.members shouldHaveSize 2
                 result.members[0].position shouldBe "PM"
                 result.members[0].name shouldBe "김피엠"

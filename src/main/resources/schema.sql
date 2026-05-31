@@ -172,6 +172,7 @@ CREATE TABLE teams
     has_web     NUMBER(1) NOT NULL DEFAULT 0
 );
 
+DROP TABLE IF EXISTS team_service_images;
 DROP TABLE IF EXISTS team_services;
 CREATE TABLE team_services
 (
@@ -186,6 +187,17 @@ CREATE TABLE team_services
     summary         varchar(255) DEFAULT NULL,
     description     TEXT DEFAULT NULL,
     is_operating    NUMBER(1) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE team_service_images
+(
+    id              binary(16) PRIMARY KEY,
+    created_at      TIMESTAMP,
+    updated_at      TIMESTAMP,
+    team_service_id binary(16) NOT NULL,
+    image_url       varchar(2000) NOT NULL,
+    is_thumbnail    NUMBER(1) NOT NULL DEFAULT 0,
+    display_order   int NOT NULL DEFAULT 0
 );
 
 DROP TABLE IF EXISTS team_members;
