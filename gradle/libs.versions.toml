@@ -16,6 +16,7 @@ loki-logback = "2.0.1"
 swagger = "2.7.0"
 jjwt = "0.12.5"
 firebase = "9.4.3"
+oci-java-sdk = "3.88.0"
 
 
 [libraries]
@@ -70,6 +71,10 @@ jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
 # FCM
 firebase = { module = "com.google.firebase:firebase-admin", version.ref = "firebase" }
+
+# OCI
+oci-java-sdk-objectstorage = { module = "com.oracle.oci.sdk:oci-java-sdk-objectstorage", version.ref = "oci-java-sdk" }
+oci-java-sdk-common-httpclient-jersey3 = { module = "com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3", version.ref = "oci-java-sdk" }
 
 # APM
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }

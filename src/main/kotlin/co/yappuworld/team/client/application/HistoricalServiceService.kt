@@ -1,12 +1,13 @@
 package co.yappuworld.team.client.application
 
+import co.yappuworld.external.storage.ObjectStorageService
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.team.client.dto.request.HistoricalServicesPageRequest
 import co.yappuworld.team.client.dto.response.HistoricalServiceDetailResponse
 import co.yappuworld.team.client.dto.response.HistoricalServicePageResponse
 import co.yappuworld.team.infrastructure.TeamMemberFindService
-import co.yappuworld.team.infrastructure.TeamServiceImageFindService
 import co.yappuworld.team.infrastructure.TeamServiceFindService
+import co.yappuworld.team.infrastructure.TeamServiceImageFindService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -16,7 +17,8 @@ import kotlin.math.min
 class HistoricalServiceService(
     private val teamServiceFindService: TeamServiceFindService,
     private val teamMemberFindService: TeamMemberFindService,
-    private val teamServiceImageFindService: TeamServiceImageFindService
+    private val teamServiceImageFindService: TeamServiceImageFindService,
+    private val objectStorageService: ObjectStorageService
 ) {
 
     @Transactional(readOnly = true)
@@ -30,7 +32,9 @@ class HistoricalServiceService(
             limit = request.limit + 1
         )
         val pagedServices = services.take(min(request.limit, services.size))
-        val thumbnailImageUrls = teamServiceImageFindService.findThumbnailUrls(pagedServices.map { it.serviceId })
+        val thumbnailImageUrls = teamServiceImageFindService
+            .findThumbnailObjectKeys(pagedServices.map { it.serviceId })
+            .mapValues { objectStorageService.getPublicUrl(it.value) }
         val data = pagedServices
             .map { HistoricalServicePageResponse.from(it, thumbnailImageUrls[it.serviceId]) }
 
@@ -46,7 +50,9 @@ class HistoricalServiceService(
     fun getHistoricalServiceDetail(serviceId: UUID): HistoricalServiceDetailResponse {
         val service = teamServiceFindService.findTeamService(serviceId)
         val members = teamMemberFindService.findTeamMembersDetail(service.team.id).filterNotNull()
-        val thumbnailImageUrl = teamServiceImageFindService.findThumbnailUrl(service)
+        val thumbnailImageUrl = teamServiceImageFindService
+            .findThumbnailObjectKey(service)
+            ?.let { objectStorageService.getPublicUrl(it) }
 
         return HistoricalServiceDetailResponse.of(service, members, thumbnailImageUrl)
     }

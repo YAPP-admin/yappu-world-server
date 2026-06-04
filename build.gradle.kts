@@ -62,6 +62,10 @@ dependencies {
     // fcm
     implementation(libs.firebase)
 
+    // OCI Object Storage
+    implementation(libs.oci.java.sdk.objectstorage)
+    implementation(libs.oci.java.sdk.common.httpclient.jersey3)
+
     // apm
     implementation(libs.spring.boot.starter.actuator)
     runtimeOnly(libs.micrometer.prometheus)

@@ -80,6 +80,13 @@ kakao:
     map_api_host: https://dapi.kakao.com
     rest_api_key: ${KAKAO_REST_API_KEY}
 
+object-storage:
+    enabled: ${OBJECT_STORAGE_ENABLED}
+    region: ${OBJECT_STORAGE_REGION}
+    namespace: ${OBJECT_STORAGE_NAMESPACE}
+    bucket-name: ${OBJECT_STORAGE_BUCKET_NAME}
+    public-base-url: ${OBJECT_STORAGE_PUBLIC_BASE_URL}
+
 app:
     lock:
         signup-email:

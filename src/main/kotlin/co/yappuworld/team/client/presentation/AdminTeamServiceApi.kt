@@ -16,12 +16,14 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestPart
+import org.springframework.web.multipart.MultipartFile
 import java.util.UUID
 
 @Tag(name = "어드민 팀 서비스 API", description = "팀 서비스 관리")
@@ -196,9 +198,13 @@ interface AdminTeamServiceApi {
             )
         ]
     )
-    @PostMapping("/admin/v1/team-services")
+    @PostMapping(
+        "/admin/v1/team-services",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
     fun createTeamService(
-        @Valid @RequestBody request: AdminTeamServiceCreateRequest
+        @Valid @RequestPart("request") request: AdminTeamServiceCreateRequest,
+        @RequestPart("thumbnailImage", required = false) thumbnailImage: MultipartFile?
     ): ResponseEntity<Unit>
 
     @Operation(summary = "팀 서비스 수정")
@@ -267,9 +273,13 @@ interface AdminTeamServiceApi {
             )
         ]
     )
-    @PutMapping("/admin/v1/team-services")
+    @PutMapping(
+        "/admin/v1/team-services",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
     fun updateTeamService(
-        @Valid @RequestBody request: AdminTeamServiceUpdateRequest
+        @Valid @RequestPart("request") request: AdminTeamServiceUpdateRequest,
+        @RequestPart("thumbnailImage", required = false) thumbnailImage: MultipartFile?
     ): ResponseEntity<Unit>
 
     @Operation(summary = "팀 서비스 삭제")

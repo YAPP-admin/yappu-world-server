@@ -26,9 +26,6 @@ data class AdminTeamServiceCreateRequest(
     @field:Schema(description = "웹 링크")
     @field:URL(message = "유효한 URL 형식이어야 합니다")
     val webLink: String?,
-    @field:Schema(description = "썸네일 이미지 URL")
-    @field:URL(message = "유효한 URL 형식이어야 합니다")
-    val thumbnailImageUrl: String?,
     @field:Schema(description = "서비스 소개")
     @field:Length(max = 500, message = "소개 글은 500자 이하여야 합니다.")
     val summary: String?,

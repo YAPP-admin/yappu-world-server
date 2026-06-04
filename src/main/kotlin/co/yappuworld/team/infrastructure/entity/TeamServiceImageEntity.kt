@@ -12,7 +12,7 @@ import jakarta.persistence.Table
 @Table(name = "team_service_images")
 class TeamServiceImageEntity(
     teamService: TeamServiceEntity,
-    imageUrl: String,
+    objectKey: String,
     isThumbnail: Boolean = false,
     displayOrder: Int = 0
 ) : BaseEntity() {
@@ -22,8 +22,8 @@ class TeamServiceImageEntity(
     var teamService: TeamServiceEntity = teamService
         private set
 
-    @Column(name = "image_url", nullable = false, length = 2000)
-    var imageUrl: String = imageUrl
+    @Column(name = "object_key", nullable = false, length = 2000)
+    var objectKey: String = objectKey
         private set
 
     @Column(name = "is_thumbnail", nullable = false)
@@ -34,7 +34,7 @@ class TeamServiceImageEntity(
     var displayOrder: Int = displayOrder
         private set
 
-    fun updateImageUrl(imageUrl: String) {
-        this.imageUrl = imageUrl
+    fun updateObjectKey(objectKey: String) {
+        this.objectKey = objectKey
     }
 }

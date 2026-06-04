@@ -6,6 +6,7 @@ import co.yappuworld.support.fixture.TeamFixture.getTeamServiceImageEntityFixtur
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
+import co.yappuworld.support.storage.FakeObjectStorageService
 import co.yappuworld.team.client.dto.request.HistoricalServicesPageRequest
 import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.infrastructure.TeamMemberFindService
@@ -34,10 +35,15 @@ class HistoricalServiceServiceTest @Autowired constructor(
         lateinit var historicalServiceService: HistoricalServiceService
 
         beforeEach {
+            teamServiceImageRepository.deleteAllInBatch()
+            teamMemberRepository.deleteAllInBatch()
+            teamServiceRepository.deleteAllInBatch()
+            teamRepository.deleteAllInBatch()
             historicalServiceService = HistoricalServiceService(
                 teamServiceFindService = TeamServiceFindService(teamServiceRepository),
                 teamMemberFindService = TeamMemberFindService(teamMemberRepository),
-                teamServiceImageFindService = TeamServiceImageFindService(teamServiceImageRepository)
+                teamServiceImageFindService = TeamServiceImageFindService(teamServiceImageRepository),
+                objectStorageService = FakeObjectStorageService()
             )
         }
 
@@ -57,7 +63,7 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 teamServiceImageRepository.save(
                     getTeamServiceImageEntityFixture(
                         teamService = targetService,
-                        imageUrl = "https://image.yapp.co.kr/target.png"
+                        objectKey = "team-services/target.png"
                     )
                 )
                 teamServiceRepository.save(
@@ -75,7 +81,7 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 result.data shouldHaveSize 1
                 result.data.single().serviceName shouldBe "타겟 서비스"
                 result.data.single().summary shouldBe "한 줄 소개"
-                result.data.single().thumbnailImageUrl shouldBe "https://image.yapp.co.kr/target.png"
+                result.data.single().thumbnailImageUrl shouldBe "https://image.yapp.co.kr/team-services/target.png"
                 result.limit shouldBe 20
                 result.hasNext shouldBe false
             }
@@ -148,7 +154,7 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 teamServiceImageRepository.save(
                     getTeamServiceImageEntityFixture(
                         teamService = service,
-                        imageUrl = "https://image.yapp.co.kr/detail.png"
+                        objectKey = "team-services/detail.png"
                     )
                 )
 
@@ -157,7 +163,7 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 result.generation shouldBe 17
                 result.serviceName shouldBe "상세 서비스"
                 result.webLink shouldBe "https://yapp.co.kr"
-                result.thumbnailImageUrl shouldBe "https://image.yapp.co.kr/detail.png"
+                result.thumbnailImageUrl shouldBe "https://image.yapp.co.kr/team-services/detail.png"
                 result.members shouldHaveSize 2
                 result.members[0].position shouldBe "PM"
                 result.members[0].name shouldBe "김피엠"

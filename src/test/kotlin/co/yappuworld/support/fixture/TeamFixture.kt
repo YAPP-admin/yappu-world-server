@@ -69,13 +69,13 @@ object TeamFixture {
 
     fun getTeamServiceImageEntityFixture(
         teamService: TeamServiceEntity,
-        imageUrl: String = "https://image.yapp.co.kr/thumbnail.png",
+        objectKey: String = "team-services/thumbnail.png",
         isThumbnail: Boolean = true,
         displayOrder: Int = 0
     ): TeamServiceImageEntity =
         TeamServiceImageEntity(
             teamService = teamService,
-            imageUrl = imageUrl,
+            objectKey = objectKey,
             isThumbnail = isThumbnail,
             displayOrder = displayOrder
         )

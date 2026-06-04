@@ -12,14 +12,17 @@ import java.util.UUID
 class TeamServiceImageFindService(
     private val teamServiceImageRepository: TeamServiceImageRepository
 ) {
+    fun findImages(teamService: TeamServiceEntity): List<TeamServiceImageEntity> =
+        teamServiceImageRepository.findByTeamService(teamService)
+
     fun findThumbnail(teamService: TeamServiceEntity): TeamServiceImageEntity? =
         teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(teamService)
 
-    fun findThumbnailUrl(teamService: TeamServiceEntity): String? =
-        teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(teamService)?.imageUrl
+    fun findThumbnailObjectKey(teamService: TeamServiceEntity): String? =
+        teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(teamService)?.objectKey
 
-    fun findThumbnailUrls(teamServiceIds: List<UUID>): Map<UUID, String> =
+    fun findThumbnailObjectKeys(teamServiceIds: List<UUID>): Map<UUID, String> =
         teamServiceImageRepository
-            .findByTeamServiceIdInAndIsThumbnailTrue(teamServiceIds)
-            .associateBy({ it.teamService.id }, { it.imageUrl })
+            .findThumbnailObjectKeysByTeamServiceIdIn(teamServiceIds)
+            .associateBy({ it.teamServiceId }, { it.objectKey })
 }
