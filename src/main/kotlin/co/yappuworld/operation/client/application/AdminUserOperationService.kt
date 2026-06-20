@@ -15,6 +15,7 @@ import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.operation.infrastructure.GenerationRepository
 import co.yappuworld.user.client.dto.response.AdminSignUpCodeResponse
 import co.yappuworld.user.client.dto.response.AdminSignUpCodesResponse
+import co.yappuworld.user.domain.vo.UserError
 import co.yappuworld.user.domain.vo.UserRole
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -71,6 +72,10 @@ class AdminUserOperationService(
         val responseByKey = configFindService
             .findSignUpCodeConfigs()
             .associateBy { it.id }
+
+        UserRole.entries
+            .firstOrNull { role -> !responseByKey.containsKey(role.signUpCodeKey) }
+            ?.let { throw BusinessException(UserError.SIGN_UP_CODE_UNREGISTERED) }
 
         return AdminSignUpCodesResponse(
             UserRole.entries.map { role ->
