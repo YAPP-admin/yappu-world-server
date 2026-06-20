@@ -3,6 +3,7 @@ package co.yappuworld.operation.infrastructure
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.operation.domain.GenerationEntity
 import co.yappuworld.schedule.domain.vo.AttendanceError
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -29,6 +30,9 @@ class GenerationFindService(
             }.isNotEmpty()
 
     fun findGenerations(values: List<Int>): List<GenerationEntity> = generationRepository.findAllByValueIn(values)
+
+    fun findAllGenerations(): List<GenerationEntity> =
+        generationRepository.findAll(Sort.by(Sort.Direction.DESC, "value"))
 
     fun findAllActiveGeneration(): List<GenerationEntity> =
         generationRepository

@@ -1,23 +1,21 @@
 package co.yappuworld.operation.client.presentation
 
 import co.yappuworld.global.response.SuccessResponse
-import co.yappuworld.operation.client.application.ConfigInquiryComponent
+import co.yappuworld.operation.client.application.OperationService
 import co.yappuworld.operation.client.dto.request.ForceUpdateInquiryRequest
 import co.yappuworld.operation.client.dto.response.ActiveGenerationResponse
 import co.yappuworld.operation.client.dto.response.ForceUpdateResponse
+import co.yappuworld.operation.client.dto.response.GenerationsResponse
 import co.yappuworld.operation.client.dto.response.OperationLinkResponse
 import co.yappuworld.operation.client.dto.response.PositionResponse
 import co.yappuworld.operation.client.dto.response.PositionsResponse
-import co.yappuworld.operation.domain.ClientPlatform.ANDROID
-import co.yappuworld.operation.domain.ClientPlatform.IOS
-import co.yappuworld.operation.domain.Version
 import co.yappuworld.user.domain.vo.Position
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class OperationController(
-    private val configInquiryComponent: ConfigInquiryComponent
+    private val operationService: OperationService
 ) : OperationApi {
 
     override fun getPositions(): ResponseEntity<SuccessResponse<PositionsResponse>> =
@@ -29,36 +27,22 @@ class OperationController(
             )
         )
 
+    override fun getGenerations(): ResponseEntity<SuccessResponse<GenerationsResponse>> =
+        ResponseEntity.ok(
+            SuccessResponse(operationService.getGenerations())
+        )
+
     override fun getForceUpdateInfo(
         request: ForceUpdateInquiryRequest
-    ): ResponseEntity<SuccessResponse<ForceUpdateResponse>> {
-        val minSupportVersion = when (request.platform) {
-            ANDROID -> configInquiryComponent.findConfigBy("minSupportVersionInAndroid")
-            IOS -> configInquiryComponent.findConfigBy("minSupportVersionInIos")
-        }.value
-
-        return ResponseEntity.ok(
-            SuccessResponse(
-                ForceUpdateResponse(
-                    minSupportVersion != null && request.version.isBeforeThan(Version(minSupportVersion))
-                )
-            )
+    ): ResponseEntity<SuccessResponse<ForceUpdateResponse>> =
+        ResponseEntity.ok(
+            SuccessResponse(operationService.getForceUpdateInfo(request))
         )
-    }
 
-    override fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationResponse>> {
-        val response = configInquiryComponent
-            .findConfigBy("activeGeneration")
-            .value
-            .takeUnless { it.isNullOrBlank() }
-            ?.let {
-                ActiveGenerationResponse(true, it.toInt())
-            } ?: ActiveGenerationResponse(false, null)
-
-        return ResponseEntity.ok(
-            SuccessResponse(response)
+    override fun getActiveGeneration(): ResponseEntity<SuccessResponse<ActiveGenerationResponse>> =
+        ResponseEntity.ok(
+            SuccessResponse(operationService.getActiveGeneration())
         )
-    }
 
     override fun getUsageInquiryLink(): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
         getLinkByConfigKey("usageInquiryLink")
@@ -74,10 +58,6 @@ class OperationController(
 
     private fun getLinkByConfigKey(configKey: String): ResponseEntity<SuccessResponse<OperationLinkResponse>> =
         ResponseEntity.ok(
-            SuccessResponse(
-                OperationLinkResponse(
-                    configInquiryComponent.findConfigBy(configKey).value
-                )
-            )
+            SuccessResponse(operationService.getOperationLink(configKey))
         )
 }

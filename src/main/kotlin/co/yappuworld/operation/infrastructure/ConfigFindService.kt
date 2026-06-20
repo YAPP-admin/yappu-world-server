@@ -20,6 +20,9 @@ class ConfigFindService(
 
     fun findConfig(id: String): ConfigEntity? = configRepository.findByIdOrNull(id)
 
+    fun findSignUpCodeConfigs(): List<ConfigEntity> =
+        configRepository.findAllByIdIn(UserRole.entries.map { it.signUpCodeKey })
+
     fun findSignUpCodeBook(): SignUpCodeBook =
         SignUpCodeBook(
             configRepository.findAllByIdIn(UserRole.entries.map { it.signUpCodeKey })

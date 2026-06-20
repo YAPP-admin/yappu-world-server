@@ -6,15 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 
 data class AdminSignUpCodesResponse(
-    @Schema(description = "인증 번호 목록")
+    @field:Schema(description = "인증 번호 목록")
     val codes: List<AdminSignUpCodeResponse>
 )
 
 data class AdminSignUpCodeResponse(
-    @Schema(description = "인증 번호")
+    @field:Schema(description = "인증 번호")
     @field:NotNull
     val code: String,
-    @Schema(description = "역할")
+    @field:Schema(description = "역할")
     @field:NotNull
     val role: UserRoleResponse
 ) {
