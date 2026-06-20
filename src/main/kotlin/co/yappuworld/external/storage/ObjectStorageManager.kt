@@ -2,7 +2,7 @@ package co.yappuworld.external.storage
 
 import org.springframework.web.multipart.MultipartFile
 
-interface ObjectStorageService {
+interface ObjectStorageManager {
     fun upload(
         file: MultipartFile,
         objectKey: String

@@ -1,6 +1,6 @@
 package co.yappuworld.team.client.application
 
-import co.yappuworld.external.storage.ObjectStorageService
+import co.yappuworld.external.storage.ObjectStorageManager
 import co.yappuworld.external.storage.ObjectStorageTransactionSynchronizer
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
@@ -30,7 +30,7 @@ class AdminTeamServiceManageService(
     private val teamServiceCommandService: TeamServiceCommandService,
     private val teamServiceImageFindService: TeamServiceImageFindService,
     private val teamServiceImageCommandService: TeamServiceImageCommandService,
-    private val objectStorageService: ObjectStorageService,
+    private val objectStorageManager: ObjectStorageManager,
     private val objectStorageTransactionSynchronizer: ObjectStorageTransactionSynchronizer
 ) {
     @Transactional(readOnly = true)
@@ -53,7 +53,7 @@ class AdminTeamServiceManageService(
         val service = teamServiceFindService.findTeamService(serviceId)
         val thumbnailImageUrl = teamServiceImageFindService
             .findThumbnailObjectKey(service)
-            ?.let { objectStorageService.getPublicUrl(it) }
+            ?.let { objectStorageManager.getPublicUrl(it) }
         return AdminTeamServiceDetailResponse.from(service, thumbnailImageUrl)
     }
 
@@ -105,7 +105,7 @@ class AdminTeamServiceManageService(
     ) {
         thumbnailImage ?: return
         val objectKey = buildObjectKey(service.id, thumbnailImage)
-        objectStorageService.upload(file = thumbnailImage, objectKey = objectKey)
+        objectStorageManager.upload(file = thumbnailImage, objectKey = objectKey)
         objectStorageTransactionSynchronizer.registerDeleteOnRollback(objectKey)
         teamServiceImageCommandService.save(
             TeamServiceImageEntity(teamService = service, objectKey = objectKey, isThumbnail = true)
@@ -125,7 +125,7 @@ class AdminTeamServiceManageService(
         when {
             thumbnailImage != null -> {
                 val newObjectKey = buildObjectKey(service.id, thumbnailImage)
-                objectStorageService.upload(file = thumbnailImage, objectKey = newObjectKey)
+                objectStorageManager.upload(file = thumbnailImage, objectKey = newObjectKey)
                 objectStorageTransactionSynchronizer.registerDeleteOnRollback(newObjectKey)
                 thumbnail
                     ?.also {
@@ -157,7 +157,12 @@ class AdminTeamServiceManageService(
             ?.takeIf { it.isNotBlank() }
             ?: throw BusinessException(TeamError.INVALID_IMAGE)
 
-        if (file.isEmpty || file.size > MAX_IMAGE_FILE_SIZE || extension !in ALLOWED_IMAGE_EXTENSIONS) {
+        if (
+            file.isEmpty ||
+            file.size > MAX_IMAGE_FILE_SIZE ||
+            extension !in ALLOWED_IMAGE_EXTENSIONS ||
+            file.contentType !in ALLOWED_IMAGE_MIME_TYPES
+        ) {
             throw BusinessException(TeamError.INVALID_IMAGE)
         }
 
@@ -167,5 +172,6 @@ class AdminTeamServiceManageService(
     private companion object {
         const val MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024L
         val ALLOWED_IMAGE_EXTENSIONS = setOf("jpg", "jpeg", "png", "webp")
+        val ALLOWED_IMAGE_MIME_TYPES = setOf("image/jpeg", "image/png", "image/webp")
     }
 }

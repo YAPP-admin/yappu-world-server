@@ -1,11 +1,12 @@
 package co.yappuworld.team.client.application
 
 import co.yappuworld.external.storage.ObjectStorageTransactionSynchronizer
+import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.support.environment.CustomDataJpaTestFeatureSpec
 import co.yappuworld.support.fixture.TeamFixture.getTeamEntityFixture
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceEntityFixture
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceImageEntityFixture
-import co.yappuworld.support.storage.FakeObjectStorageService
+import co.yappuworld.support.storage.FakeObjectStorageManager
 import co.yappuworld.team.client.dto.request.AdminTeamServiceCreateRequest
 import co.yappuworld.team.client.dto.request.AdminTeamServiceUpdateRequest
 import co.yappuworld.team.infrastructure.TeamFindService
@@ -34,19 +35,19 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
     private val transactionManager: PlatformTransactionManager
 ) : CustomDataJpaTestFeatureSpec({
         lateinit var adminTeamServiceManageService: AdminTeamServiceManageService
-        lateinit var objectStorageService: FakeObjectStorageService
+        lateinit var objectStorageManager: FakeObjectStorageManager
         lateinit var objectStorageTransactionSynchronizer: ObjectStorageTransactionSynchronizer
 
         beforeEach {
-            objectStorageService = FakeObjectStorageService()
-            objectStorageTransactionSynchronizer = ObjectStorageTransactionSynchronizer(objectStorageService)
+            objectStorageManager = FakeObjectStorageManager()
+            objectStorageTransactionSynchronizer = ObjectStorageTransactionSynchronizer(objectStorageManager)
             adminTeamServiceManageService = AdminTeamServiceManageService(
                 teamFindService = TeamFindService(teamRepository),
                 teamServiceFindService = TeamServiceFindService(teamServiceRepository),
                 teamServiceCommandService = TeamServiceCommandService(teamServiceRepository),
                 teamServiceImageFindService = TeamServiceImageFindService(teamServiceImageRepository),
                 teamServiceImageCommandService = TeamServiceImageCommandService(teamServiceImageRepository),
-                objectStorageService = objectStorageService,
+                objectStorageManager = objectStorageManager,
                 objectStorageTransactionSynchronizer = objectStorageTransactionSynchronizer
             )
         }
@@ -96,11 +97,14 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                 isOperating = false
             )
 
-        fun thumbnailImage(filename: String = "thumbnail.png"): MockMultipartFile =
+        fun thumbnailImage(
+            filename: String = "thumbnail.png",
+            contentType: String = "image/png"
+        ): MockMultipartFile =
             MockMultipartFile(
                 "thumbnailImage",
                 filename,
-                "image/png",
+                contentType,
                 "thumbnail".toByteArray()
             )
 
@@ -148,7 +152,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                 val thumbnail = teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(service)
                 thumbnail?.objectKey?.startsWith("team-services/${service.id}/") shouldBe true
                 thumbnail?.objectKey?.endsWith(".png") shouldBe true
-                objectStorageService.uploadedObjectKeys shouldBe listOf(thumbnail?.objectKey)
+                objectStorageManager.uploadedObjectKeys shouldBe listOf(thumbnail?.objectKey)
             }
 
             scenario("썸네일 이미지 저장에 실패하면 업로드한 이미지를 삭제한다") {
@@ -162,7 +166,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                     teamServiceCommandService = TeamServiceCommandService(teamServiceRepository),
                     teamServiceImageFindService = TeamServiceImageFindService(teamServiceImageRepository),
                     teamServiceImageCommandService = failingTeamServiceImageCommandService,
-                    objectStorageService = objectStorageService,
+                    objectStorageManager = objectStorageManager,
                     objectStorageTransactionSynchronizer = objectStorageTransactionSynchronizer
                 )
                 val transactionTemplate = newTransactionTemplate()
@@ -177,7 +181,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                     }
                 }
 
-                objectStorageService.deletedObjectKeys shouldBe objectStorageService.uploadedObjectKeys
+                objectStorageManager.deletedObjectKeys shouldBe objectStorageManager.uploadedObjectKeys
             }
 
             scenario("썸네일 이미지가 없으면 썸네일 이미지를 생성하지 않는다") {
@@ -190,6 +194,19 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                 val service = teamServiceRepository.getReferenceById(serviceId)
 
                 teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(service) shouldBe null
+            }
+
+            scenario("썸네일 이미지 MIME 타입이 유효하지 않으면 업로드하지 않는다") {
+                val team = teamRepository.save(getTeamEntityFixture())
+
+                shouldThrow<BusinessException> {
+                    adminTeamServiceManageService.createTeamService(
+                        createRequest(teamId = team.id),
+                        thumbnailImage(filename = "thumbnail.png", contentType = "text/plain")
+                    )
+                }
+
+                objectStorageManager.uploadedObjectKeys shouldBe emptyList()
             }
         }
 
@@ -225,7 +242,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
 
                 thumbnailObjectKey.startsWith("team-services/$serviceId/") shouldBe true
                 thumbnailObjectKey.endsWith(".png") shouldBe true
-                objectStorageService.deletedObjectKeys shouldBe listOf("team-services/$serviceId/before.png")
+                objectStorageManager.deletedObjectKeys shouldBe listOf("team-services/$serviceId/before.png")
             }
 
             scenario("기존 썸네일 변경 중 트랜잭션이 롤백되면 새 이미지만 삭제한다") {
@@ -251,7 +268,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                     }
                 }
 
-                objectStorageService.deletedObjectKeys shouldBe objectStorageService.uploadedObjectKeys
+                objectStorageManager.deletedObjectKeys shouldBe objectStorageManager.uploadedObjectKeys
             }
 
             scenario("기존 썸네일이 없으면 새 썸네일을 생성한다") {
@@ -314,7 +331,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                 }
 
                 thumbnailExists shouldBe false
-                objectStorageService.deletedObjectKeys shouldBe listOf("team-services/thumbnail.png")
+                objectStorageManager.deletedObjectKeys shouldBe listOf("team-services/thumbnail.png")
             }
 
             scenario("썸네일 삭제 요청 중 트랜잭션이 롤백되면 기존 이미지를 삭제하지 않는다") {
@@ -336,7 +353,7 @@ class AdminTeamServiceManageServiceTest @Autowired constructor(
                     }
                 }
 
-                objectStorageService.deletedObjectKeys shouldBe emptyList()
+                objectStorageManager.deletedObjectKeys shouldBe emptyList()
             }
         }
     })

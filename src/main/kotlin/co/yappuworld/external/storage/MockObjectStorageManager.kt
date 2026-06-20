@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile
     name = ["enabled"],
     havingValue = "false"
 )
-class DisabledObjectStorageService : ObjectStorageService {
+class MockObjectStorageManager : ObjectStorageManager {
     override fun upload(
         file: MultipartFile,
         objectKey: String

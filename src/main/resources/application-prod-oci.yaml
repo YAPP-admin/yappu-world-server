@@ -6,6 +6,10 @@ spring:
         hidden-method:
             filter:
                 enabled: true
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 12MB
     docker:
         compose:
             enabled: false

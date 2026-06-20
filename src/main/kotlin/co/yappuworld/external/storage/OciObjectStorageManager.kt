@@ -9,10 +9,10 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 @ConditionalOnProperty(prefix = "object-storage", name = ["enabled"], havingValue = "true")
-class OciObjectStorageService(
+class OciObjectStorageManager(
     private val objectStorage: ObjectStorage,
     private val properties: OciObjectStorageProperties
-) : ObjectStorageService {
+) : ObjectStorageManager {
 
     override fun upload(
         file: MultipartFile,

@@ -1,6 +1,6 @@
 package co.yappuworld.team.client.application
 
-import co.yappuworld.external.storage.ObjectStorageService
+import co.yappuworld.external.storage.ObjectStorageManager
 import co.yappuworld.global.response.CursorPageResponse
 import co.yappuworld.team.client.dto.request.HistoricalServicesPageRequest
 import co.yappuworld.team.client.dto.response.HistoricalServiceDetailResponse
@@ -18,7 +18,7 @@ class HistoricalServiceService(
     private val teamServiceFindService: TeamServiceFindService,
     private val teamMemberFindService: TeamMemberFindService,
     private val teamServiceImageFindService: TeamServiceImageFindService,
-    private val objectStorageService: ObjectStorageService
+    private val objectStorageManager: ObjectStorageManager
 ) {
 
     @Transactional(readOnly = true)
@@ -34,7 +34,7 @@ class HistoricalServiceService(
         val pagedServices = services.take(min(request.limit, services.size))
         val thumbnailImageUrls = teamServiceImageFindService
             .findThumbnailObjectKeys(pagedServices.map { it.serviceId })
-            .mapValues { objectStorageService.getPublicUrl(it.value) }
+            .mapValues { objectStorageManager.getPublicUrl(it.value) }
         val data = pagedServices
             .map { HistoricalServicePageResponse.from(it, thumbnailImageUrls[it.serviceId]) }
 
@@ -52,7 +52,7 @@ class HistoricalServiceService(
         val members = teamMemberFindService.findTeamMembersDetail(service.team.id).filterNotNull()
         val thumbnailImageUrl = teamServiceImageFindService
             .findThumbnailObjectKey(service)
-            ?.let { objectStorageService.getPublicUrl(it) }
+            ?.let { objectStorageManager.getPublicUrl(it) }
 
         return HistoricalServiceDetailResponse.of(service, members, thumbnailImageUrl)
     }

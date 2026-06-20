@@ -6,7 +6,7 @@ import co.yappuworld.support.fixture.TeamFixture.getTeamServiceImageEntityFixtur
 import co.yappuworld.support.fixture.TeamFixture.getTeamServiceEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getActivityUnitEntityFixture
 import co.yappuworld.support.fixture.UserFixture.getUserEntityFixture
-import co.yappuworld.support.storage.FakeObjectStorageService
+import co.yappuworld.support.storage.FakeObjectStorageManager
 import co.yappuworld.team.client.dto.request.HistoricalServicesPageRequest
 import co.yappuworld.team.domain.vo.Platform
 import co.yappuworld.team.infrastructure.TeamMemberFindService
@@ -43,7 +43,7 @@ class HistoricalServiceServiceTest @Autowired constructor(
                 teamServiceFindService = TeamServiceFindService(teamServiceRepository),
                 teamMemberFindService = TeamMemberFindService(teamMemberRepository),
                 teamServiceImageFindService = TeamServiceImageFindService(teamServiceImageRepository),
-                objectStorageService = FakeObjectStorageService()
+                objectStorageManager = FakeObjectStorageManager()
             )
         }
 

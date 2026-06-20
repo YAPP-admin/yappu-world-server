@@ -7,7 +7,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 @Component
 class ObjectStorageTransactionSynchronizer(
-    private val objectStorageService: ObjectStorageService
+    private val objectStorageManager: ObjectStorageManager
 ) {
     fun registerDeleteOnRollback(objectKey: String) {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
@@ -42,7 +42,7 @@ class ObjectStorageTransactionSynchronizer(
 
     private fun deleteObject(objectKey: String) {
         runCatching {
-            objectStorageService.delete(objectKey)
+            objectStorageManager.delete(objectKey)
         }.onFailure {
             log.warn("이미지 파일 삭제에 실패했습니다. objectKey={}", objectKey, it)
         }

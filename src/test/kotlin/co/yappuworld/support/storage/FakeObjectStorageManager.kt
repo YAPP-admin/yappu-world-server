@@ -1,9 +1,9 @@
 package co.yappuworld.support.storage
 
-import co.yappuworld.external.storage.ObjectStorageService
+import co.yappuworld.external.storage.ObjectStorageManager
 import org.springframework.web.multipart.MultipartFile
 
-class FakeObjectStorageService : ObjectStorageService {
+class FakeObjectStorageManager : ObjectStorageManager {
     val uploadedObjectKeys = mutableListOf<String>()
     val deletedObjectKeys = mutableListOf<String>()
 

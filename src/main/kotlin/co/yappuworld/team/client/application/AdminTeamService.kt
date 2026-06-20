@@ -1,5 +1,6 @@
 package co.yappuworld.team.client.application
 
+import co.yappuworld.external.storage.ObjectStorageTransactionSynchronizer
 import co.yappuworld.global.exception.BusinessException
 import co.yappuworld.global.response.OffsetPageResponse
 import co.yappuworld.team.client.dto.request.AdminTeamPageRequest
@@ -11,6 +12,9 @@ import co.yappuworld.team.domain.vo.TeamError
 import co.yappuworld.team.infrastructure.TeamFindService
 import co.yappuworld.team.infrastructure.TeamCommandService
 import co.yappuworld.team.infrastructure.TeamServiceCommandService
+import co.yappuworld.team.infrastructure.TeamServiceFindService
+import co.yappuworld.team.infrastructure.TeamServiceImageCommandService
+import co.yappuworld.team.infrastructure.TeamServiceImageFindService
 import co.yappuworld.team.infrastructure.TeamMemberCommandService
 import co.yappuworld.team.infrastructure.TeamMemberFindService
 import co.yappuworld.team.infrastructure.entity.TeamEntity
@@ -26,9 +30,13 @@ class AdminTeamService(
     private val teamFindService: TeamFindService,
     private val teamMemberFindService: TeamMemberFindService,
     private val teamCommandService: TeamCommandService,
+    private val teamServiceFindService: TeamServiceFindService,
     private val teamServiceCommandService: TeamServiceCommandService,
+    private val teamServiceImageFindService: TeamServiceImageFindService,
+    private val teamServiceImageCommandService: TeamServiceImageCommandService,
     private val teamMemberCommandService: TeamMemberCommandService,
-    private val activityUnitFindService: ActivityUnitFindService
+    private val activityUnitFindService: ActivityUnitFindService,
+    private val objectStorageTransactionSynchronizer: ObjectStorageTransactionSynchronizer
 ) {
 
     @Transactional(readOnly = true)
@@ -95,8 +103,7 @@ class AdminTeamService(
         val team = teamFindService.findTeam(teamId)
 
         deleteTeamMembers(team)
-        teamServiceCommandService.deleteAll(team)
-
+        deleteTeamServices(team)
         teamCommandService.delete(teamId)
     }
 
@@ -175,5 +182,18 @@ class AdminTeamService(
 
     private fun deleteTeamMembers(team: TeamEntity) {
         teamMemberCommandService.deleteAll(team)
+    }
+
+    private fun deleteTeamServices(team: TeamEntity) {
+        val services = teamServiceFindService.findTeamServices(listOf(team))
+        val objectKeys = services.flatMap { teamServiceImageFindService.findObjectKeys(it) }
+
+        services.forEach { service ->
+            teamServiceImageCommandService.deleteAll(service)
+            teamServiceCommandService.delete(service)
+        }
+        objectKeys.forEach {
+            objectStorageTransactionSynchronizer.registerDeleteAfterCommit(it)
+        }
     }
 }

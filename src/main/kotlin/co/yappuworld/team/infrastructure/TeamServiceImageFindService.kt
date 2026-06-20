@@ -21,6 +21,9 @@ class TeamServiceImageFindService(
     fun findThumbnailObjectKey(teamService: TeamServiceEntity): String? =
         teamServiceImageRepository.findByTeamServiceAndIsThumbnailTrue(teamService)?.objectKey
 
+    fun findObjectKeys(teamService: TeamServiceEntity): List<String> =
+        teamServiceImageRepository.findByTeamService(teamService).map { it.objectKey }
+
     fun findThumbnailObjectKeys(teamServiceIds: List<UUID>): Map<UUID, String> =
         teamServiceImageRepository
             .findThumbnailObjectKeysByTeamServiceIdIn(teamServiceIds)
