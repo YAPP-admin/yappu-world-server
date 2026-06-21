@@ -9,15 +9,21 @@ import co.yappuworld.operation.client.dto.request.AdminGenerationRegisterRequest
 import co.yappuworld.operation.client.dto.response.AdminGenerationActiveUpdateResponse
 import co.yappuworld.operation.client.dto.response.AdminGenerationResponse
 import co.yappuworld.operation.domain.OperationError
+import co.yappuworld.operation.infrastructure.ConfigFindService
 import co.yappuworld.operation.infrastructure.GenerationCommandService
 import co.yappuworld.operation.infrastructure.GenerationFindService
 import co.yappuworld.operation.infrastructure.GenerationRepository
+import co.yappuworld.user.client.dto.response.AdminSignUpCodeResponse
+import co.yappuworld.user.client.dto.response.AdminSignUpCodesResponse
+import co.yappuworld.user.domain.vo.UserError
+import co.yappuworld.user.domain.vo.UserRole
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AdminUserOperationService(
     private val generationActiveStateManager: GenerationActiveStateManager,
+    private val configFindService: ConfigFindService,
     private val generationFindService: GenerationFindService,
     private val generationCommandService: GenerationCommandService,
     private val generationRepository: GenerationRepository
@@ -59,5 +65,22 @@ class AdminUserOperationService(
     @Transactional
     fun deleteGenerations(request: AdminGenerationDeleteRequest) {
         generationCommandService.deleteAll(request.generations)
+    }
+
+    @Transactional(readOnly = true)
+    fun getSignUpAuthenticationCodes(): AdminSignUpCodesResponse {
+        val responseByKey = configFindService
+            .findSignUpCodeConfigs()
+            .associateBy { it.id }
+
+        UserRole.entries
+            .firstOrNull { role -> !responseByKey.containsKey(role.signUpCodeKey) }
+            ?.let { throw BusinessException(UserError.SIGN_UP_CODE_UNREGISTERED) }
+
+        return AdminSignUpCodesResponse(
+            UserRole.entries.map { role ->
+                AdminSignUpCodeResponse(responseByKey[role.signUpCodeKey], role)
+            }
+        )
     }
 }

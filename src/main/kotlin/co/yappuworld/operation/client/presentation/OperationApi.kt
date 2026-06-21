@@ -5,6 +5,7 @@ import co.yappuworld.global.response.SuccessResponse
 import co.yappuworld.operation.client.dto.request.ForceUpdateInquiryRequest
 import co.yappuworld.operation.client.dto.response.ActiveGenerationResponse
 import co.yappuworld.operation.client.dto.response.ForceUpdateResponse
+import co.yappuworld.operation.client.dto.response.GenerationsResponse
 import co.yappuworld.operation.client.dto.response.OperationLinkResponse
 import co.yappuworld.operation.client.dto.response.PositionsResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -54,6 +55,48 @@ interface OperationApi {
     )
     @GetMapping("/v1/operations/positions")
     fun getPositions(): ResponseEntity<SuccessResponse<PositionsResponse>>
+
+    @Operation(summary = "역대 기수 목록")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                useReturnTypeSchema = true,
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "역대 기수 목록 조회 성공",
+                                value = """
+                                    {
+                                        "data": {
+                                            "generations": [
+                                                {
+                                                    "generation": 25,
+                                                    "startDate": "2024-05-03",
+                                                    "endDate": "2024-09-14",
+                                                    "isActive": true
+                                                },
+                                                {
+                                                    "generation": 24,
+                                                    "startDate": "2023-11-11",
+                                                    "endDate": "2024-04-20",
+                                                    "isActive": false
+                                                }
+                                            ]
+                                        },
+                                        "isSuccess": true
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @GetMapping("/v1/operations/generations")
+    fun getGenerations(): ResponseEntity<SuccessResponse<GenerationsResponse>>
 
     @Operation(summary = "강제 업데이트 정보")
     @ApiResponses(
