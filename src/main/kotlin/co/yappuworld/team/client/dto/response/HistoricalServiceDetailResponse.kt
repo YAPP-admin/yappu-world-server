@@ -34,7 +34,8 @@ data class HistoricalServiceDetailResponse(
     companion object {
         fun of(
             service: TeamServiceEntity,
-            members: List<TeamMemberDetailDto>
+            members: List<TeamMemberDetailDto>,
+            thumbnailImageUrl: String?
         ): HistoricalServiceDetailResponse =
             HistoricalServiceDetailResponse(
                 serviceId = service.id,
@@ -44,7 +45,7 @@ data class HistoricalServiceDetailResponse(
                 hasWeb = service.hasWeb,
                 summary = service.summary,
                 description = service.description,
-                thumbnailImageUrl = null,
+                thumbnailImageUrl = thumbnailImageUrl,
                 googlePlayLink = service.serviceLinks?.googlePlay,
                 appStoreLink = service.serviceLinks?.appStore,
                 webLink = service.serviceLinks?.web,

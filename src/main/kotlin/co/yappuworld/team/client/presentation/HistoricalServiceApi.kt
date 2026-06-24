@@ -45,7 +45,7 @@ interface HistoricalServiceApi {
                                                     "hasApp": true,
                                                     "hasWeb": false,
                                                     "summary": "한 줄 소개입니다.",
-                                                    "thumbnailImageUrl": null
+                                                    "thumbnailImageUrl": "https://image.yapp.co.kr/service-thumbnail.png"
                                                 }
                                             ],
                                             "lastCursor": "a1b2c3d4-e5f6-7890-ab12-cd34ef56ab78",
@@ -88,7 +88,7 @@ interface HistoricalServiceApi {
                                             "hasWeb": true,
                                             "summary": "서비스의 한 줄 설명입니다.",
                                             "description": "서비스 상세 설명입니다.",
-                                            "thumbnailImageUrl": null,
+                                            "thumbnailImageUrl": "https://image.yapp.co.kr/service-thumbnail.png",
                                             "googlePlayLink": null,
                                             "appStoreLink": null,
                                             "webLink": "https://yapp.co.kr",

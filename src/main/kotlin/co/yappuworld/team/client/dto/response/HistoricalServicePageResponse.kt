@@ -21,7 +21,10 @@ data class HistoricalServicePageResponse(
     val thumbnailImageUrl: String?
 ) {
     companion object {
-        fun from(projection: HistoricalServiceSummaryProjection): HistoricalServicePageResponse =
+        fun from(
+            projection: HistoricalServiceSummaryProjection,
+            thumbnailImageUrl: String?
+        ): HistoricalServicePageResponse =
             HistoricalServicePageResponse(
                 serviceId = projection.serviceId,
                 generation = projection.generation,
@@ -29,7 +32,7 @@ data class HistoricalServicePageResponse(
                 hasApp = projection.hasApp,
                 hasWeb = projection.hasWeb,
                 summary = projection.summary,
-                thumbnailImageUrl = null
+                thumbnailImageUrl = thumbnailImageUrl
             )
     }
 }

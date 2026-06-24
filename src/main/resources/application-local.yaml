@@ -48,6 +48,9 @@ management:
             exposure:
                 exclude: "*"
 
+object-storage:
+    enabled: false
+
 app:
     lock:
         signup-email:

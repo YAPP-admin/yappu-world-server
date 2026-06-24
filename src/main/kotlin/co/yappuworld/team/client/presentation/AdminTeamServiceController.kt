@@ -10,6 +10,7 @@ import co.yappuworld.team.client.dto.response.AdminTeamServiceDetailResponse
 import co.yappuworld.team.client.dto.response.AdminTeamServiceResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import java.net.URI
 import java.util.UUID
 
@@ -26,13 +27,19 @@ class AdminTeamServiceController(
     override fun getTeamService(serviceId: UUID): ResponseEntity<SuccessResponse<AdminTeamServiceDetailResponse>> =
         ResponseEntity.ok(SuccessResponse(adminTeamServiceManageService.getTeamService(serviceId)))
 
-    override fun createTeamService(request: AdminTeamServiceCreateRequest): ResponseEntity<Unit> {
-        val serviceId = adminTeamServiceManageService.createTeamService(request)
+    override fun createTeamService(
+        request: AdminTeamServiceCreateRequest,
+        thumbnailImage: MultipartFile?
+    ): ResponseEntity<Unit> {
+        val serviceId = adminTeamServiceManageService.createTeamService(request, thumbnailImage)
         return ResponseEntity.created(URI("/admin/v1/team-services/$serviceId")).build()
     }
 
-    override fun updateTeamService(request: AdminTeamServiceUpdateRequest): ResponseEntity<Unit> {
-        adminTeamServiceManageService.updateTeamService(request)
+    override fun updateTeamService(
+        request: AdminTeamServiceUpdateRequest,
+        thumbnailImage: MultipartFile?
+    ): ResponseEntity<Unit> {
+        adminTeamServiceManageService.updateTeamService(request, thumbnailImage)
         return ResponseEntity.noContent().build()
     }
 

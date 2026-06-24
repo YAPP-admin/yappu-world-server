@@ -45,6 +45,11 @@ jobs:
                     sentry.dsn: ${{secrets.SENTRY_DSN}}
                     admin.domain: ${{ secrets.DEV_ADMIN_DOMAIN }}
                     kakao.rest_api_key: ${{ secrets.KAKAO_REST_API_KEY }}
+                    object-storage.enabled: true
+                    object-storage.region: ${{ secrets.OBJECT_STORAGE_REGION }}
+                    object-storage.namespace: ${{ secrets.OBJECT_STORAGE_NAMESPACE }}
+                    object-storage.bucket-name: ${{ secrets.DEV_OBJECT_STORAGE_BUCKET_NAME }}
+                    object-storage.public-base-url: ${{ secrets.DEV_OBJECT_STORAGE_PUBLIC_BASE_URL }}
 
             -   name: Build with Gradle Wrapper
                 run: ./gradlew clean build -x test -Dspring.profiles.active=dev-oci

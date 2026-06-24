@@ -40,5 +40,15 @@ enum class TeamError : Error {
         override val message: String = "팀 기수와 활동 이력의 기수가 일치하지 않습니다."
         override val code: String = "TEAM_1005"
         override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    INVALID_IMAGE {
+        override val message: String = "유효하지 않은 이미지입니다."
+        override val code: String = "TEAM_1006"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
+    },
+    INVALID_THUMBNAIL_REQUEST {
+        override val message: String = "썸네일 요청이 유효하지 않습니다."
+        override val code: String = "TEAM_1007"
+        override val type: ErrorType = ErrorType.BAD_REQUEST
     }
 }
